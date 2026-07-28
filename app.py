@@ -15,6 +15,11 @@ from modules.analytics_engine import (
 from modules.decision_engine import (
     decision_summary,
 )
+from modules.compounder_engine import (
+    load_compounder_radar,
+    radar_summary,
+    top_candidates,
+)
 from modules.formatting import (
     format_dkk,
     format_pct,
@@ -44,7 +49,7 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "4.2.0"
+APP_VERSION = "4.3.0"
 
 st.title("📈 Investment OS 3.0")
 st.caption(
@@ -122,6 +127,8 @@ sharpe_history = rolling_sharpe(
 
 quality_score, quality_notes = data_quality_score(portfolio, snapshot)
 morning_brief_report = load_markdown_report(MORNING_BRIEF_FILE)
+compounder_radar = load_compounder_radar("data")
+compounder_summary = radar_summary(compounder_radar)
 
 # Samlet porteføljeværdi inkluderer alle positioner, herunder Grundfos.
 # Hvis en position mangler en beregnet markedsværdi, bruges den eksisterende
@@ -568,11 +575,120 @@ with tab_ai:
 
 with tab_compounders:
     st.subheader("Emerging Compounder Radar")
-    st.info(
-        "Fanen er oprettet som selvstændigt analyseområde. "
-        "Den ugentlige radar kobles på i en senere fase, så resultaterne "
-        "holdes adskilt fra den eksisterende portefølje."
-    )
+
+    if not compounder_radar.exists:
+        st.info(
+            "Radarfilen mangler. Læg ugens resultat i "
+            "`data/compounder_radar.xlsx` eller "
+            "`data/compounder_radar.csv`."
+        )
+    else:
+        c1, c2, c3, c4 = st.columns(4)
+        c1.metric(
+            "Kandidater",
+            compounder_summary["Candidate_Count"],
+        )
+        c2.metric(
+            "AI ≥ 80%",
+            compounder_summary["High_Confidence_Count"],
+        )
+        c3.metric(
+            "Gns. AI Confidence",
+            (
+                f"{compounder_summary['Average_Confidence']:.0f}%"
+                if pd.notna(
+                    compounder_summary["Average_Confidence"]
+                )
+                else "N/A"
+            ),
+        )
+        c4.metric(
+            "Topkandidat",
+            compounder_summary["Top_Candidate"] or "N/A",
+        )
+
+        if compounder_radar.notes:
+            for note in compounder_radar.notes:
+                st.warning(note)
+
+        radar_table = top_candidates(
+            compounder_radar,
+            limit=20,
+        )
+
+        if radar_table.empty:
+            st.info("Radarfilen indeholder ingen kandidater.")
+        else:
+            radar_table = radar_table.rename(
+                columns={
+                    "Name": "Selskab",
+                    "Ticker": "Ticker",
+                    "Composite_Score": "Composite",
+                    "AI_Confidence": "AI Confidence",
+                    "Status": "Status",
+                    "Revenue_CAGR_5Y": "Omsætning CAGR 5Y",
+                    "EPS_CAGR_5Y": "EPS CAGR 5Y",
+                    "Gross_Margin": "Bruttomargin",
+                    "ROIC": "ROIC",
+                    "Upside_Pct": "Upside",
+                    "Risk_Reward": "Risk/Reward",
+                    "Risk": "Risiko",
+                    "Reason": "Begrundelse",
+                }
+            )
+
+            for column in [
+                "Omsætning CAGR 5Y",
+                "EPS CAGR 5Y",
+                "Bruttomargin",
+                "ROIC",
+                "Upside",
+            ]:
+                if column in radar_table.columns:
+                    radar_table[column] = radar_table[column].apply(
+                        lambda value: format_pct(value, 1)
+                    )
+
+            if "Composite" in radar_table.columns:
+                radar_table["Composite"] = radar_table[
+                    "Composite"
+                ].apply(
+                    lambda value: format_score(value, 1)
+                )
+
+            if "AI Confidence" in radar_table.columns:
+                radar_table["AI Confidence"] = radar_table[
+                    "AI Confidence"
+                ].apply(
+                    lambda value: (
+                        f"{value:.0f}%"
+                        if pd.notna(value)
+                        else "N/A"
+                    )
+                )
+
+            if "Risk/Reward" in radar_table.columns:
+                radar_table["Risk/Reward"] = radar_table[
+                    "Risk/Reward"
+                ].apply(
+                    lambda value: (
+                        format_score(value, 2)
+                        if pd.notna(value)
+                        else "N/A"
+                    )
+                )
+
+            st.dataframe(
+                table_style(radar_table),
+                use_container_width=True,
+                hide_index=True,
+                height=no_scroll_height(radar_table),
+            )
+
+        st.caption(
+            "Radaren er uafhængig af den nuværende portefølje. "
+            "Den viser kun kandidater til videre analyse og udfører aldrig handler."
+        )
 
 with tab_watchlist:
     st.subheader("Watchlist")
