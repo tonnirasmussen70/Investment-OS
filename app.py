@@ -116,9 +116,18 @@ sharpe_history = rolling_sharpe(
 quality_score, quality_notes = data_quality_score(portfolio, snapshot)
 
 # Samlet porteføljeværdi inkluderer alle positioner, herunder Grundfos.
-portfolio_total = portfolio["Market_Value_DKK"].sum(skipna=True)
+# Hvis en position mangler en beregnet markedsværdi, bruges den eksisterende
+# værdi fra masterfilen som fallback, når kolonnen findes.
+portfolio_value_series = portfolio["Market_Value_DKK"].copy()
 
-# Afkast beregnes kun for positioner markeret med Include_Weight = True.
+if "Market_value_DKK" in portfolio.columns:
+    portfolio_value_series = portfolio_value_series.combine_first(
+        pd.to_numeric(portfolio["Market_value_DKK"], errors="coerce")
+    )
+
+portfolio_total = portfolio_value_series.sum(skipna=True)
+
+# Afkast beregnes kun på positioner med Include_Weight = True.
 # Grundfos kan derfor indgå i porteføljeværdien uden at påvirke afkastprocenten.
 return_mask = portfolio["Include_Weight"].fillna(False)
 
@@ -162,6 +171,52 @@ capital_flow_label = (
     else "Negativ"
 )
 
+
+def confidence_label(score: float) -> str:
+    """Returnér en kort fortolkning af AI Confidence."""
+    if pd.isna(score):
+        return "Datamangel"
+    if score >= 80:
+        return "Høj"
+    if score >= 65:
+        return "Moderat-høj"
+    if score >= 50:
+        return "Moderat"
+    if score >= 35:
+        return "Lav"
+    return "Meget lav"
+
+
+def quality_label(score: float) -> tuple[str, str]:
+    """Returnér ikon og tekst for datakvalitet."""
+    if score >= 90:
+        return "🟢", "Høj"
+    if score >= 75:
+        return "🟡", "Acceptabel"
+    return "🔴", "Lav"
+
+
+def action_reason(row: pd.Series) -> str:
+    """Forklar kort hvorfor modellen foreslår en handling."""
+    handling = row.get("Handling", "Hold")
+    one_week = row.get("1W", np.nan)
+    one_month = row.get("1M", np.nan)
+    three_months = row.get("3M", np.nan)
+
+    if handling == "Øg":
+        return "Positivt kort momentum og stærk samlet score"
+    if handling == "Reducer":
+        return "Negativ kort og mellemfristet trend"
+    if handling == "Afvent":
+        if pd.notna(one_week) and pd.notna(one_month):
+            if one_week > 0 and one_month < 0:
+                return "Tidlig bedring, men endnu ikke bekræftet"
+        return "Blandet signalbillede"
+    if pd.notna(three_months) and three_months > 0:
+        return "Positiv mellemfristet trend"
+    return "Ingen væsentlig ændring"
+
+
 tab_overview, tab_portfolio, tab_rebalance, tab_ai, tab_compounders, tab_watchlist = st.tabs([
     "🏠 Overblik",
     "📈 Portefølje",
@@ -172,16 +227,61 @@ tab_overview, tab_portfolio, tab_rebalance, tab_ai, tab_compounders, tab_watchli
 ])
 
 with tab_overview:
+    quality_icon, quality_text = quality_label(quality_score)
+
+    status1, status2, status3, status4 = st.columns([1.1, 1.5, 1.4, 0.8])
+    status1.markdown("**🟢 Systemstatus:** Kører")
+    status2.markdown(
+        f"**Data opdateret:** {snapshot.updated_at.strftime('%d-%m-%Y %H:%M UTC')}"
+    )
+    status3.markdown(
+        f"**Datakvalitet:** {quality_score:.0f}% · {quality_text}"
+    )
+    status4.markdown(f"**Version:** {APP_VERSION}")
+
+    st.divider()
+
     k1, k2, k3, k4, k5, k6 = st.columns(6)
     k1.metric("Porteføljeværdi", format_dkk(portfolio_total))
     k2.metric("Samlet afkast", format_pct(total_return))
     k3.metric("Sharpe 12M", format_score(current_sharpe, 2))
-    k4.metric("AI Confidence", f"{avg_confidence:.0f}%" if pd.notna(avg_confidence) else "N/A")
+    k4.metric(
+        "AI Confidence",
+        f"{avg_confidence:.0f}%" if pd.notna(avg_confidence) else "N/A",
+        confidence_label(avg_confidence),
+    )
     k5.metric("Capital Flow", capital_flow_label)
-    k6.metric("Datakvalitet", f"{quality_score:.0f}%")
+    k6.metric(
+        "Datakvalitet",
+        f"{quality_score:.0f}%",
+        f"{quality_icon} {quality_text}",
+    )
 
     if quality_notes:
-        st.warning(" · ".join(quality_notes))
+        st.markdown("#### Datakvalitet")
+        for note in quality_notes:
+            st.warning(note)
+    else:
+        st.success("Alle centrale kurs-, valuta- og porteføljedata er tilgængelige.")
+
+    st.subheader("Daglig morgenbrief")
+    if MORNING_BRIEF_FILE.exists():
+        morning_brief = MORNING_BRIEF_FILE.read_text(
+            encoding="utf-8"
+        ).strip()
+
+        if morning_brief:
+            st.markdown(morning_brief)
+        else:
+            st.info("Morgenbrief-filen er tom.")
+    else:
+        st.info(
+            "Dagens morgenbrief er endnu ikke lagt i "
+            "`data/morning_brief.md`. Når den planlagte opgave opdaterer "
+            "filen, vises hele briefen automatisk her."
+        )
+
+    st.divider()
 
     left, right = st.columns(2)
 
@@ -207,8 +307,16 @@ with tab_overview:
         if not sharpe_history.empty:
             sharpe_long = (
                 sharpe_history.reset_index()
-                .rename(columns={sharpe_history.index.name or "index": "Dato"})
-                .melt(id_vars="Dato", var_name="Periode", value_name="Sharpe")
+                .rename(
+                    columns={
+                        sharpe_history.index.name or "index": "Dato"
+                    }
+                )
+                .melt(
+                    id_vars="Dato",
+                    var_name="Periode",
+                    value_name="Sharpe",
+                )
                 .dropna()
             )
             fig_sharpe = px.line(
@@ -224,41 +332,85 @@ with tab_overview:
         else:
             st.info("Sharpe-historikken kan ikke vises endnu.")
 
-    st.subheader("Daglig morgenbrief")
-    if MORNING_BRIEF_FILE.exists():
-        morning_brief = MORNING_BRIEF_FILE.read_text(encoding="utf-8").strip()
+    st.subheader("Dagens vigtigste handlinger")
 
-        if morning_brief:
-            st.markdown(morning_brief)
-        else:
-            st.info("Morgenbrief-filen er tom.")
+    action_columns = [
+        "Name",
+        "Handling",
+        "Composite",
+        "AI_Confidence",
+        "1W",
+        "1M",
+        "3M",
+    ]
+
+    actions = analytics_portfolio.loc[
+        analytics_portfolio["Handling"].ne("Hold"),
+        action_columns,
+    ].copy()
+
+    if actions.empty:
+        st.success(
+            "Ingen positioner kræver handling ud fra den nuværende model."
+        )
     else:
-        st.info(
-            "Dagens morgenbrief er endnu ikke opdateret. "
-            "Når den planlagte opgave skriver til data/morning_brief.md, "
-            "vises hele briefen automatisk her."
+        actions["Begrundelse"] = actions.apply(action_reason, axis=1)
+
+        actions["Prioritet"] = np.select(
+            [
+                actions["Handling"].eq("Reducer"),
+                actions["Handling"].eq("Øg"),
+                actions["Handling"].eq("Afvent"),
+            ],
+            [
+                "🔴 Høj",
+                "🟢 Mulighed",
+                "🟡 Afvent",
+            ],
+            default="⚪ Neutral",
         )
 
-    st.subheader("Dagens vigtigste handlinger")
-    actions = (
-        analytics_portfolio.loc[
-            analytics_portfolio["Handling"].ne("Hold"),
-            ["Name", "Handling", "Composite", "AI_Confidence"],
+        actions = (
+            actions.sort_values(
+                ["Handling", "AI_Confidence"],
+                ascending=[True, False],
+            )
+            .head(5)
+            .rename(
+                columns={
+                    "Name": "Aktiv",
+                    "AI_Confidence": "AI Confidence",
+                }
+            )
+        )
+
+        actions["Composite"] = actions["Composite"].apply(
+            lambda value: format_pct(value, 1)
+        )
+        actions["AI Confidence"] = actions["AI Confidence"].apply(
+            lambda value: (
+                f"{value:.0f}%"
+                if pd.notna(value)
+                else "N/A"
+            )
+        )
+
+        actions = actions[
+            [
+                "Prioritet",
+                "Aktiv",
+                "Handling",
+                "Composite",
+                "AI Confidence",
+                "Begrundelse",
+            ]
         ]
-        .sort_values(["Handling", "AI_Confidence"], ascending=[True, False])
-        .head(5)
-        .copy()
-    )
-    if actions.empty:
-        st.success("Ingen positioner kræver handling ud fra den nuværende model.")
-    else:
-        actions["Composite"] = actions["Composite"].apply(lambda x: format_pct(x, 1))
-        actions["AI_Confidence"] = actions["AI_Confidence"].apply(lambda x: f"{x:.0f}%")
+
         st.dataframe(
             table_style(actions),
             use_container_width=True,
             hide_index=True,
-            height=table_height(actions, max_height=300),
+            height=table_height(actions, max_height=320),
         )
 
 with tab_portfolio:
