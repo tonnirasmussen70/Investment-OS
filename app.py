@@ -74,7 +74,7 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "5.4.1"
+APP_VERSION = "5.5.0"
 
 st.title("📈 Investment OS 5.0")
 st.caption(
@@ -515,6 +515,8 @@ with tab_portfolio:
         "6M",
         "12M",
         "Composite",
+        "Momentum_Acceleration",
+        "Rotation_Signal",
         "AI_Confidence",
         "Handling",
     ]
@@ -630,6 +632,8 @@ with tab_portfolio:
                 "6M",
                 "12M",
                 "Composite",
+                "Momentum_Acceleration",
+                "Rotation_Signal",
                 "AI_Confidence",
                 "Handling",
             ]
@@ -639,6 +643,8 @@ with tab_portfolio:
             columns={
                 "Name": "Aktiv",
                 "Portfolio_Weight": "Vægt",
+                "Momentum_Acceleration": "Acceleration",
+                "Rotation_Signal": "Rotation",
                 "AI_Confidence": "AI",
             }
         )
@@ -663,6 +669,7 @@ with tab_portfolio:
             "6M",
             "12M",
             "Composite",
+            "Acceleration",
         ]:
             table[column] = table[column].apply(
                 lambda value: format_pct(value, 1)
@@ -849,6 +856,8 @@ with tab_ai:
             "6M",
             "12M",
             "Composite",
+            "Momentum_Acceleration",
+            "Rotation_Signal",
             "AI_Confidence",
             "Volatility",
             "Max_Drawdown",
@@ -912,6 +921,8 @@ with tab_ai:
             "Name": "Aktiv",
             "Asset_Type": "Type",
             "Portfolio_Weight": "Vægt",
+            "Momentum_Acceleration": "Acceleration",
+            "Rotation_Signal": "Rotation",
             "AI_Confidence": "AI Confidence",
             "Max_Drawdown": "Max drawdown",
         }
@@ -925,6 +936,7 @@ with tab_ai:
         "6M",
         "12M",
         "Composite",
+        "Acceleration",
         "Volatility",
         "Max drawdown",
     ]:
@@ -952,6 +964,8 @@ with tab_ai:
             "1M",
             "3M",
             "Composite",
+            "Acceleration",
+            "Rotation",
             "AI Confidence",
             "Volatility",
             "Max drawdown",
