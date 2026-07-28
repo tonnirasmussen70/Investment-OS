@@ -37,7 +37,7 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "3.1.0"
+APP_VERSION = "4.0.0"
 
 st.title("📈 Investment OS 3.0")
 st.caption(
@@ -228,7 +228,7 @@ def no_scroll_height(dataframe: pd.DataFrame, row_px: int = 38) -> int:
 
 tab_overview, tab_portfolio, tab_rebalance, tab_ai, tab_compounders, tab_watchlist = st.tabs([
     "🏠 Overblik",
-    "📈 Portefølje",
+    "📈 Momentum",
     "🔄 Rebalancering",
     "🤖 AI Insights",
     "🚀 Emerging Compounders",
@@ -422,7 +422,7 @@ with tab_overview:
         )
 
 with tab_portfolio:
-    st.subheader("Portefølje")
+    st.subheader("Momentum")
 
     analysis_columns = [
         "1W",
@@ -567,7 +567,7 @@ with tab_portfolio:
 
         return table
 
-    st.markdown("### 📈 Aktier")
+    st.markdown("### 📈 Aktie-momentum")
     if stocks.empty:
         st.info("Ingen aktier fundet i masterfilen.")
     else:
@@ -579,7 +579,7 @@ with tab_portfolio:
             height=no_scroll_height(stock_table),
         )
 
-    st.markdown("### 📊 ETF-portefølje")
+    st.markdown("### 📊 ETF-momentum")
     if etfs.empty:
         st.info("Ingen ETF'er fundet i masterfilen.")
     else:
@@ -592,6 +592,7 @@ with tab_portfolio:
         )
 
     st.caption(
+        "Momentum vises for 1W, 1M, 3M, 6M og 12M. "
         "Alle negative værdier vises med rød skrift. "
         "Grundfos vises i aktietabellen, men indgår ikke i aktiv vægtning, "
         "afkast, momentum eller rebalancering."
