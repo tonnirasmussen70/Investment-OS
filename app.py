@@ -20,6 +20,9 @@ from modules.compounder_engine import (
     radar_summary,
     top_candidates,
 )
+from modules.config_engine import (
+    load_investment_config,
+)
 from modules.formatting import (
     format_dkk,
     format_pct,
@@ -56,7 +59,7 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "4.7.0"
+APP_VERSION = "4.8.0"
 
 st.title("📈 Investment OS 3.0")
 st.caption(
@@ -98,22 +101,8 @@ currencies = raw["Currency"].dropna().astype(str).unique().tolist()
 snapshot = load_market_data(tickers, currencies)
 portfolio = calculate_portfolio(model, snapshot)
 
-settings = model.settings
-momentum_weights = {
-    "1W": float(settings.get("Momentum_1W", 0.20)),
-    "1M": float(settings.get("Momentum_1M", 0.25)),
-    "3M": float(settings.get("Momentum_3M", 0.25)),
-    "6M": float(settings.get("Momentum_6M", 0.20)),
-    "12M": float(settings.get("Momentum_12M", 0.10)),
-}
-weight_sum = sum(momentum_weights.values())
-if weight_sum <= 0:
-    momentum_weights = {"1W": 0.20, "1M": 0.25, "3M": 0.25, "6M": 0.20, "12M": 0.10}
-else:
-    momentum_weights = {
-        key: value / weight_sum
-        for key, value in momentum_weights.items()
-    }
+config = load_investment_config(model.settings)
+momentum_weights = config.momentum_weights
 
 history = load_history(tickers, "18mo")
 analytics_portfolio = portfolio.loc[
@@ -125,7 +114,7 @@ analytics_portfolio = add_momentum(
     momentum_weights,
 )
 
-risk_free_rate = float(settings.get("Risk_Free_Rate", 0.02))
+risk_free_rate = config.risk_free_rate
 daily_returns = portfolio_returns(analytics_portfolio, history)
 sharpe_history = rolling_sharpe(
     daily_returns,
