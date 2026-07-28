@@ -9,6 +9,8 @@ import streamlit as st
 
 from modules.analytics_engine import (
     add_momentum,
+    beta,
+    period_return,
     portfolio_returns,
     rolling_sharpe,
 )
@@ -60,7 +62,7 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "5.0.1"
+APP_VERSION = "5.1.0"
 
 st.title("📈 Investment OS 5.0")
 st.caption(
@@ -118,7 +120,9 @@ portfolio = calculate_portfolio(model, snapshot)
 config = load_investment_config(model.settings)
 momentum_weights = config.momentum_weights
 
-history = load_history(tickers, "18mo")
+benchmark_ticker = config.benchmark
+history_tickers = sorted(set([*tickers, benchmark_ticker]))
+history = load_history(history_tickers, "18mo")
 analytics_portfolio = portfolio.loc[
     portfolio["Include_Analytics"].fillna(False)
 ].copy()
@@ -130,6 +134,35 @@ analytics_portfolio = add_momentum(
 
 risk_free_rate = config.risk_free_rate
 daily_returns = portfolio_returns(analytics_portfolio, history)
+
+benchmark_prices = (
+    history[benchmark_ticker].dropna()
+    if benchmark_ticker in history.columns
+    else pd.Series(dtype=float)
+)
+benchmark_returns = benchmark_prices.pct_change().dropna()
+
+portfolio_return_12m = (
+    float((1 + daily_returns.tail(252)).prod() - 1)
+    if len(daily_returns) >= 20
+    else np.nan
+)
+benchmark_return_12m = period_return(
+    benchmark_prices,
+    min(252, max(len(benchmark_prices) - 1, 0)),
+) if len(benchmark_prices) > 1 else np.nan
+
+relative_return_12m = (
+    portfolio_return_12m - benchmark_return_12m
+    if pd.notna(portfolio_return_12m)
+    and pd.notna(benchmark_return_12m)
+    else np.nan
+)
+portfolio_beta = beta(
+    daily_returns,
+    benchmark_returns,
+)
+
 sharpe_history = rolling_sharpe(
     daily_returns,
     risk_free_rate=risk_free_rate,
@@ -270,16 +303,50 @@ with tab_overview:
         st.subheader("Porteføljeudvikling")
         if not daily_returns.empty:
             portfolio_curve = (1 + daily_returns).cumprod() * 100
-            curve_df = portfolio_curve.rename("Portefølje").reset_index()
-            curve_df.columns = ["Dato", "Indeks"]
+            comparison = portfolio_curve.rename("Portefølje").to_frame()
+
+            if not benchmark_returns.empty:
+                benchmark_curve = (
+                    (1 + benchmark_returns).cumprod() * 100
+                )
+                comparison = comparison.join(
+                    benchmark_curve.rename(benchmark_ticker),
+                    how="inner",
+                )
+
+            curve_df = (
+                comparison.reset_index()
+                .rename(columns={comparison.index.name or "index": "Dato"})
+                .melt(
+                    id_vars="Dato",
+                    var_name="Serie",
+                    value_name="Indeks",
+                )
+            )
+
             fig_curve = px.line(
                 curve_df,
                 x="Dato",
                 y="Indeks",
-                title="Portefølje – indeks 100",
+                color="Serie",
+                title=f"Portefølje vs. {benchmark_ticker} – indeks 100",
             )
             fig_curve.update_layout(height=430, yaxis_title="Indeks")
             st.plotly_chart(fig_curve, use_container_width=True)
+
+            b1, b2, b3 = st.columns(3)
+            b1.metric(
+                "Relativt afkast 12M",
+                format_pct(relative_return_12m),
+            )
+            b2.metric(
+                f"{benchmark_ticker} 12M",
+                format_pct(benchmark_return_12m),
+            )
+            b3.metric(
+                "Beta",
+                format_score(portfolio_beta, 2),
+            )
         else:
             st.info("Porteføljeudviklingen kan ikke vises endnu.")
 
