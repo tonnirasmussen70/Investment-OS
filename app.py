@@ -51,6 +51,10 @@ from modules.report_engine import (
     format_report_timestamp,
     load_markdown_report,
 )
+from modules.risk_engine import (
+    build_stop_loss_table,
+    stop_loss_summary,
+)
 from modules.watchlist_engine import (
     format_watchlist_table,
     prepare_watchlist,
@@ -67,7 +71,7 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "5.2.0"
+APP_VERSION = "5.3.0"
 
 st.title("📈 Investment OS 5.0")
 st.caption(
@@ -231,6 +235,13 @@ current_sharpe = (
 decision = decision_summary(analytics_portfolio)
 avg_confidence = decision["AI_Confidence"]
 capital_flow_label = decision["Capital_Flow"]
+
+stop_loss_table = build_stop_loss_table(
+    analytics_portfolio,
+    history,
+    lookback_days=63,
+)
+stop_loss_metrics = stop_loss_summary(stop_loss_table)
 
 
 
@@ -731,6 +742,66 @@ with tab_rebalance:
         use_container_width=True,
         hide_index=True,
         height=table_height(rebalance),
+    )
+
+    st.subheader("Stop-loss og alarmniveauer")
+
+    s1, s2, s3 = st.columns(3)
+    s1.metric("Stop brudt", stop_loss_metrics["Stop_Broken"])
+    s2.metric("Alarmniveau", stop_loss_metrics["Alarm"])
+    s3.metric("Stram stop", stop_loss_metrics["Tighten"])
+
+    if stop_loss_table.empty:
+        st.info("Ingen stop-loss data tilgængelige.")
+    else:
+        stop_display = stop_loss_table.copy()
+
+        for column in [
+            "Kurs",
+            "3M høj",
+            "Stopkurs",
+            "Alarmkurs",
+        ]:
+            stop_display[column] = stop_display[column].apply(
+                lambda value: (
+                    format_score(value, 2)
+                    if pd.notna(value)
+                    else "N/A"
+                )
+            )
+
+        for column in [
+            "Stopafstand",
+            "Afstand til stop",
+        ]:
+            stop_display[column] = stop_display[column].apply(
+                lambda value: format_pct(value, 1)
+            )
+
+        stop_display = stop_display[
+            [
+                "Aktiv",
+                "Kurs",
+                "3M høj",
+                "Stopafstand",
+                "Stopkurs",
+                "Alarmkurs",
+                "Afstand til stop",
+                "Modelhandling",
+                "Risikohandling",
+            ]
+        ]
+
+        st.dataframe(
+            table_style(stop_display),
+            use_container_width=True,
+            hide_index=True,
+            height=no_scroll_height(stop_display),
+        )
+
+    st.caption(
+        "Stopkurs beregnes som trailing stop fra højeste kurs de seneste "
+        "63 handelsdage. Modellen er beslutningsstøtte og placerer ikke ordrer."
     )
 
 with tab_ai:
