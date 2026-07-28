@@ -29,6 +29,10 @@ from modules.portfolio_engine import (
     data_quality_score,
     load_master_file,
 )
+from modules.report_engine import (
+    format_report_timestamp,
+    load_markdown_report,
+)
 from modules.styling import table_height, table_style
 
 
@@ -40,7 +44,7 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "4.1.1"
+APP_VERSION = "4.2.0"
 
 st.title("📈 Investment OS 3.0")
 st.caption(
@@ -117,6 +121,7 @@ sharpe_history = rolling_sharpe(
 )
 
 quality_score, quality_notes = data_quality_score(portfolio, snapshot)
+morning_brief_report = load_markdown_report(MORNING_BRIEF_FILE)
 
 # Samlet porteføljeværdi inkluderer alle positioner, herunder Grundfos.
 # Hvis en position mangler en beregnet markedsværdi, bruges den eksisterende
@@ -191,26 +196,16 @@ with tab_overview:
     quality_icon, quality_text = quality_label(quality_score)
 
     st.subheader("Daglig morgenbrief")
-    if MORNING_BRIEF_FILE.exists():
-        brief_updated = pd.Timestamp(
-            MORNING_BRIEF_FILE.stat().st_mtime,
-            unit="s",
-            tz="UTC",
-        ).tz_convert("Europe/Copenhagen")
-
+    if morning_brief_report.exists:
         st.caption(
             "Senest opdateret "
-            f"{brief_updated.strftime('%d-%m-%Y kl. %H:%M')}"
+            f"{format_report_timestamp(morning_brief_report.updated_at)}"
         )
 
-        morning_brief = MORNING_BRIEF_FILE.read_text(
-            encoding="utf-8"
-        ).strip()
-
-        if morning_brief:
-            st.markdown(morning_brief)
-        else:
+        if morning_brief_report.is_empty:
             st.info("Morgenbrief-filen er tom.")
+        else:
+            st.markdown(morning_brief_report.content)
     else:
         st.info(
             "Dagens morgenbrief er endnu ikke lagt i "
