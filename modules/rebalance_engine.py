@@ -70,17 +70,18 @@ def build_rebalance_plan(
     max_position_weight: float = 0.12,
     increase_factor: float = 1.10,
     reduce_factor: float = 0.75,
-    minimum_trade_dkk: float = 1000.0,
+    minimum_trade_dkk: float = 5000.0,
 ) -> RebalanceResult:
     """
     Byg en handlingsorienteret rebalanceringsplan.
 
-    Modellen:
-    - Øg: nuværende vægt × increase_factor
-    - Reducer: nuværende vægt × reduce_factor
-    - Hold/Afvent: uændret
-    - positionsloft håndhæves
-    - små handler under minimum_trade_dkk sættes til 0
+    Regler:
+    - Øg: vægten øges med increase_factor, dog højst positionsloftet.
+    - Reducer: vægten reduceres med reduce_factor.
+    - Hold/Afvent: vægten ændres ikke.
+    - Handler under minimum_trade_dkk sættes til 0.
+    - Der normaliseres ikke automatisk tilbage til 100 %, fordi det ellers
+      skaber kunstige køb/salg i positioner uden et egentligt signal.
     """
     required = {
         "Name",
@@ -124,9 +125,8 @@ def build_rebalance_plan(
             errors="coerce",
         )
 
-    data["Foreslået vægt"] = data[
-        "Portfolio_Weight"
-    ].fillna(0)
+    data["Portfolio_Weight"] = data["Portfolio_Weight"].fillna(0.0)
+    data["Foreslået vægt"] = data["Portfolio_Weight"]
 
     increase_mask = data["Handling"].eq("Øg")
     reduce_mask = data["Handling"].eq("Reducer")
@@ -134,39 +134,47 @@ def build_rebalance_plan(
     data.loc[
         increase_mask,
         "Foreslået vægt",
-    ] *= increase_factor
+    ] = (
+        data.loc[increase_mask, "Portfolio_Weight"] * increase_factor
+    ).clip(upper=max_position_weight)
 
     data.loc[
         reduce_mask,
         "Foreslået vægt",
-    ] *= reduce_factor
-
-    data["Foreslået vægt"] = _cap_and_redistribute(
-        data["Foreslået vægt"],
-        max_weight=max_position_weight,
-    )
+    ] = (
+        data.loc[reduce_mask, "Portfolio_Weight"] * reduce_factor
+    ).clip(lower=0.0)
 
     data["Ændring"] = (
-        data["Foreslået vægt"]
-        - data["Portfolio_Weight"].fillna(0)
+        data["Foreslået vægt"] - data["Portfolio_Weight"]
     )
 
     data["Handel DKK"] = (
         data["Ændring"] * float(active_market_value_dkk)
     )
 
+    # Kun reelle signaler må skabe handler.
+    no_signal = ~data["Handling"].isin(["Øg", "Reducer"])
+    data.loc[no_signal, "Foreslået vægt"] = data.loc[
+        no_signal,
+        "Portfolio_Weight",
+    ]
+    data.loc[no_signal, "Ændring"] = 0.0
+    data.loc[no_signal, "Handel DKK"] = 0.0
+
+    # Filtrér små handler som støj.
     small_trade = data["Handel DKK"].abs() < minimum_trade_dkk
-    data.loc[small_trade, "Handel DKK"] = 0.0
-    data.loc[small_trade, "Ændring"] = 0.0
     data.loc[small_trade, "Foreslået vægt"] = data.loc[
         small_trade,
         "Portfolio_Weight",
-    ].fillna(0)
+    ]
+    data.loc[small_trade, "Ændring"] = 0.0
+    data.loc[small_trade, "Handel DKK"] = 0.0
 
     data["Rebalance handling"] = np.select(
         [
-            data["Handel DKK"] > 0,
-            data["Handel DKK"] < 0,
+            data["Handling"].eq("Øg") & data["Handel DKK"].gt(0),
+            data["Handling"].eq("Reducer") & data["Handel DKK"].lt(0),
         ],
         [
             "Køb",
@@ -181,6 +189,16 @@ def build_rebalance_plan(
         "",
     )
 
+    # Vis handler først, derefter ingen handel.
+    action_order = {
+        "Sælg": 0,
+        "Køb": 1,
+        "Ingen handel": 2,
+    }
+    data["_action_order"] = (
+        data["Rebalance handling"].map(action_order).fillna(9)
+    )
+
     data = data.rename(
         columns={
             "Name": "Aktiv",
@@ -188,16 +206,15 @@ def build_rebalance_plan(
             "AI_Confidence": "AI",
         }
     ).sort_values(
-        ["Rebalance handling", "Handel DKK"],
+        ["_action_order", "Handel DKK"],
         ascending=[True, False],
+        na_position="last",
     )
 
-    trade_count = int(
-        data["Handel DKK"].ne(0).sum()
-    )
-    gross_trade = float(
-        data["Handel DKK"].abs().sum()
-    )
+    trade_count = int(data["Handel DKK"].ne(0).sum())
+    gross_trade = float(data["Handel DKK"].abs().sum())
+
+    data = data.drop(columns=["_action_order"])
 
     return RebalanceResult(
         data=data.reset_index(drop=True),
