@@ -74,7 +74,7 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "5.4.0"
+APP_VERSION = "5.4.1"
 
 st.title("📈 Investment OS 5.0")
 st.caption(
@@ -250,7 +250,7 @@ rebalance_result = build_rebalance_plan(
     analytics_portfolio,
     active_market_value_dkk=return_market_value,
     max_position_weight=config.max_position_weight,
-    minimum_trade_dkk=1000.0,
+    minimum_trade_dkk=5000.0,
 )
 
 
@@ -771,7 +771,7 @@ with tab_rebalance:
 
     st.caption(
         f"Positionsloft: {config.max_position_weight:.0%}. "
-        "Handler under 1.000 kr. filtreres som støj. "
+        "Handler under 5.000 kr. filtreres som støj. "
         "Modellen er beslutningsstøtte og udfører ingen handler."
     )
 
