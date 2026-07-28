@@ -12,6 +12,9 @@ from modules.analytics_engine import (
     portfolio_returns,
     rolling_sharpe,
 )
+from modules.decision_engine import (
+    decision_summary,
+)
 from modules.formatting import (
     format_dkk,
     format_pct,
@@ -37,7 +40,7 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "4.0.0"
+APP_VERSION = "4.1.0"
 
 st.title("📈 Investment OS 3.0")
 st.caption(
@@ -155,70 +158,9 @@ current_sharpe = (
     if "Sharpe 252D" in sharpe_history and not sharpe_history["Sharpe 252D"].dropna().empty
     else np.nan
 )
-avg_confidence = np.average(
-    analytics_portfolio["AI_Confidence"],
-    weights=analytics_portfolio["Portfolio_Weight"],
-) if analytics_portfolio["Portfolio_Weight"].sum() > 0 else np.nan
-
-positive_momentum_share = (
-    analytics_portfolio.loc[
-        analytics_portfolio["Composite"] > 0,
-        "Portfolio_Weight",
-    ].sum()
-)
-capital_flow_label = (
-    "Positiv"
-    if positive_momentum_share >= 0.65
-    else "Neutral"
-    if positive_momentum_share >= 0.40
-    else "Negativ"
-)
-
-
-def confidence_label(score: float) -> str:
-    """Returnér en kort fortolkning af AI Confidence."""
-    if pd.isna(score):
-        return "Datamangel"
-    if score >= 80:
-        return "Høj"
-    if score >= 65:
-        return "Moderat-høj"
-    if score >= 50:
-        return "Moderat"
-    if score >= 35:
-        return "Lav"
-    return "Meget lav"
-
-
-def quality_label(score: float) -> tuple[str, str]:
-    """Returnér ikon og tekst for datakvalitet."""
-    if score >= 90:
-        return "🟢", "Høj"
-    if score >= 75:
-        return "🟡", "Acceptabel"
-    return "🔴", "Lav"
-
-
-def action_reason(row: pd.Series) -> str:
-    """Forklar kort hvorfor modellen foreslår en handling."""
-    handling = row.get("Handling", "Hold")
-    one_week = row.get("1W", np.nan)
-    one_month = row.get("1M", np.nan)
-    three_months = row.get("3M", np.nan)
-
-    if handling == "Øg":
-        return "Positivt kort momentum og stærk samlet score"
-    if handling == "Reducer":
-        return "Negativ kort og mellemfristet trend"
-    if handling == "Afvent":
-        if pd.notna(one_week) and pd.notna(one_month):
-            if one_week > 0 and one_month < 0:
-                return "Tidlig bedring, men endnu ikke bekræftet"
-        return "Blandet signalbillede"
-    if pd.notna(three_months) and three_months > 0:
-        return "Positiv mellemfristet trend"
-    return "Ingen væsentlig ændring"
-
+decision = decision_summary(analytics_portfolio)
+avg_confidence = decision["AI_Confidence"]
+capital_flow_label = decision["Capital_Flow"]
 
 
 def no_scroll_height(dataframe: pd.DataFrame, row_px: int = 38) -> int:
@@ -275,7 +217,7 @@ with tab_overview:
     k4.metric(
         "AI Confidence",
         f"{avg_confidence:.0f}%" if pd.notna(avg_confidence) else "N/A",
-        confidence_label(avg_confidence),
+        decision["AI_Confidence_Label"],
     )
     k5.metric("Capital Flow", capital_flow_label)
     k6.metric(
@@ -342,56 +284,13 @@ with tab_overview:
 
     st.subheader("Dagens vigtigste handlinger")
 
-    action_columns = [
-        "Name",
-        "Handling",
-        "Composite",
-        "AI_Confidence",
-        "1W",
-        "1M",
-        "3M",
-    ]
-
-    actions = analytics_portfolio.loc[
-        analytics_portfolio["Handling"].ne("Hold"),
-        action_columns,
-    ].copy()
+    actions = decision["Actions"].copy()
 
     if actions.empty:
         st.success(
             "Ingen positioner kræver handling ud fra den nuværende model."
         )
     else:
-        actions["Begrundelse"] = actions.apply(action_reason, axis=1)
-
-        actions["Prioritet"] = np.select(
-            [
-                actions["Handling"].eq("Reducer"),
-                actions["Handling"].eq("Øg"),
-                actions["Handling"].eq("Afvent"),
-            ],
-            [
-                "🔴 Høj",
-                "🟢 Mulighed",
-                "🟡 Afvent",
-            ],
-            default="⚪ Neutral",
-        )
-
-        actions = (
-            actions.sort_values(
-                ["Handling", "AI_Confidence"],
-                ascending=[True, False],
-            )
-            .head(5)
-            .rename(
-                columns={
-                    "Name": "Aktiv",
-                    "AI_Confidence": "AI Confidence",
-                }
-            )
-        )
-
         actions["Composite"] = actions["Composite"].apply(
             lambda value: format_pct(value, 1)
         )
@@ -402,17 +301,6 @@ with tab_overview:
                 else "N/A"
             )
         )
-
-        actions = actions[
-            [
-                "Prioritet",
-                "Aktiv",
-                "Handling",
-                "Composite",
-                "AI Confidence",
-                "Begrundelse",
-            ]
-        ]
 
         st.dataframe(
             table_style(actions),
