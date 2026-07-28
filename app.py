@@ -37,7 +37,7 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "3.0.1"
+APP_VERSION = "3.0.2"
 
 st.title("📈 Investment OS 3.0")
 st.caption(
@@ -129,7 +129,10 @@ portfolio_total = portfolio_value_series.sum(skipna=True)
 
 # Afkast beregnes kun på positioner med Include_Weight = True.
 # Grundfos kan derfor indgå i porteføljeværdien uden at påvirke afkastprocenten.
-return_mask = portfolio["Include_Weight"].fillna(False)
+return_mask = (
+    portfolio["Include_Weight"].fillna(False)
+    & ~portfolio["Name"].astype(str).str.strip().str.casefold().eq("grundfos")
+)
 
 return_market_value = portfolio.loc[
     return_mask,
@@ -228,18 +231,6 @@ tab_overview, tab_portfolio, tab_rebalance, tab_ai, tab_compounders, tab_watchli
 
 with tab_overview:
     quality_icon, quality_text = quality_label(quality_score)
-
-    status1, status2, status3, status4 = st.columns([1.1, 1.5, 1.4, 0.8])
-    status1.markdown("**🟢 Systemstatus:** Kører")
-    status2.markdown(
-        f"**Data opdateret:** {snapshot.updated_at.strftime('%d-%m-%Y %H:%M UTC')}"
-    )
-    status3.markdown(
-        f"**Datakvalitet:** {quality_score:.0f}% · {quality_text}"
-    )
-    status4.markdown(f"**Version:** {APP_VERSION}")
-
-    st.divider()
 
     k1, k2, k3, k4, k5, k6 = st.columns(6)
     k1.metric("Porteføljeværdi", format_dkk(portfolio_total))
