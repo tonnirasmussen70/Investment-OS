@@ -40,6 +40,11 @@ from modules.report_engine import (
     format_report_timestamp,
     load_markdown_report,
 )
+from modules.watchlist_engine import (
+    format_watchlist_table,
+    prepare_watchlist,
+    watchlist_summary,
+)
 from modules.styling import table_height, table_style
 
 
@@ -51,7 +56,7 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "4.6.0"
+APP_VERSION = "4.7.0"
 
 st.title("📈 Investment OS 3.0")
 st.caption(
@@ -131,6 +136,8 @@ quality_score, quality_notes = data_quality_score(portfolio, snapshot)
 morning_brief_report = load_markdown_report(MORNING_BRIEF_FILE)
 compounder_radar = load_compounder_radar("data")
 compounder_summary = radar_summary(compounder_radar)
+watchlist_result = prepare_watchlist(model.watchlist)
+watchlist_metrics = watchlist_summary(watchlist_result)
 
 portfolio_metrics = portfolio_summary(portfolio)
 portfolio_total = portfolio_metrics["Portfolio_Value_DKK"]
@@ -692,13 +699,40 @@ with tab_compounders:
 
 with tab_watchlist:
     st.subheader("Watchlist")
-    if model.watchlist.empty:
+
+    if watchlist_result.data.empty:
         st.info("Watchlist er tom.")
     else:
-        watchlist = model.watchlist.dropna(how="all").copy()
+        w1, w2, w3 = st.columns(3)
+        w1.metric(
+            "Kandidater",
+            watchlist_metrics["Count"],
+        )
+        w2.metric(
+            "AI ≥ 80%",
+            watchlist_metrics["High_Confidence"],
+        )
+        w3.metric(
+            "Topkandidat",
+            watchlist_metrics["Top_Candidate"] or "N/A",
+        )
+
+        for note in watchlist_result.notes:
+            st.warning(note)
+
+        watchlist_table = format_watchlist_table(
+            watchlist_result
+        )
+
         st.dataframe(
-            table_style(watchlist),
+            table_style(watchlist_table),
             use_container_width=True,
             hide_index=True,
-            height=table_height(watchlist),
+            height=no_scroll_height(watchlist_table),
+        )
+
+        st.caption(
+            "Watchlist viser kandidater til overvågning. "
+            "Aktier flyttes ikke automatisk til porteføljen, "
+            "og der udføres ingen handler."
         )
