@@ -59,7 +59,7 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "4.8.0"
+APP_VERSION = "4.9.0"
 
 st.title("📈 Investment OS 3.0")
 st.caption(
@@ -122,11 +122,44 @@ sharpe_history = rolling_sharpe(
 )
 
 quality_score, quality_notes = data_quality_score(portfolio, snapshot)
-morning_brief_report = load_markdown_report(MORNING_BRIEF_FILE)
-compounder_radar = load_compounder_radar("data")
-compounder_summary = radar_summary(compounder_radar)
-watchlist_result = prepare_watchlist(model.watchlist)
-watchlist_metrics = watchlist_summary(watchlist_result)
+morning_brief_report, morning_brief_error = safe_optional_load(
+    lambda: load_markdown_report(MORNING_BRIEF_FILE),
+    None,
+    "Morgenbrief",
+)
+
+compounder_radar, compounder_error = safe_optional_load(
+    lambda: load_compounder_radar("data"),
+    None,
+    "Emerging Compounder Radar",
+)
+
+compounder_summary = (
+    radar_summary(compounder_radar)
+    if compounder_radar is not None
+    else {
+        "Candidate_Count": 0,
+        "High_Confidence_Count": 0,
+        "Average_Confidence": np.nan,
+        "Top_Candidate": None,
+    }
+)
+
+watchlist_result, watchlist_error = safe_optional_load(
+    lambda: prepare_watchlist(model.watchlist),
+    None,
+    "Watchlist",
+)
+
+watchlist_metrics = (
+    watchlist_summary(watchlist_result)
+    if watchlist_result is not None
+    else {
+        "Count": 0,
+        "High_Confidence": 0,
+        "Top_Candidate": None,
+    }
+)
 
 portfolio_metrics = portfolio_summary(portfolio)
 portfolio_total = portfolio_metrics["Portfolio_Value_DKK"]
@@ -159,6 +192,20 @@ def no_scroll_height(dataframe: pd.DataFrame, row_px: int = 38) -> int:
     return max(100, (len(dataframe) + 1) * row_px + 4)
 
 
+
+def safe_optional_load(loader, fallback, label: str):
+    """
+    Kør en valgfri loader uden at stoppe hele dashboardet.
+
+    Bruges kun til ikke-kritiske områder som morgenbrief, compounder-radar
+    og watchlist. Fejl returneres som en kort tekst til den relevante fane.
+    """
+    try:
+        return loader(), None
+    except Exception as exc:
+        return fallback, f"{label} kunne ikke indlæses: {exc}"
+
+
 tab_overview, tab_portfolio, tab_rebalance, tab_ai, tab_compounders, tab_watchlist = st.tabs([
     "🏠 Overblik",
     "📈 Momentum",
@@ -172,7 +219,9 @@ with tab_overview:
     quality_icon, quality_text = quality_label(quality_score)
 
     st.subheader("Daglig morgenbrief")
-    if morning_brief_report.exists:
+    if morning_brief_error:
+        st.warning(morning_brief_error)
+    elif morning_brief_report is not None and morning_brief_report.exists:
         st.caption(
             "Senest opdateret "
             f"{format_report_timestamp(morning_brief_report.updated_at)}"
@@ -572,7 +621,9 @@ with tab_ai:
 with tab_compounders:
     st.subheader("Emerging Compounder Radar")
 
-    if not compounder_radar.exists:
+    if compounder_error:
+        st.warning(compounder_error)
+    elif compounder_radar is None or not compounder_radar.exists:
         st.info(
             "Radarfilen mangler. Læg ugens resultat i "
             "`data/compounder_radar.xlsx` eller "
@@ -689,7 +740,9 @@ with tab_compounders:
 with tab_watchlist:
     st.subheader("Watchlist")
 
-    if watchlist_result.data.empty:
+    if watchlist_error:
+        st.warning(watchlist_error)
+    elif watchlist_result is None or watchlist_result.data.empty:
         st.info("Watchlist er tom.")
     else:
         w1, w2, w3 = st.columns(3)
