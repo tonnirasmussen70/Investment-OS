@@ -59,9 +59,9 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "4.9.1"
+APP_VERSION = "5.0.0"
 
-st.title("📈 Investment OS 3.0")
+st.title("📈 Investment OS 5.0")
 st.caption(
     f"Fælles portefølje-, momentum-, valuta- og beslutningsdashboard · Version {APP_VERSION}"
 )
@@ -589,33 +589,135 @@ with tab_rebalance:
     )
 
 with tab_ai:
-    st.subheader("AI Confidence")
-    ai_table = analytics_portfolio[
+    st.subheader("AI Decision Dashboard")
+
+    decision_table = analytics_portfolio[
         [
             "Name",
-            "AI_Confidence",
+            "Asset_Type",
+            "Portfolio_Weight",
+            "1W",
+            "1M",
+            "3M",
+            "6M",
+            "12M",
             "Composite",
+            "AI_Confidence",
             "Volatility",
             "Max_Drawdown",
             "Handling",
         ]
-    ].copy().sort_values("AI_Confidence", ascending=False)
+    ].copy()
 
-    ai_table = ai_table.rename(columns={
-        "Name": "Aktiv",
-        "AI_Confidence": "AI Confidence",
-        "Max_Drawdown": "Max drawdown",
-    })
+    decision_table["Begrundelse"] = decision_table.apply(
+        action_reason,
+        axis=1,
+    )
 
-    ai_table["AI Confidence"] = ai_table["AI Confidence"].apply(lambda x: f"{x:.0f}%")
-    for column in ["Composite", "Volatility", "Max drawdown"]:
-        ai_table[column] = ai_table[column].apply(lambda x: format_pct(x, 1))
+    action_counts = (
+        decision_table["Handling"]
+        .value_counts()
+        .reindex(
+            ["Øg", "Hold", "Afvent", "Reducer"],
+            fill_value=0,
+        )
+    )
+
+    a1, a2, a3, a4 = st.columns(4)
+    a1.metric("Øg", int(action_counts["Øg"]))
+    a2.metric("Hold", int(action_counts["Hold"]))
+    a3.metric("Afvent", int(action_counts["Afvent"]))
+    a4.metric("Reducer", int(action_counts["Reducer"]))
+
+    st.caption(
+        "AI Decision Dashboard samler momentum, risiko og AI Confidence "
+        "til et enkelt beslutningssignal. Der udføres ingen handler."
+    )
+
+    decision_table["Prioritet"] = decision_table[
+        "Handling"
+    ].map(
+        {
+            "Reducer": "🔴 Høj",
+            "Øg": "🟢 Mulighed",
+            "Afvent": "🟡 Afvent",
+            "Hold": "⚪ Neutral",
+        }
+    ).fillna("⚪ Neutral")
+
+    decision_table["_sort"] = decision_table["Handling"].map(
+        {
+            "Reducer": 0,
+            "Øg": 1,
+            "Afvent": 2,
+            "Hold": 3,
+        }
+    ).fillna(9)
+
+    decision_table = decision_table.sort_values(
+        ["_sort", "AI_Confidence", "Composite"],
+        ascending=[True, False, False],
+        na_position="last",
+    )
+
+    decision_table = decision_table.rename(
+        columns={
+            "Name": "Aktiv",
+            "Asset_Type": "Type",
+            "Portfolio_Weight": "Vægt",
+            "AI_Confidence": "AI Confidence",
+            "Max_Drawdown": "Max drawdown",
+        }
+    )
+
+    for column in [
+        "Vægt",
+        "1W",
+        "1M",
+        "3M",
+        "6M",
+        "12M",
+        "Composite",
+        "Volatility",
+        "Max drawdown",
+    ]:
+        decision_table[column] = decision_table[column].apply(
+            lambda value: format_pct(value, 1)
+        )
+
+    decision_table["AI Confidence"] = decision_table[
+        "AI Confidence"
+    ].apply(
+        lambda value: (
+            f"{value:.0f}%"
+            if pd.notna(value)
+            else "N/A"
+        )
+    )
+
+    decision_table = decision_table[
+        [
+            "Prioritet",
+            "Aktiv",
+            "Type",
+            "Vægt",
+            "1W",
+            "1M",
+            "3M",
+            "Composite",
+            "AI Confidence",
+            "Volatility",
+            "Max drawdown",
+            "Handling",
+            "Begrundelse",
+        ]
+    ]
 
     st.dataframe(
-        table_style(ai_table),
+        table_style(decision_table),
         use_container_width=True,
         hide_index=True,
-        height=table_height(ai_table),
+        height=no_scroll_height(decision_table),
     )
 
 with tab_compounders:
