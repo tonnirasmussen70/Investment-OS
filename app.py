@@ -74,7 +74,7 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "5.6.0"
+APP_VERSION = "5.6.1"
 
 st.title("📈 Investment OS 5.0")
 st.caption(
@@ -138,12 +138,18 @@ history = load_history(history_tickers, "18mo")
 analytics_portfolio = portfolio.loc[
     portfolio["Include_Analytics"].fillna(False)
 ].copy()
-analytics_portfolio = add_momentum(
-    analytics_portfolio,
-    history,
-    momentum_weights,
-    benchmark_ticker=benchmark_ticker,
-)
+try:
+    analytics_portfolio = add_momentum(
+        analytics_portfolio,
+        history,
+        momentum_weights,
+        benchmark_ticker=benchmark_ticker,
+    )
+except TypeError as exc:
+    raise RuntimeError(
+        "analytics_engine.py er ikke opdateret til version 5.6. "
+        "Upload den nye analytics_engine.py til modules/ og genstart appen."
+    ) from exc
 
 risk_free_rate = config.risk_free_rate
 daily_returns = portfolio_returns(analytics_portfolio, history)
