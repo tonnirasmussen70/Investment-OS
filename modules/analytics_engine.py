@@ -25,9 +25,20 @@ def add_momentum(
     portfolio: pd.DataFrame,
     price_history: pd.DataFrame,
     weights: dict[str, float],
+    benchmark_ticker: str | None = None,
 ) -> pd.DataFrame:
     """Tilføj momentum, volatilitet, drawdown, Composite og AI Confidence."""
     result = portfolio.copy()
+
+    benchmark_return_3m = np.nan
+    if (
+        benchmark_ticker
+        and benchmark_ticker in price_history.columns
+    ):
+        benchmark_return_3m = period_return(
+            price_history[benchmark_ticker],
+            LOOKBACKS["3M"],
+        )
 
     momentum_rows = []
     for ticker in result["Yahoo_Ticker"].dropna().astype(str).unique():
@@ -61,6 +72,24 @@ def add_momentum(
     momentum = pd.DataFrame(momentum_rows)
     result = result.merge(momentum, on="Yahoo_Ticker", how="left")
 
+    result["Relative_Strength_3M"] = (
+        result["3M"] - benchmark_return_3m
+        if pd.notna(benchmark_return_3m)
+        else np.nan
+    )
+
+    result["RS_Signal"] = np.select(
+        [
+            result["Relative_Strength_3M"] >= 0.02,
+            result["Relative_Strength_3M"] <= -0.02,
+        ],
+        [
+            "Outperformer",
+            "Underperformer",
+        ],
+        default="Neutral",
+    )
+
     result["Composite"] = sum(
         result[label].fillna(0) * float(weights.get(label, 0))
         for label in LOOKBACKS
@@ -82,12 +111,25 @@ def add_momentum(
         + (result["6M"].fillna(0) > 0).astype(float) * 0.30
     )
 
+    relative_strength_score = np.select(
+        [
+            result["Relative_Strength_3M"] >= 0.02,
+            result["Relative_Strength_3M"] <= -0.02,
+        ],
+        [
+            1.0,
+            0.0,
+        ],
+        default=0.5,
+    )
+
     result["AI_Confidence"] = (
         100
         * (
-            0.55 * rank.fillna(0.5)
-            + 0.30 * trend_score
+            0.50 * rank.fillna(0.5)
+            + 0.25 * trend_score
             + 0.15 * (1 - risk_penalty)
+            + 0.10 * relative_strength_score
         )
     ).clip(0, 100)
 
