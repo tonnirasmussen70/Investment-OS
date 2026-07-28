@@ -177,3 +177,136 @@ def data_quality_score(
         notes.append(f"Manglende valuta: {', '.join(snapshot.missing_fx)}")
 
     return float(np.clip(score, 0, 100)), notes
+
+def _is_grundfos(series: pd.Series) -> pd.Series:
+    """Returnér maske for Grundfos-positioner."""
+    return (
+        series.astype(str)
+        .str.strip()
+        .str.casefold()
+        .eq("grundfos")
+    )
+
+
+def return_inclusion_mask(portfolio: pd.DataFrame) -> pd.Series:
+    """
+    Returnér maske for positioner, der skal indgå i afkastberegningen.
+
+    Grundfos udelukkes eksplicit, også hvis Excel-flaget ved en fejl står til True.
+    """
+    include_weight = portfolio["Include_Weight"].fillna(False)
+    grundfos = _is_grundfos(portfolio["Name"])
+
+    return include_weight & ~grundfos
+
+
+def display_market_value(portfolio: pd.DataFrame) -> pd.Series:
+    """
+    Returnér markedsværdi til samlet porteføljevisning.
+
+    Den beregnede Market_Value_DKK anvendes primært. Hvis masterfilen også
+    indeholder en eksisterende Market_value_DKK-kolonne, bruges den som fallback.
+    """
+    values = pd.to_numeric(
+        portfolio["Market_Value_DKK"],
+        errors="coerce",
+    )
+
+    if "Market_value_DKK" in portfolio.columns:
+        fallback = pd.to_numeric(
+            portfolio["Market_value_DKK"],
+            errors="coerce",
+        )
+        values = values.combine_first(fallback)
+
+    return values
+
+
+def portfolio_summary(portfolio: pd.DataFrame) -> dict[str, float]:
+    """
+    Beregn de centrale porteføljetal ét sted.
+
+    - Porteføljeværdi inkluderer Grundfos.
+    - Afkastprocent ekskluderer Grundfos.
+    - Aktiv markedsværdi bruges til rebalancering.
+    """
+    market_values = display_market_value(portfolio)
+    total_value = float(market_values.sum(skipna=True))
+
+    return_mask = return_inclusion_mask(portfolio)
+
+    active_market_value = float(
+        pd.to_numeric(
+            portfolio.loc[return_mask, "Market_Value_DKK"],
+            errors="coerce",
+        ).sum(skipna=True)
+    )
+
+    active_cost_value = float(
+        pd.to_numeric(
+            portfolio.loc[return_mask, "Cost_Value_DKK"],
+            errors="coerce",
+        ).sum(skipna=True)
+    )
+
+    total_return = (
+        active_market_value / active_cost_value - 1
+        if active_cost_value > 0
+        else np.nan
+    )
+
+    return {
+        "Portfolio_Value_DKK": total_value,
+        "Active_Market_Value_DKK": active_market_value,
+        "Active_Cost_Value_DKK": active_cost_value,
+        "Total_Return_Pct": float(total_return)
+        if pd.notna(total_return)
+        else np.nan,
+    }
+
+
+def asset_type_summary(portfolio: pd.DataFrame) -> pd.DataFrame:
+    """Returnér antal, markedsværdi og andel pr. aktivtype."""
+    data = portfolio.copy()
+    data["Display_Market_Value_DKK"] = display_market_value(data)
+
+    normalized = (
+        data["Asset_Type"]
+        .fillna("")
+        .astype(str)
+        .str.strip()
+        .str.casefold()
+    )
+
+    data["Asset_Group"] = np.select(
+        [
+            normalized.str.contains(r"aktie|stock|equity", regex=True),
+            normalized.str.contains(r"etf|fund", regex=True),
+        ],
+        [
+            "Aktier",
+            "ETF'er",
+        ],
+        default="Øvrige",
+    )
+
+    summary = (
+        data.groupby("Asset_Group", dropna=False)
+        .agg(
+            Positioner=("Asset_ID", "count"),
+            Markedsværdi_DKK=("Display_Market_Value_DKK", "sum"),
+        )
+        .reset_index()
+    )
+
+    total = summary["Markedsværdi_DKK"].sum()
+    summary["Andel"] = np.where(
+        total > 0,
+        summary["Markedsværdi_DKK"] / total,
+        np.nan,
+    )
+
+    return summary.sort_values(
+        "Markedsværdi_DKK",
+        ascending=False,
+    ).reset_index(drop=True)
