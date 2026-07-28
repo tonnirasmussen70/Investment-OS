@@ -37,7 +37,7 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "3.0.2"
+APP_VERSION = "3.1.0"
 
 st.title("📈 Investment OS 3.0")
 st.caption(
@@ -220,6 +220,12 @@ def action_reason(row: pd.Series) -> str:
     return "Ingen væsentlig ændring"
 
 
+
+def no_scroll_height(dataframe: pd.DataFrame, row_px: int = 38) -> int:
+    """Vis hele tabellen uden intern scrolling."""
+    return max(100, (len(dataframe) + 1) * row_px + 4)
+
+
 tab_overview, tab_portfolio, tab_rebalance, tab_ai, tab_compounders, tab_watchlist = st.tabs([
     "🏠 Overblik",
     "📈 Portefølje",
@@ -231,6 +237,36 @@ tab_overview, tab_portfolio, tab_rebalance, tab_ai, tab_compounders, tab_watchli
 
 with tab_overview:
     quality_icon, quality_text = quality_label(quality_score)
+
+    st.subheader("Daglig morgenbrief")
+    if MORNING_BRIEF_FILE.exists():
+        brief_updated = pd.Timestamp(
+            MORNING_BRIEF_FILE.stat().st_mtime,
+            unit="s",
+            tz="UTC",
+        ).tz_convert("Europe/Copenhagen")
+
+        st.caption(
+            "Senest opdateret "
+            f"{brief_updated.strftime('%d-%m-%Y kl. %H:%M')}"
+        )
+
+        morning_brief = MORNING_BRIEF_FILE.read_text(
+            encoding="utf-8"
+        ).strip()
+
+        if morning_brief:
+            st.markdown(morning_brief)
+        else:
+            st.info("Morgenbrief-filen er tom.")
+    else:
+        st.info(
+            "Dagens morgenbrief er endnu ikke lagt i "
+            "`data/morning_brief.md`. Når den planlagte opgave opdaterer "
+            "filen, vises hele briefen automatisk her."
+        )
+
+    st.divider()
 
     k1, k2, k3, k4, k5, k6 = st.columns(6)
     k1.metric("Porteføljeværdi", format_dkk(portfolio_total))
@@ -254,25 +290,6 @@ with tab_overview:
             st.warning(note)
     else:
         st.success("Alle centrale kurs-, valuta- og porteføljedata er tilgængelige.")
-
-    st.subheader("Daglig morgenbrief")
-    if MORNING_BRIEF_FILE.exists():
-        morning_brief = MORNING_BRIEF_FILE.read_text(
-            encoding="utf-8"
-        ).strip()
-
-        if morning_brief:
-            st.markdown(morning_brief)
-        else:
-            st.info("Morgenbrief-filen er tom.")
-    else:
-        st.info(
-            "Dagens morgenbrief er endnu ikke lagt i "
-            "`data/morning_brief.md`. Når den planlagte opgave opdaterer "
-            "filen, vises hele briefen automatisk her."
-        )
-
-    st.divider()
 
     left, right = st.columns(2)
 
@@ -401,54 +418,183 @@ with tab_overview:
             table_style(actions),
             use_container_width=True,
             hide_index=True,
-            height=table_height(actions, max_height=320),
+            height=no_scroll_height(actions),
         )
 
 with tab_portfolio:
-    st.subheader("Aktier og ETF'er")
+    st.subheader("Portefølje")
 
-    portfolio_table = analytics_portfolio[
-        [
-            "Name",
-            "Asset_Type",
-            "Portfolio_Weight",
+    analysis_columns = [
+        "1W",
+        "1M",
+        "3M",
+        "6M",
+        "12M",
+        "Composite",
+        "AI_Confidence",
+        "Handling",
+    ]
+
+    merge_key = (
+        "Asset_ID"
+        if "Asset_ID" in portfolio.columns
+        and "Asset_ID" in analytics_portfolio.columns
+        else "Yahoo_Ticker"
+    )
+
+    analysis_lookup = analytics_portfolio[
+        [merge_key, *analysis_columns]
+    ].drop_duplicates(subset=[merge_key])
+
+    portfolio_source = portfolio.merge(
+        analysis_lookup,
+        on=merge_key,
+        how="left",
+        suffixes=("", "_analysis"),
+    )
+
+    portfolio_source["Display_Market_Value_DKK"] = portfolio_source[
+        "Market_Value_DKK"
+    ]
+
+    if "Market_value_DKK" in portfolio_source.columns:
+        portfolio_source["Display_Market_Value_DKK"] = (
+            portfolio_source["Display_Market_Value_DKK"].combine_first(
+                pd.to_numeric(
+                    portfolio_source["Market_value_DKK"],
+                    errors="coerce",
+                )
+            )
+        )
+
+    portfolio_source["Handling"] = portfolio_source["Handling"].fillna(
+        "Uden for analyse"
+    )
+
+    asset_type_normalized = (
+        portfolio_source["Asset_Type"]
+        .fillna("")
+        .astype(str)
+        .str.strip()
+        .str.casefold()
+    )
+
+    stock_mask = asset_type_normalized.str.contains(
+        r"aktie|stock|equity",
+        regex=True,
+    )
+    etf_mask = asset_type_normalized.str.contains(
+        r"etf|fund",
+        regex=True,
+    )
+
+    stocks = portfolio_source.loc[stock_mask].copy()
+    etfs = portfolio_source.loc[etf_mask].copy()
+
+    stock_value = stocks["Display_Market_Value_DKK"].sum(skipna=True)
+    etf_value = etfs["Display_Market_Value_DKK"].sum(skipna=True)
+
+    stock_kpi, etf_kpi = st.columns(2)
+    stock_kpi.metric(
+        "Aktier",
+        f"{len(stocks)} positioner",
+        format_dkk(stock_value),
+    )
+    etf_kpi.metric(
+        "ETF'er",
+        f"{len(etfs)} positioner",
+        format_dkk(etf_value),
+    )
+
+    def prepare_portfolio_table(
+        dataframe: pd.DataFrame,
+    ) -> pd.DataFrame:
+        table = dataframe[
+            [
+                "Name",
+                "Portfolio_Weight",
+                "1W",
+                "1M",
+                "3M",
+                "6M",
+                "12M",
+                "Composite",
+                "AI_Confidence",
+                "Handling",
+            ]
+        ].copy()
+
+        table = table.rename(
+            columns={
+                "Name": "Aktiv",
+                "Portfolio_Weight": "Vægt",
+                "AI_Confidence": "AI",
+            }
+        )
+
+        table = table.sort_values(
+            ["Composite", "AI", "Vægt"],
+            ascending=[False, False, False],
+            na_position="last",
+        )
+
+        excluded_weight = table["Handling"].eq("Uden for analyse")
+
+        table["Vægt"] = table["Vægt"].apply(
+            lambda value: format_pct(value, 1)
+        )
+        table.loc[excluded_weight, "Vægt"] = "Ikke medtaget"
+
+        for column in [
             "1W",
             "1M",
             "3M",
             "6M",
             "12M",
             "Composite",
-            "AI_Confidence",
-            "Handling",
-        ]
-    ].copy()
+        ]:
+            table[column] = table[column].apply(
+                lambda value: format_pct(value, 1)
+            )
 
-    portfolio_table = portfolio_table.rename(columns={
-        "Name": "Aktiv",
-        "Asset_Type": "Type",
-        "Portfolio_Weight": "Vægt",
-        "Composite": "Composite",
-        "AI_Confidence": "AI",
-    }).sort_values("Composite", ascending=False)
-
-    for column in ["Vægt", "1W", "1M", "3M", "6M", "12M", "Composite"]:
-        portfolio_table[column] = portfolio_table[column].apply(
-            lambda value: format_pct(value, 1)
+        table["AI"] = table["AI"].apply(
+            lambda value: (
+                f"{value:.0f}%"
+                if pd.notna(value)
+                else "N/A"
+            )
         )
-    portfolio_table["AI"] = portfolio_table["AI"].apply(
-        lambda value: f"{value:.0f}%" if pd.notna(value) else "N/A"
-    )
 
-    st.dataframe(
-        table_style(portfolio_table),
-        use_container_width=True,
-        hide_index=True,
-        height=table_height(portfolio_table),
-    )
+        return table
+
+    st.markdown("### 📈 Aktier")
+    if stocks.empty:
+        st.info("Ingen aktier fundet i masterfilen.")
+    else:
+        stock_table = prepare_portfolio_table(stocks)
+        st.dataframe(
+            table_style(stock_table),
+            use_container_width=True,
+            hide_index=True,
+            height=no_scroll_height(stock_table),
+        )
+
+    st.markdown("### 📊 ETF-portefølje")
+    if etfs.empty:
+        st.info("Ingen ETF'er fundet i masterfilen.")
+    else:
+        etf_table = prepare_portfolio_table(etfs)
+        st.dataframe(
+            table_style(etf_table),
+            use_container_width=True,
+            hide_index=True,
+            height=no_scroll_height(etf_table),
+        )
 
     st.caption(
         "Alle negative værdier vises med rød skrift. "
-        "Valutaafkast indgår i det samlede DKK-afkast."
+        "Grundfos vises i aktietabellen, men indgår ikke i aktiv vægtning, "
+        "afkast, momentum eller rebalancering."
     )
 
 with tab_rebalance:
