@@ -49,7 +49,7 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "4.3.0"
+APP_VERSION = "4.5.0"
 
 st.title("📈 Investment OS 3.0")
 st.caption(
