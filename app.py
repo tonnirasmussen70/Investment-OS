@@ -40,7 +40,7 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "4.1.0"
+APP_VERSION = "4.1.1"
 
 st.title("📈 Investment OS 3.0")
 st.caption(
@@ -161,6 +161,16 @@ current_sharpe = (
 decision = decision_summary(analytics_portfolio)
 avg_confidence = decision["AI_Confidence"]
 capital_flow_label = decision["Capital_Flow"]
+
+
+
+def quality_label(score: float) -> tuple[str, str]:
+    """Returnér ikon og tekst for datakvalitet."""
+    if score >= 90:
+        return "🟢", "Høj"
+    if score >= 75:
+        return "🟡", "Acceptabel"
+    return "🔴", "Lav"
 
 
 def no_scroll_height(dataframe: pd.DataFrame, row_px: int = 38) -> int:
