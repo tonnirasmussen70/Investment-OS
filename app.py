@@ -51,6 +51,9 @@ from modules.report_engine import (
     format_report_timestamp,
     load_markdown_report,
 )
+from modules.rebalance_engine import (
+    build_rebalance_plan,
+)
 from modules.risk_engine import (
     build_stop_loss_table,
     stop_loss_summary,
@@ -71,7 +74,7 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "5.3.0"
+APP_VERSION = "5.4.0"
 
 st.title("📈 Investment OS 5.0")
 st.caption(
@@ -242,6 +245,13 @@ stop_loss_table = build_stop_loss_table(
     lookback_days=63,
 )
 stop_loss_metrics = stop_loss_summary(stop_loss_table)
+
+rebalance_result = build_rebalance_plan(
+    analytics_portfolio,
+    active_market_value_dkk=return_market_value,
+    max_position_weight=config.max_position_weight,
+    minimum_trade_dkk=1000.0,
+)
 
 
 
@@ -701,47 +711,68 @@ with tab_portfolio:
 
 with tab_rebalance:
     st.subheader("Rebalanceringsindikation")
-    rebalance = analytics_portfolio[
-        [
-            "Name",
-            "Portfolio_Weight",
-            "Composite",
-            "AI_Confidence",
-            "Handling",
-        ]
-    ].copy()
-    rebalance["Foreslået vægt"] = rebalance["Portfolio_Weight"]
 
-    top_mask = rebalance["Handling"].eq("Øg")
-    reduce_mask = rebalance["Handling"].eq("Reducer")
-    rebalance.loc[top_mask, "Foreslået vægt"] *= 1.10
-    rebalance.loc[reduce_mask, "Foreslået vægt"] *= 0.75
-
-    total_suggested = rebalance["Foreslået vægt"].sum()
-    if total_suggested > 0:
-        rebalance["Foreslået vægt"] /= total_suggested
-
-    rebalance["Ændring"] = (
-        rebalance["Foreslået vægt"] - rebalance["Portfolio_Weight"]
+    r1, r2, r3, r4 = st.columns(4)
+    r1.metric("Øg-signaler", rebalance_result.increase_count)
+    r2.metric("Reducer-signaler", rebalance_result.reduce_count)
+    r3.metric("Foreslåede handler", rebalance_result.trade_count)
+    r4.metric(
+        "Brutto handel",
+        format_dkk(rebalance_result.gross_trade_dkk),
     )
-    rebalance["Handel DKK"] = rebalance["Ændring"] * return_market_value
 
-    rebalance = rebalance.rename(columns={
-        "Name": "Aktiv",
-        "Portfolio_Weight": "Nuværende vægt",
-        "AI_Confidence": "AI",
-    }).sort_values("Ændring", ascending=False)
+    rebalance = rebalance_result.data.copy()
 
-    for column in ["Nuværende vægt", "Foreslået vægt", "Ændring", "Composite"]:
-        rebalance[column] = rebalance[column].apply(lambda x: format_pct(x, 1))
-    rebalance["AI"] = rebalance["AI"].apply(lambda x: f"{x:.0f}%")
-    rebalance["Handel DKK"] = rebalance["Handel DKK"].apply(format_dkk)
+    if rebalance.empty:
+        st.info("Ingen rebalanceringsdata tilgængelige.")
+    else:
+        for column in [
+            "Nuværende vægt",
+            "Foreslået vægt",
+            "Ændring",
+            "Composite",
+        ]:
+            rebalance[column] = rebalance[column].apply(
+                lambda value: format_pct(value, 1)
+            )
 
-    st.dataframe(
-        table_style(rebalance),
-        use_container_width=True,
-        hide_index=True,
-        height=table_height(rebalance),
+        rebalance["AI"] = rebalance["AI"].apply(
+            lambda value: (
+                f"{value:.0f}%"
+                if pd.notna(value)
+                else "N/A"
+            )
+        )
+        rebalance["Handel DKK"] = rebalance[
+            "Handel DKK"
+        ].apply(format_dkk)
+
+        rebalance = rebalance[
+            [
+                "Aktiv",
+                "Nuværende vægt",
+                "Foreslået vægt",
+                "Ændring",
+                "Handel DKK",
+                "Rebalance handling",
+                "Positionsloft",
+                "Composite",
+                "AI",
+                "Handling",
+            ]
+        ]
+
+        st.dataframe(
+            table_style(rebalance),
+            use_container_width=True,
+            hide_index=True,
+            height=no_scroll_height(rebalance),
+        )
+
+    st.caption(
+        f"Positionsloft: {config.max_position_weight:.0%}. "
+        "Handler under 1.000 kr. filtreres som støj. "
+        "Modellen er beslutningsstøtte og udfører ingen handler."
     )
 
     st.subheader("Stop-loss og alarmniveauer")
