@@ -59,7 +59,7 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "4.9.0"
+APP_VERSION = "4.9.1"
 
 st.title("📈 Investment OS 3.0")
 st.caption(
@@ -80,6 +80,19 @@ def load_market_data(tickers, currencies):
 @st.cache_data(ttl=3600, show_spinner=True)
 def load_history(tickers, period):
     return fetch_price_history(tickers, period=period)
+
+
+def safe_optional_load(loader, fallback, label: str):
+    """
+    Kør en valgfri loader uden at stoppe hele dashboardet.
+
+    Bruges kun til ikke-kritiske områder som morgenbrief, compounder-radar
+    og watchlist. Fejl returneres som en kort tekst til den relevante fane.
+    """
+    try:
+        return loader(), None
+    except Exception as exc:
+        return fallback, f"{label} kunne ikke indlæses: {exc}"
 
 
 try:
@@ -191,19 +204,6 @@ def no_scroll_height(dataframe: pd.DataFrame, row_px: int = 38) -> int:
     """Vis hele tabellen uden intern scrolling."""
     return max(100, (len(dataframe) + 1) * row_px + 4)
 
-
-
-def safe_optional_load(loader, fallback, label: str):
-    """
-    Kør en valgfri loader uden at stoppe hele dashboardet.
-
-    Bruges kun til ikke-kritiske områder som morgenbrief, compounder-radar
-    og watchlist. Fejl returneres som en kort tekst til den relevante fane.
-    """
-    try:
-        return loader(), None
-    except Exception as exc:
-        return fallback, f"{label} kunne ikke indlæses: {exc}"
 
 
 tab_overview, tab_portfolio, tab_rebalance, tab_ai, tab_compounders, tab_watchlist = st.tabs([
