@@ -13,6 +13,7 @@ from modules.analytics_engine import (
     rolling_sharpe,
 )
 from modules.decision_engine import (
+    action_reason,
     decision_summary,
 )
 from modules.compounder_engine import (
@@ -59,7 +60,7 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "5.0.0"
+APP_VERSION = "5.0.1"
 
 st.title("📈 Investment OS 5.0")
 st.caption(
