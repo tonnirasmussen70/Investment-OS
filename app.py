@@ -74,7 +74,7 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "5.5.0"
+APP_VERSION = "5.6.0"
 
 st.title("📈 Investment OS 5.0")
 st.caption(
@@ -142,6 +142,7 @@ analytics_portfolio = add_momentum(
     analytics_portfolio,
     history,
     momentum_weights,
+    benchmark_ticker=benchmark_ticker,
 )
 
 risk_free_rate = config.risk_free_rate
@@ -517,6 +518,8 @@ with tab_portfolio:
         "Composite",
         "Momentum_Acceleration",
         "Rotation_Signal",
+        "Relative_Strength_3M",
+        "RS_Signal",
         "AI_Confidence",
         "Handling",
     ]
@@ -634,6 +637,8 @@ with tab_portfolio:
                 "Composite",
                 "Momentum_Acceleration",
                 "Rotation_Signal",
+                "Relative_Strength_3M",
+                "RS_Signal",
                 "AI_Confidence",
                 "Handling",
             ]
@@ -645,6 +650,8 @@ with tab_portfolio:
                 "Portfolio_Weight": "Vægt",
                 "Momentum_Acceleration": "Acceleration",
                 "Rotation_Signal": "Rotation",
+                "Relative_Strength_3M": "RS 3M",
+                "RS_Signal": "RS signal",
                 "AI_Confidence": "AI",
             }
         )
@@ -670,6 +677,7 @@ with tab_portfolio:
             "12M",
             "Composite",
             "Acceleration",
+            "RS 3M",
         ]:
             table[column] = table[column].apply(
                 lambda value: format_pct(value, 1)
@@ -858,6 +866,8 @@ with tab_ai:
             "Composite",
             "Momentum_Acceleration",
             "Rotation_Signal",
+            "Relative_Strength_3M",
+            "RS_Signal",
             "AI_Confidence",
             "Volatility",
             "Max_Drawdown",
@@ -923,6 +933,8 @@ with tab_ai:
             "Portfolio_Weight": "Vægt",
             "Momentum_Acceleration": "Acceleration",
             "Rotation_Signal": "Rotation",
+            "Relative_Strength_3M": "RS 3M",
+            "RS_Signal": "RS signal",
             "AI_Confidence": "AI Confidence",
             "Max_Drawdown": "Max drawdown",
         }
@@ -937,6 +949,7 @@ with tab_ai:
         "12M",
         "Composite",
         "Acceleration",
+        "RS 3M",
         "Volatility",
         "Max drawdown",
     ]:
@@ -966,6 +979,8 @@ with tab_ai:
             "Composite",
             "Acceleration",
             "Rotation",
+            "RS 3M",
+            "RS signal",
             "AI Confidence",
             "Volatility",
             "Max drawdown",
