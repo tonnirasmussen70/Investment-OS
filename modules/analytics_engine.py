@@ -91,20 +91,68 @@ def add_momentum(
         )
     ).clip(0, 100)
 
+    # Momentumacceleration: nyere perioder relativt til længere perioder.
+    result["Momentum_Acceleration"] = (
+        0.50 * result["1W"].fillna(0)
+        + 0.30 * result["1M"].fillna(0)
+        - 0.15 * result["3M"].fillna(0)
+        - 0.05 * result["6M"].fillna(0)
+    )
+
+    result["Rotation_Signal"] = np.select(
+        [
+            (
+                (result["1W"] > 0)
+                & (result["1M"] > 0)
+                & (result["Momentum_Acceleration"] > 0)
+            ),
+            (
+                (result["1W"] > 0)
+                & (result["1M"] < 0)
+                & (result["Momentum_Acceleration"] > 0)
+            ),
+            (
+                (result["1W"] < 0)
+                & (result["1M"] > 0)
+                & (result["Momentum_Acceleration"] < 0)
+            ),
+            (
+                (result["1W"] < 0)
+                & (result["1M"] < 0)
+            ),
+        ],
+        [
+            "Accelererer",
+            "Tidlig vending",
+            "Aftager",
+            "Negativ rotation",
+        ],
+        default="Neutral",
+    )
+
+    upper_quartile = result["Composite"].quantile(0.75)
+
+    # Hard gate:
+    # En position kan kun få Øg, hvis både 1W og 1M er positive.
+    # Dermed undgår vi købssignaler på svækket kort momentum.
     result["Handling"] = np.select(
         [
             (
-                result["Composite"]
-                >= result["Composite"].quantile(0.75)
-            )
-            & (result["1W"] > 0)
-            & (result["1M"] > 0),
+                (result["Composite"] >= upper_quartile)
+                & (result["1W"] > 0)
+                & (result["1M"] > 0)
+                & (result["Momentum_Acceleration"] > 0)
+            ),
             (
                 (result["1W"] < 0)
                 & (result["1M"] < 0)
                 & (result["3M"] < 0)
             ),
-            result["Composite"] < 0,
+            (
+                (result["1M"] < 0)
+                | (result["Composite"] < 0)
+                | result["Rotation_Signal"].eq("Aftager")
+            ),
         ],
         ["Øg", "Reducer", "Afvent"],
         default="Hold",
