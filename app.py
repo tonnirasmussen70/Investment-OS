@@ -30,9 +30,11 @@ from modules.market_engine import (
     fetch_price_history,
 )
 from modules.portfolio_engine import (
+    asset_type_summary,
     calculate_portfolio,
     data_quality_score,
     load_master_file,
+    portfolio_summary,
 )
 from modules.report_engine import (
     format_report_timestamp,
@@ -49,7 +51,7 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "4.5.0"
+APP_VERSION = "4.6.0"
 
 st.title("📈 Investment OS 3.0")
 st.caption(
@@ -130,40 +132,11 @@ morning_brief_report = load_markdown_report(MORNING_BRIEF_FILE)
 compounder_radar = load_compounder_radar("data")
 compounder_summary = radar_summary(compounder_radar)
 
-# Samlet porteføljeværdi inkluderer alle positioner, herunder Grundfos.
-# Hvis en position mangler en beregnet markedsværdi, bruges den eksisterende
-# værdi fra masterfilen som fallback, når kolonnen findes.
-portfolio_value_series = portfolio["Market_Value_DKK"].copy()
-
-if "Market_value_DKK" in portfolio.columns:
-    portfolio_value_series = portfolio_value_series.combine_first(
-        pd.to_numeric(portfolio["Market_value_DKK"], errors="coerce")
-    )
-
-portfolio_total = portfolio_value_series.sum(skipna=True)
-
-# Afkast beregnes kun på positioner med Include_Weight = True.
-# Grundfos kan derfor indgå i porteføljeværdien uden at påvirke afkastprocenten.
-return_mask = (
-    portfolio["Include_Weight"].fillna(False)
-    & ~portfolio["Name"].astype(str).str.strip().str.casefold().eq("grundfos")
-)
-
-return_market_value = portfolio.loc[
-    return_mask,
-    "Market_Value_DKK",
-].sum(skipna=True)
-
-return_cost_value = portfolio.loc[
-    return_mask,
-    "Cost_Value_DKK",
-].sum(skipna=True)
-
-total_return = (
-    return_market_value / return_cost_value - 1
-    if return_cost_value > 0
-    else np.nan
-)
+portfolio_metrics = portfolio_summary(portfolio)
+portfolio_total = portfolio_metrics["Portfolio_Value_DKK"]
+return_market_value = portfolio_metrics["Active_Market_Value_DKK"]
+return_cost_value = portfolio_metrics["Active_Cost_Value_DKK"]
+total_return = portfolio_metrics["Total_Return_Pct"]
 
 current_sharpe = (
     sharpe_history["Sharpe 252D"].dropna().iloc[-1]
@@ -391,18 +364,45 @@ with tab_portfolio:
     stocks = portfolio_source.loc[stock_mask].copy()
     etfs = portfolio_source.loc[etf_mask].copy()
 
-    stock_value = stocks["Display_Market_Value_DKK"].sum(skipna=True)
-    etf_value = etfs["Display_Market_Value_DKK"].sum(skipna=True)
+    asset_summary = asset_type_summary(portfolio_source)
+
+    stock_summary = asset_summary.loc[
+        asset_summary["Asset_Group"].eq("Aktier")
+    ]
+    etf_summary = asset_summary.loc[
+        asset_summary["Asset_Group"].eq("ETF'er")
+    ]
+
+    stock_count = (
+        int(stock_summary["Positioner"].iloc[0])
+        if not stock_summary.empty
+        else 0
+    )
+    stock_value = (
+        float(stock_summary["Markedsværdi_DKK"].iloc[0])
+        if not stock_summary.empty
+        else 0.0
+    )
+    etf_count = (
+        int(etf_summary["Positioner"].iloc[0])
+        if not etf_summary.empty
+        else 0
+    )
+    etf_value = (
+        float(etf_summary["Markedsværdi_DKK"].iloc[0])
+        if not etf_summary.empty
+        else 0.0
+    )
 
     stock_kpi, etf_kpi = st.columns(2)
     stock_kpi.metric(
         "Aktier",
-        f"{len(stocks)} positioner",
+        f"{stock_count} positioner",
         format_dkk(stock_value),
     )
     etf_kpi.metric(
         "ETF'er",
-        f"{len(etfs)} positioner",
+        f"{etf_count} positioner",
         format_dkk(etf_value),
     )
 
