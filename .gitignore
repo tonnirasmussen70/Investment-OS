@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+
+# Streamlit
+.streamlit/
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# History
+history/
+
+# Reports
+reports/
+
+# Cache
+.cache/
+
+# Personlige data
+data/AI_portfolio.xlsx
+
+# Windows
+Thumbs.db
+
+# macOS
+.DS_Store
