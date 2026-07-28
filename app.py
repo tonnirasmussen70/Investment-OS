@@ -7,8 +7,7 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from modules.data_loader import load_excel_file, standardize_portfolio
-from modules.market_data import fetch_prices
+from modules.analytics_engine import (from modules.market_data import fetch_prices
 from modules.momentum import calculate_momentum
 from modules.stop_loss import add_stop_loss
 from modules.reporting import create_pdf
