@@ -14,6 +14,11 @@ from modules.analytics_engine import (
     portfolio_returns,
     rolling_sharpe,
 )
+from modules.attribution_engine import (
+    calculate_attribution,
+    top_contributors,
+    top_detractors,
+)
 from modules.decision_engine import (
     action_reason,
     decision_summary,
@@ -62,7 +67,7 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "5.1.0"
+APP_VERSION = "5.2.0"
 
 st.title("📈 Investment OS 5.0")
 st.caption(
@@ -213,6 +218,10 @@ portfolio_total = portfolio_metrics["Portfolio_Value_DKK"]
 return_market_value = portfolio_metrics["Active_Market_Value_DKK"]
 return_cost_value = portfolio_metrics["Active_Cost_Value_DKK"]
 total_return = portfolio_metrics["Total_Return_Pct"]
+
+attribution = calculate_attribution(portfolio)
+contributors = top_contributors(attribution, limit=5)
+detractors = top_detractors(attribution, limit=5)
 
 current_sharpe = (
     sharpe_history["Sharpe 252D"].dropna().iloc[-1]
@@ -379,6 +388,74 @@ with tab_overview:
             st.plotly_chart(fig_sharpe, use_container_width=True)
         else:
             st.info("Sharpe-historikken kan ikke vises endnu.")
+
+    st.subheader("Performance attribution")
+
+    contrib_col, detract_col = st.columns(2)
+
+    def prepare_attribution_table(
+        dataframe: pd.DataFrame,
+    ) -> pd.DataFrame:
+        table = dataframe.copy()
+
+        if table.empty:
+            return table
+
+        table["Vægt"] = table["Vægt"].apply(
+            lambda value: format_pct(value, 1)
+        )
+        table["Afkast DKK"] = table["Afkast DKK"].apply(
+            format_dkk
+        )
+        table["Afkast %"] = table["Afkast %"].apply(
+            lambda value: format_pct(value, 1)
+        )
+        table["Bidrag"] = table["Bidrag"].apply(
+            lambda value: format_pct(value, 1)
+        )
+        table["Andel af resultat"] = table[
+            "Andel af resultat"
+        ].apply(
+            lambda value: format_pct(value, 1)
+        )
+
+        return table[
+            [
+                "Aktiv",
+                "Vægt",
+                "Afkast DKK",
+                "Afkast %",
+                "Bidrag",
+            ]
+        ]
+
+    with contrib_col:
+        st.markdown("#### Største bidrag")
+        contributor_table = prepare_attribution_table(contributors)
+
+        if contributor_table.empty:
+            st.info("Ingen positive bidrag endnu.")
+        else:
+            st.dataframe(
+                table_style(contributor_table),
+                use_container_width=True,
+                hide_index=True,
+                height=no_scroll_height(contributor_table),
+            )
+
+    with detract_col:
+        st.markdown("#### Største negative bidrag")
+        detractor_table = prepare_attribution_table(detractors)
+
+        if detractor_table.empty:
+            st.success("Ingen negative bidrag.")
+        else:
+            st.dataframe(
+                table_style(detractor_table),
+                use_container_width=True,
+                hide_index=True,
+                height=no_scroll_height(detractor_table),
+            )
 
     st.subheader("Dagens vigtigste handlinger")
 
