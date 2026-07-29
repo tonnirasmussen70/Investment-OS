@@ -74,7 +74,7 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "5.6.1"
+APP_VERSION = "5.7.0"
 
 st.title("📈 Investment OS 5.0")
 st.caption(
@@ -277,9 +277,10 @@ def no_scroll_height(dataframe: pd.DataFrame, row_px: int = 38) -> int:
 
 
 
-tab_overview, tab_portfolio, tab_rebalance, tab_ai, tab_compounders, tab_watchlist = st.tabs([
+tab_overview, tab_portfolio, tab_positions, tab_rebalance, tab_ai, tab_compounders, tab_watchlist = st.tabs([
     "🏠 Overblik",
     "📈 Momentum",
+    "📋 Positioner",
     "🔄 Rebalancering",
     "🤖 AI Insights",
     "🚀 Emerging Compounders",
@@ -729,6 +730,126 @@ with tab_portfolio:
         "Grundfos vises i aktietabellen, men indgår ikke i aktiv vægtning, "
         "afkast, momentum eller rebalancering."
     )
+
+with tab_positions:
+    st.subheader("Samlet positionstabel")
+
+    position_columns = [
+        "Asset_Type",
+        "Name",
+        "Ticker",
+        "Quantity",
+        "Purchase_Price",
+        "Current_Price",
+        "Currency",
+        "Market_Value_DKK",
+        "Cost_Value_DKK",
+        "Return_DKK",
+        "Return_Pct",
+        "Portfolio_Weight",
+    ]
+
+    optional_columns = [
+        column
+        for column in ["Sector", "Account"]
+        if column in portfolio.columns
+    ]
+
+    position_table = portfolio[
+        [*position_columns, *optional_columns]
+    ].copy()
+
+    position_table = position_table.rename(
+        columns={
+            "Asset_Type": "Type",
+            "Name": "Navn",
+            "Ticker": "Ticker",
+            "Quantity": "Antal",
+            "Purchase_Price": "Købskurs",
+            "Current_Price": "Aktuel kurs",
+            "Currency": "Valuta",
+            "Market_Value_DKK": "Markedsværdi",
+            "Cost_Value_DKK": "Kostpris",
+            "Return_DKK": "Gevinst/tab",
+            "Return_Pct": "Afkast",
+            "Portfolio_Weight": "Vægt",
+            "Sector": "Sektor",
+            "Account": "Depot",
+        }
+    )
+
+    position_table["Type"] = (
+        position_table["Type"]
+        .astype(str)
+        .replace(
+            {
+                "Stock": "Aktie",
+                "Equity": "Aktie",
+                "ETF": "ETF",
+                "Fund": "ETF",
+            }
+        )
+    )
+
+    # Grundfos vises i tabellen, men har ingen aktiv porteføljevægt.
+    included_weight = portfolio["Include_Weight"].fillna(False).to_numpy()
+
+    position_table["Antal"] = position_table["Antal"].apply(
+        lambda value: (
+            f"{value:,.0f}".replace(",", ".")
+            if pd.notna(value)
+            else "N/A"
+        )
+    )
+
+    for column in ["Købskurs", "Aktuel kurs"]:
+        position_table[column] = position_table[column].apply(
+            lambda value: (
+                format_score(value, 2)
+                if pd.notna(value)
+                else "N/A"
+            )
+        )
+
+    for column in [
+        "Markedsværdi",
+        "Kostpris",
+        "Gevinst/tab",
+    ]:
+        position_table[column] = position_table[column].apply(
+            format_dkk
+        )
+
+    position_table["Afkast"] = position_table["Afkast"].apply(
+        lambda value: format_pct(value, 1)
+    )
+
+    position_table["Vægt"] = [
+        format_pct(value, 1) if include else "-"
+        for value, include in zip(
+            portfolio["Portfolio_Weight"],
+            included_weight,
+        )
+    ]
+
+    position_table = position_table.sort_values(
+        ["Type", "Markedsværdi"],
+        ascending=[True, False],
+    ).reset_index(drop=True)
+
+    st.caption(
+        f"{len(position_table)} positioner · "
+        f"samlet markedsværdi {format_dkk(portfolio_total)}. "
+        "Grundfos indgår i markedsværdien, men ikke i porteføljevægtene."
+    )
+
+    st.dataframe(
+        table_style(position_table),
+        use_container_width=True,
+        hide_index=True,
+        height=no_scroll_height(position_table),
+    )
+
 
 with tab_rebalance:
     st.subheader("Rebalanceringsindikation")
