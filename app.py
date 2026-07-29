@@ -53,6 +53,10 @@ from modules.portfolio_engine import (
 from modules.portfolio_doctor_engine import (
     build_portfolio_doctor,
 )
+from modules.opportunity_engine import (
+    DEFAULT_OPPORTUNITY_WEIGHTS,
+    build_opportunity_scores,
+)
 from modules.report_engine import (
     format_report_timestamp,
     load_markdown_report,
@@ -80,9 +84,9 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "6.1.0"
+APP_VERSION = "6.2.0"
 
-st.title("📈 Investment OS 6.1")
+st.title("📈 Investment OS 6.2")
 st.caption(
     f"Fælles portefølje-, momentum-, valuta- og beslutningsdashboard · Version {APP_VERSION}"
 )
@@ -147,6 +151,18 @@ health_factor_weights = {
         st.session_state[f"health_weight_{factor}"]
     )
     for factor in config.health_weights
+}
+
+for factor, default_value in DEFAULT_OPPORTUNITY_WEIGHTS.items():
+    state_key = f"opportunity_weight_{factor}"
+    if state_key not in st.session_state:
+        st.session_state[state_key] = float(default_value)
+
+opportunity_factor_weights = {
+    factor: float(
+        st.session_state[f"opportunity_weight_{factor}"]
+    )
+    for factor in DEFAULT_OPPORTUNITY_WEIGHTS
 }
 
 momentum_weights = config.momentum_weights
@@ -280,6 +296,12 @@ portfolio_health = calculate_portfolio_health(
     factor_weights=health_factor_weights,
 )
 
+opportunity_result = build_opportunity_scores(
+    analytics_portfolio,
+    factor_weights=opportunity_factor_weights,
+    max_position_weight=config.max_position_weight,
+)
+
 portfolio_doctor = build_portfolio_doctor(
     analytics_portfolio,
     active_market_value_dkk=return_market_value,
@@ -316,12 +338,13 @@ def no_scroll_height(dataframe: pd.DataFrame, row_px: int = 38) -> int:
 
 
 
-tab_overview, tab_portfolio, tab_positions, tab_rebalance, tab_doctor, tab_ai, tab_compounders, tab_watchlist, tab_settings = st.tabs([
+tab_overview, tab_portfolio, tab_positions, tab_rebalance, tab_doctor, tab_opportunity, tab_ai, tab_compounders, tab_watchlist, tab_settings = st.tabs([
     "🏠 Overblik",
     "📈 Momentum",
     "📋 Positioner",
     "🔄 Rebalancering",
     "🩺 Portfolio Doctor",
+    "🎯 Opportunities",
     "🤖 AI Insights",
     "🚀 Emerging Compounders",
     "👀 Watchlist",
@@ -1226,6 +1249,153 @@ with tab_doctor:
         )
 
 
+
+with tab_opportunity:
+    st.subheader("AI Opportunity Engine")
+    st.caption(
+        "Rangerer porteføljens positioner efter attraktivitet ud fra "
+        "momentum, trend, relative strength, risiko, datakvalitet og "
+        "ledig plads under positionsloftet."
+    )
+
+    opportunity_data = opportunity_result.data.copy()
+
+    o1, o2, o3 = st.columns(3)
+    o1.metric(
+        "Bedste mulighed",
+        opportunity_result.top_opportunity or "N/A",
+        (
+            f"{opportunity_result.top_score:.1f}/100"
+            if pd.notna(opportunity_result.top_score)
+            else None
+        ),
+    )
+    o2.metric(
+        "Laveste conviction",
+        opportunity_result.lowest_conviction or "N/A",
+        (
+            f"{opportunity_result.lowest_score:.1f}/100"
+            if pd.notna(opportunity_result.lowest_score)
+            else None
+        ),
+    )
+    o3.metric(
+        "Aktiver vurderet",
+        len(opportunity_data),
+    )
+
+    if opportunity_data.empty:
+        st.info("Der er ikke tilstrækkelige data til Opportunity Score.")
+    else:
+        top_opportunities = opportunity_data.head(10).copy()
+
+        display_opportunities = top_opportunities[
+            [
+                "Opportunity Rank",
+                "Name",
+                "Handling",
+                "Opportunity Score",
+                "Opportunity Label",
+                "Momentum Score",
+                "AI Score",
+                "RS Score",
+                "Trend Score",
+                "Risk Score",
+                "Data Score",
+                "Position Score",
+            ]
+        ].rename(
+            columns={
+                "Opportunity Rank": "Rank",
+                "Name": "Aktiv",
+                "Opportunity Score": "Opportunity",
+                "Opportunity Label": "Status",
+                "Momentum Score": "Momentum",
+                "AI Score": "AI",
+                "RS Score": "RS",
+                "Trend Score": "Trend",
+                "Risk Score": "Risiko",
+                "Data Score": "Data",
+                "Position Score": "Positionsbonus",
+            }
+        )
+
+        score_columns = [
+            "Opportunity",
+            "Momentum",
+            "AI",
+            "RS",
+            "Trend",
+            "Risiko",
+            "Data",
+            "Positionsbonus",
+        ]
+        for column in score_columns:
+            display_opportunities[column] = (
+                display_opportunities[column].apply(
+                    lambda value: (
+                        f"{value:.0f}"
+                        if pd.notna(value)
+                        else "N/A"
+                    )
+                )
+            )
+
+        st.markdown("### Top Opportunities")
+        st.dataframe(
+            table_style(display_opportunities),
+            use_container_width=True,
+            hide_index=True,
+            height=no_scroll_height(display_opportunities),
+        )
+
+        st.markdown("### Lowest Conviction")
+        low_conviction = opportunity_data.tail(5).sort_values(
+            "Opportunity Score",
+            ascending=True,
+        )[
+            [
+                "Name",
+                "Handling",
+                "Opportunity Score",
+                "Opportunity Label",
+                "1M",
+                "3M",
+                "Relative_Strength_3M",
+            ]
+        ].rename(
+            columns={
+                "Name": "Aktiv",
+                "Opportunity Score": "Opportunity",
+                "Opportunity Label": "Status",
+                "Relative_Strength_3M": "RS 3M",
+            }
+        )
+
+        low_conviction["Opportunity"] = low_conviction[
+            "Opportunity"
+        ].apply(
+            lambda value: f"{value:.0f}"
+        )
+        for column in ["1M", "3M", "RS 3M"]:
+            low_conviction[column] = low_conviction[column].apply(
+                lambda value: format_pct(value, 1)
+            )
+
+        st.dataframe(
+            table_style(low_conviction),
+            use_container_width=True,
+            hide_index=True,
+            height=no_scroll_height(low_conviction),
+        )
+
+        st.info(
+            "Fundamental kvalitet indgår endnu ikke i Opportunity Score, "
+            "fordi Investment OS ikke har et autoritativt fundamentalt "
+            "datasæt. Faktoren tilføjes først, når datagrundlaget er robust."
+        )
+
+
 with tab_ai:
     st.subheader("AI Decision Dashboard")
 
@@ -1535,122 +1705,218 @@ with tab_watchlist:
 
 with tab_settings:
     st.subheader("Settings")
-
-    st.markdown("### Portfolio Health-vægte")
     st.caption(
-        "Vægtene anvendes straks i denne Streamlit-session. "
-        "De normaliseres automatisk til 100 %. "
-        "Permanent lagring sker fortsat via Settings-arket i AI_portfolio.xlsx."
+        "Kontrolcenter for Investment OS. Ændringer i modelvægte "
+        "anvendes straks i den aktuelle Streamlit-session."
     )
 
-    settings_columns = st.columns(2)
+    with st.expander(
+        "Portfolio Health",
+        expanded=True,
+    ):
+        health_factors = list(config.health_weights.keys())
+        health_columns = st.columns(2)
 
-    factors = list(config.health_weights.keys())
-
-    for index, factor in enumerate(factors):
-        with settings_columns[index % 2]:
-            st.number_input(
-                factor,
-                min_value=0.0,
-                max_value=1.0,
-                step=0.05,
-                format="%.2f",
-                key=f"health_weight_{factor}",
-            )
-
-    raw_total = sum(
-        float(st.session_state[f"health_weight_{factor}"])
-        for factor in factors
-    )
-
-    st.metric(
-        "Indtastet vægtsum",
-        f"{raw_total:.2f}",
-        (
-            "Normaliseres til 100 %"
-            if abs(raw_total - 1.0) > 0.001
-            else "100 %"
-        ),
-    )
-
-    normalized_preview = pd.DataFrame(
-        {
-            "Faktor": factors,
-            "Effektiv vægt": [
-                (
-                    float(
-                        st.session_state[
-                            f"health_weight_{factor}"
-                        ]
-                    )
-                    / raw_total
-                    if raw_total > 0
-                    else config.health_weights[factor]
+        for index, factor in enumerate(health_factors):
+            with health_columns[index % 2]:
+                st.number_input(
+                    factor,
+                    min_value=0.0,
+                    max_value=1.0,
+                    step=0.05,
+                    format="%.2f",
+                    key=f"health_weight_{factor}",
                 )
-                for factor in factors
-            ],
-        }
-    )
 
-    normalized_preview["Effektiv vægt"] = (
-        normalized_preview["Effektiv vægt"].apply(
-            lambda value: format_pct(value, 0)
+        health_total = sum(
+            float(
+                st.session_state[
+                    f"health_weight_{factor}"
+                ]
+            )
+            for factor in health_factors
         )
-    )
 
-    st.dataframe(
-        normalized_preview,
-        use_container_width=True,
-        hide_index=True,
-    )
+        st.caption(
+            f"Indtastet vægtsum: {health_total:.2f}. "
+            "Vægtene normaliseres automatisk til 100 %."
+        )
 
-    if st.button("Nulstil Portfolio Health-vægte"):
-        for factor, default_value in config.health_weights.items():
-            st.session_state[
-                f"health_weight_{factor}"
-            ] = float(default_value)
-        st.rerun()
+        if st.button(
+            "Nulstil Portfolio Health",
+            key="reset_health_weights",
+        ):
+            for factor, default_value in (
+                config.health_weights.items()
+            ):
+                st.session_state[
+                    f"health_weight_{factor}"
+                ] = float(default_value)
+            st.rerun()
 
-    st.divider()
-    st.markdown("### Øvrige aktive indstillinger")
+    with st.expander(
+        "Opportunity Score",
+        expanded=True,
+    ):
+        opportunity_factors = list(
+            DEFAULT_OPPORTUNITY_WEIGHTS.keys()
+        )
+        opportunity_columns = st.columns(2)
 
-    active_settings = pd.DataFrame(
-        [
-            {
-                "Indstilling": "Benchmark",
-                "Værdi": config.benchmark,
-            },
-            {
-                "Indstilling": "Maks. positionsvægt",
-                "Værdi": format_pct(
-                    config.max_position_weight,
-                    0,
-                ),
-            },
-            {
-                "Indstilling": "Maks. sektorvægt",
-                "Værdi": format_pct(
-                    config.max_sector_weight,
-                    0,
-                ),
-            },
-            {
-                "Indstilling": "Risikofri rente",
-                "Værdi": format_pct(
-                    config.risk_free_rate,
-                    1,
-                ),
-            },
-            {
-                "Indstilling": "Minimum handel",
-                "Værdi": "5.000 kr.",
-            },
-        ]
-    )
+        for index, factor in enumerate(opportunity_factors):
+            with opportunity_columns[index % 2]:
+                st.number_input(
+                    factor,
+                    min_value=0.0,
+                    max_value=1.0,
+                    step=0.05,
+                    format="%.2f",
+                    key=f"opportunity_weight_{factor}",
+                )
 
-    st.dataframe(
-        active_settings,
-        use_container_width=True,
-        hide_index=True,
+        opportunity_total = sum(
+            float(
+                st.session_state[
+                    f"opportunity_weight_{factor}"
+                ]
+            )
+            for factor in opportunity_factors
+        )
+
+        st.caption(
+            f"Indtastet vægtsum: {opportunity_total:.2f}. "
+            "Vægtene normaliseres automatisk til 100 %."
+        )
+
+        if st.button(
+            "Nulstil Opportunity Score",
+            key="reset_opportunity_weights",
+        ):
+            for factor, default_value in (
+                DEFAULT_OPPORTUNITY_WEIGHTS.items()
+            ):
+                st.session_state[
+                    f"opportunity_weight_{factor}"
+                ] = float(default_value)
+            st.rerun()
+
+    with st.expander("Momentum Engine"):
+        momentum_settings = pd.DataFrame(
+            {
+                "Periode": list(momentum_weights.keys()),
+                "Aktiv vægt": [
+                    momentum_weights[key]
+                    for key in momentum_weights
+                ],
+            }
+        )
+        momentum_settings["Aktiv vægt"] = (
+            momentum_settings["Aktiv vægt"].apply(
+                lambda value: format_pct(value, 0)
+            )
+        )
+        st.dataframe(
+            momentum_settings,
+            use_container_width=True,
+            hide_index=True,
+        )
+        st.caption(
+            "Momentum-vægte styres fortsat fra Settings-arket "
+            "i AI_portfolio.xlsx."
+        )
+
+    with st.expander("Rebalancering"):
+        rebalance_settings = pd.DataFrame(
+            [
+                {
+                    "Indstilling": "Maks. positionsvægt",
+                    "Værdi": format_pct(
+                        config.max_position_weight,
+                        0,
+                    ),
+                },
+                {
+                    "Indstilling": "Maks. sektorvægt",
+                    "Værdi": format_pct(
+                        config.max_sector_weight,
+                        0,
+                    ),
+                },
+                {
+                    "Indstilling": "Minimum handel",
+                    "Værdi": "5.000 kr.",
+                },
+                {
+                    "Indstilling": "Benchmark",
+                    "Værdi": config.benchmark,
+                },
+            ]
+        )
+        st.dataframe(
+            rebalance_settings,
+            use_container_width=True,
+            hide_index=True,
+        )
+
+    with st.expander("Stop Loss"):
+        stop_settings = pd.DataFrame(
+            [
+                {
+                    "Volatilitetsniveau": "Lav",
+                    "Trailing stop": "7 %",
+                },
+                {
+                    "Volatilitetsniveau": "Moderat",
+                    "Trailing stop": "10 %",
+                },
+                {
+                    "Volatilitetsniveau": "Høj",
+                    "Trailing stop": "14 %",
+                },
+                {
+                    "Volatilitetsniveau": "Meget høj",
+                    "Trailing stop": "18 %",
+                },
+            ]
+        )
+        st.dataframe(
+            stop_settings,
+            use_container_width=True,
+            hide_index=True,
+        )
+        st.caption(
+            "Stop Loss anvender 63-dages højeste kurs og fungerer "
+            "som beslutningsstøtte."
+        )
+
+    with st.expander("System"):
+        system_settings = pd.DataFrame(
+            [
+                {
+                    "Indstilling": "Risikofri rente",
+                    "Værdi": format_pct(
+                        config.risk_free_rate,
+                        1,
+                    ),
+                },
+                {
+                    "Indstilling": "App-version",
+                    "Værdi": APP_VERSION,
+                },
+                {
+                    "Indstilling": "Datakilde",
+                    "Værdi": "AI_portfolio.xlsx + yfinance",
+                },
+            ]
+        )
+        st.dataframe(
+            system_settings,
+            use_container_width=True,
+            hide_index=True,
+        )
+
+    st.caption(
+        "Permanent lagring af modelvægte i Excel kan tilføjes i en "
+        "senere sprint. Sessionens ændringer nulstilles ved genstart."
     )
 
