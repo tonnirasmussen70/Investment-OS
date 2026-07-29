@@ -19,83 +19,134 @@ from modules.attribution_engine import (
     top_contributors,
     top_detractors,
 )
-from modules.decision_engine import (
-    action_reason,
-    decision_summary,
-)
-from modules.decision_queue_engine import (
-    build_decision_queue,
-)
+from modules.change_engine import build_change_engine
 from modules.compounder_engine import (
     load_compounder_radar,
     radar_summary,
     top_candidates,
 )
-from modules.change_engine import (
-    build_change_engine,
+from modules.config_engine import load_investment_config
+from modules.decision_engine import decision_summary
+from modules.decision_queue_engine import build_decision_queue
+from modules.formatting import format_dkk, format_pct, format_score
+from modules.health_engine import calculate_portfolio_health
+from modules.market_engine import fetch_market_snapshot, fetch_price_history
+from modules.opportunity_engine import (
+    DEFAULT_OPPORTUNITY_WEIGHTS,
+    build_opportunity_scores,
 )
-from modules.config_engine import (
-    load_investment_config,
-)
-from modules.health_engine import (
-    calculate_portfolio_health,
-)
-from modules.formatting import (
-    format_dkk,
-    format_pct,
-    format_score,
-)
-from modules.market_engine import (
-    fetch_market_snapshot,
-    fetch_price_history,
-)
+from modules.portfolio_doctor_engine import build_portfolio_doctor
 from modules.portfolio_engine import (
-    asset_type_summary,
     calculate_portfolio,
     data_quality_score,
     load_master_file,
     portfolio_summary,
 )
-from modules.portfolio_doctor_engine import (
-    build_portfolio_doctor,
-)
-from modules.opportunity_engine import (
-    DEFAULT_OPPORTUNITY_WEIGHTS,
-    build_opportunity_scores,
-)
-from modules.report_engine import (
-    format_report_timestamp,
-    load_markdown_report,
-)
-from modules.rebalance_engine import (
-    build_rebalance_plan,
-)
-from modules.risk_engine import (
-    build_stop_loss_table,
-    stop_loss_summary,
-)
+from modules.rebalance_engine import build_rebalance_plan
+from modules.risk_engine import build_stop_loss_table, stop_loss_summary
+from modules.styling import table_style
 from modules.watchlist_engine import (
     format_watchlist_table,
     prepare_watchlist,
     watchlist_summary,
 )
-from modules.styling import table_height, table_style
 
 
 st.set_page_config(
-    page_title="Investment OS 3.0",
+    page_title="Investment OS 6.8",
     page_icon="📈",
     layout="wide",
 )
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
-MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "6.7.0"
+APP_VERSION = "6.8.0"
+MINIMUM_TRADE_DKK = 5_000.0
 
-st.title("📈 Investment OS 6.7")
-st.caption(
-    f"Fælles portefølje-, momentum-, valuta- og beslutningsdashboard · Version {APP_VERSION}"
-)
+TOOLTIPS = {
+    "portfolio_value": (
+        "Den samlede markedsværdi af alle positioner. Grundfos er medregnet "
+        "i værdien, men ikke i porteføljevægte eller analyser."
+    ),
+    "total_return": (
+        "Samlet gevinst eller tab i forhold til kostprisen for de aktive "
+        "positioner."
+    ),
+    "portfolio_health": (
+        "Et samlet mål for porteføljens momentum, relative styrke, risiko, "
+        "stop-loss, diversifikation og datakvalitet."
+    ),
+    "confidence": (
+        "Hvor sikkert modellen vurderer dagens signalbillede. Høj værdi "
+        "betyder, at flere signaler peger i samme retning."
+    ),
+    "data_quality": (
+        "Hvor komplet og pålideligt datagrundlaget er. Lav datakvalitet "
+        "reducerer tilliden til anbefalingerne."
+    ),
+    "decision_score": (
+        "Prioriterer mulige handlinger ud fra Portfolio Doctor, Opportunity "
+        "Score, AI Confidence og forventet forbedring af Portfolio Health."
+    ),
+    "momentum": (
+        "Måler kursudviklingen på tværs af flere perioder. Bruges til at "
+        "identificere vedvarende styrke og svaghed."
+    ),
+    "relative_strength": (
+        "Viser om aktivet klarer sig bedre eller dårligere end benchmark."
+    ),
+    "opportunity_score": (
+        "Rangerer attraktiviteten ud fra momentum, AI Confidence, relativ "
+        "styrke, trend, risiko, datakvalitet og plads under positionsloftet."
+    ),
+}
+
+
+def compact_dkk(value: float) -> str:
+    """Dansk heltalsformat uden valutaangivelse."""
+    if pd.isna(value):
+        return "N/A"
+    return f"{float(value):,.0f}".replace(",", ".")
+
+
+def percentage_points(value: float) -> str:
+    if pd.isna(value):
+        return "N/A"
+    return f"{float(value) * 100:+.1f} %-point"
+
+
+def score_text(value: float, decimals: int = 0) -> str:
+    if pd.isna(value):
+        return "N/A"
+    return f"{float(value):.{decimals}f}"
+
+
+def no_scroll_height(dataframe: pd.DataFrame, row_px: int = 38) -> int:
+    return max(100, (len(dataframe) + 1) * row_px + 4)
+
+
+def quality_label(score: float) -> tuple[str, str]:
+    if score >= 90:
+        return "🟢", "Høj"
+    if score >= 75:
+        return "🟡", "Acceptabel"
+    return "🔴", "Lav"
+
+
+def conviction_label(score: float) -> str:
+    if pd.isna(score):
+        return "Ukendt"
+    if score >= 85:
+        return "Høj"
+    if score >= 70:
+        return "Middel"
+    return "Lav"
+
+
+def safe_optional_load(loader, fallback, label: str):
+    try:
+        return loader(), None
+    except Exception as exc:
+        return fallback, f"{label} kunne ikke indlæses: {exc}"
 
 
 @st.cache_data(ttl=3600, show_spinner=False)
@@ -113,18 +164,11 @@ def load_history(tickers, period):
     return fetch_price_history(tickers, period=period)
 
 
-def safe_optional_load(loader, fallback, label: str):
-    """
-    Kør en valgfri loader uden at stoppe hele dashboardet.
-
-    Bruges kun til ikke-kritiske områder som morgenbrief, compounder-radar
-    og watchlist. Fejl returneres som en kort tekst til den relevante fane.
-    """
-    try:
-        return loader(), None
-    except Exception as exc:
-        return fallback, f"{label} kunne ikke indlæses: {exc}"
-
+st.title("📈 Investment OS 6.8")
+st.caption(
+    "Beslutningsstøtte til få, velbegrundede investeringsbeslutninger "
+    f"· Version {APP_VERSION}"
+)
 
 try:
     model = load_data(str(DATA_FILE))
@@ -144,85 +188,56 @@ currencies = raw["Currency"].dropna().astype(str).unique().tolist()
 
 snapshot = load_market_data(tickers, currencies)
 portfolio = calculate_portfolio(model, snapshot)
-
 config = load_investment_config(model.settings)
 
 for factor, default_value in config.health_weights.items():
-    state_key = f"health_weight_{factor}"
-    if state_key not in st.session_state:
-        st.session_state[state_key] = float(default_value)
+    key = f"health_weight_{factor}"
+    st.session_state.setdefault(key, float(default_value))
 
 health_factor_weights = {
-    factor: float(
-        st.session_state[f"health_weight_{factor}"]
-    )
+    factor: float(st.session_state[f"health_weight_{factor}"])
     for factor in config.health_weights
 }
 
 for factor, default_value in DEFAULT_OPPORTUNITY_WEIGHTS.items():
-    state_key = f"opportunity_weight_{factor}"
-    if state_key not in st.session_state:
-        st.session_state[state_key] = float(default_value)
+    key = f"opportunity_weight_{factor}"
+    st.session_state.setdefault(key, float(default_value))
 
 opportunity_factor_weights = {
-    factor: float(
-        st.session_state[f"opportunity_weight_{factor}"]
-    )
+    factor: float(st.session_state[f"opportunity_weight_{factor}"])
     for factor in DEFAULT_OPPORTUNITY_WEIGHTS
 }
 
 momentum_weights = config.momentum_weights
-
 benchmark_ticker = config.benchmark
 history_tickers = sorted(set([*tickers, benchmark_ticker]))
 history = load_history(history_tickers, "18mo")
+
 analytics_portfolio = portfolio.loc[
     portfolio["Include_Analytics"].fillna(False)
 ].copy()
-try:
-    analytics_portfolio = add_momentum(
-        analytics_portfolio,
-        history,
-        momentum_weights,
-        benchmark_ticker=benchmark_ticker,
-    )
-except TypeError as exc:
-    raise RuntimeError(
-        "analytics_engine.py er ikke opdateret til version 5.6. "
-        "Upload den nye analytics_engine.py til modules/ og genstart appen."
-    ) from exc
 
-previous_history = (
-    history.iloc[:-1]
-    if len(history) > 1
-    else history.iloc[0:0]
+analytics_portfolio = add_momentum(
+    analytics_portfolio,
+    history,
+    momentum_weights,
+    benchmark_ticker=benchmark_ticker,
 )
+
+previous_history = history.iloc[:-1] if len(history) > 1 else history.iloc[0:0]
+analysis_columns_to_remove = {
+    "1W", "1M", "3M", "6M", "12M", "Volatility", "Max_Drawdown",
+    "Relative_Strength_3M", "RS_Signal", "Composite",
+    "Momentum_Data_Quality", "AI_Confidence", "Momentum_Acceleration",
+    "Rotation_Signal", "Handling",
+}
+previous_source = analytics_portfolio[
+    [c for c in analytics_portfolio.columns if c not in analysis_columns_to_remove]
+].copy()
 
 previous_analytics = (
     add_momentum(
-        analytics_portfolio[
-            [
-                column
-                for column in analytics_portfolio.columns
-                if column not in {
-                    "1W",
-                    "1M",
-                    "3M",
-                    "6M",
-                    "12M",
-                    "Volatility",
-                    "Max_Drawdown",
-                    "Relative_Strength_3M",
-                    "RS_Signal",
-                    "Composite",
-                    "Momentum_Data_Quality",
-                    "AI_Confidence",
-                    "Momentum_Acceleration",
-                    "Rotation_Signal",
-                    "Handling",
-                }
-            ]
-        ],
+        previous_source,
         previous_history,
         momentum_weights,
         benchmark_ticker=benchmark_ticker,
@@ -231,14 +246,9 @@ previous_analytics = (
     else pd.DataFrame()
 )
 
-change_result = build_change_engine(
-    analytics_portfolio,
-    previous_analytics,
-)
+change_result = build_change_engine(analytics_portfolio, previous_analytics)
 
-risk_free_rate = config.risk_free_rate
 daily_returns = portfolio_returns(analytics_portfolio, history)
-
 benchmark_prices = (
     history[benchmark_ticker].dropna()
     if benchmark_ticker in history.columns
@@ -248,88 +258,37 @@ benchmark_returns = benchmark_prices.pct_change().dropna()
 
 portfolio_return_12m = (
     float((1 + daily_returns.tail(252)).prod() - 1)
-    if len(daily_returns) >= 20
-    else np.nan
+    if len(daily_returns) >= 20 else np.nan
 )
-benchmark_return_12m = period_return(
-    benchmark_prices,
-    min(252, max(len(benchmark_prices) - 1, 0)),
-) if len(benchmark_prices) > 1 else np.nan
-
+benchmark_return_12m = (
+    period_return(benchmark_prices, min(252, max(len(benchmark_prices) - 1, 0)))
+    if len(benchmark_prices) > 1 else np.nan
+)
 relative_return_12m = (
     portfolio_return_12m - benchmark_return_12m
-    if pd.notna(portfolio_return_12m)
-    and pd.notna(benchmark_return_12m)
+    if pd.notna(portfolio_return_12m) and pd.notna(benchmark_return_12m)
     else np.nan
 )
-portfolio_beta = beta(
-    daily_returns,
-    benchmark_returns,
-)
-
+portfolio_beta = beta(daily_returns, benchmark_returns)
 sharpe_history = rolling_sharpe(
     daily_returns,
-    risk_free_rate=risk_free_rate,
+    risk_free_rate=config.risk_free_rate,
+)
+current_sharpe = (
+    sharpe_history["Sharpe 252D"].dropna().iloc[-1]
+    if "Sharpe 252D" in sharpe_history
+    and not sharpe_history["Sharpe 252D"].dropna().empty
+    else np.nan
 )
 
 quality_score, quality_notes = data_quality_score(portfolio, snapshot)
-morning_brief_report, morning_brief_error = safe_optional_load(
-    lambda: load_markdown_report(MORNING_BRIEF_FILE),
-    None,
-    "Morgenbrief",
-)
-
-compounder_radar, compounder_error = safe_optional_load(
-    lambda: load_compounder_radar("data"),
-    None,
-    "Emerging Compounder Radar",
-)
-
-compounder_summary = (
-    radar_summary(compounder_radar)
-    if compounder_radar is not None
-    else {
-        "Candidate_Count": 0,
-        "High_Confidence_Count": 0,
-        "Average_Confidence": np.nan,
-        "Top_Candidate": None,
-    }
-)
-
-watchlist_result, watchlist_error = safe_optional_load(
-    lambda: prepare_watchlist(model.watchlist),
-    None,
-    "Watchlist",
-)
-
-watchlist_metrics = (
-    watchlist_summary(watchlist_result)
-    if watchlist_result is not None
-    else {
-        "Count": 0,
-        "High_Confidence": 0,
-        "Top_Candidate": None,
-    }
-)
-
 portfolio_metrics = portfolio_summary(portfolio)
 portfolio_total = portfolio_metrics["Portfolio_Value_DKK"]
 return_market_value = portfolio_metrics["Active_Market_Value_DKK"]
-return_cost_value = portfolio_metrics["Active_Cost_Value_DKK"]
 total_return = portfolio_metrics["Total_Return_Pct"]
 
-attribution = calculate_attribution(portfolio)
-contributors = top_contributors(attribution, limit=5)
-detractors = top_detractors(attribution, limit=5)
-
-current_sharpe = (
-    sharpe_history["Sharpe 252D"].dropna().iloc[-1]
-    if "Sharpe 252D" in sharpe_history and not sharpe_history["Sharpe 252D"].dropna().empty
-    else np.nan
-)
 decision = decision_summary(analytics_portfolio)
 avg_confidence = decision["AI_Confidence"]
-capital_flow_label = decision["Capital_Flow"]
 
 stop_loss_table = build_stop_loss_table(
     analytics_portfolio,
@@ -361,7 +320,7 @@ portfolio_doctor = build_portfolio_doctor(
     factor_weights=health_factor_weights,
     current_health=portfolio_health.score,
     default_step=0.02,
-    minimum_trade_dkk=5000.0,
+    minimum_trade_dkk=MINIMUM_TRADE_DKK,
 )
 
 decision_queue = build_decision_queue(
@@ -374,27 +333,41 @@ rebalance_result = build_rebalance_plan(
     analytics_portfolio,
     active_market_value_dkk=return_market_value,
     max_position_weight=config.max_position_weight,
-    minimum_trade_dkk=5000.0,
+    minimum_trade_dkk=MINIMUM_TRADE_DKK,
 )
 
+attribution = calculate_attribution(portfolio)
+contributors = top_contributors(attribution, limit=5)
+detractors = top_detractors(attribution, limit=5)
 
+compounder_radar, compounder_error = safe_optional_load(
+    lambda: load_compounder_radar("data"),
+    None,
+    "Emerging Compounder Radar",
+)
+compounder_summary = (
+    radar_summary(compounder_radar)
+    if compounder_radar is not None
+    else {
+        "Candidate_Count": 0,
+        "High_Confidence_Count": 0,
+        "Average_Confidence": np.nan,
+        "Top_Candidate": None,
+    }
+)
 
-def quality_label(score: float) -> tuple[str, str]:
-    """Returnér ikon og tekst for datakvalitet."""
-    if score >= 90:
-        return "🟢", "Høj"
-    if score >= 75:
-        return "🟡", "Acceptabel"
-    return "🔴", "Lav"
+watchlist_result, watchlist_error = safe_optional_load(
+    lambda: prepare_watchlist(model.watchlist),
+    None,
+    "Watchlist",
+)
+watchlist_metrics = (
+    watchlist_summary(watchlist_result)
+    if watchlist_result is not None
+    else {"Count": 0, "High_Confidence": 0, "Top_Candidate": None}
+)
 
-
-def no_scroll_height(dataframe: pd.DataFrame, row_px: int = 38) -> int:
-    """Vis hele tabellen uden intern scrolling."""
-    return max(100, (len(dataframe) + 1) * row_px + 4)
-
-
-
-tab_overview, tab_portfolio, tab_positions, tab_rebalance, tab_doctor, tab_opportunity, tab_compounders, tab_watchlist, tab_settings = st.tabs([
+tabs = st.tabs([
     "🏠 Overblik",
     "📈 Momentum",
     "📋 Positioner",
@@ -405,268 +378,178 @@ tab_overview, tab_portfolio, tab_positions, tab_rebalance, tab_doctor, tab_oppor
     "👀 Watchlist",
     "⚙️ Settings",
 ])
+(
+    tab_overview, tab_momentum, tab_positions, tab_rebalance, tab_doctor,
+    tab_opportunity, tab_compounders, tab_watchlist, tab_settings,
+) = tabs
+
 
 with tab_overview:
     quality_icon, quality_text = quality_label(quality_score)
 
-    k1, k2, k3, k4, k5, k6 = st.columns(6)
-    k1.metric("Porteføljeværdi", format_dkk(portfolio_total))
-    k2.metric("Samlet afkast", format_pct(total_return))
-    k3.metric("Sharpe 12M", format_score(current_sharpe, 2))
-    k4.metric(
-        "AI Confidence",
-        f"{avg_confidence:.0f}%" if pd.notna(avg_confidence) else "N/A",
-        decision["AI_Confidence_Label"],
+    k1, k2, k3, k4, k5 = st.columns(5)
+    k1.metric(
+        "Porteføljeværdi",
+        compact_dkk(portfolio_total),
+        help=TOOLTIPS["portfolio_value"],
     )
-    k5.metric("Capital Flow", capital_flow_label)
-    k6.metric(
+    k2.metric(
+        "Samlet afkast",
+        format_pct(total_return),
+        help=TOOLTIPS["total_return"],
+    )
+    k3.metric(
+        "Porteføljesundhed",
+        score_text(portfolio_health.score, 0),
+        help=TOOLTIPS["portfolio_health"],
+    )
+    k4.metric(
+        "Konfidens",
+        f"{avg_confidence:.0f}%" if pd.notna(avg_confidence) else "N/A",
+        decision.get("AI_Confidence_Label"),
+        help=TOOLTIPS["confidence"],
+    )
+    k5.metric(
         "Datakvalitet",
         f"{quality_score:.0f}%",
         f"{quality_icon} {quality_text}",
+        help=TOOLTIPS["data_quality"],
     )
 
-    if quality_notes:
-        st.markdown("#### Datakvalitet")
-        for note in quality_notes:
-            st.warning(note)
-    else:
-        st.success("Alle centrale kurs-, valuta- og porteføljedata er tilgængelige.")
-
-
     st.divider()
+    st.subheader("Næste anbefalede handling")
 
-    st.markdown("### 🎯 Dagens 3 vigtigste handlinger")
-
-    queue_overview = decision_queue.data.head(3).copy()
-
-    if queue_overview.empty:
-        st.success(
-            "Ingen handler opfylder de nuværende signal-, "
-            "confidence- og minimumskrav."
+    queue = decision_queue.data.copy()
+    if queue.empty:
+        st.success("**Ingen ændringer anbefales.**")
+        st.write(
+            "Ingen positioner opfylder aktuelt modellens krav til signalstyrke, "
+            "konfidens og minimumshandel. At holde porteføljen uændret er den "
+            "aktive anbefaling."
         )
     else:
-        overview_actions = queue_overview[
-            [
-                "Prioritet",
-                "Handling",
-                "Aktiv",
-                "Beløb DKK",
-                "Anbefalet ændring",
+        best = queue.iloc[0]
+        action = str(best.get("Handling", "Afvent"))
+        asset = str(best.get("Aktiv", "porteføljen"))
+        amount = abs(float(best.get("Beløb DKK", 0) or 0))
+        decision_score = pd.to_numeric(best.get("Decision Score"), errors="coerce")
+        confidence = pd.to_numeric(best.get("Confidence"), errors="coerce")
+        if pd.isna(confidence):
+            confidence = avg_confidence
+
+        action_text = f"{action} {asset}"
+        if amount >= MINIMUM_TRADE_DKK:
+            action_text += f" med ca. {compact_dkk(amount)}"
+
+        st.markdown(f"## {action_text}")
+        a1, a2, a3 = st.columns(3)
+        a1.metric(
+            "Overbevisning",
+            conviction_label(decision_score),
+            help="Styrken i selve investeringscasen og handlingens prioritet.",
+        )
+        a2.metric(
+            "Konfidens",
+            f"{confidence:.0f}%" if pd.notna(confidence) else "N/A",
+            help=TOOLTIPS["confidence"],
+        )
+        a3.metric(
+            "Prioritet",
+            str(best.get("Prioritet", "Normal")),
+            help="Viser hvor hurtigt handlingen bør vurderes.",
+        )
+        st.markdown("**Begrundelse**")
+        st.write(best.get("Begrundelse", "Ingen yderligere begrundelse tilgængelig."))
+
+        with st.expander("Vis beslutningsdetaljer"):
+            d1, d2 = st.columns(2)
+            d1.metric(
                 "Decision Score",
-                "Begrundelse",
-            ]
-        ].copy()
-
-        overview_actions["Beløb DKK"] = overview_actions[
-            "Beløb DKK"
-        ].apply(format_dkk)
-
-        overview_actions["Anbefalet ændring"] = overview_actions[
-            "Anbefalet ændring"
-        ].apply(
-            lambda value: f"{value * 100:+.1f} %-point"
-        )
-
-        overview_actions["Decision Score"] = overview_actions[
-            "Decision Score"
-        ].apply(
-            lambda value: (
-                f"{value:.0f}"
-                if pd.notna(value)
-                else "N/A"
+                score_text(decision_score, 0),
+                help=TOOLTIPS["decision_score"],
             )
-        )
+            d2.metric(
+                "Anbefalet vægtændring",
+                percentage_points(best.get("Anbefalet ændring", np.nan)),
+            )
 
-        overview_actions = overview_actions.rename(
-            columns={
-                "Anbefalet ændring": "Ændring",
-                "Decision Score": "Score",
-            }
+    st.markdown("### Øvrige prioriterede handlinger")
+    queue_overview = queue.head(3).copy()
+    if queue_overview.empty:
+        st.caption("Ingen yderligere handlinger.")
+    else:
+        action_table = queue_overview[
+            ["Prioritet", "Handling", "Aktiv", "Beløb DKK", "Decision Score", "Begrundelse"]
+        ].copy()
+        action_table["Beløb DKK"] = action_table["Beløb DKK"].apply(compact_dkk)
+        action_table["Decision Score"] = action_table["Decision Score"].apply(
+            lambda value: score_text(value, 0)
         )
-
+        action_table = action_table.rename(
+            columns={"Beløb DKK": "Beløb", "Decision Score": "Score"}
+        )
         st.dataframe(
-            table_style(overview_actions),
+            table_style(action_table),
             use_container_width=True,
             hide_index=True,
-            height=no_scroll_height(overview_actions),
+            height=no_scroll_height(action_table),
         )
 
-    st.markdown("### 📈 Hvad har ændret sig siden i går?")
-
+    st.markdown("### Ændringer siden seneste handelsdag")
     if change_result.data.empty:
-        st.caption(
-            "Der er ikke tilstrækkelige historiske data til at "
-            "beregne signalændringer."
-        )
+        st.caption("Der er ikke tilstrækkelige data til at beregne ændringer.")
     else:
-        change_col1, change_col2, change_col3 = st.columns(3)
-
-        with change_col1:
-            st.markdown("**Største forbedringer**")
-            if change_result.improvements.empty:
+        c1, c2, c3 = st.columns(3)
+        with c1:
+            st.markdown("**Forbedringer**")
+            improvements = change_result.improvements[["Name", "Change Score"]].head(3).copy()
+            improvements.columns = ["Aktiv", "Ændring"]
+            improvements["Ændring"] = improvements["Ændring"].apply(
+                lambda value: f"{value:+.1f}" if pd.notna(value) else "N/A"
+            )
+            if improvements.empty:
                 st.caption("Ingen tydelige forbedringer.")
             else:
-                improvements = change_result.improvements[
-                    [
-                        "Name",
-                        "Change Score",
-                    ]
-                ].copy()
-                improvements = improvements.rename(
-                    columns={
-                        "Name": "Aktiv",
-                        "Change Score": "Ændring",
-                    }
-                )
-                improvements["Ændring"] = improvements[
-                    "Ændring"
-                ].apply(
-                    lambda value: (
-                        f"{value:+.1f}"
-                        if pd.notna(value)
-                        else "N/A"
-                    )
-                )
                 st.dataframe(
-                    table_style(improvements),
-                    use_container_width=True,
-                    hide_index=True,
-                    height=no_scroll_height(improvements),
+                    table_style(improvements), use_container_width=True,
+                    hide_index=True, height=no_scroll_height(improvements),
                 )
-
-        with change_col2:
-            st.markdown("**Største forværringer**")
-            if change_result.deteriorations.empty:
+        with c2:
+            st.markdown("**Forværringer**")
+            deteriorations = change_result.deteriorations[
+                ["Name", "Change Score"]
+            ].head(3).copy()
+            deteriorations.columns = ["Aktiv", "Ændring"]
+            deteriorations["Ændring"] = deteriorations["Ændring"].apply(
+                lambda value: f"{value:+.1f}" if pd.notna(value) else "N/A"
+            )
+            if deteriorations.empty:
                 st.caption("Ingen tydelige forværringer.")
             else:
-                deteriorations = change_result.deteriorations[
-                    [
-                        "Name",
-                        "Change Score",
-                    ]
-                ].copy()
-                deteriorations = deteriorations.rename(
-                    columns={
-                        "Name": "Aktiv",
-                        "Change Score": "Ændring",
-                    }
-                )
-                deteriorations["Ændring"] = deteriorations[
-                    "Ændring"
-                ].apply(
-                    lambda value: (
-                        f"{value:+.1f}"
-                        if pd.notna(value)
-                        else "N/A"
-                    )
-                )
                 st.dataframe(
-                    table_style(deteriorations),
-                    use_container_width=True,
-                    hide_index=True,
-                    height=no_scroll_height(deteriorations),
+                    table_style(deteriorations), use_container_width=True,
+                    hide_index=True, height=no_scroll_height(deteriorations),
                 )
-
-        with change_col3:
+        with c3:
             st.markdown("**Nye signaler**")
-            if change_result.signal_changes.empty:
+            signals = change_result.signal_changes.head(3).copy()
+            if signals.empty:
                 st.caption("Ingen ændrede signaler.")
             else:
-                signal_changes = change_result.signal_changes[
-                    [
-                        "Name",
-                        "Signal Change",
-                        "Rotation Change",
-                    ]
-                ].head(3).copy()
-
-                signal_changes = signal_changes.rename(
-                    columns={
-                        "Name": "Aktiv",
-                        "Signal Change": "Handling",
-                        "Rotation Change": "Rotation",
-                    }
-                )
-
-                signal_changes["Signal"] = signal_changes.apply(
-                    lambda row: (
-                        row["Handling"]
-                        if str(row["Handling"]).strip()
-                        else row["Rotation"]
-                    ),
+                signals["Signal"] = signals.apply(
+                    lambda row: row.get("Signal Change")
+                    if str(row.get("Signal Change", "")).strip()
+                    else row.get("Rotation Change", ""),
                     axis=1,
                 )
-
-                signal_changes = signal_changes[
-                    ["Aktiv", "Signal"]
-                ]
-
+                signals = signals[["Name", "Signal"]]
+                signals.columns = ["Aktiv", "Signal"]
                 st.dataframe(
-                    table_style(signal_changes),
-                    use_container_width=True,
-                    hide_index=True,
-                    height=no_scroll_height(signal_changes),
+                    table_style(signals), use_container_width=True,
+                    hide_index=True, height=no_scroll_height(signals),
                 )
 
-        with st.expander("Se detaljer om signalændringer"):
-            change_details = change_result.data[
-                [
-                    "Name",
-                    "Handling_Previous",
-                    "Handling",
-                    "Rotation_Signal_Previous",
-                    "Rotation_Signal",
-                    "Delta_AI_Confidence",
-                    "Delta_Composite",
-                    "Change Score",
-                ]
-            ].copy()
-
-            change_details = change_details.rename(
-                columns={
-                    "Name": "Aktiv",
-                    "Handling_Previous": "Handling før",
-                    "Handling": "Handling nu",
-                    "Rotation_Signal_Previous": "Rotation før",
-                    "Rotation_Signal": "Rotation nu",
-                    "Delta_AI_Confidence": "AI Δ",
-                    "Delta_Composite": "Momentum Δ",
-                    "Change Score": "Ændring",
-                }
-            )
-
-            for column in [
-                "AI Δ",
-                "Momentum Δ",
-                "Ændring",
-            ]:
-                change_details[column] = change_details[
-                    column
-                ].apply(
-                    lambda value: (
-                        f"{value:+.1f}"
-                        if pd.notna(value)
-                        else "N/A"
-                    )
-                )
-
-            change_details = change_details.sort_values(
-                "Ændring",
-                ascending=False,
-            )
-
-            st.dataframe(
-                table_style(change_details),
-                use_container_width=True,
-                hide_index=True,
-                height=min(
-                    no_scroll_height(change_details),
-                    500,
-                ),
-            )
-
-    st.markdown("### ⚠️ Kræver opmærksomhed")
-
+    st.markdown("### Kræver opmærksomhed")
     attention_rows = []
 
     if not stop_loss_table.empty:
@@ -674,60 +557,41 @@ with tab_overview:
             stop_loss_table["Risikohandling"].isin(
                 ["Stop brudt", "Alarmniveau", "Stram stop"]
             )
-        ].copy()
-
+        ]
         for _, row in critical_stops.head(5).iterrows():
-            attention_rows.append(
-                {
-                    "Område": "Stop-loss",
-                    "Aktiv": row.get("Aktiv", "Ukendt"),
-                    "Status": row.get(
-                        "Risikohandling",
-                        "Kræver kontrol",
-                    ),
-                    "Handling": "Kontrollér position og stopniveau",
-                }
-            )
+            attention_rows.append({
+                "Prioritet": "Høj" if row.get("Risikohandling") == "Stop brudt" else "Normal",
+                "Aktiv": row.get("Aktiv", "Ukendt"),
+                "Årsag": row.get("Risikohandling", "Stop-loss"),
+                "Næste skridt": "Kontrollér position og stopniveau",
+            })
 
-    overweight_positions = analytics_portfolio.loc[
-        pd.to_numeric(
-            analytics_portfolio["Portfolio_Weight"],
-            errors="coerce",
-        )
-        > config.max_position_weight
-    ].copy()
+    weights = pd.to_numeric(
+        analytics_portfolio["Portfolio_Weight"], errors="coerce"
+    )
+    overweight = analytics_portfolio.loc[weights > config.max_position_weight]
+    for _, row in overweight.head(5).iterrows():
+        attention_rows.append({
+            "Prioritet": "Normal",
+            "Aktiv": row.get("Name", "Ukendt"),
+            "Årsag": (
+                f"Vægt {row.get('Portfolio_Weight', 0):.1%} "
+                f"over loft {config.max_position_weight:.0%}"
+            ),
+            "Næste skridt": "Vurder reduktion",
+        })
 
-    for _, row in overweight_positions.head(5).iterrows():
-        attention_rows.append(
-            {
-                "Område": "Positionsvægt",
-                "Aktiv": row.get("Name", "Ukendt"),
-                "Status": (
-                    f"{row.get('Portfolio_Weight', 0):.1%} "
-                    f"mod loft {config.max_position_weight:.0%}"
-                ),
-                "Handling": "Vurder reduktion eller begrund undtagelse",
-            }
-        )
-
-    if quality_notes:
-        for note in quality_notes[:3]:
-            attention_rows.append(
-                {
-                    "Område": "Datakvalitet",
-                    "Aktiv": "System",
-                    "Status": note,
-                    "Handling": "Kontrollér datakilden",
-                }
-            )
+    for note in quality_notes[:3]:
+        attention_rows.append({
+            "Prioritet": "Høj",
+            "Aktiv": "System",
+            "Årsag": note,
+            "Næste skridt": "Kontrollér datakilden",
+        })
 
     attention_table = pd.DataFrame(attention_rows)
-
     if attention_table.empty:
-        st.success(
-            "Ingen stop-loss-brud, positionsoverskridelser eller "
-            "kritiske dataproblemer."
-        )
+        st.success("Ingen forhold kræver opmærksomhed.")
     else:
         st.dataframe(
             table_style(attention_table),
@@ -736,489 +600,196 @@ with tab_overview:
             height=no_scroll_height(attention_table),
         )
 
-    st.divider()
-
-    left, right = st.columns(2)
-
-    with left:
-        st.subheader("Porteføljeudvikling")
-        if not daily_returns.empty:
-            portfolio_curve = (1 + daily_returns).cumprod() * 100
-            comparison = portfolio_curve.rename("Portefølje").to_frame()
-
-            if not benchmark_returns.empty:
-                benchmark_curve = (
-                    (1 + benchmark_returns).cumprod() * 100
+    with st.expander("Vis porteføljegrafer og performance"):
+        left, right = st.columns(2)
+        with left:
+            st.markdown("#### Porteføljeudvikling")
+            if not daily_returns.empty:
+                portfolio_curve = (1 + daily_returns).cumprod() * 100
+                comparison = portfolio_curve.rename("Portefølje").to_frame()
+                if not benchmark_returns.empty:
+                    benchmark_curve = (1 + benchmark_returns).cumprod() * 100
+                    comparison = comparison.join(
+                        benchmark_curve.rename(benchmark_ticker), how="inner"
+                    )
+                curve_df = (
+                    comparison.reset_index()
+                    .rename(columns={comparison.index.name or "index": "Dato"})
+                    .melt(id_vars="Dato", var_name="Serie", value_name="Indeks")
                 )
-                comparison = comparison.join(
-                    benchmark_curve.rename(benchmark_ticker),
-                    how="inner",
+                fig = px.line(
+                    curve_df, x="Dato", y="Indeks", color="Serie",
+                    title=f"Portefølje vs. {benchmark_ticker} – indeks 100",
+                )
+                fig.update_layout(height=390, yaxis_title="Indeks")
+                st.plotly_chart(fig, use_container_width=True)
+                p1, p2, p3 = st.columns(3)
+                p1.metric("Relativt afkast 12M", format_pct(relative_return_12m))
+                p2.metric(f"{benchmark_ticker} 12M", format_pct(benchmark_return_12m))
+                p3.metric("Beta", format_score(portfolio_beta, 2))
+            else:
+                st.info("Porteføljeudviklingen kan ikke vises endnu.")
+
+        with right:
+            st.markdown("#### Sharpe-udvikling")
+            if not sharpe_history.empty:
+                sharpe_long = (
+                    sharpe_history.reset_index()
+                    .rename(columns={sharpe_history.index.name or "index": "Dato"})
+                    .melt(id_vars="Dato", var_name="Periode", value_name="Sharpe")
+                    .dropna()
+                )
+                fig = px.line(
+                    sharpe_long, x="Dato", y="Sharpe", color="Periode",
+                    title="Rullende Sharpe",
+                )
+                fig.add_hline(y=1.0, line_dash="dash")
+                fig.update_layout(height=390)
+                st.plotly_chart(fig, use_container_width=True)
+                st.metric("Sharpe 12M", format_score(current_sharpe, 2))
+            else:
+                st.info("Sharpe-historikken kan ikke vises endnu.")
+
+        st.markdown("#### Performance attribution")
+
+        def attribution_table(dataframe: pd.DataFrame) -> pd.DataFrame:
+            table = dataframe.copy()
+            if table.empty:
+                return table
+            table["Vægt"] = table["Vægt"].apply(lambda x: format_pct(x, 1))
+            table["Afkast DKK"] = table["Afkast DKK"].apply(compact_dkk)
+            table["Afkast %"] = table["Afkast %"].apply(lambda x: format_pct(x, 1))
+            table["Bidrag"] = table["Bidrag"].apply(lambda x: format_pct(x, 1))
+            return table[["Aktiv", "Vægt", "Afkast DKK", "Afkast %", "Bidrag"]].rename(
+                columns={"Afkast DKK": "Afkast"}
+            )
+
+        a1, a2 = st.columns(2)
+        with a1:
+            st.markdown("**Største bidrag**")
+            table = attribution_table(contributors)
+            if table.empty:
+                st.caption("Ingen positive bidrag.")
+            else:
+                st.dataframe(
+                    table_style(table), use_container_width=True,
+                    hide_index=True, height=no_scroll_height(table),
+                )
+        with a2:
+            st.markdown("**Største negative bidrag**")
+            table = attribution_table(detractors)
+            if table.empty:
+                st.caption("Ingen negative bidrag.")
+            else:
+                st.dataframe(
+                    table_style(table), use_container_width=True,
+                    hide_index=True, height=no_scroll_height(table),
                 )
 
-            curve_df = (
-                comparison.reset_index()
-                .rename(columns={comparison.index.name or "index": "Dato"})
-                .melt(
-                    id_vars="Dato",
-                    var_name="Serie",
-                    value_name="Indeks",
-                )
-            )
 
-            fig_curve = px.line(
-                curve_df,
-                x="Dato",
-                y="Indeks",
-                color="Serie",
-                title=f"Portefølje vs. {benchmark_ticker} – indeks 100",
-            )
-            fig_curve.update_layout(height=430, yaxis_title="Indeks")
-            st.plotly_chart(fig_curve, use_container_width=True)
-
-            b1, b2, b3 = st.columns(3)
-            b1.metric(
-                "Relativt afkast 12M",
-                format_pct(relative_return_12m),
-            )
-            b2.metric(
-                f"{benchmark_ticker} 12M",
-                format_pct(benchmark_return_12m),
-            )
-            b3.metric(
-                "Beta",
-                format_score(portfolio_beta, 2),
-            )
-        else:
-            st.info("Porteføljeudviklingen kan ikke vises endnu.")
-
-    with right:
-        st.subheader("Sharpe-udvikling")
-        if not sharpe_history.empty:
-            sharpe_long = (
-                sharpe_history.reset_index()
-                .rename(
-                    columns={
-                        sharpe_history.index.name or "index": "Dato"
-                    }
-                )
-                .melt(
-                    id_vars="Dato",
-                    var_name="Periode",
-                    value_name="Sharpe",
-                )
-                .dropna()
-            )
-            fig_sharpe = px.line(
-                sharpe_long,
-                x="Dato",
-                y="Sharpe",
-                color="Periode",
-                title="Rullende Sharpe – 30, 90 og 252 handelsdage",
-            )
-            fig_sharpe.add_hline(y=1.0, line_dash="dash")
-            fig_sharpe.update_layout(height=430)
-            st.plotly_chart(fig_sharpe, use_container_width=True)
-        else:
-            st.info("Sharpe-historikken kan ikke vises endnu.")
-
-    st.subheader("Performance attribution")
-
-    contrib_col, detract_col = st.columns(2)
-
-    def prepare_attribution_table(
-        dataframe: pd.DataFrame,
-    ) -> pd.DataFrame:
-        table = dataframe.copy()
-
-        if table.empty:
-            return table
-
-        table["Vægt"] = table["Vægt"].apply(
-            lambda value: format_pct(value, 1)
-        )
-        table["Afkast DKK"] = table["Afkast DKK"].apply(
-            format_dkk
-        )
-        table["Afkast %"] = table["Afkast %"].apply(
-            lambda value: format_pct(value, 1)
-        )
-        table["Bidrag"] = table["Bidrag"].apply(
-            lambda value: format_pct(value, 1)
-        )
-        table["Andel af resultat"] = table[
-            "Andel af resultat"
-        ].apply(
-            lambda value: format_pct(value, 1)
-        )
-
-        return table[
-            [
-                "Aktiv",
-                "Vægt",
-                "Afkast DKK",
-                "Afkast %",
-                "Bidrag",
-            ]
-        ]
-
-    with contrib_col:
-        st.markdown("#### Største bidrag")
-        contributor_table = prepare_attribution_table(contributors)
-
-        if contributor_table.empty:
-            st.info("Ingen positive bidrag endnu.")
-        else:
-            st.dataframe(
-                table_style(contributor_table),
-                use_container_width=True,
-                hide_index=True,
-                height=no_scroll_height(contributor_table),
-            )
-
-    with detract_col:
-        st.markdown("#### Største negative bidrag")
-        detractor_table = prepare_attribution_table(detractors)
-
-        if detractor_table.empty:
-            st.success("Ingen negative bidrag.")
-        else:
-            st.dataframe(
-                table_style(detractor_table),
-                use_container_width=True,
-                hide_index=True,
-                height=no_scroll_height(detractor_table),
-            )
-
-with tab_portfolio:
+with tab_momentum:
     st.subheader("Momentum")
+    st.caption(
+        "Viser vedvarende styrke og svaghed. Tabellen er sorteret efter "
+        "aktivtype og navn for hurtig genfinding."
+    )
 
-    analysis_columns = [
-        "1W",
-        "1M",
-        "3M",
-        "6M",
-        "12M",
-        "Composite",
-        "Momentum_Acceleration",
-        "Rotation_Signal",
-        "Relative_Strength_3M",
-        "RS_Signal",
-        "AI_Confidence",
-        "Handling",
-    ]
+    momentum_table = analytics_portfolio[
+        [
+            "Asset_Type", "Name", "Portfolio_Weight", "1W", "1M", "3M",
+            "6M", "12M", "Composite", "Momentum_Acceleration",
+            "Relative_Strength_3M", "AI_Confidence", "Handling",
+        ]
+    ].copy()
+
+    momentum_table = momentum_table.rename(columns={
+        "Asset_Type": "Type",
+        "Name": "Navn",
+        "Portfolio_Weight": "Vægt",
+        "Composite": "Momentum",
+        "Momentum_Acceleration": "Acceleration",
+        "Relative_Strength_3M": "RS 3M",
+        "AI_Confidence": "AI",
+    })
+    momentum_table["Type"] = momentum_table["Type"].replace({
+        "Stock": "Aktie", "Equity": "Aktie", "Fund": "ETF"
+    })
+    momentum_table = momentum_table.sort_values(["Type", "Navn"])
+
+    momentum_table["Vægt"] = momentum_table["Vægt"].apply(lambda x: format_pct(x, 1))
+    for col in ["1W", "1M", "3M", "6M", "12M", "Momentum", "Acceleration", "RS 3M"]:
+        momentum_table[col] = momentum_table[col].apply(lambda x: format_pct(x, 1))
+    momentum_table["AI"] = momentum_table["AI"].apply(
+        lambda x: f"{x:.0f}%" if pd.notna(x) else "N/A"
+    )
+
+    st.dataframe(
+        table_style(momentum_table),
+        use_container_width=True,
+        hide_index=True,
+        height=no_scroll_height(momentum_table),
+    )
+    st.caption(
+        "Grundfos kan vises i positionsoversigten, men indgår ikke i momentum, "
+        "aktiv vægtning eller rebalancering."
+    )
+
+
+with tab_positions:
+    st.subheader("Positioner")
+    st.caption(
+        f"{len(portfolio)} positioner · samlet markedsværdi "
+        f"{compact_dkk(portfolio_total)}. Grundfos indgår i markedsværdien, "
+        "men ikke i porteføljevægtene."
+    )
 
     merge_key = (
         "Asset_ID"
-        if "Asset_ID" in portfolio.columns
-        and "Asset_ID" in analytics_portfolio.columns
+        if "Asset_ID" in portfolio.columns and "Asset_ID" in analytics_portfolio.columns
         else "Yahoo_Ticker"
     )
-
     analysis_lookup = analytics_portfolio[
-        [merge_key, *analysis_columns]
+        [merge_key, "Composite", "AI_Confidence", "Handling"]
     ].drop_duplicates(subset=[merge_key])
-
-    portfolio_source = portfolio.merge(
-        analysis_lookup,
-        on=merge_key,
-        how="left",
-        suffixes=("", "_analysis"),
+    position_source = portfolio.merge(
+        analysis_lookup, on=merge_key, how="left", suffixes=("", "_analysis")
     )
 
-    portfolio_source["Display_Market_Value_DKK"] = portfolio_source[
-        "Market_Value_DKK"
-    ]
+    if "Account" not in position_source.columns:
+        position_source["Account"] = "Ikke angivet"
 
-    if "Market_value_DKK" in portfolio_source.columns:
-        portfolio_source["Display_Market_Value_DKK"] = (
-            portfolio_source["Display_Market_Value_DKK"].combine_first(
-                pd.to_numeric(
-                    portfolio_source["Market_value_DKK"],
-                    errors="coerce",
-                )
-            )
-        )
-
-    portfolio_source["Handling"] = portfolio_source["Handling"].fillna(
-        "Uden for analyse"
-    )
-
-    asset_type_normalized = (
-        portfolio_source["Asset_Type"]
-        .fillna("")
-        .astype(str)
-        .str.strip()
-        .str.casefold()
-    )
-
-    stock_mask = asset_type_normalized.str.contains(
-        r"aktie|stock|equity",
-        regex=True,
-    )
-    etf_mask = asset_type_normalized.str.contains(
-        r"etf|fund",
-        regex=True,
-    )
-
-    stocks = portfolio_source.loc[stock_mask].copy()
-    etfs = portfolio_source.loc[etf_mask].copy()
-
-    asset_summary = asset_type_summary(portfolio_source)
-
-    stock_summary = asset_summary.loc[
-        asset_summary["Asset_Group"].eq("Aktier")
-    ]
-    etf_summary = asset_summary.loc[
-        asset_summary["Asset_Group"].eq("ETF'er")
-    ]
-
-    stock_count = (
-        int(stock_summary["Positioner"].iloc[0])
-        if not stock_summary.empty
-        else 0
-    )
-    stock_value = (
-        float(stock_summary["Markedsværdi_DKK"].iloc[0])
-        if not stock_summary.empty
-        else 0.0
-    )
-    etf_count = (
-        int(etf_summary["Positioner"].iloc[0])
-        if not etf_summary.empty
-        else 0
-    )
-    etf_value = (
-        float(etf_summary["Markedsværdi_DKK"].iloc[0])
-        if not etf_summary.empty
-        else 0.0
-    )
-
-    stock_kpi, etf_kpi = st.columns(2)
-    stock_kpi.metric(
-        "Aktier",
-        f"{stock_count} positioner",
-        format_dkk(stock_value),
-    )
-    etf_kpi.metric(
-        "ETF'er",
-        f"{etf_count} positioner",
-        format_dkk(etf_value),
-    )
-
-    def prepare_portfolio_table(
-        dataframe: pd.DataFrame,
-    ) -> pd.DataFrame:
-        table = dataframe[
-            [
-                "Name",
-                "Portfolio_Weight",
-                "1W",
-                "1M",
-                "3M",
-                "6M",
-                "12M",
-                "Composite",
-                "Momentum_Acceleration",
-                "Rotation_Signal",
-                "Relative_Strength_3M",
-                "RS_Signal",
-                "AI_Confidence",
-                "Handling",
-            ]
-        ].copy()
-
-        table = table.rename(
-            columns={
-                "Name": "Aktiv",
-                "Portfolio_Weight": "Vægt",
-                "Momentum_Acceleration": "Acceleration",
-                "Rotation_Signal": "Rotation",
-                "Relative_Strength_3M": "RS 3M",
-                "RS_Signal": "RS signal",
-                "AI_Confidence": "AI",
-            }
-        )
-
-        table = table.sort_values(
-            ["Composite", "AI", "Vægt"],
-            ascending=[False, False, False],
-            na_position="last",
-        )
-
-        excluded_weight = table["Handling"].eq("Uden for analyse")
-
-        table["Vægt"] = table["Vægt"].apply(
-            lambda value: format_pct(value, 1)
-        )
-        table.loc[excluded_weight, "Vægt"] = "Ikke medtaget"
-
-        for column in [
-            "1W",
-            "1M",
-            "3M",
-            "6M",
-            "12M",
-            "Composite",
-            "Acceleration",
-            "RS 3M",
-        ]:
-            table[column] = table[column].apply(
-                lambda value: format_pct(value, 1)
-            )
-
-        table["AI"] = table["AI"].apply(
-            lambda value: (
-                f"{value:.0f}%"
-                if pd.notna(value)
-                else "N/A"
-            )
-        )
-
-        return table
-
-
-    st.markdown("### 📈 Aktie-momentum")
-    if stocks.empty:
-        st.info("Ingen aktier fundet i masterfilen.")
-    else:
-        stock_table = prepare_portfolio_table(stocks)
-        st.dataframe(
-            table_style(stock_table),
-            use_container_width=True,
-            hide_index=True,
-            height=no_scroll_height(stock_table),
-        )
-
-    st.markdown("### 📊 ETF-momentum")
-    if etfs.empty:
-        st.info("Ingen ETF'er fundet i masterfilen.")
-    else:
-        etf_table = prepare_portfolio_table(etfs)
-        st.dataframe(
-            table_style(etf_table),
-            use_container_width=True,
-            hide_index=True,
-            height=no_scroll_height(etf_table),
-        )
-
-    st.caption(
-        "Momentum vises for 1W, 1M, 3M, 6M og 12M. "
-        "Alle negative værdier vises med rød skrift. "
-        "Grundfos vises i aktietabellen, men indgår ikke i aktiv vægtning, "
-        "afkast, momentum eller rebalancering."
-    )
-
-with tab_positions:
-    st.subheader("Samlet positionstabel")
-
-    position_columns = [
-        "Asset_Type",
-        "Name",
-        "Ticker",
-        "Quantity",
-        "Purchase_Price",
-        "Current_Price",
-        "Currency",
-        "Market_Value_DKK",
-        "Cost_Value_DKK",
-        "Return_DKK",
-        "Return_Pct",
-        "Portfolio_Weight",
-    ]
-
-    optional_columns = [
-        column
-        for column in ["Sector", "Account"]
-        if column in portfolio.columns
-    ]
-
-    position_table = portfolio[
-        [*position_columns, *optional_columns]
+    position_table = position_source[
+        [
+            "Asset_Type", "Name", "Account", "Market_Value_DKK",
+            "Portfolio_Weight", "Return_Pct", "Composite",
+            "AI_Confidence", "Handling",
+        ]
     ].copy()
+    position_table.columns = [
+        "Type", "Navn", "Depot", "Markedsværdi", "Vægt",
+        "Afkast", "Momentum", "AI", "Handling",
+    ]
+    position_table["Type"] = position_table["Type"].replace({
+        "Stock": "Aktie", "Equity": "Aktie", "Fund": "ETF"
+    })
+    position_table = position_table.sort_values(["Type", "Navn"]).reset_index(drop=True)
 
-    position_table = position_table.rename(
-        columns={
-            "Asset_Type": "Type",
-            "Name": "Navn",
-            "Ticker": "Ticker",
-            "Quantity": "Antal",
-            "Purchase_Price": "Købskurs",
-            "Current_Price": "Aktuel kurs",
-            "Currency": "Valuta",
-            "Market_Value_DKK": "Markedsværdi",
-            "Cost_Value_DKK": "Kostpris",
-            "Return_DKK": "Gevinst/tab",
-            "Return_Pct": "Afkast",
-            "Portfolio_Weight": "Vægt",
-            "Sector": "Sektor",
-            "Account": "Depot",
-        }
-    )
-
-    position_table["Type"] = (
-        position_table["Type"]
-        .astype(str)
-        .replace(
-            {
-                "Stock": "Aktie",
-                "Equity": "Aktie",
-                "ETF": "ETF",
-                "Fund": "ETF",
-            }
-        )
-    )
-
-    # Grundfos vises i tabellen, men har ingen aktiv porteføljevægt.
-    included_weight = portfolio["Include_Weight"].fillna(False).to_numpy()
-
-    position_table["Antal"] = position_table["Antal"].apply(
-        lambda value: (
-            f"{value:,.0f}".replace(",", ".")
-            if pd.notna(value)
-            else "N/A"
-        )
-    )
-
-    for column in ["Købskurs", "Aktuel kurs"]:
-        position_table[column] = position_table[column].apply(
-            lambda value: (
-                format_score(value, 2)
-                if pd.notna(value)
-                else "N/A"
-            )
-        )
-
-    for column in [
-        "Markedsværdi",
-        "Kostpris",
-        "Gevinst/tab",
-    ]:
-        position_table[column] = position_table[column].apply(
-            format_dkk
-        )
-
-    position_table["Afkast"] = position_table["Afkast"].apply(
-        lambda value: format_pct(value, 1)
-    )
-
+    include_weight = portfolio["Include_Weight"].fillna(False).to_numpy()
+    position_table["Markedsværdi"] = position_table["Markedsværdi"].apply(compact_dkk)
     position_table["Vægt"] = [
         format_pct(value, 1) if include else "-"
-        for value, include in zip(
-            portfolio["Portfolio_Weight"],
-            included_weight,
-        )
+        for value, include in zip(position_source["Portfolio_Weight"], include_weight)
     ]
-
-    position_table = position_table.sort_values(
-        ["Type", "Markedsværdi"],
-        ascending=[True, False],
-    ).reset_index(drop=True)
-
-    st.caption(
-        f"{len(position_table)} positioner · "
-        f"samlet markedsværdi {format_dkk(portfolio_total)}. "
-        "Grundfos indgår i markedsværdien, men ikke i porteføljevægtene."
+    position_table["Afkast"] = position_table["Afkast"].apply(
+        lambda x: format_pct(x, 1)
     )
+    position_table["Momentum"] = position_table["Momentum"].apply(
+        lambda x: format_pct(x, 1)
+    )
+    position_table["AI"] = position_table["AI"].apply(
+        lambda x: f"{x:.0f}%" if pd.notna(x) else "N/A"
+    )
+    position_table["Handling"] = position_table["Handling"].fillna("Uden for analyse")
 
     st.dataframe(
         table_style(position_table),
@@ -1227,501 +798,269 @@ with tab_positions:
         height=no_scroll_height(position_table),
     )
 
+    with st.expander("Vis tekniske positionsdetaljer"):
+        optional = [c for c in ["Sector", "Account"] if c in portfolio.columns]
+        detail_columns = [
+            "Asset_Type", "Name", "Ticker", "Quantity", "Purchase_Price",
+            "Current_Price", "Currency", "Market_Value_DKK", "Cost_Value_DKK",
+            "Return_DKK", "Return_Pct", "Portfolio_Weight", *optional,
+        ]
+        details = portfolio[detail_columns].copy()
+        details = details.rename(columns={
+            "Asset_Type": "Type", "Name": "Navn", "Quantity": "Antal",
+            "Purchase_Price": "Købskurs", "Current_Price": "Aktuel kurs",
+            "Currency": "Valuta", "Market_Value_DKK": "Markedsværdi",
+            "Cost_Value_DKK": "Kostpris", "Return_DKK": "Gevinst/tab",
+            "Return_Pct": "Afkast", "Portfolio_Weight": "Vægt",
+            "Sector": "Sektor", "Account": "Depot",
+        })
+        details["Type"] = details["Type"].replace({
+            "Stock": "Aktie", "Equity": "Aktie", "Fund": "ETF"
+        })
+        details = details.sort_values(["Type", "Navn"])
+        for col in ["Markedsværdi", "Kostpris", "Gevinst/tab"]:
+            details[col] = details[col].apply(compact_dkk)
+        details["Afkast"] = details["Afkast"].apply(lambda x: format_pct(x, 1))
+        details["Vægt"] = [
+            format_pct(value, 1) if include else "-"
+            for value, include in zip(portfolio["Portfolio_Weight"], include_weight)
+        ]
+        st.dataframe(
+            table_style(details),
+            use_container_width=True,
+            hide_index=True,
+            height=min(no_scroll_height(details), 650),
+        )
+
 
 with tab_rebalance:
-    st.subheader("Rebalanceringsindikation")
+    st.subheader("Rebalancering")
 
     r1, r2, r3, r4 = st.columns(4)
     r1.metric("Øg-signaler", rebalance_result.increase_count)
     r2.metric("Reducer-signaler", rebalance_result.reduce_count)
     r3.metric("Foreslåede handler", rebalance_result.trade_count)
-    r4.metric(
-        "Brutto handel",
-        format_dkk(rebalance_result.gross_trade_dkk),
-    )
+    r4.metric("Brutto handel", compact_dkk(rebalance_result.gross_trade_dkk))
 
     rebalance = rebalance_result.data.copy()
-
     if rebalance.empty:
-        st.info("Ingen rebalanceringsdata tilgængelige.")
+        st.success("Ingen rebalancering anbefales.")
     else:
-        for column in [
-            "Nuværende vægt",
-            "Foreslået vægt",
-            "Ændring",
-            "Composite",
-        ]:
-            rebalance[column] = rebalance[column].apply(
-                lambda value: format_pct(value, 1)
-            )
-
+        for col in ["Nuværende vægt", "Foreslået vægt", "Ændring", "Composite"]:
+            rebalance[col] = rebalance[col].apply(lambda x: format_pct(x, 1))
         rebalance["AI"] = rebalance["AI"].apply(
-            lambda value: (
-                f"{value:.0f}%"
-                if pd.notna(value)
-                else "N/A"
-            )
+            lambda x: f"{x:.0f}%" if pd.notna(x) else "N/A"
         )
-        rebalance["Handel DKK"] = rebalance[
-            "Handel DKK"
-        ].apply(format_dkk)
-
-        rebalance = rebalance[
+        rebalance["Handel DKK"] = rebalance["Handel DKK"].apply(compact_dkk)
+        display = rebalance[
             [
-                "Aktiv",
-                "Nuværende vægt",
-                "Foreslået vægt",
-                "Ændring",
-                "Handel DKK",
-                "Rebalance handling",
-                "Positionsloft",
-                "Composite",
-                "AI",
-                "Handling",
+                "Aktiv", "Nuværende vægt", "Foreslået vægt", "Ændring",
+                "Handel DKK", "Rebalance handling", "Positionsloft",
+                "Composite", "AI", "Handling",
             ]
-        ]
-
+        ].rename(columns={"Handel DKK": "Handel", "Composite": "Momentum"})
         st.dataframe(
-            table_style(rebalance),
-            use_container_width=True,
-            hide_index=True,
-            height=no_scroll_height(rebalance),
+            table_style(display), use_container_width=True,
+            hide_index=True, height=no_scroll_height(display),
         )
 
     st.caption(
-        f"Positionsloft: {config.max_position_weight:.0%}. "
-        "Handler under 5.000 kr. filtreres som støj. "
-        "Modellen er beslutningsstøtte og udfører ingen handler."
+        f"Positionsloft {config.max_position_weight:.0%}. Handler under "
+        f"{compact_dkk(MINIMUM_TRADE_DKK)} filtreres som støj."
     )
 
-    st.subheader("Stop-loss og alarmniveauer")
+    with st.expander("Vis stop-loss og alarmniveauer"):
+        s1, s2, s3 = st.columns(3)
+        s1.metric("Stop brudt", stop_loss_metrics["Stop_Broken"])
+        s2.metric("Alarmniveau", stop_loss_metrics["Alarm"])
+        s3.metric("Stram stop", stop_loss_metrics["Tighten"])
 
-    s1, s2, s3 = st.columns(3)
-    s1.metric("Stop brudt", stop_loss_metrics["Stop_Broken"])
-    s2.metric("Alarmniveau", stop_loss_metrics["Alarm"])
-    s3.metric("Stram stop", stop_loss_metrics["Tighten"])
-
-    if stop_loss_table.empty:
-        st.info("Ingen stop-loss data tilgængelige.")
-    else:
-        stop_display = stop_loss_table.copy()
-
-        for column in [
-            "Kurs",
-            "3M høj",
-            "Stopkurs",
-            "Alarmkurs",
-        ]:
-            stop_display[column] = stop_display[column].apply(
-                lambda value: (
-                    format_score(value, 2)
-                    if pd.notna(value)
-                    else "N/A"
+        if stop_loss_table.empty:
+            st.info("Ingen stop-loss-data.")
+        else:
+            stop_display = stop_loss_table.copy()
+            for col in ["Kurs", "3M høj", "Stopkurs", "Alarmkurs"]:
+                stop_display[col] = stop_display[col].apply(
+                    lambda x: format_score(x, 2) if pd.notna(x) else "N/A"
                 )
-            )
-
-        for column in [
-            "Stopafstand",
-            "Afstand til stop",
-        ]:
-            stop_display[column] = stop_display[column].apply(
-                lambda value: format_pct(value, 1)
-            )
-
-        stop_display = stop_display[
-            [
-                "Aktiv",
-                "Kurs",
-                "3M høj",
-                "Stopafstand",
-                "Stopkurs",
-                "Alarmkurs",
-                "Afstand til stop",
-                "Modelhandling",
-                "Risikohandling",
+            for col in ["Stopafstand", "Afstand til stop"]:
+                stop_display[col] = stop_display[col].apply(
+                    lambda x: format_pct(x, 1)
+                )
+            stop_display = stop_display[
+                [
+                    "Aktiv", "Kurs", "3M høj", "Stopafstand", "Stopkurs",
+                    "Alarmkurs", "Afstand til stop", "Modelhandling",
+                    "Risikohandling",
+                ]
             ]
-        ]
-
-        st.dataframe(
-            table_style(stop_display),
-            use_container_width=True,
-            hide_index=True,
-            height=no_scroll_height(stop_display),
-        )
-
-    st.caption(
-        "Stopkurs beregnes som trailing stop fra højeste kurs de seneste "
-        "63 handelsdage. Modellen er beslutningsstøtte og placerer ikke ordrer."
-    )
+            st.dataframe(
+                table_style(stop_display), use_container_width=True,
+                hide_index=True, height=no_scroll_height(stop_display),
+            )
 
 
 with tab_doctor:
     st.subheader("Portfolio Doctor")
     st.caption(
-        "Simulerer moderate ændringer på 2 procentpoint og viser "
-        "effekten på den aktuelle Portfolio Health-model. "
-        "Resultatet er beslutningsstøtte og ikke en afkastprognose."
+        "Tester moderate vægtændringer og viser, om de forbedrer den aktuelle "
+        "Portfolio Health-model. Resultatet er beslutningsstøtte, ikke en ordre."
     )
 
-    doctor_data = portfolio_doctor.data.copy()
-
-    d1, d2, d3, d4 = st.columns(4)
+    d1, d2, d3 = st.columns(3)
     d1.metric(
-        "Portfolio Health nu",
-        (
-            f"{portfolio_doctor.current_health:.1f}"
-            if pd.notna(portfolio_doctor.current_health)
-            else "N/A"
-        ),
+        "Porteføljesundhed nu",
+        score_text(portfolio_doctor.current_health, 1),
+        help=TOOLTIPS["portfolio_health"],
     )
     d2.metric(
         "Bedste simulation",
-        (
-            f"{portfolio_doctor.best_simulated_health:.1f}"
-            if pd.notna(
-                portfolio_doctor.best_simulated_health
-            )
-            else "N/A"
-        ),
-        (
-            f"{portfolio_doctor.best_simulated_health - portfolio_doctor.current_health:+.1f}"
-            if pd.notna(
-                portfolio_doctor.best_simulated_health
-            )
-            and pd.notna(portfolio_doctor.current_health)
-            else None
-        ),
+        score_text(portfolio_doctor.best_simulated_health, 1),
     )
-    d3.metric(
-        "Handlingsforslag",
-        portfolio_doctor.actionable_count,
-    )
-    d4.metric(
-        "Simuleret ændring",
-        "2 %-point",
-        "Min. handel 5.000 kr.",
-    )
+    d3.metric("Handlingsforslag", portfolio_doctor.actionable_count)
 
+    doctor_data = portfolio_doctor.data.copy()
     if doctor_data.empty:
-        st.success(
-            "Portfolio Doctor finder ingen handler, der opfylder "
-            "de nuværende signal- og minimumskrav."
-        )
+        st.success("Ingen ændringer opfylder de aktuelle krav.")
     else:
-        best = doctor_data.iloc[0]
-
-        if (
-            pd.notna(best["Health effekt"])
-            and best["Health effekt"] > 0
-        ):
-            st.success(
-                f"Højeste prioritet: {best['Handling']} "
-                f"{best['Aktiv']} med "
-                f"{abs(best['Anbefalet ændring']) * 100:.1f} "
-                f"procentpoint. Simulationen ændrer Portfolio "
-                f"Health med {best['Health effekt']:+.1f} point."
-            )
-        else:
-            st.info(
-                "De aktuelle signaler giver ikke en tydelig forbedring "
-                "af Portfolio Health. Brug forslagene som kontrolpunkter "
-                "frem for automatiske handler."
-            )
-
-        display_doctor = doctor_data[
+        display = doctor_data[
             [
-                "Aktiv",
-                "Handling",
-                "Anbefalet ændring",
-                "Beløb DKK",
-                "Health før",
-                "Health efter",
-                "Health effekt",
-                "Confidence",
-                "Prioritet",
-                "Begrundelse",
+                "Aktiv", "Handling", "Anbefalet ændring", "Beløb DKK",
+                "Health effekt", "Confidence", "Prioritet", "Begrundelse",
             ]
         ].copy()
-
-        display_doctor["Anbefalet ændring"] = display_doctor[
-            "Anbefalet ændring"
-        ].apply(
-            lambda value: f"{value * 100:+.1f} %-point"
+        display["Anbefalet ændring"] = display["Anbefalet ændring"].apply(
+            percentage_points
         )
-
-        display_doctor["Beløb DKK"] = display_doctor[
-            "Beløb DKK"
-        ].apply(format_dkk)
-
-        for column in [
-            "Health før",
-            "Health efter",
-            "Health effekt",
-            "Prioritet",
-        ]:
-            display_doctor[column] = display_doctor[
-                column
-            ].apply(
-                lambda value: (
-                    f"{value:.1f}"
-                    if pd.notna(value)
-                    else "N/A"
-                )
-            )
-
-        display_doctor["Confidence"] = display_doctor[
-            "Confidence"
-        ].apply(
-            lambda value: (
-                f"{value:.0f}%"
-                if pd.notna(value)
-                else "N/A"
-            )
+        display["Beløb DKK"] = display["Beløb DKK"].apply(compact_dkk)
+        display["Health effekt"] = display["Health effekt"].apply(
+            lambda x: score_text(x, 1)
         )
-
+        display["Confidence"] = display["Confidence"].apply(
+            lambda x: f"{x:.0f}%" if pd.notna(x) else "N/A"
+        )
+        display = display.rename(columns={"Beløb DKK": "Beløb"})
         st.dataframe(
-            table_style(display_doctor),
-            use_container_width=True,
-            hide_index=True,
-            height=no_scroll_height(display_doctor),
+            table_style(display), use_container_width=True,
+            hide_index=True, height=no_scroll_height(display),
         )
 
-        st.markdown("### Sådan læses modellen")
-        st.markdown(
-            """
-- **Anbefalet ændring** er en moderat simulation, ikke en ordre.
-- **Health effekt** viser kun ændringen i Portfolio Health-modellen.
-- **Prioritet** kombinerer Health-effekt, AI Confidence, momentum og signalstyrke.
-- Køb finansieres pro rata ved at reducere de øvrige aktive vægte; salg fordeles pro rata på resten.
-            """
-        )
-
+        with st.expander("Vis modeldetaljer"):
+            detail = doctor_data[
+                ["Aktiv", "Health før", "Health efter", "Health effekt"]
+            ].copy()
+            st.dataframe(
+                table_style(detail), use_container_width=True, hide_index=True
+            )
 
 
 with tab_opportunity:
-    st.subheader("AI Opportunity Engine")
+    st.subheader("Opportunities")
     st.caption(
-        "Rangerer porteføljens positioner efter attraktivitet ud fra "
-        "momentum, trend, relative strength, risiko, datakvalitet og "
-        "ledig plads under positionsloftet."
+        "Rangerer de stærkeste kandidater i den nuværende portefølje. "
+        "En høj score er ikke automatisk en købsanbefaling."
     )
 
     opportunity_data = opportunity_result.data.copy()
-
     o1, o2, o3 = st.columns(3)
     o1.metric(
         "Bedste mulighed",
         opportunity_result.top_opportunity or "N/A",
         (
-            f"{opportunity_result.top_score:.1f}/100"
-            if pd.notna(opportunity_result.top_score)
-            else None
+            f"{opportunity_result.top_score:.0f}/100"
+            if pd.notna(opportunity_result.top_score) else None
         ),
+        help=TOOLTIPS["opportunity_score"],
     )
     o2.metric(
         "Laveste conviction",
         opportunity_result.lowest_conviction or "N/A",
         (
-            f"{opportunity_result.lowest_score:.1f}/100"
-            if pd.notna(opportunity_result.lowest_score)
-            else None
+            f"{opportunity_result.lowest_score:.0f}/100"
+            if pd.notna(opportunity_result.lowest_score) else None
         ),
     )
-    o3.metric(
-        "Aktiver vurderet",
-        len(opportunity_data),
-    )
+    o3.metric("Aktiver vurderet", len(opportunity_data))
 
     if opportunity_data.empty:
-        st.info("Der er ikke tilstrækkelige data til Opportunity Score.")
+        st.info("Ikke tilstrækkelige data.")
     else:
-        top_opportunities = opportunity_data.copy()
-
-        display_opportunities = top_opportunities[
+        summary = opportunity_data[
             [
-                "Opportunity Rank",
-                "Name",
-                "Handling",
-                "Opportunity Score",
-                "Opportunity Label",
-                "Momentum Score",
-                "AI Score",
-                "RS Score",
-                "Trend Score",
-                "Risk Score",
-                "Data Score",
-                "Position Score",
+                "Opportunity Rank", "Name", "Handling",
+                "Opportunity Score", "Opportunity Label",
             ]
-        ].rename(
-            columns={
-                "Opportunity Rank": "Rank",
-                "Name": "Aktiv",
-                "Opportunity Score": "Opportunity",
-                "Opportunity Label": "Status",
-                "Momentum Score": "Momentum",
-                "AI Score": "AI",
-                "RS Score": "RS",
-                "Trend Score": "Trend",
-                "Risk Score": "Risiko",
-                "Data Score": "Data",
-                "Position Score": "Positionsbonus",
-            }
-        )
-
-        score_columns = [
-            "Opportunity",
-            "Momentum",
-            "AI",
-            "RS",
-            "Trend",
-            "Risiko",
-            "Data",
-            "Positionsbonus",
-        ]
-        for column in score_columns:
-            display_opportunities[column] = (
-                display_opportunities[column].apply(
-                    lambda value: (
-                        f"{value:.0f}"
-                        if pd.notna(value)
-                        else "N/A"
-                    )
-                )
-            )
-
-        st.markdown("### Samlet rangering")
+        ].copy()
+        summary.columns = ["Rank", "Aktiv", "Handling", "Score", "Status"]
+        summary["Score"] = summary["Score"].apply(lambda x: score_text(x, 0))
         st.dataframe(
-            table_style(display_opportunities),
-            use_container_width=True,
-            hide_index=True,
-            height=no_scroll_height(display_opportunities),
+            table_style(summary), use_container_width=True,
+            hide_index=True, height=no_scroll_height(summary),
         )
 
-        st.info(
-            "Fundamental kvalitet indgår endnu ikke i Opportunity Score, "
-            "fordi Investment OS ikke har et autoritativt fundamentalt "
-            "datasæt. Faktoren tilføjes først, når datagrundlaget er robust."
-        )
+        with st.expander("Vis scorekomponenter"):
+            details = opportunity_data[
+                [
+                    "Name", "Momentum Score", "AI Score", "RS Score",
+                    "Trend Score", "Risk Score", "Data Score", "Position Score",
+                ]
+            ].copy()
+            details.columns = [
+                "Aktiv", "Momentum", "AI", "RS", "Trend",
+                "Risiko", "Data", "Positionsbonus",
+            ]
+            for col in details.columns[1:]:
+                details[col] = details[col].apply(lambda x: score_text(x, 0))
+            st.dataframe(
+                table_style(details), use_container_width=True,
+                hide_index=True, height=no_scroll_height(details),
+            )
 
 
 with tab_compounders:
-    st.subheader("Emerging Compounder Radar")
+    st.subheader("Emerging Compounders")
 
     if compounder_error:
         st.warning(compounder_error)
     elif compounder_radar is None or not compounder_radar.exists:
         st.info(
             "Radarfilen mangler. Læg ugens resultat i "
-            "`data/compounder_radar.xlsx` eller "
-            "`data/compounder_radar.csv`."
+            "`data/compounder_radar.xlsx` eller `data/compounder_radar.csv`."
         )
     else:
         c1, c2, c3, c4 = st.columns(4)
-        c1.metric(
-            "Kandidater",
-            compounder_summary["Candidate_Count"],
-        )
-        c2.metric(
-            "AI ≥ 80%",
-            compounder_summary["High_Confidence_Count"],
-        )
+        c1.metric("Kandidater", compounder_summary["Candidate_Count"])
+        c2.metric("AI ≥ 80%", compounder_summary["High_Confidence_Count"])
         c3.metric(
-            "Gns. AI Confidence",
+            "Gns. konfidens",
             (
                 f"{compounder_summary['Average_Confidence']:.0f}%"
-                if pd.notna(
-                    compounder_summary["Average_Confidence"]
-                )
-                else "N/A"
+                if pd.notna(compounder_summary["Average_Confidence"]) else "N/A"
             ),
         )
-        c4.metric(
-            "Topkandidat",
-            compounder_summary["Top_Candidate"] or "N/A",
-        )
+        c4.metric("Topkandidat", compounder_summary["Top_Candidate"] or "N/A")
 
-        if compounder_radar.notes:
-            for note in compounder_radar.notes:
-                st.warning(note)
+        for note in compounder_radar.notes:
+            st.warning(note)
 
-        radar_table = top_candidates(
-            compounder_radar,
-            limit=20,
-        )
-
-        if radar_table.empty:
-            st.info("Radarfilen indeholder ingen kandidater.")
+        radar = top_candidates(compounder_radar, limit=20)
+        if radar.empty:
+            st.info("Ingen kandidater.")
         else:
-            radar_table = radar_table.rename(
-                columns={
-                    "Name": "Selskab",
-                    "Ticker": "Ticker",
-                    "Composite_Score": "Composite",
-                    "AI_Confidence": "AI Confidence",
-                    "Status": "Status",
-                    "Revenue_CAGR_5Y": "Omsætning CAGR 5Y",
-                    "EPS_CAGR_5Y": "EPS CAGR 5Y",
-                    "Gross_Margin": "Bruttomargin",
-                    "ROIC": "ROIC",
-                    "Upside_Pct": "Upside",
-                    "Risk_Reward": "Risk/Reward",
-                    "Risk": "Risiko",
-                    "Reason": "Begrundelse",
-                }
-            )
-
-            for column in [
-                "Omsætning CAGR 5Y",
-                "EPS CAGR 5Y",
-                "Bruttomargin",
-                "ROIC",
-                "Upside",
-            ]:
-                if column in radar_table.columns:
-                    radar_table[column] = radar_table[column].apply(
-                        lambda value: format_pct(value, 1)
-                    )
-
-            if "Composite" in radar_table.columns:
-                radar_table["Composite"] = radar_table[
-                    "Composite"
-                ].apply(
-                    lambda value: format_score(value, 1)
-                )
-
-            if "AI Confidence" in radar_table.columns:
-                radar_table["AI Confidence"] = radar_table[
-                    "AI Confidence"
-                ].apply(
-                    lambda value: (
-                        f"{value:.0f}%"
-                        if pd.notna(value)
-                        else "N/A"
-                    )
-                )
-
-            if "Risk/Reward" in radar_table.columns:
-                radar_table["Risk/Reward"] = radar_table[
-                    "Risk/Reward"
-                ].apply(
-                    lambda value: (
-                        format_score(value, 2)
-                        if pd.notna(value)
-                        else "N/A"
-                    )
-                )
-
+            radar = radar.rename(columns={
+                "Name": "Selskab", "Composite_Score": "Composite",
+                "AI_Confidence": "AI Confidence",
+                "Revenue_CAGR_5Y": "Omsætning CAGR 5Y",
+                "EPS_CAGR_5Y": "EPS CAGR 5Y",
+                "Gross_Margin": "Bruttomargin", "Upside_Pct": "Upside",
+                "Risk_Reward": "Risk/Reward", "Risk": "Risiko",
+                "Reason": "Begrundelse",
+            })
             st.dataframe(
-                table_style(radar_table),
-                use_container_width=True,
-                hide_index=True,
-                height=no_scroll_height(radar_table),
+                table_style(radar), use_container_width=True,
+                hide_index=True, height=no_scroll_height(radar),
             )
 
-        st.caption(
-            "Radaren er uafhængig af den nuværende portefølje. "
-            "Den viser kun kandidater til videre analyse og udfører aldrig handler."
-        )
 
 with tab_watchlist:
     st.subheader("Watchlist")
@@ -1732,291 +1071,91 @@ with tab_watchlist:
         st.info("Watchlist er tom.")
     else:
         w1, w2, w3 = st.columns(3)
-        w1.metric(
-            "Kandidater",
-            watchlist_metrics["Count"],
-        )
-        w2.metric(
-            "AI ≥ 80%",
-            watchlist_metrics["High_Confidence"],
-        )
-        w3.metric(
-            "Topkandidat",
-            watchlist_metrics["Top_Candidate"] or "N/A",
-        )
+        w1.metric("Kandidater", watchlist_metrics["Count"])
+        w2.metric("AI ≥ 80%", watchlist_metrics["High_Confidence"])
+        w3.metric("Topkandidat", watchlist_metrics["Top_Candidate"] or "N/A")
 
         for note in watchlist_result.notes:
             st.warning(note)
 
-        watchlist_table = format_watchlist_table(
-            watchlist_result
-        )
-
+        watchlist_table = format_watchlist_table(watchlist_result)
         st.dataframe(
-            table_style(watchlist_table),
-            use_container_width=True,
-            hide_index=True,
-            height=no_scroll_height(watchlist_table),
+            table_style(watchlist_table), use_container_width=True,
+            hide_index=True, height=no_scroll_height(watchlist_table),
         )
 
-        st.caption(
-            "Watchlist viser kandidater til overvågning. "
-            "Aktier flyttes ikke automatisk til porteføljen, "
-            "og der udføres ingen handler."
-        )
 
 with tab_settings:
     st.subheader("Settings")
     st.caption(
-        "Kontrolcenter for Investment OS. Ændringer i modelvægte "
-        "anvendes straks i den aktuelle Streamlit-session."
+        "Kontrolcenter for modellen. Sessionens ændringer nulstilles ved genstart."
     )
 
-    with st.expander(
-        "Portfolio Health",
-        expanded=True,
-    ):
-        health_factors = list(config.health_weights.keys())
-        health_columns = st.columns(2)
-
-        for index, factor in enumerate(health_factors):
-            with health_columns[index % 2]:
+    with st.expander("Portfolio Health", expanded=True):
+        factors = list(config.health_weights.keys())
+        columns = st.columns(2)
+        for index, factor in enumerate(factors):
+            with columns[index % 2]:
                 st.number_input(
-                    factor,
-                    min_value=0.0,
-                    max_value=1.0,
-                    step=0.05,
-                    format="%.2f",
-                    key=f"health_weight_{factor}",
+                    factor, min_value=0.0, max_value=1.0, step=0.05,
+                    format="%.2f", key=f"health_weight_{factor}",
                 )
-
-        health_total = sum(
-            float(
-                st.session_state[
-                    f"health_weight_{factor}"
-                ]
-            )
-            for factor in health_factors
-        )
-
-        st.caption(
-            f"Indtastet vægtsum: {health_total:.2f}. "
-            "Vægtene normaliseres automatisk til 100 %."
-        )
-
-        if st.button(
-            "Nulstil Portfolio Health",
-            key="reset_health_weights",
-        ):
-            for factor, default_value in (
-                config.health_weights.items()
-            ):
-                st.session_state[
-                    f"health_weight_{factor}"
-                ] = float(default_value)
+        total = sum(float(st.session_state[f"health_weight_{f}"]) for f in factors)
+        st.caption(f"Indtastet vægtsum: {total:.2f}. Normaliseres automatisk.")
+        if st.button("Nulstil Portfolio Health"):
+            for factor, default in config.health_weights.items():
+                st.session_state[f"health_weight_{factor}"] = float(default)
             st.rerun()
 
-    with st.expander(
-        "Opportunity Score",
-        expanded=True,
-    ):
-        opportunity_factors = list(
-            DEFAULT_OPPORTUNITY_WEIGHTS.keys()
-        )
-        opportunity_columns = st.columns(2)
-
-        for index, factor in enumerate(opportunity_factors):
-            with opportunity_columns[index % 2]:
+    with st.expander("Opportunity Score"):
+        factors = list(DEFAULT_OPPORTUNITY_WEIGHTS.keys())
+        columns = st.columns(2)
+        for index, factor in enumerate(factors):
+            with columns[index % 2]:
                 st.number_input(
-                    factor,
-                    min_value=0.0,
-                    max_value=1.0,
-                    step=0.05,
-                    format="%.2f",
-                    key=f"opportunity_weight_{factor}",
+                    factor, min_value=0.0, max_value=1.0, step=0.05,
+                    format="%.2f", key=f"opportunity_weight_{factor}",
                 )
-
-        opportunity_total = sum(
-            float(
-                st.session_state[
-                    f"opportunity_weight_{factor}"
-                ]
-            )
-            for factor in opportunity_factors
+        total = sum(
+            float(st.session_state[f"opportunity_weight_{f}"]) for f in factors
         )
-
-        st.caption(
-            f"Indtastet vægtsum: {opportunity_total:.2f}. "
-            "Vægtene normaliseres automatisk til 100 %."
-        )
-
-        if st.button(
-            "Nulstil Opportunity Score",
-            key="reset_opportunity_weights",
-        ):
-            for factor, default_value in (
-                DEFAULT_OPPORTUNITY_WEIGHTS.items()
-            ):
-                st.session_state[
-                    f"opportunity_weight_{factor}"
-                ] = float(default_value)
+        st.caption(f"Indtastet vægtsum: {total:.2f}. Normaliseres automatisk.")
+        if st.button("Nulstil Opportunity Score"):
+            for factor, default in DEFAULT_OPPORTUNITY_WEIGHTS.items():
+                st.session_state[f"opportunity_weight_{factor}"] = float(default)
             st.rerun()
 
-    with st.expander("Change Engine"):
-        st.caption(
-            "Sammenligner dagens signaler med en genberegning på "
-            "forrige handelsdags kursdata. Viser kun de tre største "
-            "forbedringer og forværringer på Overblik."
-        )
-
-    with st.expander("Decision Queue"):
-        decision_settings = pd.DataFrame(
-            [
-                {
-                    "Faktor": "Portfolio Doctor-prioritet",
-                    "Vægt": "35 %",
-                },
-                {
-                    "Faktor": "Opportunity Score",
-                    "Vægt": "30 %",
-                },
-                {
-                    "Faktor": "AI Confidence",
-                    "Vægt": "20 %",
-                },
-                {
-                    "Faktor": "Health-effekt",
-                    "Vægt": "15 %",
-                },
-            ]
-        )
-        st.dataframe(
-            decision_settings,
-            use_container_width=True,
-            hide_index=True,
-        )
-        st.caption(
-            "Ved Reducer-signaler inverteres Opportunity Score, "
-            "så lav conviction øger beslutningsprioriteten."
-        )
-
-    with st.expander("Momentum Engine"):
-        momentum_settings = pd.DataFrame(
+    with st.expander("Modeloversigt"):
+        settings_table = pd.DataFrame([
+            {"Indstilling": "Benchmark", "Værdi": config.benchmark},
             {
-                "Periode": list(momentum_weights.keys()),
-                "Aktiv vægt": [
-                    momentum_weights[key]
-                    for key in momentum_weights
-                ],
-            }
-        )
-        momentum_settings["Aktiv vægt"] = (
-            momentum_settings["Aktiv vægt"].apply(
-                lambda value: format_pct(value, 0)
-            )
-        )
+                "Indstilling": "Maks. positionsvægt",
+                "Værdi": format_pct(config.max_position_weight, 0),
+            },
+            {
+                "Indstilling": "Maks. sektorvægt",
+                "Værdi": format_pct(config.max_sector_weight, 0),
+            },
+            {
+                "Indstilling": "Minimum handel",
+                "Værdi": compact_dkk(MINIMUM_TRADE_DKK),
+            },
+            {
+                "Indstilling": "Risikofri rente",
+                "Værdi": format_pct(config.risk_free_rate, 1),
+            },
+            {"Indstilling": "App-version", "Værdi": APP_VERSION},
+            {"Indstilling": "Datakilde", "Værdi": "AI_portfolio.xlsx + yfinance"},
+        ])
+        st.dataframe(settings_table, use_container_width=True, hide_index=True)
+
+    with st.expander("Momentum-vægte"):
+        momentum_settings = pd.DataFrame({
+            "Periode": list(momentum_weights.keys()),
+            "Aktiv vægt": [
+                format_pct(momentum_weights[key], 0) for key in momentum_weights
+            ],
+        })
         st.dataframe(
-            momentum_settings,
-            use_container_width=True,
-            hide_index=True,
+            momentum_settings, use_container_width=True, hide_index=True
         )
-        st.caption(
-            "Momentum-vægte styres fortsat fra Settings-arket "
-            "i AI_portfolio.xlsx."
-        )
-
-    with st.expander("Rebalancering"):
-        rebalance_settings = pd.DataFrame(
-            [
-                {
-                    "Indstilling": "Maks. positionsvægt",
-                    "Værdi": format_pct(
-                        config.max_position_weight,
-                        0,
-                    ),
-                },
-                {
-                    "Indstilling": "Maks. sektorvægt",
-                    "Værdi": format_pct(
-                        config.max_sector_weight,
-                        0,
-                    ),
-                },
-                {
-                    "Indstilling": "Minimum handel",
-                    "Værdi": "5.000 kr.",
-                },
-                {
-                    "Indstilling": "Benchmark",
-                    "Værdi": config.benchmark,
-                },
-            ]
-        )
-        st.dataframe(
-            rebalance_settings,
-            use_container_width=True,
-            hide_index=True,
-        )
-
-    with st.expander("Stop Loss"):
-        stop_settings = pd.DataFrame(
-            [
-                {
-                    "Volatilitetsniveau": "Lav",
-                    "Trailing stop": "7 %",
-                },
-                {
-                    "Volatilitetsniveau": "Moderat",
-                    "Trailing stop": "10 %",
-                },
-                {
-                    "Volatilitetsniveau": "Høj",
-                    "Trailing stop": "14 %",
-                },
-                {
-                    "Volatilitetsniveau": "Meget høj",
-                    "Trailing stop": "18 %",
-                },
-            ]
-        )
-        st.dataframe(
-            stop_settings,
-            use_container_width=True,
-            hide_index=True,
-        )
-        st.caption(
-            "Stop Loss anvender 63-dages højeste kurs og fungerer "
-            "som beslutningsstøtte."
-        )
-
-    with st.expander("System"):
-        system_settings = pd.DataFrame(
-            [
-                {
-                    "Indstilling": "Risikofri rente",
-                    "Værdi": format_pct(
-                        config.risk_free_rate,
-                        1,
-                    ),
-                },
-                {
-                    "Indstilling": "App-version",
-                    "Værdi": APP_VERSION,
-                },
-                {
-                    "Indstilling": "Datakilde",
-                    "Værdi": "AI_portfolio.xlsx + yfinance",
-                },
-            ]
-        )
-        st.dataframe(
-            system_settings,
-            use_container_width=True,
-            hide_index=True,
-        )
-
-    st.caption(
-        "Permanent lagring af modelvægte i Excel kan tilføjes i en "
-        "senere sprint. Sessionens ændringer nulstilles ved genstart."
-    )
-
