@@ -31,6 +31,9 @@ from modules.compounder_engine import (
     radar_summary,
     top_candidates,
 )
+from modules.change_engine import (
+    build_change_engine,
+)
 from modules.config_engine import (
     load_investment_config,
 )
@@ -87,9 +90,9 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "6.4.0"
+APP_VERSION = "6.5.0"
 
-st.title("📈 Investment OS 6.4")
+st.title("📈 Investment OS 6.5")
 st.caption(
     f"Fælles portefølje-, momentum-, valuta- og beslutningsdashboard · Version {APP_VERSION}"
 )
@@ -188,6 +191,50 @@ except TypeError as exc:
         "analytics_engine.py er ikke opdateret til version 5.6. "
         "Upload den nye analytics_engine.py til modules/ og genstart appen."
     ) from exc
+
+previous_history = (
+    history.iloc[:-1]
+    if len(history) > 1
+    else history.iloc[0:0]
+)
+
+previous_analytics = (
+    add_momentum(
+        analytics_portfolio[
+            [
+                column
+                for column in analytics_portfolio.columns
+                if column not in {
+                    "1W",
+                    "1M",
+                    "3M",
+                    "6M",
+                    "12M",
+                    "Volatility",
+                    "Max_Drawdown",
+                    "Relative_Strength_3M",
+                    "RS_Signal",
+                    "Composite",
+                    "Momentum_Data_Quality",
+                    "AI_Confidence",
+                    "Momentum_Acceleration",
+                    "Rotation_Signal",
+                    "Handling",
+                }
+            ]
+        ],
+        previous_history,
+        momentum_weights,
+        benchmark_ticker=benchmark_ticker,
+    )
+    if not previous_history.empty
+    else pd.DataFrame()
+)
+
+change_result = build_change_engine(
+    analytics_portfolio,
+    previous_analytics,
+)
 
 risk_free_rate = config.risk_free_rate
 daily_returns = portfolio_returns(analytics_portfolio, history)
@@ -510,6 +557,143 @@ with tab_overview:
             hide_index=True,
             height=no_scroll_height(overview_actions),
         )
+
+    st.markdown("### Ændringer siden seneste handelsdag")
+
+    if change_result.data.empty:
+        st.caption(
+            "Der er ikke tilstrækkelige historiske data til at "
+            "beregne signalændringer."
+        )
+    else:
+        change_col1, change_col2 = st.columns(2)
+
+        with change_col1:
+            st.markdown("**Største forbedringer**")
+            if change_result.improvements.empty:
+                st.caption("Ingen tydelige forbedringer.")
+            else:
+                improvements = change_result.improvements[
+                    [
+                        "Name",
+                        "Change Score",
+                        "Delta_AI_Confidence",
+                        "Delta_Composite",
+                    ]
+                ].copy()
+
+                improvements = improvements.rename(
+                    columns={
+                        "Name": "Aktiv",
+                        "Change Score": "Ændring",
+                        "Delta_AI_Confidence": "AI Δ",
+                        "Delta_Composite": "Momentum Δ",
+                    }
+                )
+
+                for column in [
+                    "Ændring",
+                    "AI Δ",
+                    "Momentum Δ",
+                ]:
+                    improvements[column] = improvements[
+                        column
+                    ].apply(
+                        lambda value: (
+                            f"{value:+.1f}"
+                            if pd.notna(value)
+                            else "N/A"
+                        )
+                    )
+
+                st.dataframe(
+                    table_style(improvements),
+                    use_container_width=True,
+                    hide_index=True,
+                    height=no_scroll_height(improvements),
+                )
+
+        with change_col2:
+            st.markdown("**Største forværringer**")
+            if change_result.deteriorations.empty:
+                st.caption("Ingen tydelige forværringer.")
+            else:
+                deteriorations = change_result.deteriorations[
+                    [
+                        "Name",
+                        "Change Score",
+                        "Delta_AI_Confidence",
+                        "Delta_Composite",
+                    ]
+                ].copy()
+
+                deteriorations = deteriorations.rename(
+                    columns={
+                        "Name": "Aktiv",
+                        "Change Score": "Ændring",
+                        "Delta_AI_Confidence": "AI Δ",
+                        "Delta_Composite": "Momentum Δ",
+                    }
+                )
+
+                for column in [
+                    "Ændring",
+                    "AI Δ",
+                    "Momentum Δ",
+                ]:
+                    deteriorations[column] = deteriorations[
+                        column
+                    ].apply(
+                        lambda value: (
+                            f"{value:+.1f}"
+                            if pd.notna(value)
+                            else "N/A"
+                        )
+                    )
+
+                st.dataframe(
+                    table_style(deteriorations),
+                    use_container_width=True,
+                    hide_index=True,
+                    height=no_scroll_height(deteriorations),
+                )
+
+        if not change_result.signal_changes.empty:
+            with st.expander("Se ændrede signaler"):
+                changed_signals = change_result.signal_changes[
+                    [
+                        "Name",
+                        "Signal Change",
+                        "Rotation Change",
+                        "Change Score",
+                    ]
+                ].copy()
+
+                changed_signals = changed_signals.rename(
+                    columns={
+                        "Name": "Aktiv",
+                        "Signal Change": "Handling",
+                        "Rotation Change": "Rotation",
+                        "Change Score": "Ændring",
+                    }
+                )
+
+                changed_signals["Ændring"] = changed_signals[
+                    "Ændring"
+                ].apply(
+                    lambda value: (
+                        f"{value:+.1f}"
+                        if pd.notna(value)
+                        else "N/A"
+                    )
+                )
+
+                st.dataframe(
+                    table_style(changed_signals),
+                    use_container_width=True,
+                    hide_index=True,
+                    height=no_scroll_height(changed_signals),
+                )
 
     st.divider()
 
@@ -1685,6 +1869,13 @@ with tab_settings:
                     f"opportunity_weight_{factor}"
                 ] = float(default_value)
             st.rerun()
+
+    with st.expander("Change Engine"):
+        st.caption(
+            "Sammenligner dagens signaler med en genberegning på "
+            "forrige handelsdags kursdata. Viser kun de tre største "
+            "forbedringer og forværringer på Overblik."
+        )
 
     with st.expander("Decision Queue"):
         decision_settings = pd.DataFrame(
