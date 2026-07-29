@@ -87,9 +87,9 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "6.3.0"
+APP_VERSION = "6.4.0"
 
-st.title("📈 Investment OS 6.3")
+st.title("📈 Investment OS 6.4")
 st.caption(
     f"Fælles portefølje-, momentum-, valuta- og beslutningsdashboard · Version {APP_VERSION}"
 )
@@ -347,14 +347,13 @@ def no_scroll_height(dataframe: pd.DataFrame, row_px: int = 38) -> int:
 
 
 
-tab_overview, tab_portfolio, tab_positions, tab_rebalance, tab_doctor, tab_opportunity, tab_ai, tab_compounders, tab_watchlist, tab_settings = st.tabs([
+tab_overview, tab_portfolio, tab_positions, tab_rebalance, tab_doctor, tab_opportunity, tab_compounders, tab_watchlist, tab_settings = st.tabs([
     "🏠 Overblik",
     "📈 Momentum",
     "📋 Positioner",
     "🔄 Rebalancering",
     "🩺 Portfolio Doctor",
     "🎯 Opportunities",
-    "🤖 AI Insights",
     "🚀 Emerging Compounders",
     "👀 Watchlist",
     "⚙️ Settings",
@@ -452,7 +451,7 @@ with tab_overview:
 
     st.markdown("### Dagens vigtigste handlinger")
 
-    queue_overview = decision_queue.data.copy()
+    queue_overview = decision_queue.data.head(3).copy()
 
     if queue_overview.empty:
         st.success(
@@ -478,8 +477,6 @@ with tab_overview:
                 "Beløb DKK",
                 "Anbefalet ændring",
                 "Decision Score",
-                "Confidence",
-                "Health effekt",
                 "Begrundelse",
             ]
         ].copy()
@@ -496,8 +493,6 @@ with tab_overview:
 
         for column in [
             "Decision Score",
-            "Confidence",
-            "Health effekt",
         ]:
             overview_actions[column] = overview_actions[
                 column
@@ -1192,60 +1187,6 @@ with tab_doctor:
         "Resultatet er beslutningsstøtte og ikke en afkastprognose."
     )
 
-    st.markdown("### AI Decision Queue")
-
-    queue_doctor = decision_queue.data.copy()
-
-    if queue_doctor.empty:
-        st.info("Decision Queue indeholder ingen aktuelle handlinger.")
-    else:
-        queue_display = queue_doctor.copy()
-
-        queue_display["Beløb DKK"] = queue_display[
-            "Beløb DKK"
-        ].apply(format_dkk)
-
-        queue_display["Anbefalet ændring"] = queue_display[
-            "Anbefalet ændring"
-        ].apply(
-            lambda value: f"{value * 100:+.1f} %-point"
-        )
-
-        for column in [
-            "Decision Score",
-            "Opportunity Score",
-            "Confidence",
-            "Health effekt",
-        ]:
-            if column in queue_display.columns:
-                queue_display[column] = queue_display[
-                    column
-                ].apply(
-                    lambda value: (
-                        f"{value:.1f}"
-                        if pd.notna(value)
-                        else "N/A"
-                    )
-                )
-
-        queue_display = queue_display.rename(
-            columns={
-                "Decision Score": "Decision",
-                "Opportunity Score": "Opportunity",
-                "Anbefalet ændring": "Ændring",
-            }
-        )
-
-        st.dataframe(
-            table_style(queue_display),
-            use_container_width=True,
-            hide_index=True,
-            height=no_scroll_height(queue_display),
-        )
-
-    st.divider()
-    st.markdown("### Simulerede enkeltændringer")
-
     doctor_data = portfolio_doctor.data.copy()
 
     d1, d2, d3, d4 = st.columns(4)
@@ -1418,7 +1359,7 @@ with tab_opportunity:
     if opportunity_data.empty:
         st.info("Der er ikke tilstrækkelige data til Opportunity Score.")
     else:
-        top_opportunities = opportunity_data.head(10).copy()
+        top_opportunities = opportunity_data.copy()
 
         display_opportunities = top_opportunities[
             [
@@ -1472,52 +1413,12 @@ with tab_opportunity:
                 )
             )
 
-        st.markdown("### Top Opportunities")
+        st.markdown("### Samlet rangering")
         st.dataframe(
             table_style(display_opportunities),
             use_container_width=True,
             hide_index=True,
             height=no_scroll_height(display_opportunities),
-        )
-
-        st.markdown("### Lowest Conviction")
-        low_conviction = opportunity_data.tail(5).sort_values(
-            "Opportunity Score",
-            ascending=True,
-        )[
-            [
-                "Name",
-                "Handling",
-                "Opportunity Score",
-                "Opportunity Label",
-                "1M",
-                "3M",
-                "Relative_Strength_3M",
-            ]
-        ].rename(
-            columns={
-                "Name": "Aktiv",
-                "Opportunity Score": "Opportunity",
-                "Opportunity Label": "Status",
-                "Relative_Strength_3M": "RS 3M",
-            }
-        )
-
-        low_conviction["Opportunity"] = low_conviction[
-            "Opportunity"
-        ].apply(
-            lambda value: f"{value:.0f}"
-        )
-        for column in ["1M", "3M", "RS 3M"]:
-            low_conviction[column] = low_conviction[column].apply(
-                lambda value: format_pct(value, 1)
-            )
-
-        st.dataframe(
-            table_style(low_conviction),
-            use_container_width=True,
-            hide_index=True,
-            height=no_scroll_height(low_conviction),
         )
 
         st.info(
@@ -1526,152 +1427,6 @@ with tab_opportunity:
             "datasæt. Faktoren tilføjes først, når datagrundlaget er robust."
         )
 
-
-with tab_ai:
-    st.subheader("AI Decision Dashboard")
-
-    decision_table = analytics_portfolio[
-        [
-            "Name",
-            "Asset_Type",
-            "Portfolio_Weight",
-            "1W",
-            "1M",
-            "3M",
-            "6M",
-            "12M",
-            "Composite",
-            "Momentum_Acceleration",
-            "Rotation_Signal",
-            "Relative_Strength_3M",
-            "RS_Signal",
-            "AI_Confidence",
-            "Volatility",
-            "Max_Drawdown",
-            "Handling",
-        ]
-    ].copy()
-
-    decision_table["Begrundelse"] = decision_table.apply(
-        action_reason,
-        axis=1,
-    )
-
-    action_counts = (
-        decision_table["Handling"]
-        .value_counts()
-        .reindex(
-            ["Øg", "Hold", "Afvent", "Reducer"],
-            fill_value=0,
-        )
-    )
-
-    a1, a2, a3, a4 = st.columns(4)
-    a1.metric("Øg", int(action_counts["Øg"]))
-    a2.metric("Hold", int(action_counts["Hold"]))
-    a3.metric("Afvent", int(action_counts["Afvent"]))
-    a4.metric("Reducer", int(action_counts["Reducer"]))
-
-    st.caption(
-        "AI Decision Dashboard samler momentum, risiko og AI Confidence "
-        "til et enkelt beslutningssignal. Der udføres ingen handler."
-    )
-
-    decision_table["Prioritet"] = decision_table[
-        "Handling"
-    ].map(
-        {
-            "Reducer": "🔴 Høj",
-            "Øg": "🟢 Mulighed",
-            "Afvent": "🟡 Afvent",
-            "Hold": "⚪ Neutral",
-        }
-    ).fillna("⚪ Neutral")
-
-    decision_table["_sort"] = decision_table["Handling"].map(
-        {
-            "Reducer": 0,
-            "Øg": 1,
-            "Afvent": 2,
-            "Hold": 3,
-        }
-    ).fillna(9)
-
-    decision_table = decision_table.sort_values(
-        ["_sort", "AI_Confidence", "Composite"],
-        ascending=[True, False, False],
-        na_position="last",
-    )
-
-    decision_table = decision_table.rename(
-        columns={
-            "Name": "Aktiv",
-            "Asset_Type": "Type",
-            "Portfolio_Weight": "Vægt",
-            "Momentum_Acceleration": "Acceleration",
-            "Rotation_Signal": "Rotation",
-            "Relative_Strength_3M": "RS 3M",
-            "RS_Signal": "RS signal",
-            "AI_Confidence": "AI Confidence",
-            "Max_Drawdown": "Max drawdown",
-        }
-    )
-
-    for column in [
-        "Vægt",
-        "1W",
-        "1M",
-        "3M",
-        "6M",
-        "12M",
-        "Composite",
-        "Acceleration",
-        "RS 3M",
-        "Volatility",
-        "Max drawdown",
-    ]:
-        decision_table[column] = decision_table[column].apply(
-            lambda value: format_pct(value, 1)
-        )
-
-    decision_table["AI Confidence"] = decision_table[
-        "AI Confidence"
-    ].apply(
-        lambda value: (
-            f"{value:.0f}%"
-            if pd.notna(value)
-            else "N/A"
-        )
-    )
-
-    decision_table = decision_table[
-        [
-            "Prioritet",
-            "Aktiv",
-            "Type",
-            "Vægt",
-            "1W",
-            "1M",
-            "3M",
-            "Composite",
-            "Acceleration",
-            "Rotation",
-            "RS 3M",
-            "RS signal",
-            "AI Confidence",
-            "Volatility",
-            "Max drawdown",
-            "Handling",
-            "Begrundelse",
-        ]
-    ]
-
-    st.dataframe(
-        table_style(decision_table),
-        use_container_width=True,
-        hide_index=True,
-        height=no_scroll_height(decision_table),
-    )
 
 with tab_compounders:
     st.subheader("Emerging Compounder Radar")
