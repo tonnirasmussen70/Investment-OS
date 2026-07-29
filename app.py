@@ -50,6 +50,9 @@ from modules.portfolio_engine import (
     load_master_file,
     portfolio_summary,
 )
+from modules.portfolio_doctor_engine import (
+    build_portfolio_doctor,
+)
 from modules.report_engine import (
     format_report_timestamp,
     load_markdown_report,
@@ -77,9 +80,9 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "6.0.0"
+APP_VERSION = "6.1.0"
 
-st.title("📈 Investment OS 6.0")
+st.title("📈 Investment OS 6.1")
 st.caption(
     f"Fælles portefølje-, momentum-, valuta- og beslutningsdashboard · Version {APP_VERSION}"
 )
@@ -277,6 +280,18 @@ portfolio_health = calculate_portfolio_health(
     factor_weights=health_factor_weights,
 )
 
+portfolio_doctor = build_portfolio_doctor(
+    analytics_portfolio,
+    active_market_value_dkk=return_market_value,
+    stop_loss_metrics=stop_loss_metrics,
+    data_quality_score=quality_score,
+    max_position_weight=config.max_position_weight,
+    factor_weights=health_factor_weights,
+    current_health=portfolio_health.score,
+    default_step=0.02,
+    minimum_trade_dkk=5000.0,
+)
+
 rebalance_result = build_rebalance_plan(
     analytics_portfolio,
     active_market_value_dkk=return_market_value,
@@ -301,11 +316,12 @@ def no_scroll_height(dataframe: pd.DataFrame, row_px: int = 38) -> int:
 
 
 
-tab_overview, tab_portfolio, tab_positions, tab_rebalance, tab_ai, tab_compounders, tab_watchlist, tab_settings = st.tabs([
+tab_overview, tab_portfolio, tab_positions, tab_rebalance, tab_doctor, tab_ai, tab_compounders, tab_watchlist, tab_settings = st.tabs([
     "🏠 Overblik",
     "📈 Momentum",
     "📋 Positioner",
     "🔄 Rebalancering",
+    "🩺 Portfolio Doctor",
     "🤖 AI Insights",
     "🚀 Emerging Compounders",
     "👀 Watchlist",
@@ -1066,6 +1082,149 @@ with tab_rebalance:
         "Stopkurs beregnes som trailing stop fra højeste kurs de seneste "
         "63 handelsdage. Modellen er beslutningsstøtte og placerer ikke ordrer."
     )
+
+
+with tab_doctor:
+    st.subheader("Portfolio Doctor")
+    st.caption(
+        "Simulerer moderate ændringer på 2 procentpoint og viser "
+        "effekten på den aktuelle Portfolio Health-model. "
+        "Resultatet er beslutningsstøtte og ikke en afkastprognose."
+    )
+
+    doctor_data = portfolio_doctor.data.copy()
+
+    d1, d2, d3, d4 = st.columns(4)
+    d1.metric(
+        "Portfolio Health nu",
+        (
+            f"{portfolio_doctor.current_health:.1f}"
+            if pd.notna(portfolio_doctor.current_health)
+            else "N/A"
+        ),
+    )
+    d2.metric(
+        "Bedste simulation",
+        (
+            f"{portfolio_doctor.best_simulated_health:.1f}"
+            if pd.notna(
+                portfolio_doctor.best_simulated_health
+            )
+            else "N/A"
+        ),
+        (
+            f"{portfolio_doctor.best_simulated_health - portfolio_doctor.current_health:+.1f}"
+            if pd.notna(
+                portfolio_doctor.best_simulated_health
+            )
+            and pd.notna(portfolio_doctor.current_health)
+            else None
+        ),
+    )
+    d3.metric(
+        "Handlingsforslag",
+        portfolio_doctor.actionable_count,
+    )
+    d4.metric(
+        "Simuleret ændring",
+        "2 %-point",
+        "Min. handel 5.000 kr.",
+    )
+
+    if doctor_data.empty:
+        st.success(
+            "Portfolio Doctor finder ingen handler, der opfylder "
+            "de nuværende signal- og minimumskrav."
+        )
+    else:
+        best = doctor_data.iloc[0]
+
+        if (
+            pd.notna(best["Health effekt"])
+            and best["Health effekt"] > 0
+        ):
+            st.success(
+                f"Højeste prioritet: {best['Handling']} "
+                f"{best['Aktiv']} med "
+                f"{abs(best['Anbefalet ændring']) * 100:.1f} "
+                f"procentpoint. Simulationen ændrer Portfolio "
+                f"Health med {best['Health effekt']:+.1f} point."
+            )
+        else:
+            st.info(
+                "De aktuelle signaler giver ikke en tydelig forbedring "
+                "af Portfolio Health. Brug forslagene som kontrolpunkter "
+                "frem for automatiske handler."
+            )
+
+        display_doctor = doctor_data[
+            [
+                "Aktiv",
+                "Handling",
+                "Anbefalet ændring",
+                "Beløb DKK",
+                "Health før",
+                "Health efter",
+                "Health effekt",
+                "Confidence",
+                "Prioritet",
+                "Begrundelse",
+            ]
+        ].copy()
+
+        display_doctor["Anbefalet ændring"] = display_doctor[
+            "Anbefalet ændring"
+        ].apply(
+            lambda value: f"{value * 100:+.1f} %-point"
+        )
+
+        display_doctor["Beløb DKK"] = display_doctor[
+            "Beløb DKK"
+        ].apply(format_dkk)
+
+        for column in [
+            "Health før",
+            "Health efter",
+            "Health effekt",
+            "Prioritet",
+        ]:
+            display_doctor[column] = display_doctor[
+                column
+            ].apply(
+                lambda value: (
+                    f"{value:.1f}"
+                    if pd.notna(value)
+                    else "N/A"
+                )
+            )
+
+        display_doctor["Confidence"] = display_doctor[
+            "Confidence"
+        ].apply(
+            lambda value: (
+                f"{value:.0f}%"
+                if pd.notna(value)
+                else "N/A"
+            )
+        )
+
+        st.dataframe(
+            table_style(display_doctor),
+            use_container_width=True,
+            hide_index=True,
+            height=no_scroll_height(display_doctor),
+        )
+
+        st.markdown("### Sådan læses modellen")
+        st.markdown(
+            """
+- **Anbefalet ændring** er en moderat simulation, ikke en ordre.
+- **Health effekt** viser kun ændringen i Portfolio Health-modellen.
+- **Prioritet** kombinerer Health-effekt, AI Confidence, momentum og signalstyrke.
+- Køb finansieres pro rata ved at reducere de øvrige aktive vægte; salg fordeles pro rata på resten.
+            """
+        )
+
 
 with tab_ai:
     st.subheader("AI Decision Dashboard")
