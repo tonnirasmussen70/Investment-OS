@@ -5,6 +5,17 @@ from dataclasses import dataclass
 import pandas as pd
 
 
+DEFAULT_HEALTH_WEIGHTS = {
+    "Momentum": 0.30,
+    "Relative Strength": 0.20,
+    "AI Confidence": 0.20,
+    "Diversifikation": 0.10,
+    "Risiko": 0.10,
+    "Stop-loss": 0.05,
+    "Datakvalitet": 0.05,
+}
+
+
 DEFAULT_MOMENTUM_WEIGHTS = {
     "1W": 0.20,
     "1M": 0.25,
@@ -26,6 +37,7 @@ class InvestmentConfig:
     high_confidence_threshold: float
     positive_flow_threshold: float
     neutral_flow_threshold: float
+    health_weights: dict[str, float]
 
 
 def _as_float(
@@ -93,6 +105,43 @@ def _normalized_momentum_weights(
     }
 
 
+
+def _normalized_health_weights(
+    settings: dict,
+) -> dict[str, float]:
+    key_map = {
+        "Momentum": "Health_Momentum",
+        "Relative Strength": "Health_Relative_Strength",
+        "AI Confidence": "Health_AI_Confidence",
+        "Diversifikation": "Health_Diversification",
+        "Risiko": "Health_Risk",
+        "Stop-loss": "Health_Stop_Loss",
+        "Datakvalitet": "Health_Data_Quality",
+    }
+
+    weights = {
+        label: max(
+            0.0,
+            _as_float(
+                settings,
+                setting_key,
+                DEFAULT_HEALTH_WEIGHTS[label],
+            ),
+        )
+        for label, setting_key in key_map.items()
+    }
+
+    total = sum(weights.values())
+
+    if total <= 0:
+        return DEFAULT_HEALTH_WEIGHTS.copy()
+
+    return {
+        label: value / total
+        for label, value in weights.items()
+    }
+
+
 def load_investment_config(
     settings: dict | None,
 ) -> InvestmentConfig:
@@ -140,4 +189,5 @@ def load_investment_config(
             "Neutral_Flow_Threshold",
             0.40,
         ),
+        health_weights=_normalized_health_weights(source),
     )
