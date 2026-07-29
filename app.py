@@ -31,6 +31,9 @@ from modules.compounder_engine import (
 from modules.config_engine import (
     load_investment_config,
 )
+from modules.health_engine import (
+    calculate_portfolio_health,
+)
 from modules.formatting import (
     format_dkk,
     format_pct,
@@ -74,9 +77,9 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "5.7.0"
+APP_VERSION = "6.0.0"
 
-st.title("📈 Investment OS 5.0")
+st.title("📈 Investment OS 6.0")
 st.caption(
     f"Fælles portefølje-, momentum-, valuta- og beslutningsdashboard · Version {APP_VERSION}"
 )
@@ -130,6 +133,19 @@ snapshot = load_market_data(tickers, currencies)
 portfolio = calculate_portfolio(model, snapshot)
 
 config = load_investment_config(model.settings)
+
+for factor, default_value in config.health_weights.items():
+    state_key = f"health_weight_{factor}"
+    if state_key not in st.session_state:
+        st.session_state[state_key] = float(default_value)
+
+health_factor_weights = {
+    factor: float(
+        st.session_state[f"health_weight_{factor}"]
+    )
+    for factor in config.health_weights
+}
+
 momentum_weights = config.momentum_weights
 
 benchmark_ticker = config.benchmark
@@ -253,6 +269,14 @@ stop_loss_table = build_stop_loss_table(
 )
 stop_loss_metrics = stop_loss_summary(stop_loss_table)
 
+portfolio_health = calculate_portfolio_health(
+    analytics_portfolio,
+    stop_loss_metrics=stop_loss_metrics,
+    data_quality_score=quality_score,
+    max_position_weight=config.max_position_weight,
+    factor_weights=health_factor_weights,
+)
+
 rebalance_result = build_rebalance_plan(
     analytics_portfolio,
     active_market_value_dkk=return_market_value,
@@ -277,7 +301,7 @@ def no_scroll_height(dataframe: pd.DataFrame, row_px: int = 38) -> int:
 
 
 
-tab_overview, tab_portfolio, tab_positions, tab_rebalance, tab_ai, tab_compounders, tab_watchlist = st.tabs([
+tab_overview, tab_portfolio, tab_positions, tab_rebalance, tab_ai, tab_compounders, tab_watchlist, tab_settings = st.tabs([
     "🏠 Overblik",
     "📈 Momentum",
     "📋 Positioner",
@@ -285,6 +309,7 @@ tab_overview, tab_portfolio, tab_positions, tab_rebalance, tab_ai, tab_compounde
     "🤖 AI Insights",
     "🚀 Emerging Compounders",
     "👀 Watchlist",
+    "⚙️ Settings",
 ])
 
 with tab_overview:
@@ -311,6 +336,71 @@ with tab_overview:
         )
 
     st.divider()
+
+    health_col, status_col = st.columns([1, 3])
+    health_col.metric(
+        "Portfolio Health",
+        (
+            f"{portfolio_health.score:.0f}/100"
+            if pd.notna(portfolio_health.score)
+            else "N/A"
+        ),
+        portfolio_health.label,
+    )
+
+    with status_col:
+        if portfolio_health.weaknesses:
+            st.warning(
+                "Trækkes især ned af: "
+                + " · ".join(portfolio_health.weaknesses)
+            )
+        elif portfolio_health.strengths:
+            st.success(
+                "Stærkest på: "
+                + " · ".join(portfolio_health.strengths)
+            )
+
+    with st.expander("Se Portfolio Health-faktorer"):
+        health_table = pd.DataFrame(
+            {
+                "Faktor": list(
+                    portfolio_health.factor_scores.keys()
+                ),
+                "Score": list(
+                    portfolio_health.factor_scores.values()
+                ),
+                "Vægt": [
+                    health_factor_weights[factor]
+                    for factor in portfolio_health.factor_scores
+                ],
+                "Bidrag": [
+                    portfolio_health.weighted_contributions[
+                        factor
+                    ]
+                    for factor in portfolio_health.factor_scores
+                ],
+            }
+        )
+
+        health_table["Score"] = health_table["Score"].apply(
+            lambda value: (
+                f"{value:.0f}"
+                if pd.notna(value)
+                else "N/A"
+            )
+        )
+        health_table["Vægt"] = health_table["Vægt"].apply(
+            lambda value: format_pct(value, 0)
+        )
+        health_table["Bidrag"] = health_table["Bidrag"].apply(
+            lambda value: format_score(value, 1)
+        )
+
+        st.dataframe(
+            health_table,
+            use_container_width=True,
+            hide_index=True,
+        )
 
     k1, k2, k3, k4, k5, k6 = st.columns(6)
     k1.metric("Porteføljeværdi", format_dkk(portfolio_total))
@@ -1283,3 +1373,125 @@ with tab_watchlist:
             "Aktier flyttes ikke automatisk til porteføljen, "
             "og der udføres ingen handler."
         )
+
+with tab_settings:
+    st.subheader("Settings")
+
+    st.markdown("### Portfolio Health-vægte")
+    st.caption(
+        "Vægtene anvendes straks i denne Streamlit-session. "
+        "De normaliseres automatisk til 100 %. "
+        "Permanent lagring sker fortsat via Settings-arket i AI_portfolio.xlsx."
+    )
+
+    settings_columns = st.columns(2)
+
+    factors = list(config.health_weights.keys())
+
+    for index, factor in enumerate(factors):
+        with settings_columns[index % 2]:
+            st.number_input(
+                factor,
+                min_value=0.0,
+                max_value=1.0,
+                step=0.05,
+                format="%.2f",
+                key=f"health_weight_{factor}",
+            )
+
+    raw_total = sum(
+        float(st.session_state[f"health_weight_{factor}"])
+        for factor in factors
+    )
+
+    st.metric(
+        "Indtastet vægtsum",
+        f"{raw_total:.2f}",
+        (
+            "Normaliseres til 100 %"
+            if abs(raw_total - 1.0) > 0.001
+            else "100 %"
+        ),
+    )
+
+    normalized_preview = pd.DataFrame(
+        {
+            "Faktor": factors,
+            "Effektiv vægt": [
+                (
+                    float(
+                        st.session_state[
+                            f"health_weight_{factor}"
+                        ]
+                    )
+                    / raw_total
+                    if raw_total > 0
+                    else config.health_weights[factor]
+                )
+                for factor in factors
+            ],
+        }
+    )
+
+    normalized_preview["Effektiv vægt"] = (
+        normalized_preview["Effektiv vægt"].apply(
+            lambda value: format_pct(value, 0)
+        )
+    )
+
+    st.dataframe(
+        normalized_preview,
+        use_container_width=True,
+        hide_index=True,
+    )
+
+    if st.button("Nulstil Portfolio Health-vægte"):
+        for factor, default_value in config.health_weights.items():
+            st.session_state[
+                f"health_weight_{factor}"
+            ] = float(default_value)
+        st.rerun()
+
+    st.divider()
+    st.markdown("### Øvrige aktive indstillinger")
+
+    active_settings = pd.DataFrame(
+        [
+            {
+                "Indstilling": "Benchmark",
+                "Værdi": config.benchmark,
+            },
+            {
+                "Indstilling": "Maks. positionsvægt",
+                "Værdi": format_pct(
+                    config.max_position_weight,
+                    0,
+                ),
+            },
+            {
+                "Indstilling": "Maks. sektorvægt",
+                "Værdi": format_pct(
+                    config.max_sector_weight,
+                    0,
+                ),
+            },
+            {
+                "Indstilling": "Risikofri rente",
+                "Værdi": format_pct(
+                    config.risk_free_rate,
+                    1,
+                ),
+            },
+            {
+                "Indstilling": "Minimum handel",
+                "Værdi": "5.000 kr.",
+            },
+        ]
+    )
+
+    st.dataframe(
+        active_settings,
+        use_container_width=True,
+        hide_index=True,
+    )
+
