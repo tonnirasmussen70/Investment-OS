@@ -23,6 +23,9 @@ from modules.decision_engine import (
     action_reason,
     decision_summary,
 )
+from modules.decision_queue_engine import (
+    build_decision_queue,
+)
 from modules.compounder_engine import (
     load_compounder_radar,
     radar_summary,
@@ -84,9 +87,9 @@ st.set_page_config(
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 MORNING_BRIEF_FILE = Path("data/morning_brief.md")
-APP_VERSION = "6.2.0"
+APP_VERSION = "6.3.0"
 
-st.title("📈 Investment OS 6.2")
+st.title("📈 Investment OS 6.3")
 st.caption(
     f"Fælles portefølje-, momentum-, valuta- og beslutningsdashboard · Version {APP_VERSION}"
 )
@@ -314,6 +317,12 @@ portfolio_doctor = build_portfolio_doctor(
     minimum_trade_dkk=5000.0,
 )
 
+decision_queue = build_decision_queue(
+    portfolio_doctor.data,
+    opportunity_result.data,
+    max_items=5,
+)
+
 rebalance_result = build_rebalance_plan(
     analytics_portfolio,
     active_market_value_dkk=return_market_value,
@@ -440,6 +449,74 @@ with tab_overview:
             use_container_width=True,
             hide_index=True,
         )
+
+    st.markdown("### Dagens vigtigste handlinger")
+
+    queue_overview = decision_queue.data.copy()
+
+    if queue_overview.empty:
+        st.success(
+            "Ingen handler opfylder de nuværende signal-, "
+            "confidence- og minimumskrav."
+        )
+    else:
+        top_action_text = (
+            f"{decision_queue.top_action} "
+            f"{decision_queue.top_asset}"
+        )
+        st.info(
+            f"Højeste prioritet: **{top_action_text}** "
+            f"med Decision Score "
+            f"**{decision_queue.top_priority:.0f}/100**."
+        )
+
+        overview_actions = queue_overview[
+            [
+                "Prioritet",
+                "Handling",
+                "Aktiv",
+                "Beløb DKK",
+                "Anbefalet ændring",
+                "Decision Score",
+                "Confidence",
+                "Health effekt",
+                "Begrundelse",
+            ]
+        ].copy()
+
+        overview_actions["Beløb DKK"] = overview_actions[
+            "Beløb DKK"
+        ].apply(format_dkk)
+
+        overview_actions["Anbefalet ændring"] = overview_actions[
+            "Anbefalet ændring"
+        ].apply(
+            lambda value: f"{value * 100:+.1f} %-point"
+        )
+
+        for column in [
+            "Decision Score",
+            "Confidence",
+            "Health effekt",
+        ]:
+            overview_actions[column] = overview_actions[
+                column
+            ].apply(
+                lambda value: (
+                    f"{value:.1f}"
+                    if pd.notna(value)
+                    else "N/A"
+                )
+            )
+
+        st.dataframe(
+            table_style(overview_actions),
+            use_container_width=True,
+            hide_index=True,
+            height=no_scroll_height(overview_actions),
+        )
+
+    st.divider()
 
     k1, k2, k3, k4, k5, k6 = st.columns(6)
     k1.metric("Porteføljeværdi", format_dkk(portfolio_total))
@@ -1114,6 +1191,60 @@ with tab_doctor:
         "effekten på den aktuelle Portfolio Health-model. "
         "Resultatet er beslutningsstøtte og ikke en afkastprognose."
     )
+
+    st.markdown("### AI Decision Queue")
+
+    queue_doctor = decision_queue.data.copy()
+
+    if queue_doctor.empty:
+        st.info("Decision Queue indeholder ingen aktuelle handlinger.")
+    else:
+        queue_display = queue_doctor.copy()
+
+        queue_display["Beløb DKK"] = queue_display[
+            "Beløb DKK"
+        ].apply(format_dkk)
+
+        queue_display["Anbefalet ændring"] = queue_display[
+            "Anbefalet ændring"
+        ].apply(
+            lambda value: f"{value * 100:+.1f} %-point"
+        )
+
+        for column in [
+            "Decision Score",
+            "Opportunity Score",
+            "Confidence",
+            "Health effekt",
+        ]:
+            if column in queue_display.columns:
+                queue_display[column] = queue_display[
+                    column
+                ].apply(
+                    lambda value: (
+                        f"{value:.1f}"
+                        if pd.notna(value)
+                        else "N/A"
+                    )
+                )
+
+        queue_display = queue_display.rename(
+            columns={
+                "Decision Score": "Decision",
+                "Opportunity Score": "Opportunity",
+                "Anbefalet ændring": "Ændring",
+            }
+        )
+
+        st.dataframe(
+            table_style(queue_display),
+            use_container_width=True,
+            hide_index=True,
+            height=no_scroll_height(queue_display),
+        )
+
+    st.divider()
+    st.markdown("### Simulerede enkeltændringer")
 
     doctor_data = portfolio_doctor.data.copy()
 
@@ -1799,6 +1930,37 @@ with tab_settings:
                     f"opportunity_weight_{factor}"
                 ] = float(default_value)
             st.rerun()
+
+    with st.expander("Decision Queue"):
+        decision_settings = pd.DataFrame(
+            [
+                {
+                    "Faktor": "Portfolio Doctor-prioritet",
+                    "Vægt": "35 %",
+                },
+                {
+                    "Faktor": "Opportunity Score",
+                    "Vægt": "30 %",
+                },
+                {
+                    "Faktor": "AI Confidence",
+                    "Vægt": "20 %",
+                },
+                {
+                    "Faktor": "Health-effekt",
+                    "Vægt": "15 %",
+                },
+            ]
+        )
+        st.dataframe(
+            decision_settings,
+            use_container_width=True,
+            hide_index=True,
+        )
+        st.caption(
+            "Ved Reducer-signaler inverteres Opportunity Score, "
+            "så lav conviction øger beslutningsprioriteten."
+        )
 
     with st.expander("Momentum Engine"):
         momentum_settings = pd.DataFrame(
