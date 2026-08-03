@@ -1,0 +1,50 @@
+name: Emerging Compounder Radar
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 7 * * 0"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: emerging-compounder-radar
+  cancel-in-progress: false
+
+jobs:
+  generate-radar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install lxml
+
+      - name: Generate compounder radar
+        run: python scripts/generate_compounder_radar.py
+
+      - name: Commit updated radar
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/compounder_radar.xlsx
+
+          if git diff --cached --quiet; then
+            echo "No radar changes to commit"
+          else
+            git commit -m "Update Emerging Compounder Radar"
+            git push
+          fi
