@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import numpy as np
@@ -44,6 +45,7 @@ from modules.portfolio_engine import (
 )
 from modules.rebalance_engine import build_rebalance_plan
 from modules.risk_engine import build_stop_loss_table, stop_loss_summary
+from modules.snapshot_engine import write_portfolio_snapshot
 from modules.styling import table_style
 from modules.watchlist_engine import (
     format_watchlist_table,
@@ -61,6 +63,7 @@ st.set_page_config(
 DATA_FILE = Path("data/AI_portfolio.xlsx")
 APP_VERSION = "6.8.0"
 MINIMUM_TRADE_DKK = 5_000.0
+SNAPSHOT_ONLY = os.getenv("INVESTMENT_OS_SNAPSHOT_ONLY") == "1"
 
 TOOLTIPS = {
     "portfolio_value": (
@@ -356,7 +359,7 @@ snapshot_output = write_portfolio_snapshot(
     stop_loss_metrics=stop_loss_metrics,
 )
 
-if os.getenv("INVESTMENT_OS_SNAPSHOT_ONLY") == "1":
+if SNAPSHOT_ONLY:
     print(f"Snapshot skrevet til {snapshot_output}")
     raise SystemExit(0)
 
