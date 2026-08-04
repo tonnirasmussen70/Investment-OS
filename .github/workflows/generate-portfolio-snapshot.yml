@@ -1,0 +1,52 @@
+name: Generate portfolio snapshot
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "25 4 * * *"
+  push:
+    branches: [main]
+    paths:
+      - "data/AI_portfolio.xlsx"
+      - "modules/**"
+      - "scripts/generate_portfolio_snapshot.py"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: portfolio-snapshot
+  cancel-in-progress: true
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Generate snapshot
+        run: python scripts/generate_portfolio_snapshot.py
+
+      - name: Commit snapshot when changed
+        run: |
+          if git diff --quiet -- data/portfolio_snapshot.json; then
+            echo "Snapshot unchanged"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/portfolio_snapshot.json
+          git commit -m "Update portfolio snapshot"
+          git push
