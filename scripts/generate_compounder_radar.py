@@ -102,33 +102,29 @@ def load_universe() -> pd.DataFrame:
             break
 
     if nasdaq is None or ticker_column is None:
-        available_columns = [
-            list(map(str, table.columns))
-            for table in nasdaq_tables
-        ]
-        raise RuntimeError(
-            "Could not identify Nasdaq-100 constituent table. "
-            f"Available columns: {available_columns}"
+        print(
+            "Warning: Could not identify Nasdaq-100 constituent table. "
+            "Continuing with S&P 500 universe only."
+        )
+    else:
+        name_column = next(
+            (
+                candidate
+                for candidate in ("Company", "Security", "Company name")
+                if candidate in nasdaq.columns
+            ),
+            nasdaq.columns[0],
         )
 
-    name_column = next(
-        (
-            candidate
-            for candidate in ("Company", "Security", "Company name")
-            if candidate in nasdaq.columns
-        ),
-        nasdaq.columns[0],
-    )
-
-    frames.append(
-        pd.DataFrame(
-            {
-                "Ticker": nasdaq[ticker_column].map(normalise_ticker),
-                "Name": nasdaq[name_column].astype(str).str.strip(),
-                "Universe": "Nasdaq-100",
-            }
+        frames.append(
+            pd.DataFrame(
+                {
+                    "Ticker": nasdaq[ticker_column].map(normalise_ticker),
+                    "Name": nasdaq[name_column].astype(str).str.strip(),
+                    "Universe": "Nasdaq-100",
+                }
+            )
         )
-    )
 
     universe = pd.concat(frames, ignore_index=True)
     universe = universe.drop_duplicates("Ticker", keep="first")
