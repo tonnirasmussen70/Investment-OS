@@ -85,12 +85,45 @@ def load_universe() -> pd.DataFrame:
     )
 
     nasdaq_tables = read_html_tables(WIKIPEDIA_SOURCES["nasdaq100"])
-    nasdaq = next(table for table in nasdaq_tables if "Ticker" in table.columns)
-    name_column = "Company" if "Company" in nasdaq.columns else nasdaq.columns[0]
+
+    nasdaq = None
+    ticker_column = None
+    for table in nasdaq_tables:
+        columns = [str(column).strip() for column in table.columns]
+        table.columns = columns
+
+        for candidate in ("Ticker", "Symbol", "Ticker symbol"):
+            if candidate in table.columns:
+                nasdaq = table
+                ticker_column = candidate
+                break
+
+        if nasdaq is not None:
+            break
+
+    if nasdaq is None or ticker_column is None:
+        available_columns = [
+            list(map(str, table.columns))
+            for table in nasdaq_tables
+        ]
+        raise RuntimeError(
+            "Could not identify Nasdaq-100 constituent table. "
+            f"Available columns: {available_columns}"
+        )
+
+    name_column = next(
+        (
+            candidate
+            for candidate in ("Company", "Security", "Company name")
+            if candidate in nasdaq.columns
+        ),
+        nasdaq.columns[0],
+    )
+
     frames.append(
         pd.DataFrame(
             {
-                "Ticker": nasdaq["Ticker"].map(normalise_ticker),
+                "Ticker": nasdaq[ticker_column].map(normalise_ticker),
                 "Name": nasdaq[name_column].astype(str).str.strip(),
                 "Universe": "Nasdaq-100",
             }
