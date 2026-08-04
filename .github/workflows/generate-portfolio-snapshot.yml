@@ -41,7 +41,7 @@ jobs:
         env:
           PYTHONPATH: .
           INVESTMENT_OS_SNAPSHOT_ONLY: "1"
-        run: python app.py
+       run: python scripts/generate_portfolio_snapshot.py
 
       - name: Verify snapshot
         run: |
