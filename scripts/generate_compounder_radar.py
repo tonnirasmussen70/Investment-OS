@@ -3,8 +3,10 @@ from __future__ import annotations
 import argparse
 import math
 import time
+from io import StringIO
 from pathlib import Path
 from typing import Iterable
+from urllib.request import Request, urlopen
 
 import numpy as np
 import pandas as pd
@@ -43,10 +45,35 @@ def normalise_ticker(value: object) -> str:
     return str(value).strip().upper().replace(".", "-")
 
 
+def read_html_tables(url: str) -> list[pd.DataFrame]:
+    """Fetch HTML with browser-like headers to avoid HTTP 403 in GitHub Actions."""
+    request = Request(
+        url,
+        headers={
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/131.0 Safari/537.36"
+            ),
+            "Accept-Language": "en-US,en;q=0.9",
+        },
+    )
+
+    with urlopen(request, timeout=30) as response:
+        html = response.read().decode("utf-8")
+
+    return pd.read_html(StringIO(html))
+
+
 def load_universe() -> pd.DataFrame:
     frames: list[pd.DataFrame] = []
 
-    sp500 = pd.read_html(WIKIPEDIA_SOURCES["sp500"], match="Symbol")[0]
+    sp500_tables = read_html_tables(WIKIPEDIA_SOURCES["sp500"])
+    sp500 = next(
+        table
+        for table in sp500_tables
+        if "Symbol" in table.columns and "Security" in table.columns
+    )
     frames.append(
         pd.DataFrame(
             {
@@ -57,7 +84,7 @@ def load_universe() -> pd.DataFrame:
         )
     )
 
-    nasdaq_tables = pd.read_html(WIKIPEDIA_SOURCES["nasdaq100"])
+    nasdaq_tables = read_html_tables(WIKIPEDIA_SOURCES["nasdaq100"])
     nasdaq = next(table for table in nasdaq_tables if "Ticker" in table.columns)
     name_column = "Company" if "Company" in nasdaq.columns else nasdaq.columns[0]
     frames.append(
