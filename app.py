@@ -336,6 +336,31 @@ rebalance_result = build_rebalance_plan(
     minimum_trade_dkk=MINIMUM_TRADE_DKK,
 )
 
+snapshot_output = write_portfolio_snapshot(
+    output_file="data/portfolio_snapshot.json",
+    data_file=DATA_FILE,
+    app_version=APP_VERSION,
+    portfolio=portfolio,
+    analytics_portfolio=analytics_portfolio,
+    portfolio_metrics=portfolio_metrics,
+    portfolio_health=portfolio_health,
+    decision=decision,
+    quality_score=quality_score,
+    quality_notes=quality_notes,
+    benchmark_ticker=benchmark_ticker,
+    max_position_weight=config.max_position_weight,
+    history=history,
+    decision_queue=decision_queue,
+    opportunity_result=opportunity_result,
+    rebalance_result=rebalance_result,
+    stop_loss_metrics=stop_loss_metrics,
+)
+
+if os.getenv("INVESTMENT_OS_SNAPSHOT_ONLY") == "1":
+    print(f"Snapshot skrevet til {snapshot_output}")
+    raise SystemExit(0)
+
+
 attribution = calculate_attribution(portfolio)
 contributors = top_contributors(attribution, limit=5)
 detractors = top_detractors(attribution, limit=5)
