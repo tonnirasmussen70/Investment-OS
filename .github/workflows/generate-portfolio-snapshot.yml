@@ -36,8 +36,10 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Generate snapshot
-        run: python scripts/generate_portfolio_snapshot.py
+      - - name: Generate snapshot
+  env:
+    PYTHONPATH: .
+  run: python scripts/generate_portfolio_snapshot.py
 
       - name: Commit snapshot when changed
         run: |
