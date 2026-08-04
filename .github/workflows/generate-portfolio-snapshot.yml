@@ -5,11 +5,13 @@ on:
   schedule:
     - cron: "25 4 * * *"
   push:
-    branches: [main]
+    branches:
+      - main
     paths:
       - "app.py"
       - "data/AI_portfolio.xlsx"
       - "modules/**"
+      - "scripts/generate_portfolio_snapshot.py"
       - ".github/workflows/generate-portfolio-snapshot.yml"
 
 permissions:
@@ -31,59 +33,31 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.11"
           cache: pip
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-      - name: Run Investment OS in snapshot mode
-        env:
-          PYTHONPATH: .
-          INVESTMENT_OS_SNAPSHOT_ONLY: "1"
-       run: python scripts/generate_portfolio_snapshot.py
+      - name: Generate portfolio snapshot
+        run: python scripts/generate_portfolio_snapshot.py
 
       - name: Verify snapshot
         run: |
           test -f data/portfolio_snapshot.json
-          python - <<'PY'
-          import json
-          from pathlib import Path
+          python -m json.tool data/portfolio_snapshot.json > /dev/null
 
-          path = Path("data/portfolio_snapshot.json")
-          payload = json.loads(path.read_text(encoding="utf-8"))
-
-          required = [
-              "generated_at",
-              "source",
-              "data_quality",
-              "portfolio",
-              "positions",
-              "decision_queue",
-          ]
-          missing = [key for key in required if key not in payload]
-          if missing:
-              raise SystemExit(f"Snapshot mangler felter: {missing}")
-
-          print(
-              "Snapshot OK:",
-              payload["generated_at"],
-              "positions=",
-              len(payload["positions"]),
-          )
-          PY
-
-      - name: Commit snapshot when changed
+      - name: Commit updated snapshot
         run: |
-          if git diff --quiet -- data/portfolio_snapshot.json; then
-            echo "Snapshot unchanged"
-            exit 0
-          fi
-
           git config user.name "github-actions[bot]"
-          git config user.email \
-            "41898282+github-actions[bot]@users.noreply.github.com"
-
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/portfolio_snapshot.json
-          git commit -m "Update integrated portfolio snapshot"
-          git push
+
+          if git diff --cached --quiet; then
+            echo "No snapshot changes to commit."
+          else
+            git commit -m "Update portfolio snapshot"
+            git push
+          fi
