@@ -1,4 +1,4 @@
-name: Generate portfolio snapshot
+name: Generate integrated portfolio snapshot
 
 on:
   workflow_dispatch:
@@ -7,21 +7,22 @@ on:
   push:
     branches: [main]
     paths:
+      - "app.py"
       - "data/AI_portfolio.xlsx"
       - "modules/**"
-      - "scripts/generate_portfolio_snapshot.py"
+      - ".github/workflows/generate-portfolio-snapshot.yml"
 
 permissions:
   contents: write
 
 concurrency:
-  group: portfolio-snapshot
+  group: integrated-portfolio-snapshot
   cancel-in-progress: true
 
 jobs:
   generate:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - name: Check out repository
@@ -36,10 +37,41 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - - name: Generate snapshot
-  env:
-    PYTHONPATH: .
-  run: python scripts/generate_portfolio_snapshot.py
+      - name: Run Investment OS in snapshot mode
+        env:
+          PYTHONPATH: .
+          INVESTMENT_OS_SNAPSHOT_ONLY: "1"
+        run: python app.py
+
+      - name: Verify snapshot
+        run: |
+          test -f data/portfolio_snapshot.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path("data/portfolio_snapshot.json")
+          payload = json.loads(path.read_text(encoding="utf-8"))
+
+          required = [
+              "generated_at",
+              "source",
+              "data_quality",
+              "portfolio",
+              "positions",
+              "decision_queue",
+          ]
+          missing = [key for key in required if key not in payload]
+          if missing:
+              raise SystemExit(f"Snapshot mangler felter: {missing}")
+
+          print(
+              "Snapshot OK:",
+              payload["generated_at"],
+              "positions=",
+              len(payload["positions"]),
+          )
+          PY
 
       - name: Commit snapshot when changed
         run: |
@@ -47,8 +79,11 @@ jobs:
             echo "Snapshot unchanged"
             exit 0
           fi
+
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+
           git add data/portfolio_snapshot.json
-          git commit -m "Update portfolio snapshot"
+          git commit -m "Update integrated portfolio snapshot"
           git push
