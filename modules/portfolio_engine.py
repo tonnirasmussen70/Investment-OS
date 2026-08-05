@@ -36,7 +36,7 @@ class PortfolioModel:
 
 def _read_optional_sheet(path: Path, sheet_name: str) -> pd.DataFrame:
     try:
-        return pd.read_excel(path, sheet_name=sheet_name)
+        return pd.read_excel(path, sheet_name=sheet_name, engine="openpyxl")
     except ValueError:
         return pd.DataFrame()
 
@@ -46,7 +46,11 @@ def load_master_file(path: str | Path) -> PortfolioModel:
     if not workbook_path.exists():
         raise FileNotFoundError(f"Masterfilen findes ikke: {workbook_path}")
 
-    portfolio = pd.read_excel(workbook_path, sheet_name="Portfolio")
+    portfolio = pd.read_excel(
+        workbook_path,
+        sheet_name="Portfolio",
+        engine="openpyxl",
+    )
     missing = REQUIRED_PORTFOLIO_COLUMNS.difference(portfolio.columns)
     if missing:
         raise ValueError(f"Portfolio mangler kolonner: {sorted(missing)}")
@@ -177,6 +181,7 @@ def data_quality_score(
         notes.append(f"Manglende valuta: {', '.join(snapshot.missing_fx)}")
 
     return float(np.clip(score, 0, 100)), notes
+
 
 def _is_grundfos(series: pd.Series) -> pd.Series:
     """Returnér maske for Grundfos-positioner."""
