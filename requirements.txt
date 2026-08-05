@@ -5,3 +5,4 @@ plotly>=5.20
 yfinance>=0.2.40
 openpyxl>=3.1
 pyarrow>=15.0
+starlette<1.4.0
