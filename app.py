@@ -1218,34 +1218,43 @@ with tab_doctor:
 with tab_opportunity:
     st.subheader("Opportunities")
     st.caption(
-        "Rangerer de stærkeste kandidater i den nuværende portefølje. "
-        "En høj score er ikke automatisk en købsanbefaling."
+        "Viser kun kandidater med status Stærk eller Meget stærk. "
+        "Svagere signaler skjules som irrelevant støj."
     )
 
     opportunity_data = opportunity_result.data.copy()
-    o1, o2, o3 = st.columns(3)
-    o1.metric(
-        "Bedste mulighed",
-        opportunity_result.top_opportunity or "N/A",
-        (
-            f"{opportunity_result.top_score:.0f}/100"
-            if pd.notna(opportunity_result.top_score) else None
-        ),
-        help=TOOLTIPS["opportunity_score"],
-    )
-    o2.metric(
-        "Laveste conviction",
-        opportunity_result.lowest_conviction or "N/A",
-        (
-            f"{opportunity_result.lowest_score:.0f}/100"
-            if pd.notna(opportunity_result.lowest_score) else None
-        ),
-    )
-    o3.metric("Aktiver vurderet", len(opportunity_data))
-
-    if opportunity_data.empty:
-        st.info("Ikke tilstrækkelige data.")
+    strong_statuses = {"Stærk", "Meget stærk"}
+    if "Opportunity Label" in opportunity_data.columns:
+        opportunity_data = opportunity_data.loc[
+            opportunity_data["Opportunity Label"].isin(strong_statuses)
+        ].copy()
     else:
+        opportunity_data = opportunity_data.iloc[0:0].copy()
+
+    opportunity_data = opportunity_data.sort_values(
+        ["Opportunity Score", "Name"],
+        ascending=[False, True],
+        na_position="last",
+    ).reset_index(drop=True)
+
+    o1, o2 = st.columns(2)
+    if opportunity_data.empty:
+        o1.metric("Bedste mulighed", "Ingen")
+        o2.metric("Stærke kandidater", 0)
+        st.info("Ingen kandidater har aktuelt status Stærk eller Meget stærk.")
+    else:
+        best_opportunity = opportunity_data.iloc[0]
+        o1.metric(
+            "Bedste mulighed",
+            str(best_opportunity.get("Name", "N/A")),
+            (
+                f"{float(best_opportunity['Opportunity Score']):.0f}/100"
+                if pd.notna(best_opportunity.get("Opportunity Score")) else None
+            ),
+            help=TOOLTIPS["opportunity_score"],
+        )
+        o2.metric("Stærke kandidater", len(opportunity_data))
+
         summary = opportunity_data[
             [
                 "Opportunity Rank", "Name", "Handling",
