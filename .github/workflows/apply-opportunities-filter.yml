@@ -1,0 +1,31 @@
+name: Apply Opportunities Filter
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-opportunities-filter.yml'
+      - 'update_opportunities_filter.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Update app.py
+        run: python update_opportunities_filter.py
+      - name: Validate syntax
+        run: python -m py_compile app.py
+      - name: Commit update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app.py
+          git diff --cached --quiet || git commit -m "Filter Opportunities to strong candidates"
+          git push
