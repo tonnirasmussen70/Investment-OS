@@ -79,7 +79,9 @@ def build_rebalance_plan(
     - Øg: vægten øges med increase_factor, dog højst positionsloftet.
     - Reducer: vægten reduceres med reduce_factor.
     - Hold/Afvent: vægten ændres ikke.
-    - Handler under minimum_trade_dkk sættes til 0.
+    - Foreslået vægt viser altid modellens ønskede allokering.
+    - Handler under minimum_trade_dkk markeres som ikke-eksekverbare ved at
+      sætte Handel DKK til 0, men den ønskede vægt og ændring bevares.
     - Der normaliseres ikke automatisk tilbage til 100 %, fordi det ellers
       skaber kunstige køb/salg i positioner uden et egentligt signal.
     """
@@ -153,7 +155,7 @@ def build_rebalance_plan(
         data["Ændring"] * float(active_market_value_dkk)
     )
 
-    # Kun reelle signaler må skabe handler.
+    # Kun reelle signaler må skabe en ønsket ændring.
     no_signal = ~data["Handling"].isin(["Øg", "Reducer"])
     data.loc[no_signal, "Foreslået vægt"] = data.loc[
         no_signal,
@@ -162,13 +164,11 @@ def build_rebalance_plan(
     data.loc[no_signal, "Ændring"] = 0.0
     data.loc[no_signal, "Handel DKK"] = 0.0
 
-    # Filtrér små handler som støj.
-    small_trade = data["Handel DKK"].abs() < minimum_trade_dkk
-    data.loc[small_trade, "Foreslået vægt"] = data.loc[
-        small_trade,
-        "Portfolio_Weight",
-    ]
-    data.loc[small_trade, "Ændring"] = 0.0
+    # Små handler eksekveres ikke, men modelvægten bevares i visningen.
+    small_trade = (
+        data["Handel DKK"].abs() < minimum_trade_dkk
+    ) & data["Handel DKK"].ne(0)
+    data["Under minimumshandel"] = small_trade
     data.loc[small_trade, "Handel DKK"] = 0.0
 
     data["Rebalance handling"] = np.select(
