@@ -1,0 +1,46 @@
+name: Apply Momentum Update
+
+on:
+  push:
+    paths:
+      - ".github/workflows/apply-momentum-update.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-app:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Apply Momentum update
+        run: python update_investment_os_momentum.py
+
+      - name: Validate Python syntax
+        run: python -m py_compile app.py modules/portfolio_engine.py
+
+      - name: Remove temporary update files
+        run: |
+          rm -f update_investment_os_momentum.py
+          rm -f momentum_tab_replacement.py
+          rm -f app.py.bak
+
+      - name: Commit updated app
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app.py update_investment_os_momentum.py momentum_tab_replacement.py
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update Momentum tab for separate stocks and ETFs"
+            git push
+          fi
