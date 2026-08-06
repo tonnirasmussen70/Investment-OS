@@ -842,9 +842,8 @@ with tab_momentum:
 with tab_positions:
     st.subheader("Positioner")
     st.caption(
-        f"{len(portfolio)} positioner · samlet markedsværdi "
-        f"{compact_dkk(portfolio_total)}. Grundfos indgår i markedsværdien, "
-        "men ikke i porteføljevægtene."
+        "Aktier og ETF'er vises separat, så beholdninger og vægte kan vurderes "
+        "inden for hver sin ASK. Grundfos vises, men indgår ikke i aktiv vægtning."
     )
 
     merge_key = (
@@ -853,88 +852,158 @@ with tab_positions:
         else "Yahoo_Ticker"
     )
     analysis_lookup = analytics_portfolio[
-        [merge_key, "Composite", "AI_Confidence", "Handling"]
+        [merge_key, "Composite", "AI_Confidence"]
     ].drop_duplicates(subset=[merge_key])
     position_source = portfolio.merge(
         analysis_lookup, on=merge_key, how="left", suffixes=("", "_analysis")
     )
 
-    if "Account" not in position_source.columns:
-        position_source["Account"] = "Ikke angivet"
-
-    position_table = position_source[
-        [
-            "Asset_Type", "Name", "Account", "Market_Value_DKK",
-            "Portfolio_Weight", "Return_Pct", "Composite",
-            "AI_Confidence", "Handling",
-        ]
-    ].copy()
-    position_table.columns = [
-        "Type", "Navn", "Depot", "Markedsværdi", "Vægt",
-        "Afkast", "Momentum", "AI", "Handling",
-    ]
-    position_table["Type"] = position_table["Type"].replace({
-        "Stock": "Aktie", "Equity": "Aktie", "Fund": "ETF"
+    if "Sector" not in position_source.columns:
+        position_source["Sector"] = "Ikke angivet"
+    position_source["Sector"] = (
+        position_source["Sector"].fillna("Ikke angivet").astype(str)
+    )
+    position_source["Aktivklasse"] = position_source["Asset_Type"].replace({
+        "Stock": "Aktie",
+        "Equity": "Aktie",
+        "Fund": "ETF",
+        "ETF": "ETF",
     })
-    position_table = position_table.sort_values(["Type", "Navn"]).reset_index(drop=True)
 
-    include_weight = portfolio["Include_Weight"].fillna(False).to_numpy()
-    position_table["Markedsværdi"] = position_table["Markedsværdi"].apply(compact_dkk)
-    position_table["Vægt"] = [
-        format_pct(value, 1) if include else "-"
-        for value, include in zip(position_source["Portfolio_Weight"], include_weight)
-    ]
-    position_table["Afkast"] = position_table["Afkast"].apply(
-        lambda x: format_pct(x, 1)
-    )
-    position_table["Momentum"] = position_table["Momentum"].apply(
-        lambda x: format_pct(x, 1)
-    )
-    position_table["AI"] = position_table["AI"].apply(
-        lambda x: f"{x:.0f}%" if pd.notna(x) else "N/A"
-    )
-    position_table["Handling"] = position_table["Handling"].fillna("Uden for analyse")
+    def show_position_section(
+        source: pd.DataFrame,
+        asset_class: str,
+        heading: str,
+    ) -> None:
+        section = source.loc[source["Aktivklasse"] == asset_class].copy()
+        st.markdown(f"### {heading}")
 
-    st.dataframe(
-        table_style(position_table),
-        use_container_width=True,
-        hide_index=True,
-        height=no_scroll_height(position_table),
-    )
+        if section.empty:
+            st.info(f"Ingen {heading.lower()} er registreret.")
+            return
 
-    with st.expander("Vis tekniske positionsdetaljer"):
-        optional = [c for c in ["Sector", "Account"] if c in portfolio.columns]
-        detail_columns = [
-            "Asset_Type", "Name", "Ticker", "Quantity", "Purchase_Price",
-            "Current_Price", "Currency", "Market_Value_DKK", "Cost_Value_DKK",
-            "Return_DKK", "Return_Pct", "Portfolio_Weight", *optional,
+        include_weight = section["Include_Weight"].fillna(False)
+        active_value = pd.to_numeric(
+            section.loc[include_weight, "Market_Value_DKK"], errors="coerce"
+        ).fillna(0).sum()
+
+        section["ASK_Weight"] = np.where(
+            include_weight & (active_value > 0),
+            pd.to_numeric(section["Market_Value_DKK"], errors="coerce").fillna(0)
+            / active_value,
+            np.nan,
+        )
+        section = section.sort_values(
+            ["ASK_Weight", "Name"],
+            ascending=[False, True],
+            na_position="last",
+        ).reset_index(drop=True)
+
+        table = section[
+            [
+                "Name", "Quantity", "Purchase_Price", "Current_Price", "Sector",
+                "Market_Value_DKK", "ASK_Weight", "Return_Pct", "Composite",
+                "AI_Confidence",
+            ]
+        ].copy()
+        table.columns = [
+            "Navn", "Antal", "Åben kurs", "Dags kurs", "Sektor",
+            "Markedsværdi", "Vægt", "Afkast", "Momentum", "AI",
         ]
-        details = portfolio[detail_columns].copy()
-        details = details.rename(columns={
-            "Asset_Type": "Type", "Name": "Navn", "Quantity": "Antal",
-            "Purchase_Price": "Købskurs", "Current_Price": "Aktuel kurs",
-            "Currency": "Valuta", "Market_Value_DKK": "Markedsværdi",
-            "Cost_Value_DKK": "Kostpris", "Return_DKK": "Gevinst/tab",
-            "Return_Pct": "Afkast", "Portfolio_Weight": "Vægt",
-            "Sector": "Sektor", "Account": "Depot",
-        })
-        details["Type"] = details["Type"].replace({
-            "Stock": "Aktie", "Equity": "Aktie", "Fund": "ETF"
-        })
-        details = details.sort_values(["Type", "Navn"])
-        for col in ["Markedsværdi", "Kostpris", "Gevinst/tab"]:
-            details[col] = details[col].apply(compact_dkk)
-        details["Afkast"] = details["Afkast"].apply(lambda x: format_pct(x, 1))
-        details["Vægt"] = [
-            format_pct(value, 1) if include else "-"
-            for value, include in zip(portfolio["Portfolio_Weight"], include_weight)
-        ]
+
+        table["Antal"] = table["Antal"].apply(
+            lambda x: f"{float(x):,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+            if pd.notna(x) else "N/A"
+        )
+        for col in ["Åben kurs", "Dags kurs"]:
+            table[col] = table[col].apply(
+                lambda x: format_score(x, 2) if pd.notna(x) else "N/A"
+            )
+        table["Markedsværdi"] = table["Markedsværdi"].apply(compact_dkk)
+        table["Vægt"] = table["Vægt"].apply(
+            lambda x: format_pct(x, 1) if pd.notna(x) else "-"
+        )
+        table["Afkast"] = table["Afkast"].apply(lambda x: format_pct(x, 1))
+        table["Momentum"] = table["Momentum"].apply(lambda x: format_pct(x, 1))
+        table["AI"] = table["AI"].apply(
+            lambda x: f"{x:.0f}%" if pd.notna(x) else "N/A"
+        )
+
         st.dataframe(
-            table_style(details),
+            table_style(table),
             use_container_width=True,
             hide_index=True,
-            height=min(no_scroll_height(details), 650),
+            height=no_scroll_height(table),
         )
+
+        chart_data = section.loc[
+            section["ASK_Weight"].notna(), ["Name", "ASK_Weight"]
+        ].copy()
+        st.markdown(f"#### Vægtning pr. {asset_class.lower()}")
+        if chart_data.empty:
+            st.info("Der er ikke tilstrækkelige data til vægtningsgrafen.")
+        else:
+            chart_data = chart_data.rename(
+                columns={"Name": "Navn", "ASK_Weight": "Vægt"}
+            )
+            fig = px.bar(
+                chart_data,
+                x="Navn",
+                y="Vægt",
+                title=f"Vægtning – {heading}",
+                text_auto=".1%",
+            )
+            fig.update_layout(
+                height=max(390, min(700, 300 + len(chart_data) * 18)),
+                xaxis_title=None,
+                yaxis_title="Vægt inden for ASK",
+                yaxis_tickformat=".0%",
+                showlegend=False,
+            )
+            fig.update_xaxes(
+                categoryorder="array",
+                categoryarray=chart_data["Navn"].tolist(),
+                tickangle=-45 if len(chart_data) > 8 else 0,
+            )
+            st.plotly_chart(fig, use_container_width=True)
+
+        if asset_class == "Aktie":
+            sector_data = section.loc[
+                section["ASK_Weight"].notna(), ["Sector", "Market_Value_DKK"]
+            ].copy()
+            sector_data["Market_Value_DKK"] = pd.to_numeric(
+                sector_data["Market_Value_DKK"], errors="coerce"
+            ).fillna(0)
+            sector_data = (
+                sector_data.groupby("Sector", as_index=False)["Market_Value_DKK"]
+                .sum()
+                .loc[lambda df: df["Market_Value_DKK"] > 0]
+                .sort_values("Market_Value_DKK", ascending=False)
+            )
+
+            st.markdown("#### Sektorfordeling – aktier")
+            if sector_data.empty:
+                st.info("Der er ikke tilstrækkelige sektordata.")
+            else:
+                sector_data = sector_data.rename(
+                    columns={"Sector": "Sektor", "Market_Value_DKK": "Markedsværdi"}
+                )
+                fig = px.pie(
+                    sector_data,
+                    names="Sektor",
+                    values="Markedsværdi",
+                    title="Sektorfordeling – aktie-ASK",
+                    hole=0.35,
+                )
+                fig.update_traces(textposition="inside", textinfo="percent+label")
+                fig.update_layout(height=500)
+                st.plotly_chart(fig, use_container_width=True)
+
+    show_position_section(position_source, "Aktie", "Aktier")
+
+    st.divider()
+
+    show_position_section(position_source, "ETF", "ETF'er")
 
 
 with tab_rebalance:
