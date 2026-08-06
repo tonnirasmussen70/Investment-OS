@@ -1008,6 +1008,10 @@ with tab_positions:
 
 with tab_rebalance:
     st.subheader("Rebalancering")
+    st.caption(
+        "Aktier og ETF'er vurderes separat, fordi de ligger på hver sin ASK. "
+        "Hver tabel viser nuværende vægt, foreslået allokering og risikostatus."
+    )
 
     r1, r2, r3, r4 = st.columns(4)
     r1.metric("Øg-signaler", rebalance_result.increase_count)
@@ -1016,9 +1020,27 @@ with tab_rebalance:
     r4.metric("Brutto handel", compact_dkk(rebalance_result.gross_trade_dkk))
 
     rebalance = rebalance_result.data.copy()
+
     if rebalance.empty:
         st.success("Ingen rebalancering anbefales.")
     else:
+        asset_type_lookup = analytics_portfolio[["Name", "Asset_Type"]].drop_duplicates(
+            subset=["Name"]
+        )
+        rebalance = rebalance.merge(
+            asset_type_lookup,
+            left_on="Aktiv",
+            right_on="Name",
+            how="left",
+        ).drop(columns=["Name"], errors="ignore")
+
+        rebalance["Aktivklasse"] = rebalance["Asset_Type"].replace({
+            "Stock": "Aktie",
+            "Equity": "Aktie",
+            "Fund": "ETF",
+            "ETF": "ETF",
+        })
+
         risk_lookup = (
             stop_loss_table[["Aktiv", "Risikohandling"]]
             .drop_duplicates(subset=["Aktiv"])
@@ -1026,46 +1048,52 @@ with tab_rebalance:
             else pd.DataFrame(columns=["Aktiv", "Risikohandling"])
         )
         rebalance = rebalance.merge(risk_lookup, on="Aktiv", how="left")
-        rebalance["Risiko"] = rebalance["Risikohandling"].fillna("Overvåg")
+        rebalance["Risiko"] = rebalance["Risikohandling"].fillna("Ikke vurderet")
 
-        chart_data = rebalance[
-            ["Aktiv", "Nuværende vægt", "Foreslået vægt"]
-        ].copy()
-        chart_data["Nuværende vægt"] = pd.to_numeric(
-            chart_data["Nuværende vægt"], errors="coerce"
-        )
-        chart_data["Foreslået vægt"] = pd.to_numeric(
-            chart_data["Foreslået vægt"], errors="coerce"
-        )
-        chart_data = chart_data.dropna(
-            subset=["Nuværende vægt", "Foreslået vægt"], how="all"
-        )
+        def show_rebalance_section(
+            source: pd.DataFrame,
+            asset_class: str,
+            heading: str,
+        ) -> None:
+            section = source.loc[source["Aktivklasse"] == asset_class].copy()
+            st.markdown(f"### {heading}")
 
-        display = rebalance[
-            [
-                "Aktiv", "Nuværende vægt", "Foreslået vægt", "Ændring",
-                "Risiko", "Composite", "AI", "Handling",
-            ]
-        ].copy()
+            if section.empty:
+                st.info(f"Ingen {heading.lower()} indgår aktuelt i rebalanceringen.")
+                return
 
-        for col in ["Nuværende vægt", "Foreslået vægt", "Ændring", "Composite"]:
-            display[col] = display[col].apply(lambda x: format_pct(x, 1))
-        display["AI"] = display["AI"].apply(
-            lambda x: f"{x:.0f}%" if pd.notna(x) else "N/A"
-        )
-        display = display.rename(columns={"Composite": "Momentum"})
+            section = section.sort_values(
+                ["Foreslået vægt", "Aktiv"],
+                ascending=[False, True],
+                na_position="last",
+            ).reset_index(drop=True)
 
-        st.dataframe(
-            table_style(display),
-            use_container_width=True,
-            hide_index=True,
-            height=no_scroll_height(display),
-        )
+            chart_data = section[
+                ["Aktiv", "Nuværende vægt", "Foreslået vægt"]
+            ].copy()
 
-        st.markdown("### Nuværende vægt vs. foreslået allokering")
-        if chart_data.empty:
-            st.info("Der er ikke tilstrækkelige data til allokeringsgrafen.")
-        else:
+            display = section[
+                [
+                    "Aktiv", "Nuværende vægt", "Foreslået vægt", "Ændring",
+                    "Risiko", "Composite", "AI", "Handling",
+                ]
+            ].copy()
+
+            for col in ["Nuværende vægt", "Foreslået vægt", "Ændring", "Composite"]:
+                display[col] = display[col].apply(lambda x: format_pct(x, 1))
+            display["AI"] = display["AI"].apply(
+                lambda x: f"{x:.0f}%" if pd.notna(x) else "N/A"
+            )
+            display = display.rename(columns={"Composite": "Momentum"})
+
+            st.dataframe(
+                table_style(display),
+                use_container_width=True,
+                hide_index=True,
+                height=no_scroll_height(display),
+            )
+
+            st.markdown("#### Nuværende vægt vs. foreslået allokering")
             chart_long = chart_data.melt(
                 id_vars="Aktiv",
                 value_vars=["Nuværende vægt", "Foreslået vægt"],
@@ -1078,22 +1106,24 @@ with tab_rebalance:
                 y="Vægt",
                 color="Allokering",
                 barmode="group",
-                title="Nuværende vægt vs. foreslået allokering",
+                title=f"Nuværende vægt vs. foreslået allokering – {heading}",
                 text_auto=".1%",
             )
             fig.update_layout(
-                height=max(420, min(760, 320 + len(chart_data) * 18)),
+                height=max(390, min(700, 300 + len(section) * 18)),
                 xaxis_title=None,
-                yaxis_title="Porteføljevægt",
+                yaxis_title="Vægt",
                 yaxis_tickformat=".0%",
                 legend_title_text=None,
             )
-            fig.update_xaxes(
-                categoryorder="array",
-                categoryarray=chart_data["Aktiv"].tolist(),
-                tickangle=-45 if len(chart_data) > 8 else 0,
-            )
+            fig.update_xaxes(tickangle=-45 if len(section) > 8 else 0)
             st.plotly_chart(fig, use_container_width=True)
+
+        show_rebalance_section(rebalance, "Aktie", "Aktier")
+
+        st.divider()
+
+        show_rebalance_section(rebalance, "ETF", "ETF'er")
 
     st.caption(
         f"Positionsloft {config.max_position_weight:.0%}. Handler under "
