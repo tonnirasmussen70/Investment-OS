@@ -205,6 +205,26 @@ st.session_state.setdefault(
 st.session_state.setdefault("model_minimum_trade_dkk", float(MINIMUM_TRADE_DKK))
 st.session_state.setdefault("model_risk_free_rate", float(base_config.risk_free_rate))
 
+# Redigeringsfelterne holdes adskilt fra de aktive modelværdier.
+# Modellen ændres først, når brugeren vælger "Anvend modelændringer".
+st.session_state.setdefault("draft_model_benchmark", st.session_state["model_benchmark"])
+st.session_state.setdefault(
+    "draft_model_max_position_weight",
+    float(st.session_state["model_max_position_weight"]),
+)
+st.session_state.setdefault(
+    "draft_model_max_sector_weight",
+    float(st.session_state["model_max_sector_weight"]),
+)
+st.session_state.setdefault(
+    "draft_model_minimum_trade_dkk",
+    float(st.session_state["model_minimum_trade_dkk"]),
+)
+st.session_state.setdefault(
+    "draft_model_risk_free_rate",
+    float(st.session_state["model_risk_free_rate"]),
+)
+
 for period, default_value in base_config.momentum_weights.items():
     st.session_state.setdefault(f"momentum_weight_{period}", float(default_value))
 
@@ -1536,17 +1556,20 @@ with tab_settings:
             st.rerun()
 
     with st.expander("Modeloversigt"):
-        st.caption("Ændringer anvendes straks i den aktuelle session.")
+        st.caption(
+            "Redigér værdierne og vælg Anvend modelændringer. Derefter "
+            "genberegnes hele modellen med de nye parametre."
+        )
         m1, m2 = st.columns(2)
         with m1:
-            st.text_input("Benchmark", key="model_benchmark")
+            st.text_input("Benchmark", key="draft_model_benchmark")
             st.number_input(
                 "Maks. positionsvægt",
                 min_value=0.01,
                 max_value=1.00,
                 step=0.01,
                 format="%.2f",
-                key="model_max_position_weight",
+                key="draft_model_max_position_weight",
                 help="Angives som decimal. 0,12 svarer til 12 %.",
             )
             st.number_input(
@@ -1554,7 +1577,7 @@ with tab_settings:
                 min_value=0.0,
                 step=500.0,
                 format="%.0f",
-                key="model_minimum_trade_dkk",
+                key="draft_model_minimum_trade_dkk",
             )
         with m2:
             st.number_input(
@@ -1563,7 +1586,7 @@ with tab_settings:
                 max_value=1.00,
                 step=0.01,
                 format="%.2f",
-                key="model_max_sector_weight",
+                key="draft_model_max_sector_weight",
                 help="Angives som decimal. 0,20 svarer til 20 %.",
             )
             st.number_input(
@@ -1572,7 +1595,7 @@ with tab_settings:
                 max_value=0.25,
                 step=0.005,
                 format="%.3f",
-                key="model_risk_free_rate",
+                key="draft_model_risk_free_rate",
                 help="Angives som decimal. 0,02 svarer til 2 %.",
             )
             st.text_input("App-version", value=APP_VERSION, disabled=True)
@@ -1580,19 +1603,61 @@ with tab_settings:
                 "Datakilde", value="AI_portfolio.xlsx + yfinance", disabled=True
             )
 
-        if st.button("Nulstil Modeloversigt"):
-            st.session_state["model_benchmark"] = base_config.benchmark
-            st.session_state["model_max_position_weight"] = float(
-                base_config.max_position_weight
-            )
-            st.session_state["model_max_sector_weight"] = float(
-                base_config.max_sector_weight
-            )
-            st.session_state["model_minimum_trade_dkk"] = 5_000.0
-            st.session_state["model_risk_free_rate"] = float(
-                base_config.risk_free_rate
-            )
-            st.rerun()
+        active_settings = pd.DataFrame([
+            {"Aktiv parameter": "Benchmark", "Værdi": config.benchmark},
+            {
+                "Aktiv parameter": "Maks. positionsvægt",
+                "Værdi": format_pct(config.max_position_weight, 0),
+            },
+            {
+                "Aktiv parameter": "Maks. sektorvægt",
+                "Værdi": format_pct(config.max_sector_weight, 0),
+            },
+            {
+                "Aktiv parameter": "Minimum handel",
+                "Værdi": compact_dkk(MINIMUM_TRADE_DKK),
+            },
+            {
+                "Aktiv parameter": "Risikofri rente",
+                "Værdi": format_pct(config.risk_free_rate, 1),
+            },
+        ])
+        st.dataframe(active_settings, use_container_width=True, hide_index=True)
+
+        apply_col, reset_col = st.columns(2)
+        with apply_col:
+            if st.button("Anvend modelændringer", type="primary"):
+                st.session_state["model_benchmark"] = (
+                    str(st.session_state["draft_model_benchmark"]).strip()
+                    or base_config.benchmark
+                )
+                st.session_state["model_max_position_weight"] = float(
+                    st.session_state["draft_model_max_position_weight"]
+                )
+                st.session_state["model_max_sector_weight"] = float(
+                    st.session_state["draft_model_max_sector_weight"]
+                )
+                st.session_state["model_minimum_trade_dkk"] = float(
+                    st.session_state["draft_model_minimum_trade_dkk"]
+                )
+                st.session_state["model_risk_free_rate"] = float(
+                    st.session_state["draft_model_risk_free_rate"]
+                )
+                st.rerun()
+
+        with reset_col:
+            if st.button("Nulstil Modeloversigt"):
+                defaults = {
+                    "model_benchmark": base_config.benchmark,
+                    "model_max_position_weight": float(base_config.max_position_weight),
+                    "model_max_sector_weight": float(base_config.max_sector_weight),
+                    "model_minimum_trade_dkk": 5_000.0,
+                    "model_risk_free_rate": float(base_config.risk_free_rate),
+                }
+                for key, value in defaults.items():
+                    st.session_state[key] = value
+                    st.session_state[f"draft_{key}"] = value
+                st.rerun()
 
     with st.expander("Momentum-vægte"):
         st.caption(
