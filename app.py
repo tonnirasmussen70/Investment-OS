@@ -1019,23 +1019,81 @@ with tab_rebalance:
     if rebalance.empty:
         st.success("Ingen rebalancering anbefales.")
     else:
-        for col in ["Nuværende vægt", "Foreslået vægt", "Ændring", "Composite"]:
-            rebalance[col] = rebalance[col].apply(lambda x: format_pct(x, 1))
-        rebalance["AI"] = rebalance["AI"].apply(
-            lambda x: f"{x:.0f}%" if pd.notna(x) else "N/A"
+        risk_lookup = (
+            stop_loss_table[["Aktiv", "Risikohandling"]]
+            .drop_duplicates(subset=["Aktiv"])
+            if not stop_loss_table.empty
+            else pd.DataFrame(columns=["Aktiv", "Risikohandling"])
         )
-        rebalance["Handel DKK"] = rebalance["Handel DKK"].apply(compact_dkk)
+        rebalance = rebalance.merge(risk_lookup, on="Aktiv", how="left")
+        rebalance["Risiko"] = rebalance["Risikohandling"].fillna("Overvåg")
+
+        chart_data = rebalance[
+            ["Aktiv", "Nuværende vægt", "Foreslået vægt"]
+        ].copy()
+        chart_data["Nuværende vægt"] = pd.to_numeric(
+            chart_data["Nuværende vægt"], errors="coerce"
+        )
+        chart_data["Foreslået vægt"] = pd.to_numeric(
+            chart_data["Foreslået vægt"], errors="coerce"
+        )
+        chart_data = chart_data.dropna(
+            subset=["Nuværende vægt", "Foreslået vægt"], how="all"
+        )
+
         display = rebalance[
             [
                 "Aktiv", "Nuværende vægt", "Foreslået vægt", "Ændring",
-                "Handel DKK", "Rebalance handling", "Positionsloft",
-                "Composite", "AI", "Handling",
+                "Risiko", "Composite", "AI", "Handling",
             ]
-        ].rename(columns={"Handel DKK": "Handel", "Composite": "Momentum"})
-        st.dataframe(
-            table_style(display), use_container_width=True,
-            hide_index=True, height=no_scroll_height(display),
+        ].copy()
+
+        for col in ["Nuværende vægt", "Foreslået vægt", "Ændring", "Composite"]:
+            display[col] = display[col].apply(lambda x: format_pct(x, 1))
+        display["AI"] = display["AI"].apply(
+            lambda x: f"{x:.0f}%" if pd.notna(x) else "N/A"
         )
+        display = display.rename(columns={"Composite": "Momentum"})
+
+        st.dataframe(
+            table_style(display),
+            use_container_width=True,
+            hide_index=True,
+            height=no_scroll_height(display),
+        )
+
+        st.markdown("### Nuværende vægt vs. foreslået allokering")
+        if chart_data.empty:
+            st.info("Der er ikke tilstrækkelige data til allokeringsgrafen.")
+        else:
+            chart_long = chart_data.melt(
+                id_vars="Aktiv",
+                value_vars=["Nuværende vægt", "Foreslået vægt"],
+                var_name="Allokering",
+                value_name="Vægt",
+            )
+            fig = px.bar(
+                chart_long,
+                x="Aktiv",
+                y="Vægt",
+                color="Allokering",
+                barmode="group",
+                title="Nuværende vægt vs. foreslået allokering",
+                text_auto=".1%",
+            )
+            fig.update_layout(
+                height=max(420, min(760, 320 + len(chart_data) * 18)),
+                xaxis_title=None,
+                yaxis_title="Porteføljevægt",
+                yaxis_tickformat=".0%",
+                legend_title_text=None,
+            )
+            fig.update_xaxes(
+                categoryorder="array",
+                categoryarray=chart_data["Aktiv"].tolist(),
+                tickangle=-45 if len(chart_data) > 8 else 0,
+            )
+            st.plotly_chart(fig, use_container_width=True)
 
     st.caption(
         f"Positionsloft {config.max_position_weight:.0%}. Handler under "
