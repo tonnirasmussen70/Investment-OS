@@ -61,5 +61,6 @@ jobs:
             echo "No snapshot changes to commit."
           else
             git commit -m "Update portfolio snapshot"
-            git push
+            git pull --rebase origin main
+            git push origin main
           fi
