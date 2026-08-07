@@ -1,100 +1,111 @@
 # Investment OS – Morgenbrief
-**Fredag 7. august 2026, ca. 07:09 CEST**
+**Fredag 7. august 2026, kl. 07:47 CEST**
 
 ## A. Executive view
-Markedet starter dagen i en afventende/risk-off tilstand foran dagens amerikanske jobrapport. Asiatiske aktier er blandede, mens stigende oliepris og højere obligationsrenter igen øger inflations- og renterisikoen. Brent handler over USD 83/fad efter nye spændinger i Mellemøsten, og dollaren er fastere mod euroen. Den vigtigste porteføljehandling i dag er derfor **Afvent nye køb**, indtil jobrapporten og renteresponsen er kendt. Investment OS viser fortsat Øg på Danske Bank og Microsoft, men snapshotet er mere end 24 timer gammelt og må derfor ikke behandles som et frisk handelssignal.
+Markedet er i en **afventende, let risk-off tilstand** foran dagens amerikanske jobrapport. Højere olie og amerikanske renter holder inflations- og multipelrisikoen oppe, mens europæiske aktier kommer fra rekordniveauer. Den vigtigste porteføljehandling er **ikke at jage dagens bevægelser**: Investment OS har kun to aktive Øg-signaler – Microsoft og Global X Copper Miners – og begge bør behandles disciplineret efter minimumshandel, overlap og dagens makrotrigger. citeturn462256news0turn462256news3
 
 ## B. Portfolio status
-**Snapshot-status: FORÆLDET**
+**Snapshot-status: FRISKT / verificeret**
 
-- `generated_at`: 2026-08-04T13:47:21.001629+02:00
-- `source.commit_sha`: 93000560f5fd962c9352c0069a0bff13c581c2a6
-- `source.portfolio_file_sha256`: 7651ff462374cb2c1c2e9d077e6a603b3cc4a8289e999e31edf74d3845ce8aa0
-- `data_quality.score`: 85,0/100
-- Datakvalitetsnote: 21 positioner bruger aktuel FX som fallback for købskurs.
-- Porteføljeværdi: **1.171.341 kr.**
-- Aktiv markedsværdi: **739.221 kr.**
-- Samlet afkast: **+10,54 %**
-- Portfolio Health: **69,22**
-- AI Confidence: **56,99 – Moderat**
-- Maksimal positionsvægt i modellen: **14 %**
+- `generated_at`: **2026-08-07T07:45:59.023021+02:00**
+- `source.commit_sha`: **ca7c6359c4e1135482686efcd6ccfeba3cc5fd11**
+- `source.portfolio_file_sha256`: **a821b318a7cc8ce23d8329b453c900cb34dfe603000891f6205f622b48f899f1**
+- `data_quality.score`: **85,0/100**
+- Datakvalitetsnoter: **21 positioner bruger aktuel FX som fallback for købskurs**, og **IS3Q:DE mangler markedskurs**. fileciteturn3file0L2-L2
 
-Største verificerede positioner i snapshotet er Novo Nordisk **8,88 %**, ASML **5,60 %**, Danske Bank **4,93 %**, NKT **4,85 %**, iShares Global Semiconductors **3,95 %** og Microsoft **3,70 %**. Ingen af disse overskrider modellens 14 %-loft. Den største koncentrationsrisiko er snarere tematisk: halvledere/AI er repræsenteret både via ASML, TSMC, Microsoft og semiconductor-ETF'en.
+Porteføljeværdi: **1.177.721 kr.**  
+Aktiv markedsværdi: **745.601 kr.**  
+Samlet afkast: **+10,28 %**  
+Portfolio Health: **68,00**  
+AI Confidence: **56,36 – Moderat**  
+Positionsloft i modellen: **14 %**. fileciteturn3file0L2-L2
+
+Største aktive positioner er Novo Nordisk **8,38 %**, ASML **5,58 %**, NKT **4,92 %**, Danske Bank **4,89 %**, semiconductor-ETF SEC0 **3,99 %**, Microsoft **3,77 %** og TSMC **3,22 %**. Ingen enkeltposition er tæt på 14 %-loftet. Den vigtigste koncentrationsrisiko er fortsat tematisk: Microsoft + ASML + TSMC + SEC0 + Korea-ETF udgør samlet ca. **17,8 %** af porteføljen og giver væsentlig AI/semiconductor-følsomhed. fileciteturn3file0L2-L2 fileciteturn4file0L2-L2
 
 ## C. Markedsstatus og makro
-Asien handler forsigtigt: MSCI Asia-Pacific ligger omtrent fladt, Nikkei falder ca. 0,9 %, KOSPI ca. 0,5 %, mens CSI 300 stiger ca. 0,2 %. Fokus er dagens amerikanske nonfarm payrolls, hvor konsensus ligger omkring **+80.000 job** og arbejdsløshed omkring **4,2 %**. Et stærkere tal vil sandsynligvis løfte renterne yderligere; et svagere tal vil kunne dæmpe forventningerne om yderligere Fed-stramning.
+USA lukkede torsdag svagt: S&P 500 **-0,2 %**, Dow **-0,9 %** og Nasdaq omtrent **-0,1 %**. I Asien fredag morgen er MSCI Asia-Pacific uden Japan ca. **-0,1 %**, Nikkei omtrent **-0,5 %**, KOSPI ca. **-0,5 %**, mens CSI 300 ligger omkring **+0,8 %**. Europæiske futures pegede kort før åbning mod ca. **-0,2 %**. citeturn817477news85turn462256news0turn462256news3
 
-Brent ligger over **USD 83/fad** efter fornyede spændinger omkring Hormuzstrædet. EUR/USD ligger omkring **1,152**, mens dollar/yen er omkring **158,5**. Højere olie har samtidig løftet obligationsrenterne. Guld er fortsat understøttet af geopolitisk usikkerhed. Aktuelle pålidelige kobbertal kunne ikke verificeres i denne kørsel og angives derfor som **N/A**.
+Dagens vigtigste makroevent er amerikanske nonfarm payrolls kl. 14:30 dansk tid. Konsensus ligger omkring **+80.000 job** og arbejdsløshed **4,2 %**. Markedet priser omtrent en fifty-fifty sandsynlighed for en Fed-forhøjelse i september, så et stærkt arbejdsmarkedstal kan presse renter og growth-multipler op/ned meget hurtigt. citeturn462256news3
+
+Renter/FX/varer fredag morgen: amerikansk 10-årig rente omkring **4,68 %**, 2-årig omkring **4,25 %**; EUR/USD ca. **1,152**; Brent ca. **USD 83,5–83,8/fad** efter ny stigning på godt 1 %; spotguld omkring **USD 4.260–4.270/oz**. Et pålideligt aktuelt kobberspot-tal kunne ikke verificeres i denne kørsel og angives derfor som **N/A**. citeturn462256news0turn462256news1turn462256news4
 
 ## D. Sektor- og kapitalstrømsrotation
-**Semiconductors:** Fundamentalerne er fortsat stærke, men pris-/momentumbilledet er mere skrøbeligt. ASML hævede i juli sin 2026-omsætningsprognose til EUR 43-45 mia. og annoncerede kapacitetsudvidelser på 30 % i både EUV og DUV over de kommende år. Samtidig har chipaktier været volatile, og Korea har haft en svag periode. Investment OS-snapshotet viser derfor Afvent på ASML, TSMC, SEC0 og Korea-ETF'en.
+**Semiconductors:** Fundamental AI-efterspørgsel er stadig stærk, men markedet straffer selv gode regnskaber hårdt, når forventningerne er ekstreme. Sandisk og Western Digital faldt kraftigt torsdag trods stærke tal, og flere chipnavne blev trukket ned. Det taler for selektivitet frem for bred aggressiv eksponering. citeturn352310news60
 
-**Defense:** Investment OS viser Afvent; 1M-momentum var kun svagt positivt i snapshotet, mens 3M og 6M var negative.
+**Defense:** Investment OS viser **Hold** på DFEN. Momentum er positivt på 1W og 1M, og rotationssignalet er “Accelererer”, men AI Confidence er kun **46,62**. Det er ikke et stærkt nok signal til ny kapital alene. fileciteturn4file0L2-L2
 
-**Uranium:** Langsigtede uranpriser er fortsat understøttede, men Investment OS-momentum var negativt på 1M/3M/6M. Derfor ingen ny kapital nu.
+**Uranium:** URNU viser stærk kort vending – 1W **+12,1 %**, 1M **+6,5 %** – men 3M er fortsat **-23,5 %** og AI Confidence kun **20,20**. Investment OS: **Afvent**. fileciteturn4file0L2-L2
 
-**Clean Energy / Vestas:** Vestas' Q1 viste forbedret indtjening, men Investment OS-momentum var fortsat negativt. Q2-resultatet kommer 12. august og er næste klare katalysator.
+**Clean Energy:** IQQH har stadig negativt 1M/3M momentum og Investment OS siger **Afvent**. Vestas er ligeledes Afvent før Q2 den 12. august. fileciteturn4file0L2-L2 citeturn352310search0
 
-**Mining / Rare Earths:** Flere af ETF'erne viste tidlige vendingstegn på 1W, men fortsat negativt 1M/3M momentum. Signal: overvåg, ikke køb.
+**Mining / kobber:** Her er dagens klare rotation. COPX har 1W **+10,0 %**, 1M **+21,1 %**, AI Confidence **71,59** og er løftet til **Øg**. WMIN har 1M **+14,5 %** og “Accelererer”, men 3M er stadig negativ; Investment OS siger **Hold**. fileciteturn4file0L2-L2
 
-**Infrastructure:** Fortsat neutral/afventende i Investment OS.
+**Rare earths:** VVMX viser 1W **+13,7 %** og tidlig vending, men 3M er fortsat **-31,0 %** og AI Confidence **14,38**. Investment OS: **Afvent**. fileciteturn4file0L2-L2
+
+**Infrastructure:** 94VE er forbedret til **Hold**, med positivt momentum på 1W/1M/3M og AI Confidence **66,29**. Det er konstruktivt, men ikke et Øg-signal. fileciteturn4file0L2-L2
 
 ## E. Porteføljepåvirkning
-**ASML:** Fundamentalt stærk AI-case efter den markante guidance-opjustering, men snapshotet viser 1M-momentum på **-7,18 %** og negativ rotation. Investment OS: **Afvent**.
+**ASML:** Kursmomentum er forbedret på helt kort sigt: 1W er nu **+5,57 %**, mens 1M fortsat er **-9,88 %**. AI Confidence er høj på **80,67**, men modellen siger **Afvent**. Fundamentalt understøttes casen fortsat af AI-relateret kapacitetsudbygning; ASML guidede tidligere i år til 2026-omsætning på EUR 36–40 mia. fileciteturn3file0L2-L2 citeturn246534search1
 
-**Microsoft:** Investment OS har **Øg** med AI Confidence **82,76** og foreslået beløb **14.784 kr.** Microsoft leverede et stærkt FY26 Q4 med fortsat høj Azure-vækst og stor AI-kapacitetsefterspørgsel. Min vurdering i dag: behold Øg-signalet på observationslisten, men vent med ny kapital til efter jobrapporten.
+**Microsoft:** Den stærkeste aktive enkeltaktie-kandidat i decision queue. Momentum: 1W **+21,1 %**, 1M **+25,4 %**, 3M **+17,7 %**, AI Confidence **82,75**, rotation “Accelererer”. FY26 Q4 viste Azure-vækst på **43 %**, over forventning, hvilket giver fundamental støtte til signalet. Investment OS: **Øg 14.912 kr.** fileciteturn5file0L2-L2 citeturn626443search2
 
-**TSMC:** Fundamental efterspørgsel er stærk; omsætningen i årets første seks måneder steg samlet ca. 35,6 % år/år. July-sales offentliggøres 10. august. Snapshotet viser dog 1M-momentum **-9,00 %**. Investment OS: **Afvent**.
+**TSMC:** 1M er stadig negativ på **-4,30 %**, 3M omtrent flad, og AI Confidence **52,01**. Investment OS: **Afvent**. Den næste konkrete datapunkt er juli-omsætningen den **10. august**; de første seks måneder af 2026 lå samlet **35,6 %** over året før. fileciteturn3file0L2-L2 citeturn817477search0turn817477search8
 
-**Novo Nordisk:** Q2 var stærkere end frygtet, og selskabet hævede 2026-outlook, men markedets reaktion var negativ på grund af skuffelse omkring Wegovy-pillens salg og CagriSema-data. Snapshotet viser AI Confidence **27,25**, 1M **-6,72 %** og negativ rotation. Investment OS: **Afvent**.
+**Novo Nordisk:** Dette er den svageste store position i snapshotet: 1W **-13,15 %**, 1M **-10,34 %**, composite **-0,084** og AI Confidence kun **18,57**. Q2 bød på højere 2026-outlook, men markedet fokuserede på Wegovy-pillens salgs-miss og CagriSema-skuffelsen, mens Lilly samtidig leverede meget stærke GLP-1-tal. Investment OS: **Afvent** – ikke Øg. fileciteturn3file0L2-L2 citeturn352310news62turn352310news64
 
-**Vestas:** Q1 viste 14,4 % omsætningsvækst, EBIT-margin før special items på 3,2 % og rekordstor samlet backlog på EUR 76,1 mia. Q2 kommer 12. august. Snapshotet viser Tidlig vending, men fortsat negativt 1M/3M/6M momentum. Investment OS: **Afvent**.
+**Vestas:** Momentum er stadig svagt: 1M **-6,52 %**, 3M **-9,21 %**, AI Confidence **17,22**, men rotationssignalet er “Tidlig vending”. Q2 kommer **12. august**; seneste officielle Q1 viste omsætning EUR 3,966 mia., EBIT-margin før special items **3,2 %** og samlet backlog EUR **76,1 mia.** Investment OS: **Afvent**. fileciteturn4file0L2-L2 citeturn352310search3turn352310search0
 
-**NKT:** Snapshotet viser AI Confidence **41,60**, 1M **-7,59 %** og 3M svagt negativt. H1-resultatet kommer 14. august. Investment OS: **Afvent**.
+**NKT:** Kort momentum er forbedret markant: 1W **+7,98 %**, men 1M **-3,87 %**, 3M **-1,39 %**, AI Confidence **41,60**. Rotation er nu “Tidlig vending”. H1-regnskabet kommer **14. august**. Investment OS: **Afvent**. fileciteturn3file0L2-L2 citeturn246534search8
 
-**Danske Bank:** Den stærkeste kombination af modeloutput og fundamentaler blandt de store positioner. H1 2026 gav nettoresultat på **11,9 mia. kr.**, ROE **13,9 %**, og banken hævede helårsforventningen til **23-25 mia. kr.** Investment OS viser **Øg**, Decision Score **81,68**, AI Confidence **85,34** og foreslået beløb **14.784 kr.** Min vurdering: positiv kandidat, men signalet bør først genbekræftes med et friskt snapshot.
+**Danske Bank:** Fundamentalerne er fortsat stærke: H1 nettoresultat **11,9 mia. kr.**, ROE **13,9 %**, og helårsforventningen er hævet til **23–25 mia. kr.** Momentum er fortsat positivt, AI Confidence **81,65**, men Investment OS er nu ændret fra Øg til **Hold**. Det er et vigtigt signal om ikke at overstyre modellen med en fundamental mavefornemmelse. fileciteturn3file0L2-L2 citeturn352310search1
 
-**AL Sydbank:** Snapshotet viser positivt 1M/3M/6M momentum og AI Confidence **79,16**, men modelhandlingen er **Hold**. H1-resultat kommer 26. august.
+**AL Sydbank:** 1M **+5,09 %**, 3M **+16,48 %**, AI Confidence **79,18**, rotation “Accelererer”, men Investment OS siger **Hold**. H1-regnskab kommer **26. august**. fileciteturn3file0L2-L2 citeturn817477search3
 
 ## F. Ændringer siden seneste brief
-Der foreligger ikke et tidligere verificeret snapshot i denne kørsel, som kan bruges til en sikker delta-sammenligning. Derfor kan ændringer i AI Confidence, decision queue, opportunities, rebalancering og stop-loss ikke opgøres som nye ændringer siden i går.
+Sammenlignet med snapshotet fra 4. august:
 
-Senest verificerede Investment OS-output:
-- Decision queue: **Øg Danske Bank 14.784 kr.**
-- Decision queue: **Øg Microsoft 14.784 kr.**
-- Højeste Opportunity Scores: Pandora **89,13**, Danske Bank **88,36**, Frontline **88,12**, Microsoft **85,34**, AL Sydbank **84,76**.
-- Rebalance: Øg Danske Bank og Microsoft; Hold bl.a. Pandora, Frontline, AL Sydbank, VWCE og Copper Miners; øvrige væsentlige positioner primært Afvent.
-- Stop-loss summary: **12 Stop_Broken**, **2 Alarm**, **0 Tighten**.
+- Porteføljeværdi: **1.171.341 → 1.177.721 kr.** (+6.380 kr.).
+- Samlet afkast: **10,54 % → 10,28 %**.
+- Portfolio Health: **69,22 → 68,00**.
+- AI Confidence: **56,99 → 56,36** – fortsat “Moderat”.
+- **Danske Bank: Øg → Hold.**
+- **COPX: Hold → Øg.**
+- Microsoft fastholder **Øg**.
+- Stop-loss summary forbedres fra **12 Stop_Broken / 2 Alarm / 0 Tighten** til **9 Stop_Broken / 3 Alarm / 0 Tighten**. fileciteturn7file0L2-L2 fileciteturn5file0L2-L2 fileciteturn2file0L2-L2
 
-Stop-loss-tallene er potentielt vigtige, men fordi snapshotet er forældet, bør de **ikke udløse handling uden en frisk genberegning**.
+Ny decision queue:
+1. **Microsoft – Øg 14.912 kr.**, Decision Score **79,54**, Confidence **82,75**.
+2. **Global X Copper Miners – Øg 14.912 kr.**, Decision Score **56,56**, Confidence **71,59**. fileciteturn5file0L2-L2
+
+Top opportunities er nu Pandora **89,13**, Danske Bank **85,80**, Microsoft **85,31**, AL Sydbank **84,78** og Frontline **84,52**. Opportunity-rankingen er ikke det samme som en købsliste; kun Microsoft og COPX står som Øg i decision queue/rebalance. fileciteturn5file0L2-L2
 
 ## G. Dagens vigtigste begivenheder og kommende regnskaber
-1. **USA jobrapport i dag** – vigtigste makrotrigger for renter, dollar og growth/AI-værdiansættelser.
-2. **TSMC July sales – 10. august 2026**.
-3. **Vestas Q2 – 12. august 2026**.
-4. **NKT H1 – 14. august 2026**.
-5. **AL Sydbank H1 – 26. august 2026**.
+1. **USA nonfarm payrolls – i dag kl. 14:30 CEST**; dagens vigtigste renter-/USD-/growth-trigger. citeturn462256news3
+2. **TSMC July sales – 10. august 2026.** citeturn817477search8
+3. **Vestas Q2 – 12. august 2026.** citeturn352310search0
+4. **NKT H1 – 14. august 2026.** citeturn246534search8
+5. **AL Sydbank H1 – 26. august 2026.** citeturn817477search3
 
-## H. Handlingsorienteret vurdering
-### Investment OS-modeloutput
-- **Danske Bank: Øg** – 14.784 kr.; Decision Score 81,68; Confidence 85,34.
-- **Microsoft: Øg** – 14.784 kr.; Decision Score 64,21; Confidence 82,76.
-- **Pandora: Hold** – højeste Opportunity Score.
-- **ASML, TSMC, Novo, Vestas, NKT og de fleste tema-ETF'er: Afvent**.
+## H. Handlingsorienteret køb/hold/reducer-vurdering
+### Investment OS-output
+- **Øg:** Microsoft **14.912 kr.**
+- **Øg:** Global X Copper Miners **14.912 kr.**
+- **Hold:** bl.a. Danske Bank, AL Sydbank, Pandora, Frontline, DFEN, WMIN, 94VE, XDWI og VWCE.
+- **Afvent:** ASML, TSMC, Novo, NKT, Vestas, SEC0, IQQK, URNU, IQQH, VVMX, JEDI m.fl. fileciteturn5file0L2-L2
 
 ### Egen vurdering
-**Samlet anbefaling i dag: HOLD / AFVENT.**
+**Microsoft: KØB/ØG-kandidat**, men ikke fordi markedet er stærkt i dag – fordi både modeloutput og seneste fundamentale cloud/AI-data peger samme vej. Med 3,77 % nuværende vægt er der betydelig plads til 14 %-loftet, men den samlede AI/semiconductor-eksponering betyder, at et køb bør vurderes som en del af hele temaeksponeringen, ikke isoleret. fileciteturn3file0L2-L2
 
-Jeg ville ikke eksekvere de to Øg-signaler på baggrund af et snapshot fra 4. august. Dagens jobrapport kan flytte renter og især AI/tech-multipler markant. Danske Bank ser mest robust ud fundamentalt, mens Microsoft fortsat er attraktiv langsigtet, men begge bør have et frisk Investment OS-signal før ny kapital tilføres.
+**COPX: selektiv ØG-kandidat.** Momentumaccelerationen er reel, men 3M relativ styrke er stadig svagt negativ. Derfor er signalet mindre robust end Microsofts og bør ikke få større prioritet end decision queue allerede angiver. fileciteturn5file0L2-L2
 
-Novo bør fortsat behandles forsigtigt efter Q2: guidance blev hævet, men konkurrencepresset fra Lilly og svagere markedsreaktion på Wegovy/CagriSema betyder, at et momentumskifte bør bekræftes før opjustering. ASML og TSMC har stærkere langsigtede fundamentaler end deres kortsigtede momentum antyder, men signalet er stadig Afvent.
+**Novo: HOLD/AFVENT – ikke køb på faldet endnu.** Modellen viser lav confidence og negativ rotation, mens den fundamentale konkurrencesituation mod Lilly er blevet hårdere. En ny positionstilførsel bør kræve et reelt momentumskifte eller en markant forbedring i pipeline/kommercielle data. citeturn352310news62turn352310news64
+
+**ASML/TSMC/NKT/Vestas: HOLD/AFVENT.** De langsigtede cases er intakte, men modellen giver ikke købssignal. Det er præcis den type situation, hvor disciplin betyder at vente på bekræftelse frem for at foregribe den.
 
 ## I. Usikkerheder og datakvalitet
-Den største begrænsning er, at `portfolio_snapshot.json` er omkring tre døgn gammelt. Porteføljeværdi, kurser, momentum, stop-loss og modelhandlinger kan derfor have ændret sig. Datakvalitetsscoren i selve snapshotet er 85/100, men alderen reducerer den operationelle værdi væsentligt. Markedsdata og nyheder er opdateret til morgenen 7. august 2026, men europæiske og amerikanske kontantmarkeder er endnu ikke åbne.
+Snapshotet er **ikke stale**; det er genereret få minutter før briefen. Datakvaliteten på **85/100** er brugbar, men ikke perfekt: FX-fallback på 21 positioner kan påvirke beregnet afkast/købspris, og IS3Q mangler markedskurs. Derudover er dagens amerikanske jobrapport en reel regime-trigger, så markeds-, rente- og FX-billedet kan ændre sig markant efter kl. 14:30. Kobberspot blev ikke verificeret sikkert og står derfor som N/A. fileciteturn3file0L2-L2
 
 ## Dagens tre beslutningspunkter
-1. **Ingen nye køb før USA-jobrapporten og renteresponsen er kendt.**
-2. **Genbekræft Danske Bank og Microsoft Øg-signalerne i et friskt Investment OS-snapshot, før der handles.**
-3. **Prioritér at få snapshot-workflowet tilbage i daglig drift; 12 Stop_Broken kan ikke vurderes forsvarligt på tre dage gamle data.**
-
-**Kilder:** Investment OS `portfolio_snapshot.json`; Reuters markedsdata 7. august 2026; ASML, TSMC, Microsoft, Novo Nordisk, Vestas, NKT, Danske Bank og Sydbank investor relations.
+1. **Prioritér Microsoft som den stærkeste Øg-kandidat; vurder kun et køb inden for den samlede AI/semiconductor-eksponering.**
+2. **COPX er nr. 2 i køen – positiv rotation, men lavere beslutningsstyrke end Microsoft; undgå at jage dagens råvarebevægelse.**
+3. **Ingen gennemsnitskøb i Novo, ASML, TSMC, NKT eller Vestas uden nyt Investment OS-signal eller væsentlig fundamental katalysator.**
