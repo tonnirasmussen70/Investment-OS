@@ -98,21 +98,37 @@ def calculate_portfolio(
 ) -> pd.DataFrame:
     df = model.portfolio.copy()
 
+    # Current market data is owned by Investment OS. Values from the Excel
+    # master are only used as fallback if the live market snapshot is missing.
     fetched_prices = df["Yahoo_Ticker"].map(snapshot.prices)
-    df["Current_Price"] = fetched_prices.combine_first(df.get("Current_Price"))
+    manual_prices = (
+        df["Current_Price"]
+        if "Current_Price" in df.columns
+        else pd.Series(np.nan, index=df.index)
+    )
+    df["Current_Price"] = fetched_prices.combine_first(manual_prices)
 
     fetched_fx = df["Currency"].map(snapshot.fx_to_dkk)
-    df["Current_FX_to_DKK"] = fetched_fx.combine_first(df.get("Current_FX_to_DKK"))
+    manual_fx = (
+        df["Current_FX_to_DKK"]
+        if "Current_FX_to_DKK" in df.columns
+        else pd.Series(np.nan, index=df.index)
+    )
+    df["Current_FX_to_DKK"] = fetched_fx.combine_first(manual_fx)
     df.loc[df["Currency"].eq("DKK"), "Current_FX_to_DKK"] = 1.0
 
     purchase_fx = df.get("Purchase_FX_to_DKK")
     if purchase_fx is None:
         purchase_fx = pd.Series(np.nan, index=df.index)
 
-    # Purchase FX is required for a true historical DKK return.
-    # Until populated, current FX is used as an explicit fallback.
+    # The master file stores average Purchase_Price, but not transaction dates.
+    # Therefore a true historical FX return cannot be reconstructed reliably.
+    # For foreign positions without Purchase_FX_to_DKK we use current FX only
+    # to express the cost basis in DKK. The resulting DKK return is therefore
+    # currency-neutral/estimated, while Local_Return_Pct remains exact.
     df["Purchase_FX_Effective"] = purchase_fx.combine_first(df["Current_FX_to_DKK"])
     df["FX_Fallback_Used"] = purchase_fx.isna() & ~df["Currency"].eq("DKK")
+    df["Return_DKK_Is_Estimated"] = df["FX_Fallback_Used"]
 
     df["Cost_Value_DKK"] = (
         df["Quantity"]
@@ -130,11 +146,14 @@ def calculate_portfolio(
         df["Current_Price"] / df["Purchase_Price"] - 1,
         np.nan,
     )
+
+    # FX return is only known when an actual historical purchase FX exists.
     df["FX_Return_Pct"] = np.where(
-        df["Purchase_FX_Effective"] > 0,
+        (~df["FX_Fallback_Used"]) & (df["Purchase_FX_Effective"] > 0),
         df["Current_FX_to_DKK"] / df["Purchase_FX_Effective"] - 1,
         np.nan,
     )
+
     df["Return_DKK"] = df["Market_Value_DKK"] - df["Cost_Value_DKK"]
     df["Return_Pct"] = np.where(
         df["Cost_Value_DKK"] > 0,
@@ -168,12 +187,15 @@ def data_quality_score(
 
     score = 100 * (0.50 * price_ok + 0.30 * fx_ok + 0.20 * yahoo_ok)
 
+    # Missing historical FX is intentional in the current master-file design
+    # and must therefore not reduce the data-quality score.
     fallback_count = int(portfolio.loc[active, "FX_Fallback_Used"].sum())
     if fallback_count:
         notes.append(
-            f"{fallback_count} positioner bruger aktuel FX som fallback for købskurs."
+            f"{fallback_count} udenlandske positioner anvender valutan neutralt DKK-afkast; "
+            "historisk FX registreres ikke i masterfilen. Lokalt kursafkast og aktuel "
+            "markedsværdi i DKK er upåvirket."
         )
-        score -= min(15, fallback_count * 1.5)
 
     if snapshot.missing_prices:
         notes.append(f"Manglende markedskurs: {', '.join(snapshot.missing_prices[:5])}")
