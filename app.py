@@ -457,9 +457,9 @@ watchlist_metrics = (
 tabs = st.tabs([
     "🏠 Overblik",
     "📈 Momentum",
-    "💰 Kapitalflow",
     "📋 Positioner",
     "🔄 Rebalancering",
+    "💰 Kapitalflow",
     "🩺 Portfolio Doctor",
     "🎯 Opportunities",
     "🚀 Emerging Compounders",
@@ -467,7 +467,7 @@ tabs = st.tabs([
     "⚙️ Settings",
 ])
 (
-    tab_overview, tab_momentum, tab_capital_flow, tab_positions, tab_rebalance,
+    tab_overview, tab_momentum, tab_positions, tab_rebalance, tab_capital_flow,
     tab_doctor, tab_opportunity, tab_compounders, tab_watchlist, tab_settings,
 ) = tabs
 
@@ -1043,6 +1043,11 @@ with tab_positions:
             return
 
         include_weight = section["Include_Weight"].fillna(False)
+        # Grundfos skal altid holdes helt ude af aktiv vægtning, uanset datakilden.
+        grundfos_mask = section["Name"].astype(str).str.contains(
+            "Grundfos", case=False, na=False
+        )
+        include_weight = include_weight & ~grundfos_mask
         active_value = pd.to_numeric(
             section.loc[include_weight, "Market_Value_DKK"], errors="coerce"
         ).fillna(0).sum()
@@ -1072,12 +1077,11 @@ with tab_positions:
         ]
 
         table["Antal"] = table["Antal"].apply(
-            lambda x: f"{float(x):,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-            if pd.notna(x) else "N/A"
+            lambda x: compact_dkk(x) if pd.notna(x) else "N/A"
         )
         for col in ["Åben kurs", "Dags kurs"]:
             table[col] = table[col].apply(
-                lambda x: format_score(x, 2) if pd.notna(x) else "N/A"
+                lambda x: compact_dkk(x) if pd.notna(x) else "N/A"
             )
         table["Markedsværdi"] = table["Markedsværdi"].apply(compact_dkk)
         table["Vægt"] = table["Vægt"].apply(
