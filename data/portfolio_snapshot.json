@@ -1,29 +1,28 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-08-07T07:45:59.023021+02:00",
-  "generated_at_local": "2026-08-07 07:45:59 CEST",
+  "generated_at": "2026-08-07T08:11:37.250747+02:00",
+  "generated_at_local": "2026-08-07 08:11:37 CEST",
   "source": {
     "repository": "tonnirasmussen70/Investment-OS",
     "branch": "main",
-    "commit_sha": "ca7c6359c4e1135482686efcd6ccfeba3cc5fd11",
+    "commit_sha": "49cb3b6f0cd5b0bc27e2bcbdd962d03d62d84280",
     "portfolio_file": "data/AI_portfolio.xlsx",
-    "portfolio_file_sha256": "a821b318a7cc8ce23d8329b453c900cb34dfe603000891f6205f622b48f899f1"
+    "portfolio_file_sha256": "30b56624d73dc3297d9d23994e37e4530b51b0c35342f5cf58ca200dacd52d40"
   },
   "data_quality": {
     "score": 85.0,
     "notes": [
-      "21 positioner bruger aktuel FX som fallback for købskurs.",
-      "Manglende markedskurs: IS3Q:DE"
+      "21 positioner bruger aktuel FX som fallback for købskurs."
     ],
     "ticker_count": 27,
     "history_rows": 387
   },
   "portfolio": {
-    "value_dkk": 1177721.380313341,
-    "active_market_value_dkk": 745601.3803133412,
-    "total_return_pct": 0.10281766196684594,
-    "health_score": 67.99817821662148,
-    "ai_confidence": 56.3582451533139,
+    "value_dkk": 1177485.101614457,
+    "active_market_value_dkk": 745365.1016144571,
+    "total_return_pct": 0.10271579801429764,
+    "health_score": 68.5992102598335,
+    "ai_confidence": 56.750750715793075,
     "ai_confidence_label": "Moderat",
     "benchmark": "URTH",
     "max_position_weight": 0.14
@@ -32,8 +31,8 @@
     {
       "Ticker": "ABB:XSTO",
       "Yahoo_Ticker": "ABB.ST",
-      "Market_Value_DKK": 31033.00024777651,
-      "Portfolio_Weight": 0.02635003555723847,
+      "Market_Value_DKK": 31051.217756152153,
+      "Portfolio_Weight": 0.02637079459738186,
       "1W": 0.05486612862352236,
       "1M": -0.06826923076923075,
       "3M": 0.01593626798235026,
@@ -50,7 +49,7 @@
       "Ticker": "ALSYDB:XCSE",
       "Yahoo_Ticker": "ALSYDB.CO",
       "Market_Value_DKK": 31975.0,
-      "Portfolio_Weight": 0.027149884968117693,
+      "Portfolio_Weight": 0.027155332968679502,
       "1W": 0.05267489711934159,
       "1M": 0.05094494658997539,
       "3M": 0.16484517304189428,
@@ -66,15 +65,15 @@
     {
       "Ticker": "ASML:XAMS",
       "Yahoo_Ticker": "ASML.AS",
-      "Market_Value_DKK": 65743.76918069087,
-      "Portfolio_Weight": 0.05582285443709893,
+      "Market_Value_DKK": 65744.64985508239,
+      "Portfolio_Weight": 0.055834803994495974,
       "1W": 0.05574763976738417,
       "1M": -0.0987686102951949,
       "3M": 0.1288964057765547,
       "6M": 0.29123645019052136,
-      "12M": 1.4158894003097364,
-      "Composite": 0.21851770689289474,
-      "AI_Confidence": 80.67406622363585,
+      "12M": 1.4158891572800187,
+      "Composite": 0.21851768258992296,
+      "AI_Confidence": 80.67406967635618,
       "Relative_Strength_3M": 0.08206796204846745,
       "Momentum_Acceleration": -0.03565304658087566,
       "Rotation_Signal": "Neutral",
@@ -84,14 +83,14 @@
       "Ticker": "DANSKE:XCSE",
       "Yahoo_Ticker": "DANSKE.CO",
       "Market_Value_DKK": 57619.80093383789,
-      "Portfolio_Weight": 0.0489248152381404,
+      "Portfolio_Weight": 0.04893463268013754,
       "1W": 0.039183257301840246,
       "1M": 0.025599111067525104,
       "3M": 0.16883920495176574,
       "6M": 0.2904184428474299,
-      "12M": 0.5842123705354187,
-      "Composite": 0.17295115608821865,
-      "AI_Confidence": 81.65491253666917,
+      "12M": 0.584212268848165,
+      "Composite": 0.1729511459194933,
+      "AI_Confidence": 81.65491186091698,
       "Relative_Strength_3M": 0.12201076122367849,
       "Momentum_Acceleration": -0.012575440913958704,
       "Rotation_Signal": "Neutral",
@@ -100,15 +99,15 @@
     {
       "Ticker": "FRO",
       "Yahoo_Ticker": "FRO",
-      "Market_Value_DKK": 5645.861891242646,
-      "Portfolio_Weight": 0.0047938858762507355,
+      "Market_Value_DKK": 5628.951433349706,
+      "Portfolio_Weight": 0.004780486331106709,
       "1W": 0.01176478048904217,
       "1M": 0.028601204238261735,
       "3M": 0.09505000280879061,
       "6M": 0.5103885649686377,
-      "12M": 1.076692140667106,
-      "Composite": 0.24301268492000971,
-      "AI_Confidence": 86.105355326406,
+      "12M": 1.0766923485975433,
+      "Composite": 0.24301270571305345,
+      "AI_Confidence": 86.10535846393768,
       "Relative_Strength_3M": 0.04822155908070336,
       "Momentum_Acceleration": -0.025314177153750873,
       "Rotation_Signal": "Neutral",
@@ -117,15 +116,15 @@
     {
       "Ticker": "MSF:XETR",
       "Yahoo_Ticker": "MSF.DE",
-      "Market_Value_DKK": 44415.24086209596,
-      "Portfolio_Weight": 0.03771285942883959,
+      "Market_Value_DKK": 44415.83582897583,
+      "Portfolio_Weight": 0.03772093232269097,
       "1W": 0.2106689735420293,
       "1M": 0.253581477474502,
       "3M": 0.17682173638241405,
       "6M": 0.21010083782804267,
-      "12M": -0.0677755387674095,
-      "Composite": 0.1849772118615025,
-      "AI_Confidence": 82.75318282235949,
+      "12M": -0.0677754762766628,
+      "Composite": 0.18497721811057719,
+      "AI_Confidence": 82.75318056818821,
       "Relative_Strength_3M": 0.1299932926543268,
       "Momentum_Acceleration": 0.14438062766460097,
       "Rotation_Signal": "Accelererer",
@@ -135,7 +134,7 @@
       "Ticker": "NKT.CO",
       "Yahoo_Ticker": "NKT.CO",
       "Market_Value_DKK": 57960.0,
-      "Portfolio_Weight": 0.0492136773339203,
+      "Portfolio_Weight": 0.04922355274009895,
       "1W": 0.07981220657277,
       "1M": -0.03866248693834906,
       "3M": -0.01393354769560562,
@@ -152,14 +151,14 @@
       "Ticker": "NOVO-B.CO",
       "Yahoo_Ticker": "NOVO-B.CO",
       "Market_Value_DKK": 98649.60205078125,
-      "Portfolio_Weight": 0.08376310704704608,
+      "Portfolio_Weight": 0.08377991527495522,
       "1W": -0.13148937522422133,
       "1M": -0.1033745757875063,
       "3M": 0.03763913566715771,
       "6M": -0.1800044252743167,
-      "12M": -0.0545313762674593,
-      "Composite": -0.0841857577565407,
-      "AI_Confidence": 18.56994571687961,
+      "12M": -0.05453128335193347,
+      "Composite": -0.08418574846498812,
+      "AI_Confidence": 18.569946318464797,
       "Relative_Strength_3M": -0.009189308060929546,
       "Momentum_Acceleration": -0.09340270943472039,
       "Rotation_Signal": "Negativ rotation",
@@ -169,7 +168,7 @@
       "Ticker": "PNDORA:XCSE",
       "Yahoo_Ticker": "PNDORA.CO",
       "Market_Value_DKK": 31775.600463867188,
-      "Portfolio_Weight": 0.02698057536784555,
+      "Portfolio_Weight": 0.026985989394090394,
       "1W": 0.045250015258789134,
       "1M": 0.09622446983308541,
       "3M": 0.6831723686666042,
@@ -185,15 +184,15 @@
     {
       "Ticker": "ENR:XETR",
       "Yahoo_Ticker": "ENR.DE",
-      "Market_Value_DKK": 15788.132327822386,
-      "Portfolio_Weight": 0.013405659939383831,
+      "Market_Value_DKK": 15788.34381864508,
+      "Portfolio_Weight": 0.013408529583089914,
       "1W": 0.09398119860393694,
       "1M": -0.11487914545052813,
       "3M": -0.165043133021041,
       "6M": 0.020912009238924556,
       "12M": 0.5516523448847674,
       "Composite": 0.008163306439156762,
-      "AI_Confidence": 29.35413642199991,
+      "AI_Confidence": 27.502284570148056,
       "Relative_Strength_3M": -0.21187157674912827,
       "Momentum_Acceleration": 0.03623772515801996,
       "Rotation_Signal": "Tidlig vending",
@@ -202,15 +201,15 @@
     {
       "Ticker": "TSM:XNYS",
       "Yahoo_Ticker": "TSM",
-      "Market_Value_DKK": 37980.7335442449,
-      "Portfolio_Weight": 0.03224933687978039,
+      "Market_Value_DKK": 37866.97383709741,
+      "Portfolio_Weight": 0.03215919571736217,
       "1W": 0.03691952775426621,
       "1M": -0.0429767914026723,
       "3M": -0.0007643250795169587,
       "6M": 0.29047871605090814,
       "12M": 0.8188371042780953,
       "Composite": 0.13642808006829713,
-      "AI_Confidence": 52.01323374493175,
+      "AI_Confidence": 52.01323605992568,
       "Relative_Strength_3M": -0.04759276880760421,
       "Momentum_Acceleration": -0.008842560584286447,
       "Rotation_Signal": "Neutral",
@@ -220,14 +219,14 @@
       "Ticker": "VWS:XCSE",
       "Yahoo_Ticker": "VWS.CO",
       "Market_Value_DKK": 18576.0,
-      "Portfolio_Weight": 0.015772830748014208,
+      "Portfolio_Weight": 0.0157759957850255,
       "1W": 0.026559217351178166,
       "1M": -0.06521739130434778,
       "3M": -0.09210872118942037,
       "6M": -0.09452385031911625,
       "12M": 0.4312000875566686,
       "Composite": -0.009804445961362797,
-      "AI_Confidence": 17.22386648633975,
+      "AI_Confidence": 17.223866521946086,
       "Relative_Strength_3M": -0.13893716491750763,
       "Momentum_Acceleration": 0.012256891978653617,
       "Rotation_Signal": "Tidlig vending",
@@ -236,8 +235,8 @@
     {
       "Ticker": "COPX.L",
       "Yahoo_Ticker": "COPX.L",
-      "Market_Value_DKK": 16213.559455751267,
-      "Portfolio_Weight": 0.013766888949097226,
+      "Market_Value_DKK": 16164.996681855497,
+      "Portfolio_Weight": 0.01372840867344442,
       "1W": 0.10016288881176649,
       "1M": 0.21122471754174543,
       "3M": 0.01335132524384064,
@@ -253,8 +252,8 @@
     {
       "Ticker": "94VE.DE",
       "Yahoo_Ticker": "94VE.DE",
-      "Market_Value_DKK": 26375.250083365536,
-      "Portfolio_Weight": 0.022395152643274775,
+      "Market_Value_DKK": 26375.603394525024,
+      "Portfolio_Weight": 0.02239994659665865,
       "1W": 0.056035408500412665,
       "1M": 0.043211867301122364,
       "3M": 0.05591853823804316,
@@ -269,26 +268,26 @@
     },
     {
       "Ticker": "IS3Q:XETR",
-      "Yahoo_Ticker": "IS3Q:DE",
-      "Market_Value_DKK": 10039.32767868042,
-      "Portfolio_Weight": 0.008524365649207614,
-      "1W": null,
-      "1M": null,
-      "3M": null,
-      "6M": null,
-      "12M": null,
-      "Composite": 0.0,
-      "AI_Confidence": 21.759259259259256,
-      "Relative_Strength_3M": null,
-      "Momentum_Acceleration": 0.0,
-      "Rotation_Signal": "Neutral",
+      "Yahoo_Ticker": "IS3Q.DE",
+      "Market_Value_DKK": 9959.400976415236,
+      "Portfolio_Weight": 0.008458197019019467,
+      "1W": 0.028072927920890445,
+      "1M": 0.027668509719974477,
+      "3M": 0.08230905652600318,
+      "6M": 0.13169679056436157,
+      "12M": 0.24160335983456105,
+      "Composite": 0.08360867124200094,
+      "AI_Confidence": 67.33124036812984,
+      "Relative_Strength_3M": 0.03548061279791592,
+      "Momentum_Acceleration": 0.003405818869319007,
+      "Rotation_Signal": "Accelererer",
       "Handling": "Hold"
     },
     {
       "Ticker": "URNU.DE",
       "Yahoo_Ticker": "URNU.DE",
-      "Market_Value_DKK": 8930.740861402737,
-      "Portfolio_Weight": 0.007583067617424633,
+      "Market_Value_DKK": 8930.860493648834,
+      "Portfolio_Weight": 0.00758469086479623,
       "1W": 0.12073172592535242,
       "1M": 0.06464320957810732,
       "3M": -0.2353136853676555,
@@ -304,15 +303,15 @@
     {
       "Ticker": "IQQH.DE",
       "Yahoo_Ticker": "IQQH.DE",
-      "Market_Value_DKK": 12666.260718916965,
-      "Portfolio_Weight": 0.010754887302416992,
+      "Market_Value_DKK": 12666.430390531332,
+      "Portfolio_Weight": 0.010757189516168239,
       "1W": 0.0403226374272978,
       "1M": -0.03508209466353285,
       "3M": -0.14363937491852286,
       "6M": 0.024724653293191956,
-      "12M": 0.36968392928489724,
-      "Composite": 0.00529748367707375,
-      "AI_Confidence": 33.146647909845896,
+      "12M": 0.36968383161455676,
+      "Composite": 0.0052974739100397,
+      "AI_Confidence": 31.294795296356714,
       "Relative_Strength_3M": -0.1904678186466101,
       "Momentum_Acceleration": 0.02994636388770788,
       "Rotation_Signal": "Tidlig vending",
@@ -321,8 +320,8 @@
     {
       "Ticker": "SEC0.DE",
       "Yahoo_Ticker": "SEC0.DE",
-      "Market_Value_DKK": 46949.56262700045,
-      "Portfolio_Weight": 0.03986474510168881,
+      "Market_Value_DKK": 46950.191542531364,
+      "Portfolio_Weight": 0.03987327863270428,
       "1W": 0.07186221243694813,
       "1M": -0.043665656062811364,
       "3M": 0.02064655429451623,
@@ -338,15 +337,15 @@
     {
       "Ticker": "IQQK.DE",
       "Yahoo_Ticker": "IQQK.DE",
-      "Market_Value_DKK": 14762.670979307732,
-      "Portfolio_Weight": 0.012534943515570737,
+      "Market_Value_DKK": 14762.868733504729,
+      "Portfolio_Weight": 0.01253762677189144,
       "1W": 0.06879179888335485,
       "1M": -0.052506788213983024,
       "3M": -0.1237565331754199,
       "6M": 0.40531008139759184,
       "12M": 1.3969426525671738,
       "Composite": 0.19044881096555602,
-      "AI_Confidence": 61.57189523283711,
+      "AI_Confidence": 61.57189569632142,
       "Relative_Strength_3M": -0.17058497690350716,
       "Momentum_Acceleration": 0.016941838883915913,
       "Rotation_Signal": "Tidlig vending",
@@ -355,8 +354,8 @@
     {
       "Ticker": "2B70.DE",
       "Yahoo_Ticker": "2B70.DE",
-      "Market_Value_DKK": 9680.409089105233,
-      "Portfolio_Weight": 0.008219608857342551,
+      "Market_Value_DKK": 9680.538763574623,
+      "Portfolio_Weight": 0.00822136836406811,
       "1W": 0.03089381162727456,
       "1M": -0.025495343695216777,
       "3M": 0.13298308737864328,
@@ -372,15 +371,15 @@
     {
       "Ticker": "DFEN.DE",
       "Yahoo_Ticker": "DFEN.DE",
-      "Market_Value_DKK": 18695.425926042662,
-      "Portfolio_Weight": 0.015874234974887366,
+      "Market_Value_DKK": 18695.676361681763,
+      "Portfolio_Weight": 0.015877633046947264,
       "1W": 0.12154695758324618,
       "1M": 0.0847327957522328,
       "3M": 0.06461885750851604,
       "6M": -0.005076158062408909,
       "12M": 0.1191179194330545,
       "Composite": 0.07254386516266013,
-      "AI_Confidence": 46.62318889432097,
+      "AI_Confidence": 44.77133704246911,
       "Relative_Strength_3M": 0.017790413780428782,
       "Momentum_Acceleration": 0.07675429679413598,
       "Rotation_Signal": "Accelererer",
@@ -389,8 +388,8 @@
     {
       "Ticker": "QUTM.DE",
       "Yahoo_Ticker": "QUTM.DE",
-      "Market_Value_DKK": 8908.20252328609,
-      "Portfolio_Weight": 0.007563930376228715,
+      "Market_Value_DKK": 8908.3218536186,
+      "Portfolio_Weight": 0.00756554952704229,
       "1W": 0.0628799005987899,
       "1M": -0.0005913006109905528,
       "3M": -0.022928755422345737,
@@ -406,8 +405,8 @@
     {
       "Ticker": "VVMX.DE",
       "Yahoo_Ticker": "VVMX.DE",
-      "Market_Value_DKK": 15239.011330548037,
-      "Portfolio_Weight": 0.012939402803822404,
+      "Market_Value_DKK": 15239.215465589245,
+      "Portfolio_Weight": 0.012942172639547339,
       "1W": 0.13662471384420893,
       "1M": -0.052245506898256244,
       "3M": -0.30997278260331773,
@@ -423,8 +422,8 @@
     {
       "Ticker": "WMIN.DE",
       "Yahoo_Ticker": "WMIN.DE",
-      "Market_Value_DKK": 18912.508583068848,
-      "Portfolio_Weight": 0.016058559264702354,
+      "Market_Value_DKK": 18912.761926651,
+      "Portfolio_Weight": 0.01606199679360664,
       "1W": 0.0899722750277332,
       "1M": 0.14547538684041839,
       "3M": -0.0742299252438764,
@@ -440,15 +439,15 @@
     {
       "Ticker": "JEDI.DE",
       "Yahoo_Ticker": "JEDI.DE",
-      "Market_Value_DKK": 8582.391843456571,
-      "Portfolio_Weight": 0.007287285419895464,
+      "Market_Value_DKK": 8582.506809373626,
+      "Portfolio_Weight": 0.00728884535150899,
       "1W": 0.1487318635841759,
       "1M": -0.041332609891380545,
       "3M": -0.18996716429310856,
       "6M": 0.16375254404998252,
       "12M": 0.7797930244042157,
       "Composite": 0.08265124042113099,
-      "AI_Confidence": 36.297649189468856,
+      "AI_Confidence": 34.445797337617,
       "Relative_Strength_3M": -0.2367956080211958,
       "Momentum_Acceleration": 0.08227359626614093,
       "Rotation_Signal": "Tidlig vending",
@@ -457,15 +456,15 @@
     {
       "Ticker": "XDWI.DE",
       "Yahoo_Ticker": "XDWI.DE",
-      "Market_Value_DKK": 9899.539765670925,
-      "Portfolio_Weight": 0.00840567211494206,
+      "Market_Value_DKK": 9899.67237551773,
+      "Portfolio_Weight": 0.008407471450759103,
       "1W": 0.04255888989860823,
       "1M": 0.03521596712131436,
       "3M": 0.05828013693731782,
       "6M": 0.10921255592091716,
       "12M": 0.23670423003829044,
       "Composite": 0.07739873818239218,
-      "AI_Confidence": 57.90538338733757,
+      "AI_Confidence": 56.053531535485725,
       "Relative_Strength_3M": 0.011451693209230562,
       "Momentum_Acceleration": 0.017641586749054895,
       "Rotation_Signal": "Accelererer",
@@ -474,15 +473,15 @@
     {
       "Ticker": "VWCE.DE",
       "Yahoo_Ticker": "VWCE.DE",
-      "Market_Value_DKK": 22583.777345378185,
-      "Portfolio_Weight": 0.019175823520644255,
+      "Market_Value_DKK": 22584.079867649416,
+      "Portfolio_Weight": 0.019179928337678537,
       "1W": 0.03592144125389907,
       "1M": 0.024789336847320653,
       "3M": 0.058126349164816515,
       "6M": 0.14566550401290534,
       "12M": 0.25987085122325726,
       "Composite": 0.08303339567872091,
-      "AI_Confidence": 62.142240342281355,
+      "AI_Confidence": 60.29038849042949,
       "Relative_Strength_3M": 0.01129790543672926,
       "Momentum_Acceleration": 0.009395294105777986,
       "Rotation_Signal": "Accelererer",
@@ -494,17 +493,17 @@
       "Prioritet": 1,
       "Handling": "Øg",
       "Aktiv": "MICROSOFT CORPORATION",
-      "Beløb DKK": 14912.027606266824,
-      "Decision Score": 79.54264258349919,
-      "Confidence": 82.75318282235949,
+      "Beløb DKK": 14907.302032289143,
+      "Decision Score": 79.54255483925763,
+      "Confidence": 82.75318056818821,
       "Begrundelse": "Positivt 1w-momentum, positivt 1m-momentum, stærk ai confidence"
     },
     {
       "Prioritet": 2,
       "Handling": "Øg",
       "Aktiv": "Global X Copper Miners UCITS ETF",
-      "Beløb DKK": 14912.027606266824,
-      "Decision Score": 56.55960660874666,
+      "Beløb DKK": 14907.302032289143,
+      "Decision Score": 56.56001889741437,
       "Confidence": 71.58699042756524,
       "Begrundelse": "Positivt 1w-momentum, positivt 1m-momentum, stærk ai confidence"
     }
@@ -512,74 +511,83 @@
   "opportunities": [
     {
       "Ticker": "PNDORA:XCSE",
-      "Opportunity Score": 89.133045789886,
+      "Opportunity Score": 89.13285243180582,
       "AI_Confidence": 90.77897167769589,
       "Composite": 0.3462540820126664,
       "Relative_Strength_3M": 0.636343924938517,
-      "Portfolio_Weight": 0.02698057536784555,
+      "Portfolio_Weight": 0.026985989394090394,
       "Handling": "Hold"
     },
     {
       "Ticker": "DANSKE:XCSE",
-      "Opportunity Score": 85.80196169871091,
-      "AI_Confidence": 81.65491253666917,
-      "Composite": 0.17295115608821865,
+      "Opportunity Score": 85.80160963312066,
+      "AI_Confidence": 81.65491186091698,
+      "Composite": 0.1729511459194933,
       "Relative_Strength_3M": 0.12201076122367849,
-      "Portfolio_Weight": 0.0489248152381404,
+      "Portfolio_Weight": 0.04893463268013754,
       "Handling": "Hold"
     },
     {
       "Ticker": "MSF:XETR",
-      "Opportunity Score": 85.30668673009095,
-      "AI_Confidence": 82.75318282235949,
-      "Composite": 0.1849772118615025,
+      "Opportunity Score": 85.30639575206663,
+      "AI_Confidence": 82.75318056818821,
+      "Composite": 0.18497721811057719,
       "Relative_Strength_3M": 0.1299932926543268,
-      "Portfolio_Weight": 0.03771285942883959,
+      "Portfolio_Weight": 0.03772093232269097,
       "Handling": "Øg"
     },
     {
       "Ticker": "ALSYDB:XCSE",
-      "Opportunity Score": 84.7815366082923,
+      "Opportunity Score": 84.78134203684365,
       "AI_Confidence": 79.1838317217042,
       "Composite": 0.1434531444410282,
       "Relative_Strength_3M": 0.11801672931380702,
-      "Portfolio_Weight": 0.027149884968117693,
+      "Portfolio_Weight": 0.027155332968679502,
       "Handling": "Hold"
     },
     {
       "Ticker": "FRO",
-      "Opportunity Score": 84.52148141686116,
-      "AI_Confidence": 86.105355326406,
-      "Composite": 0.24301268492000971,
+      "Opportunity Score": 84.52196297389952,
+      "AI_Confidence": 86.10535846393768,
+      "Composite": 0.24301270571305345,
       "Relative_Strength_3M": 0.04822155908070336,
-      "Portfolio_Weight": 0.0047938858762507355,
+      "Portfolio_Weight": 0.004780486331106709,
       "Handling": "Hold"
     },
     {
       "Ticker": "COPX.L",
-      "Opportunity Score": 73.1406950774454,
+      "Opportunity Score": 73.14206937300443,
       "AI_Confidence": 71.58699042756524,
       "Composite": 0.18695456834733248,
       "Relative_Strength_3M": -0.033477118484246615,
-      "Portfolio_Weight": 0.013766888949097226,
+      "Portfolio_Weight": 0.01372840867344442,
       "Handling": "Øg"
     },
     {
+      "Ticker": "IS3Q:XETR",
+      "Opportunity Score": 72.29566177091596,
+      "AI_Confidence": 67.33124036812984,
+      "Composite": 0.08360867124200094,
+      "Relative_Strength_3M": 0.03548061279791592,
+      "Portfolio_Weight": 0.008458197019019467,
+      "Handling": "Hold"
+    },
+    {
       "Ticker": "94VE.DE",
-      "Opportunity Score": 71.2420026864899,
+      "Opportunity Score": 71.24183147386904,
       "AI_Confidence": 66.28747167010634,
       "Composite": 0.09530967855650894,
       "Relative_Strength_3M": 0.009090094509955904,
-      "Portfolio_Weight": 0.022395152643274775,
+      "Portfolio_Weight": 0.02239994659665865,
       "Handling": "Hold"
     },
     {
       "Ticker": "ASML:XAMS",
       "Opportunity Score": 69.9,
-      "AI_Confidence": 80.67406622363585,
-      "Composite": 0.21851770689289474,
+      "AI_Confidence": 80.67406967635618,
+      "Composite": 0.21851768258992296,
       "Relative_Strength_3M": 0.08206796204846745,
-      "Portfolio_Weight": 0.05582285443709893,
+      "Portfolio_Weight": 0.055834803994495974,
       "Handling": "Afvent"
     },
     {
@@ -588,16 +596,7 @@
       "AI_Confidence": 74.85486288049026,
       "Composite": 0.2793324613030908,
       "Relative_Strength_3M": -0.026181889433571026,
-      "Portfolio_Weight": 0.03986474510168881,
-      "Handling": "Afvent"
-    },
-    {
-      "Ticker": "2B70.DE",
-      "Opportunity Score": 69.9,
-      "AI_Confidence": 71.85111225023456,
-      "Composite": 0.11158985617409553,
-      "Relative_Strength_3M": 0.08615464365055603,
-      "Portfolio_Weight": 0.008219608857342551,
+      "Portfolio_Weight": 0.03987327863270428,
       "Handling": "Afvent"
     }
   ],
@@ -605,137 +604,137 @@
     {
       "Aktiv": "ABB Ltd",
       "Handling": "Afvent",
-      "Nuværende vægt": 0.02635003555723847
+      "Nuværende vægt": 0.02637079459738186
     },
     {
       "Aktiv": "AL Sydbank A/S",
       "Handling": "Hold",
-      "Nuværende vægt": 0.027149884968117693
+      "Nuværende vægt": 0.027155332968679502
     },
     {
       "Aktiv": "ASML Holding NV",
       "Handling": "Afvent",
-      "Nuværende vægt": 0.05582285443709893
+      "Nuværende vægt": 0.055834803994495974
     },
     {
       "Aktiv": "Danske Bank A/S",
       "Handling": "Hold",
-      "Nuværende vægt": 0.0489248152381404
+      "Nuværende vægt": 0.04893463268013754
     },
     {
       "Aktiv": "Frontline PLC",
       "Handling": "Hold",
-      "Nuværende vægt": 0.0047938858762507355
+      "Nuværende vægt": 0.004780486331106709
     },
     {
       "Aktiv": "MICROSOFT CORPORATION",
       "Handling": "Øg",
-      "Nuværende vægt": 0.03771285942883959
+      "Nuværende vægt": 0.03772093232269097
     },
     {
       "Aktiv": "Nkt A/S",
       "Handling": "Afvent",
-      "Nuværende vægt": 0.0492136773339203
+      "Nuværende vægt": 0.04922355274009895
     },
     {
       "Aktiv": "Novo Nordisk A/S",
       "Handling": "Afvent",
-      "Nuværende vægt": 0.08376310704704608
+      "Nuværende vægt": 0.08377991527495522
     },
     {
       "Aktiv": "Pandora A/S",
       "Handling": "Hold",
-      "Nuværende vægt": 0.02698057536784555
+      "Nuværende vægt": 0.026985989394090394
     },
     {
       "Aktiv": "Siemens Energy AG",
       "Handling": "Afvent",
-      "Nuværende vægt": 0.013405659939383831
+      "Nuværende vægt": 0.013408529583089914
     },
     {
       "Aktiv": "Taiwan Semiconductor Manufacturing Co. Ltd.",
       "Handling": "Afvent",
-      "Nuværende vægt": 0.03224933687978039
+      "Nuværende vægt": 0.03215919571736217
     },
     {
       "Aktiv": "Vestas Wind System",
       "Handling": "Afvent",
-      "Nuværende vægt": 0.015772830748014208
+      "Nuværende vægt": 0.0157759957850255
     },
     {
       "Aktiv": "Global X Copper Miners UCITS ETF",
       "Handling": "Øg",
-      "Nuværende vægt": 0.013766888949097226
+      "Nuværende vægt": 0.01372840867344442
     },
     {
       "Aktiv": "Global X U.S Infrastructure Development UCITS ETF",
       "Handling": "Hold",
-      "Nuværende vægt": 0.022395152643274775
+      "Nuværende vægt": 0.02239994659665865
     },
     {
       "Aktiv": "iShares Edge MSCI World Quality Factor UCITS ETF",
       "Handling": "Hold",
-      "Nuværende vægt": 0.008524365649207614
+      "Nuværende vægt": 0.008458197019019467
     },
     {
       "Aktiv": "Global X Uranium UCITS ETF",
       "Handling": "Afvent",
-      "Nuværende vægt": 0.007583067617424633
+      "Nuværende vægt": 0.00758469086479623
     },
     {
       "Aktiv": "iShs Global Clean Energy ETF",
       "Handling": "Afvent",
-      "Nuværende vægt": 0.010754887302416992
+      "Nuværende vægt": 0.010757189516168239
     },
     {
       "Aktiv": "iShs MSCI Global Semiconductors UCITS ETF",
       "Handling": "Afvent",
-      "Nuværende vægt": 0.03986474510168881
+      "Nuværende vægt": 0.03987327863270428
     },
     {
       "Aktiv": "iShares MSCI Korea UCITS ETF",
       "Handling": "Afvent",
-      "Nuværende vægt": 0.012534943515570737
+      "Nuværende vægt": 0.01253762677189144
     },
     {
       "Aktiv": "iShares NASDAQ US Biotechnology UCITS ETF",
       "Handling": "Afvent",
-      "Nuværende vægt": 0.008219608857342551
+      "Nuværende vægt": 0.00822136836406811
     },
     {
       "Aktiv": "VanEck Defense UCITS ETF",
       "Handling": "Hold",
-      "Nuværende vægt": 0.015874234974887366
+      "Nuværende vægt": 0.015877633046947264
     },
     {
       "Aktiv": "VanEck Quantum Computing UCITS ETF",
       "Handling": "Afvent",
-      "Nuværende vægt": 0.007563930376228715
+      "Nuværende vægt": 0.00756554952704229
     },
     {
       "Aktiv": "VanEck Rare Earth and Strategic Metals UCITS ETF",
       "Handling": "Afvent",
-      "Nuværende vægt": 0.012939402803822404
+      "Nuværende vægt": 0.012942172639547339
     },
     {
       "Aktiv": "VanEck S&P Global Mining UCITS ETF",
       "Handling": "Hold",
-      "Nuværende vægt": 0.016058559264702354
+      "Nuværende vægt": 0.01606199679360664
     },
     {
       "Aktiv": "VanEck Space Innovators UCITS ETF",
       "Handling": "Afvent",
-      "Nuværende vægt": 0.007287285419895464
+      "Nuværende vægt": 0.00728884535150899
     },
     {
       "Aktiv": "Xtrackers MSCI World Industrials UCITS ETF 1C",
       "Handling": "Hold",
-      "Nuværende vægt": 0.00840567211494206
+      "Nuværende vægt": 0.008407471450759103
     },
     {
       "Aktiv": "Vanguard FTSE All-World UCITS Acc ETF",
       "Handling": "Hold",
-      "Nuværende vægt": 0.019175823520644255
+      "Nuværende vægt": 0.019179928337678537
     }
   ],
   "stop_loss_summary": {
