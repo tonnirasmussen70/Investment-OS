@@ -506,19 +506,60 @@ with tab_overview:
 
     st.divider()
     st.subheader("Næste anbefalede handling")
+    st.caption(
+        "Aktier og ETF'er vurderes separat, fordi de ligger på hver sin ASK. "
+        "Derfor vises den højest prioriterede handling i hvert investeringsunivers."
+    )
 
-    queue = decision_queue.data.copy()
-    if queue.empty:
-        st.success("**Ingen ændringer anbefales.**")
-        st.write(
-            "Ingen positioner opfylder aktuelt modellens krav til signalstyrke, "
-            "konfidens og minimumshandel. At holde porteføljen uændret er den "
-            "aktive anbefaling."
+    # Overblik bruger en bredere kø end morgenbrief/snapshot, så både Aktie-
+    # og ETF-universet får mulighed for at levere sin egen topanbefaling.
+    overview_queue = build_decision_queue(
+        portfolio_doctor.data,
+        opportunity_result.data,
+        max_items=max(20, len(analytics_portfolio)),
+    ).data.copy()
+
+    asset_type_lookup = (
+        analytics_portfolio[["Name", "Asset_Type"]]
+        .dropna(subset=["Name"])
+        .drop_duplicates(subset=["Name"], keep="first")
+        .set_index("Name")["Asset_Type"]
+        .to_dict()
+    )
+
+    if not overview_queue.empty:
+        overview_queue["Aktivklasse"] = overview_queue["Aktiv"].map(asset_type_lookup)
+        overview_queue["Aktivklasse"] = overview_queue["Aktivklasse"].replace({
+            "Stock": "Aktie",
+            "Equity": "Aktie",
+            "ETF": "ETF",
+            "Fund": "ETF",
+        })
+
+    def render_recommended_action(
+        source: pd.DataFrame,
+        asset_class: str,
+        heading: str,
+    ) -> None:
+        st.markdown(f"### {heading}")
+
+        candidates = (
+            source.loc[source["Aktivklasse"] == asset_class].copy()
+            if not source.empty and "Aktivklasse" in source.columns
+            else pd.DataFrame()
         )
-    else:
-        best = queue.iloc[0]
+
+        if candidates.empty:
+            st.success("**Ingen ændringer anbefales.**")
+            st.write(
+                f"Ingen {heading.lower()} opfylder aktuelt modellens krav til "
+                "signalstyrke, konfidens og minimumshandel."
+            )
+            return
+
+        best = candidates.iloc[0]
         action = str(best.get("Handling", "Afvent"))
-        asset = str(best.get("Aktiv", "porteføljen"))
+        asset = str(best.get("Aktiv", asset_class))
         amount = abs(float(best.get("Beløb DKK", 0) or 0))
         decision_score = pd.to_numeric(best.get("Decision Score"), errors="coerce")
         confidence = pd.to_numeric(best.get("Confidence"), errors="coerce")
@@ -546,8 +587,14 @@ with tab_overview:
             str(best.get("Prioritet", "Normal")),
             help="Viser hvor hurtigt handlingen bør vurderes.",
         )
+
         st.markdown("**Begrundelse**")
-        st.write(best.get("Begrundelse", "Ingen yderligere begrundelse tilgængelig."))
+        st.write(
+            best.get(
+                "Begrundelse",
+                "Ingen yderligere begrundelse tilgængelig.",
+            )
+        )
 
         with st.expander("Vis beslutningsdetaljer"):
             d1, d2 = st.columns(2)
@@ -560,6 +607,15 @@ with tab_overview:
                 "Anbefalet vægtændring",
                 percentage_points(best.get("Anbefalet ændring", np.nan)),
             )
+
+    stock_col, etf_col = st.columns(2, gap="large")
+    with stock_col:
+        render_recommended_action(overview_queue, "Aktie", "Aktie")
+    with etf_col:
+        render_recommended_action(overview_queue, "ETF", "ETF")
+
+    # Bevar den eksisterende korte decision queue til tabellen nedenfor.
+    queue = decision_queue.data.copy()
 
     st.markdown("### Øvrige prioriterede handlinger")
     queue_overview = queue.head(3).copy()
@@ -998,7 +1054,6 @@ with tab_capital_flow:
             "30% 1M og 20% 3M. Den viser rotation – ikke faktisk fondskapital."
         )
 
-
 with tab_positions:
     st.subheader("Positioner")
     st.caption(
@@ -1197,7 +1252,6 @@ with tab_rebalance:
             right_on="Name",
             how="left",
         ).drop(columns=["Name"], errors="ignore")
-
         rebalance["Aktivklasse"] = rebalance["Asset_Type"].replace({
             "Stock": "Aktie",
             "Equity": "Aktie",
