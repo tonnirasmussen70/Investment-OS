@@ -60,6 +60,19 @@ def _download_close(tickers: list[str], period: str = "18mo") -> pd.DataFrame:
     return data.sort_index().dropna(how="all")
 
 
+def _latest_price(ticker: str, period: str = "10d") -> float | None:
+    """Hent seneste pris for én ticker som robust fallback efter bulk-download."""
+    history = _download_close([ticker], period=period)
+    if ticker not in history.columns:
+        return None
+
+    series = history[ticker].dropna()
+    if series.empty:
+        return None
+
+    return float(series.iloc[-1])
+
+
 def fetch_price_history(tickers: list[str], period: str = "18mo") -> pd.DataFrame:
     return _download_close(tickers, period=period)
 
@@ -68,17 +81,34 @@ def fetch_market_snapshot(
     yahoo_tickers: list[str],
     currencies: list[str],
 ) -> MarketSnapshot:
-    price_history = _download_close(yahoo_tickers, period="10d")
-    prices: dict[str, float] = {}
-    missing_prices: list[str] = []
+    cleaned_tickers = [
+        str(ticker).strip()
+        for ticker in yahoo_tickers
+        if str(ticker).strip()
+    ]
 
-    for ticker in yahoo_tickers:
+    price_history = _download_close(cleaned_tickers, period="10d")
+    prices: dict[str, float] = {}
+    retry_prices: list[str] = []
+
+    for ticker in cleaned_tickers:
         if ticker in price_history.columns:
             series = price_history[ticker].dropna()
             if not series.empty:
                 prices[ticker] = float(series.iloc[-1])
                 continue
-        missing_prices.append(ticker)
+        retry_prices.append(ticker)
+
+    # yfinance kan lejlighedsvis mangle enkelte tickers i en ellers vellykket
+    # bulk-download. Genforsøg derfor kun de manglende tickers individuelt,
+    # før de klassificeres som reelt manglende markedskurser.
+    missing_prices: list[str] = []
+    for ticker in retry_prices:
+        latest = _latest_price(ticker, period="10d")
+        if latest is None:
+            missing_prices.append(ticker)
+        else:
+            prices[ticker] = latest
 
     fx_to_dkk = {"DKK": 1.0}
     requested_fx = {
@@ -88,7 +118,7 @@ def fetch_market_snapshot(
     }
 
     fx_history = _download_close(list(requested_fx.values()), period="10d")
-    missing_fx: list[str] = []
+    retry_fx: list[tuple[str, str]] = []
 
     for currency, ticker in requested_fx.items():
         if ticker in fx_history.columns:
@@ -96,7 +126,15 @@ def fetch_market_snapshot(
             if not series.empty:
                 fx_to_dkk[currency] = float(series.iloc[-1])
                 continue
-        missing_fx.append(currency)
+        retry_fx.append((currency, ticker))
+
+    missing_fx: list[str] = []
+    for currency, ticker in retry_fx:
+        latest = _latest_price(ticker, period="10d")
+        if latest is None:
+            missing_fx.append(currency)
+        else:
+            fx_to_dkk[currency] = latest
 
     return MarketSnapshot(
         prices=prices,
