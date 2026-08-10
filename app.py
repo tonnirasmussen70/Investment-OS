@@ -840,9 +840,9 @@ with tab_momentum:
 
     momentum_source = analytics_portfolio[
         [
-            "Asset_Type", "Name", "Portfolio_Weight", "1W", "1M", "3M",
-            "6M", "12M", "Composite", "Momentum_Acceleration",
-            "Relative_Strength_3M", "AI_Confidence", "Handling",
+            "Asset_Type", "Name", "1W", "1M", "3M", "6M", "12M",
+            "Composite", "Momentum_Acceleration", "Relative_Strength_3M",
+            "AI_Confidence", "Handling",
         ]
     ].copy()
 
@@ -881,22 +881,19 @@ with tab_momentum:
 
         table = section[
             [
-                "Name", "Portfolio_Weight", "1W", "1M", "3M", "6M", "12M",
-                "Composite", "Momentum_Acceleration",
-                "Relative_Strength_3M", "AI_Confidence", "Handling",
+                "Name", "1W", "1M", "3M", "6M", "12M", "Composite",
+                "Momentum_Acceleration", "Relative_Strength_3M",
+                "AI_Confidence", "Handling",
             ]
         ].copy()
 
         table = table.rename(columns={
             "Name": "Navn",
-            "Portfolio_Weight": "Vægt",
             "Composite": "Momentum",
             "Momentum_Acceleration": "Acceleration",
             "Relative_Strength_3M": "RS 3M",
             "AI_Confidence": "AI",
         })
-
-        table["Vægt"] = table["Vægt"].apply(lambda x: format_pct(x, 1))
         for col in [
             "1W", "1M", "3M", "6M", "12M",
             "Momentum", "Acceleration", "RS 3M",
@@ -1057,8 +1054,8 @@ with tab_capital_flow:
 with tab_positions:
     st.subheader("Positioner")
     st.caption(
-        "Aktier og ETF'er vises separat, så beholdninger og vægte kan vurderes "
-        "inden for hver sin ASK. Grundfos vises, men indgår ikke i aktiv vægtning."
+        "Aktier og ETF'er vises separat, men vægten beregnes for begge tabeller "
+        "mod den samlede porteføljeværdi ekskl. Grundfos. Grundfos vises uden vægt."
     )
 
     merge_key = (
@@ -1085,6 +1082,17 @@ with tab_positions:
         "ETF": "ETF",
     })
 
+    # Alle viste positionsvægte bruger samme nævner: hele porteføljen ekskl. Grundfos.
+    position_source["Market_Value_DKK"] = pd.to_numeric(
+        position_source["Market_Value_DKK"], errors="coerce"
+    ).fillna(0)
+    grundfos_portfolio_mask = position_source["Name"].astype(str).str.contains(
+        "Grundfos", case=False, na=False
+    )
+    portfolio_value_ex_grundfos = position_source.loc[
+        ~grundfos_portfolio_mask, "Market_Value_DKK"
+    ].sum()
+
     def show_position_section(
         source: pd.DataFrame,
         asset_class: str,
@@ -1097,24 +1105,16 @@ with tab_positions:
             st.info(f"Ingen {heading.lower()} er registreret.")
             return
 
-        include_weight = section["Include_Weight"].fillna(False)
-        # Grundfos skal altid holdes helt ude af aktiv vægtning, uanset datakilden.
         grundfos_mask = section["Name"].astype(str).str.contains(
             "Grundfos", case=False, na=False
         )
-        include_weight = include_weight & ~grundfos_mask
-        active_value = pd.to_numeric(
-            section.loc[include_weight, "Market_Value_DKK"], errors="coerce"
-        ).fillna(0).sum()
-
-        section["ASK_Weight"] = np.where(
-            include_weight & (active_value > 0),
-            pd.to_numeric(section["Market_Value_DKK"], errors="coerce").fillna(0)
-            / active_value,
+        section["Portfolio_Weight_Ex_Grundfos"] = np.where(
+            ~grundfos_mask & (portfolio_value_ex_grundfos > 0),
+            section["Market_Value_DKK"] / portfolio_value_ex_grundfos,
             np.nan,
         )
         section = section.sort_values(
-            ["ASK_Weight", "Name"],
+            ["Portfolio_Weight_Ex_Grundfos", "Name"],
             ascending=[False, True],
             na_position="last",
         ).reset_index(drop=True)
@@ -1122,7 +1122,7 @@ with tab_positions:
         table = section[
             [
                 "Name", "Quantity", "Purchase_Price", "Current_Price", "Sector",
-                "Market_Value_DKK", "ASK_Weight", "Return_Pct", "Composite",
+                "Market_Value_DKK", "Portfolio_Weight_Ex_Grundfos", "Return_Pct", "Composite",
                 "AI_Confidence",
             ]
         ].copy()
@@ -1156,14 +1156,15 @@ with tab_positions:
         )
 
         chart_data = section.loc[
-            section["ASK_Weight"].notna(), ["Name", "ASK_Weight"]
+            section["Portfolio_Weight_Ex_Grundfos"].notna(),
+            ["Name", "Portfolio_Weight_Ex_Grundfos"],
         ].copy()
         st.markdown(f"#### Vægtning pr. {asset_class.lower()}")
         if chart_data.empty:
             st.info("Der er ikke tilstrækkelige data til vægtningsgrafen.")
         else:
             chart_data = chart_data.rename(
-                columns={"Name": "Navn", "ASK_Weight": "Vægt"}
+                columns={"Name": "Navn", "Portfolio_Weight_Ex_Grundfos": "Vægt"}
             )
             fig = px.bar(
                 chart_data,
@@ -1175,7 +1176,7 @@ with tab_positions:
             fig.update_layout(
                 height=max(390, min(700, 300 + len(chart_data) * 18)),
                 xaxis_title=None,
-                yaxis_title="Vægt inden for ASK",
+                yaxis_title="Vægt af portefølje ekskl. Grundfos",
                 yaxis_tickformat=".0%",
                 showlegend=False,
             )
@@ -1188,7 +1189,8 @@ with tab_positions:
 
         if asset_class == "Aktie":
             sector_data = section.loc[
-                section["ASK_Weight"].notna(), ["Sector", "Market_Value_DKK"]
+                section["Portfolio_Weight_Ex_Grundfos"].notna(),
+                ["Sector", "Market_Value_DKK"],
             ].copy()
             sector_data["Market_Value_DKK"] = pd.to_numeric(
                 sector_data["Market_Value_DKK"], errors="coerce"
@@ -1223,6 +1225,66 @@ with tab_positions:
     st.divider()
 
     show_position_section(position_source, "ETF", "ETF'er")
+
+    st.divider()
+    st.markdown("### Samlet vægtning – hele porteføljen")
+    st.caption(
+        "Alle aktier og ETF'er anvender samme nævner: samlet porteføljeværdi "
+        "ekskl. Grundfos. Derfor summerer de viste vægte til 100%."
+    )
+
+    overall_weights = position_source.loc[
+        ~grundfos_portfolio_mask
+        & position_source["Aktivklasse"].isin(["Aktie", "ETF"])
+        & (position_source["Market_Value_DKK"] > 0),
+        ["Name", "Aktivklasse", "Market_Value_DKK"],
+    ].copy()
+
+    if overall_weights.empty or portfolio_value_ex_grundfos <= 0:
+        st.info("Der er ikke tilstrækkelige data til den samlede vægtning.")
+    else:
+        overall_weights["Vægt"] = (
+            overall_weights["Market_Value_DKK"] / portfolio_value_ex_grundfos
+        )
+        overall_weights = overall_weights.sort_values(
+            ["Vægt", "Name"], ascending=[False, True]
+        ).reset_index(drop=True)
+
+        stock_weight = overall_weights.loc[
+            overall_weights["Aktivklasse"] == "Aktie", "Vægt"
+        ].sum()
+        etf_weight = overall_weights.loc[
+            overall_weights["Aktivklasse"] == "ETF", "Vægt"
+        ].sum()
+        total_weight = overall_weights["Vægt"].sum()
+
+        w1, w2, w3 = st.columns(3)
+        w1.metric("Aktier", format_pct(stock_weight, 1))
+        w2.metric("ETF'er", format_pct(etf_weight, 1))
+        w3.metric("Samlet", format_pct(total_weight, 1))
+
+        overall_chart = overall_weights.rename(columns={"Name": "Navn"})
+        fig = px.bar(
+            overall_chart,
+            x="Navn",
+            y="Vægt",
+            color="Aktivklasse",
+            title="Samlet positionsvægt – portefølje ekskl. Grundfos",
+            text_auto=".1%",
+        )
+        fig.update_layout(
+            height=max(430, min(760, 320 + len(overall_chart) * 18)),
+            xaxis_title=None,
+            yaxis_title="Vægt af samlet portefølje",
+            yaxis_tickformat=".0%",
+            legend_title_text="Aktivklasse",
+        )
+        fig.update_xaxes(
+            categoryorder="array",
+            categoryarray=overall_chart["Navn"].tolist(),
+            tickangle=-45 if len(overall_chart) > 8 else 0,
+        )
+        st.plotly_chart(fig, use_container_width=True)
 
 
 with tab_rebalance:
