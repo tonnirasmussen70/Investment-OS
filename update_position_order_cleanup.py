@@ -83,3 +83,4 @@ replace_once(
 
 APP.write_text(text, encoding="utf-8")
 print("Momentum og Positioner opdateret")
+# Trigger merge workflow for Momentum OS 6.8 position-weight update.
