@@ -20,6 +20,8 @@ jobs:
       - name: Install application dependencies
         run: pip install -r requirements.txt
       - name: Generate real portfolio snapshot
+        env:
+          PYTHONPATH: .
         run: python scripts/generate_portfolio_snapshot.py
       - name: Validate 7.0 snapshot
         run: |
