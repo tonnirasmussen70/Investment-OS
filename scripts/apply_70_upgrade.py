@@ -23,11 +23,42 @@ replace_all("app.py", 'page_title="Investment OS 6.9"', 'page_title="Investment 
 replace_all("app.py", 'APP_VERSION = "6.9.0"', 'APP_VERSION = "7.0.0"')
 replace_all("app.py", 'st.title("📈 Investment OS 6.9")', 'st.title("📈 Investment OS 7.0")')
 
-# Rebalance-call: hard sector constraint kobles på execution-layeren.
+# Rebalancering skal bygges før Decision Queue, så Overblik bruger de faktiske
+# execution-beløb i stedet for Portfolio Doctors simulationsbeløb.
 replace_once(
     "app.py",
-    '''rebalance_result = build_rebalance_plan(\n    analytics_portfolio,\n    active_market_value_dkk=return_market_value,\n    max_position_weight=config.max_position_weight,\n    minimum_trade_dkk=MINIMUM_TRADE_DKK,\n)\n''',
-    '''rebalance_result = build_rebalance_plan(\n    analytics_portfolio,\n    active_market_value_dkk=return_market_value,\n    max_position_weight=config.max_position_weight,\n    max_sector_weight=config.max_sector_weight,\n    minimum_trade_dkk=MINIMUM_TRADE_DKK,\n)\n''',
+    '''decision_queue = build_decision_queue(\n    portfolio_doctor.data,\n    opportunity_result.data,\n    max_items=5,\n)\n\nrebalance_result = build_rebalance_plan(\n    analytics_portfolio,\n    active_market_value_dkk=return_market_value,\n    max_position_weight=config.max_position_weight,\n    minimum_trade_dkk=MINIMUM_TRADE_DKK,\n)\n''',
+    '''rebalance_result = build_rebalance_plan(\n    analytics_portfolio,\n    active_market_value_dkk=return_market_value,\n    max_position_weight=config.max_position_weight,\n    max_sector_weight=config.max_sector_weight,\n    minimum_trade_dkk=MINIMUM_TRADE_DKK,\n)\n\ndecision_queue = build_decision_queue(\n    rebalance_result.data,\n    max_items=5,\n)\n''',
+)
+
+# Hvis en tidligere delmigration allerede har tilføjet sektorloftet, håndtér
+# også den rækkefølge idempotent.
+replace_once(
+    "app.py",
+    '''decision_queue = build_decision_queue(\n    portfolio_doctor.data,\n    opportunity_result.data,\n    max_items=5,\n)\n\nrebalance_result = build_rebalance_plan(\n    analytics_portfolio,\n    active_market_value_dkk=return_market_value,\n    max_position_weight=config.max_position_weight,\n    max_sector_weight=config.max_sector_weight,\n    minimum_trade_dkk=MINIMUM_TRADE_DKK,\n)\n''',
+    '''rebalance_result = build_rebalance_plan(\n    analytics_portfolio,\n    active_market_value_dkk=return_market_value,\n    max_position_weight=config.max_position_weight,\n    max_sector_weight=config.max_sector_weight,\n    minimum_trade_dkk=MINIMUM_TRADE_DKK,\n)\n\ndecision_queue = build_decision_queue(\n    rebalance_result.data,\n    max_items=5,\n)\n''',
+)
+
+# Overblik bygger en bred queue fra samme execution-plan.
+replace_once(
+    "app.py",
+    '''    overview_queue = build_decision_queue(\n        portfolio_doctor.data,\n        opportunity_result.data,\n        max_items=max(20, len(analytics_portfolio)),\n    ).data.copy()\n''',
+    '''    overview_queue = build_decision_queue(\n        rebalance_result.data,\n        max_items=max(20, len(analytics_portfolio)),\n    ).data.copy()\n''',
+)
+replace_once(
+    "app.py",
+    '''        action = str(best.get("Handling", "Afvent"))\n''',
+    '''        action = str(best.get("Execution", best.get("Handling", "Afvent")))\n''',
+)
+replace_once(
+    "app.py",
+    '''            [["Prioritet", "Handling", "Aktiv", "Beløb DKK", "Decision Score", "Begrundelse"]]\n''',
+    '''            [["Prioritet", "Execution", "Aktiv", "Beløb DKK", "Decision Score", "Begrundelse"]]\n''',
+)
+replace_once(
+    "app.py",
+    '''        action_table = action_table.rename(\n            columns={"Beløb DKK": "Beløb", "Decision Score": "Score"}\n        )\n''',
+    '''        action_table = action_table.rename(\n            columns={\n                "Execution": "Handling",\n                "Beløb DKK": "Beløb",\n                "Decision Score": "Score",\n            }\n        )\n''',
 )
 
 # Rebalancering UI: execution summary.
@@ -57,11 +88,16 @@ replace_once(
     '''    st.caption(\n        f"Hard constraints: positionsloft {config.max_position_weight:.0%} og "\n        f"sektorloft {config.max_sector_weight:.0%}. Handler under "\n        f"{compact_dkk(MINIMUM_TRADE_DKK)} eksekveres ikke."\n    )\n''',
 )
 
-# Standalone snapshot-generator bruger samme 7.0 execution constraints.
+# Standalone snapshot-generator bruger samme 7.0 execution chain.
 replace_once(
     "scripts/generate_portfolio_snapshot.py",
-    '''    rebalance = build_rebalance_plan(\n        analytics_portfolio,\n        active_market_value_dkk=active_value,\n        max_position_weight=config.max_position_weight,\n        minimum_trade_dkk=MINIMUM_TRADE_DKK,\n    )\n''',
-    '''    rebalance = build_rebalance_plan(\n        analytics_portfolio,\n        active_market_value_dkk=active_value,\n        max_position_weight=config.max_position_weight,\n        max_sector_weight=config.max_sector_weight,\n        minimum_trade_dkk=MINIMUM_TRADE_DKK,\n    )\n''',
+    '''    queue = build_decision_queue(doctor.data, opportunity_result.data, max_items=5)\n    rebalance = build_rebalance_plan(\n        analytics_portfolio,\n        active_market_value_dkk=active_value,\n        max_position_weight=config.max_position_weight,\n        minimum_trade_dkk=MINIMUM_TRADE_DKK,\n    )\n''',
+    '''    rebalance = build_rebalance_plan(\n        analytics_portfolio,\n        active_market_value_dkk=active_value,\n        max_position_weight=config.max_position_weight,\n        max_sector_weight=config.max_sector_weight,\n        minimum_trade_dkk=MINIMUM_TRADE_DKK,\n    )\n    queue = build_decision_queue(rebalance.data, max_items=5)\n''',
+)
+replace_once(
+    "scripts/generate_portfolio_snapshot.py",
+    '''    queue = build_decision_queue(doctor.data, opportunity_result.data, max_items=5)\n    rebalance = build_rebalance_plan(\n        analytics_portfolio,\n        active_market_value_dkk=active_value,\n        max_position_weight=config.max_position_weight,\n        max_sector_weight=config.max_sector_weight,\n        minimum_trade_dkk=MINIMUM_TRADE_DKK,\n    )\n''',
+    '''    rebalance = build_rebalance_plan(\n        analytics_portfolio,\n        active_market_value_dkk=active_value,\n        max_position_weight=config.max_position_weight,\n        max_sector_weight=config.max_sector_weight,\n        minimum_trade_dkk=MINIMUM_TRADE_DKK,\n    )\n    queue = build_decision_queue(rebalance.data, max_items=5)\n''',
 )
 
 print("Investment OS 7.0 app integration applied")
