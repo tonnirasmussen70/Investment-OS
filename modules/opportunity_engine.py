@@ -6,7 +6,6 @@ import numpy as np
 import pandas as pd
 
 
-
 @dataclass(frozen=True)
 class OpportunityResult:
     """Rangerede muligheder baseret på den fælles Decision Engine."""
@@ -16,13 +15,6 @@ class OpportunityResult:
     top_score: float
     lowest_conviction: str | None
     lowest_score: float
-
-
-def normalize_opportunity_weights(
-    weights: dict[str, float] | None,
-) -> dict[str, float]:
-    """Legacy alias til den fælles vægtnormalisering."""
-    return normalize_decision_weights(weights)
 
 
 def build_opportunity_scores(
@@ -36,6 +28,9 @@ def build_opportunity_scores(
 
     Investment OS 6.9 bruger Decision_Score, Decision_Status og Handling fra
     den centrale Decision Engine. Opportunities tilføjer kun en ranking.
+
+    ``factor_weights`` og ``max_position_weight`` bevares midlertidigt i
+    signaturen for kaldskompatibilitet, men bruges ikke til genberegning.
     """
     if portfolio.empty:
         return OpportunityResult(
@@ -51,8 +46,8 @@ def build_opportunity_scores(
         raise ValueError(
             "Opportunities kræver output fra den centrale Decision Engine først."
         )
-    result = portfolio.copy()
 
+    result = portfolio.copy()
     result = result.drop(
         columns=["Opportunity Score", "Opportunity Label", "Opportunity Rank"],
         errors="ignore",
