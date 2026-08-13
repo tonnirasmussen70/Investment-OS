@@ -30,7 +30,7 @@ from modules.compounder_engine import (
     top_candidates,
 )
 from modules.config_engine import load_investment_config
-from modules.decision_engine import decision_summary
+from modules.decision_engine import apply_decision_engine, decision_summary
 from modules.decision_queue_engine import build_decision_queue
 from modules.formatting import format_dkk, format_pct, format_score
 from modules.health_engine import calculate_portfolio_health
@@ -289,6 +289,11 @@ analytics_portfolio = add_momentum(
     momentum_weights,
     benchmark_ticker=benchmark_ticker,
 )
+analytics_portfolio = apply_decision_engine(
+    analytics_portfolio,
+    factor_weights=opportunity_factor_weights,
+    max_position_weight=config.max_position_weight,
+).data
 
 previous_history = history.iloc[:-1] if len(history) > 1 else history.iloc[0:0]
 analysis_columns_to_remove = {
@@ -311,6 +316,12 @@ previous_analytics = (
     if not previous_history.empty
     else pd.DataFrame()
 )
+if not previous_analytics.empty:
+    previous_analytics = apply_decision_engine(
+        previous_analytics,
+        factor_weights=opportunity_factor_weights,
+        max_position_weight=config.max_position_weight,
+    ).data
 
 change_result = build_change_engine(analytics_portfolio, previous_analytics)
 

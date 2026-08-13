@@ -441,9 +441,25 @@ def portfolio_ai_confidence(portfolio: pd.DataFrame) -> float:
 
 
 def decision_summary(portfolio: pd.DataFrame) -> dict[str, object]:
-    """Kør Decision Engine og returnér dashboardets centrale signaler."""
-    decision_result = apply_decision_engine(portfolio, inplace=True)
-    scored = decision_result.data
+    """Aggregér dashboard-signaler fra det allerede scorede Decision Engine-output."""
+    required = {"Decision_Score", "Decision_Status", "Handling"}
+    if not required.issubset(portfolio.columns):
+        raise ValueError(
+            "decision_summary kræver output fra apply_decision_engine først."
+        )
+
+    scored = portfolio
+    ordered = scored.sort_values(
+        ["Decision_Score", "AI_Confidence", "Composite"],
+        ascending=[False, False, False],
+        na_position="last",
+    )
+    top_asset = str(ordered.iloc[0].get("Name", "Ukendt")) if not ordered.empty else None
+    top_score = (
+        float(ordered.iloc[0]["Decision_Score"])
+        if not ordered.empty and pd.notna(ordered.iloc[0]["Decision_Score"])
+        else np.nan
+    )
     ai_confidence = portfolio_ai_confidence(scored)
     flow_label, positive_share = capital_flow_label(scored)
 
@@ -452,7 +468,7 @@ def decision_summary(portfolio: pd.DataFrame) -> dict[str, object]:
         "AI_Confidence_Label": confidence_label(ai_confidence),
         "Capital_Flow": flow_label,
         "Positive_Momentum_Share": positive_share,
-        "Top_Decision_Asset": decision_result.top_asset,
-        "Top_Decision_Score": decision_result.top_score,
+        "Top_Decision_Asset": top_asset,
+        "Top_Decision_Score": top_score,
         "Actions": build_action_table(scored),
     }

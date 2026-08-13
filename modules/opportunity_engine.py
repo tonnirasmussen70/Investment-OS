@@ -57,16 +57,12 @@ def build_opportunity_scores(
             lowest_score=np.nan,
         )
 
-    # Kør samme motor med de aktive Settings-vægte. Inplace sikrer, at alle
-    # efterfølgende faner (Portfolio Doctor/Rebalancering/Momentum) læser det
-    # samme autoritative output fra analytics_portfolio.
-    decision = apply_decision_engine(
-        portfolio,
-        factor_weights=factor_weights,
-        max_position_weight=max_position_weight,
-        inplace=True,
-    )
-    result = decision.data.copy()
+    required = {"Decision_Score", "Decision_Status", "Handling"}
+    if not required.issubset(portfolio.columns):
+        raise ValueError(
+            "Opportunities kræver output fra den centrale Decision Engine først."
+        )
+    result = portfolio.copy()
 
     result["Opportunity Score"] = result["Decision_Score"]
     result["Opportunity Label"] = result["Decision_Status"]
