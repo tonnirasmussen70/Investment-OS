@@ -1,0 +1,44 @@
+name: Decision Engine consistency
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'modules/decision_engine.py'
+      - 'modules/opportunity_engine.py'
+      - 'modules/decision_queue_engine.py'
+      - 'modules/rebalance_engine.py'
+      - 'app.py'
+      - 'tests/test_decision_engine_consistency.py'
+      - '.github/workflows/decision-engine-consistency.yml'
+  pull_request:
+    paths:
+      - 'modules/decision_engine.py'
+      - 'modules/opportunity_engine.py'
+      - 'modules/decision_queue_engine.py'
+      - 'modules/rebalance_engine.py'
+      - 'app.py'
+      - 'tests/test_decision_engine_consistency.py'
+      - '.github/workflows/decision-engine-consistency.yml'
+
+jobs:
+  consistency:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install test dependencies
+        run: pip install pandas numpy
+      - name: Syntax check
+        run: |
+          python -m py_compile \
+            modules/decision_engine.py \
+            modules/opportunity_engine.py \
+            modules/decision_queue_engine.py \
+            modules/rebalance_engine.py \
+            tests/test_decision_engine_consistency.py
+      - name: Run Decision Engine regression tests
+        run: python -m unittest tests.test_decision_engine_consistency -v
