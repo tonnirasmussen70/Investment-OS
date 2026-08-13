@@ -1,0 +1,36 @@
+name: Format 6.9 score displays
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  format-scores:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply integer score formatting
+        run: python scripts/format_score_integers_69.py
+      - name: Syntax check
+        run: python -m py_compile app.py
+      - name: Commit app change
+        run: |
+          if git diff --quiet -- app.py; then
+            echo "No code changes required"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app.py
+          git commit -m "6.9: display scores as whole numbers"
+          git push
