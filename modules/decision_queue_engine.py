@@ -64,8 +64,6 @@ def build_decision_queue(
             "Decision_Score",
             "Decision_Status",
             "Handling",
-            "Opportunity Score",
-            "Opportunity Label",
         ]
         if column in opportunity_data.columns
     ]
@@ -73,12 +71,7 @@ def build_decision_queue(
 
     merge_columns = [
         column
-        for column in [
-            "Decision_Score",
-            "Decision_Status",
-            "Opportunity Score",
-            "Opportunity Label",
-        ]
+        for column in ["Decision_Score", "Decision_Status"]
         if column in lookup.columns
     ]
 
