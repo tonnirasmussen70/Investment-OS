@@ -90,8 +90,9 @@ TOOLTIPS = {
         "reducerer tilliden til anbefalingerne."
     ),
     "decision_score": (
-        "Prioriterer mulige handlinger ud fra Portfolio Doctor, Opportunity "
-        "Score, AI Confidence og forventet forbedring af Portfolio Health."
+        "Fælles score 0-100 fra Decision Engine baseret på momentum, AI "
+        "Confidence, relativ styrke, trend, risiko, datakvalitet og plads "
+        "under positionsloftet."
     ),
     "momentum": (
         "Måler kursudviklingen på tværs af flere perioder. Bruges til at "
@@ -588,9 +589,9 @@ with tab_overview:
         st.markdown(f"## {action_text}")
         a1, a2, a3 = st.columns(3)
         a1.metric(
-            "Overbevisning",
-            conviction_label(decision_score),
-            help="Styrken i selve investeringscasen og handlingens prioritet.",
+            "Status",
+            str(best.get("Decision Label", "Datamangel")),
+            help="Den fælles status fra Decision Engine for denne investeringscase.",
         )
         a2.metric(
             "Konfidens",
