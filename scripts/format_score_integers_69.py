@@ -1,5 +1,6 @@
 from pathlib import Path
 
+# One-off patch: keep engine precision, format visible scores as integers.
 path = Path("app.py")
 text = path.read_text(encoding="utf-8")
 
