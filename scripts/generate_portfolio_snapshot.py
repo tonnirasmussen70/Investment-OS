@@ -143,7 +143,6 @@ def main() -> None:
         default_step=0.02,
         minimum_trade_dkk=MINIMUM_TRADE_DKK,
     )
-    queue = build_decision_queue(doctor.data, opportunity_result.data, max_items=5)
     rebalance = build_rebalance_plan(
         analytics_portfolio,
         active_market_value_dkk=active_value,
@@ -151,6 +150,7 @@ def main() -> None:
         max_sector_weight=config.max_sector_weight,
         minimum_trade_dkk=MINIMUM_TRADE_DKK,
     )
+    queue = build_decision_queue(rebalance.data, max_items=5)
 
     position_columns = [
         "Aktiv", "Ticker", "Yahoo_Ticker", "Aktivtype", "Sektor", "Depot",

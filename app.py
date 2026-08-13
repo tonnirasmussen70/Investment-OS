@@ -398,18 +398,17 @@ portfolio_doctor = build_portfolio_doctor(
     minimum_trade_dkk=MINIMUM_TRADE_DKK,
 )
 
-decision_queue = build_decision_queue(
-    portfolio_doctor.data,
-    opportunity_result.data,
-    max_items=5,
-)
-
 rebalance_result = build_rebalance_plan(
     analytics_portfolio,
     active_market_value_dkk=return_market_value,
     max_position_weight=config.max_position_weight,
     max_sector_weight=config.max_sector_weight,
     minimum_trade_dkk=MINIMUM_TRADE_DKK,
+)
+
+decision_queue = build_decision_queue(
+    rebalance_result.data,
+    max_items=5,
 )
 
 snapshot_output = write_portfolio_snapshot(
@@ -528,8 +527,7 @@ with tab_overview:
     # Overblik bruger en bredere kø end morgenbrief/snapshot, så både Aktie-
     # og ETF-universet får mulighed for at levere sin egen topanbefaling.
     overview_queue = build_decision_queue(
-        portfolio_doctor.data,
-        opportunity_result.data,
+        rebalance_result.data,
         max_items=max(20, len(analytics_portfolio)),
     ).data.copy()
 
@@ -572,7 +570,7 @@ with tab_overview:
             return
 
         best = candidates.iloc[0]
-        action = str(best.get("Handling", "Afvent"))
+        action = str(best.get("Execution", best.get("Handling", "Afvent")))
         asset = str(best.get("Aktiv", asset_class))
         amount = abs(float(best.get("Beløb DKK", 0) or 0))
         decision_score = pd.to_numeric(best.get("Decision Score"), errors="coerce")
@@ -637,14 +635,18 @@ with tab_overview:
         st.caption("Ingen yderligere handlinger.")
     else:
         action_table = queue_overview[
-            ["Prioritet", "Handling", "Aktiv", "Beløb DKK", "Decision Score", "Begrundelse"]
+            ["Prioritet", "Execution", "Aktiv", "Beløb DKK", "Decision Score", "Begrundelse"]
         ].copy()
         action_table["Beløb DKK"] = action_table["Beløb DKK"].apply(compact_dkk)
         action_table["Decision Score"] = action_table["Decision Score"].apply(
             lambda value: score_text(value, 0)
         )
         action_table = action_table.rename(
-            columns={"Beløb DKK": "Beløb", "Decision Score": "Score"}
+            columns={
+                "Execution": "Handling",
+                "Beløb DKK": "Beløb",
+                "Decision Score": "Score",
+            }
         )
         st.dataframe(
             table_style(action_table),
