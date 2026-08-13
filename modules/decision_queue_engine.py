@@ -40,8 +40,7 @@ def build_decision_queue(
                 "Beløb DKK",
                 "Anbefalet ændring",
                 "Decision Score",
-                "Decision Label",
-                "Opportunity Score",
+                "Status",
                 "Confidence",
                 "Health effekt",
                 "Begrundelse",
@@ -108,11 +107,10 @@ def build_decision_queue(
         queue.get("Decision_Score"),
         errors="coerce",
     )
-    queue["Decision Label"] = queue.get(
+    queue["Status"] = queue.get(
         "Decision_Status",
         pd.Series("Datamangel", index=queue.index),
     )
-    queue["Opportunity Score"] = queue["Decision Score"]
 
     # Kun rækker med en reel Doctor-handling skal i handlingskøen.
     # Rangeringen kommer alene fra Decision Engine; Health-effekt bruges kun
@@ -139,8 +137,7 @@ def build_decision_queue(
         "Beløb DKK",
         "Anbefalet ændring",
         "Decision Score",
-        "Decision Label",
-        "Opportunity Score",
+        "Status",
         "Confidence",
         "Health effekt",
         "Begrundelse",

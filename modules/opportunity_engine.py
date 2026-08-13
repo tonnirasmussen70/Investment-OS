@@ -5,16 +5,6 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 
-from modules.decision_engine import (
-    DECISION_WEIGHTS,
-    apply_decision_engine,
-    normalize_decision_weights,
-)
-
-
-# Behold navnet af hensyn til eksisterende Settings/UI-kompatibilitet.
-# Der findes ikke længere en separat Opportunity-scoredefinition.
-DEFAULT_OPPORTUNITY_WEIGHTS = DECISION_WEIGHTS.copy()
 
 
 @dataclass(frozen=True)
@@ -45,8 +35,7 @@ def build_opportunity_scores(
     Rangér Opportunities uden at beregne en separat investeringsscore.
 
     Investment OS 6.9 bruger Decision_Score, Decision_Status og Handling fra
-    den centrale Decision Engine. Opportunity Score/Label er alene aliases,
-    så eksisterende UI kan fortsætte under migrationen.
+    den centrale Decision Engine. Opportunities tilføjer kun en ranking.
     """
     if portfolio.empty:
         return OpportunityResult(
@@ -64,9 +53,11 @@ def build_opportunity_scores(
         )
     result = portfolio.copy()
 
-    result["Opportunity Score"] = result["Decision_Score"]
-    result["Opportunity Label"] = result["Decision_Status"]
-    result["Opportunity Rank"] = result["Decision_Score"].rank(
+    result = result.drop(
+        columns=["Opportunity Score", "Opportunity Label", "Opportunity Rank"],
+        errors="ignore",
+    )
+    result["Decision Rank"] = result["Decision_Score"].rank(
         ascending=False,
         method="min",
     ).astype("Int64")

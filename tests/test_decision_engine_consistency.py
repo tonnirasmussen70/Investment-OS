@@ -101,6 +101,9 @@ class DecisionEngineConsistencyTests(unittest.TestCase):
             opportunities["Handling"].sort_index(),
             check_names=False,
         )
+        self.assertNotIn("Opportunity Score", opportunities.columns)
+        self.assertNotIn("Opportunity Label", opportunities.columns)
+        self.assertIn("Decision Rank", opportunities.columns)
 
     def test_opportunities_reject_unscored_input(self) -> None:
         with self.assertRaises(ValueError):

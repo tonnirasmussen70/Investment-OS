@@ -30,15 +30,12 @@ from modules.compounder_engine import (
     top_candidates,
 )
 from modules.config_engine import load_investment_config
-from modules.decision_engine import apply_decision_engine, decision_summary
+from modules.decision_engine import DECISION_WEIGHTS, apply_decision_engine, decision_summary
 from modules.decision_queue_engine import build_decision_queue
 from modules.formatting import format_dkk, format_pct, format_score
 from modules.health_engine import calculate_portfolio_health
 from modules.market_engine import fetch_market_snapshot, fetch_price_history
-from modules.opportunity_engine import (
-    DEFAULT_OPPORTUNITY_WEIGHTS,
-    build_opportunity_scores,
-)
+from modules.opportunity_engine import build_opportunity_scores
 from modules.portfolio_doctor_engine import build_portfolio_doctor
 from modules.portfolio_engine import (
     calculate_portfolio,
@@ -266,13 +263,13 @@ health_factor_weights = {
     for factor in config.health_weights
 }
 
-for factor, default_value in DEFAULT_OPPORTUNITY_WEIGHTS.items():
-    key = f"opportunity_weight_{factor}"
+for factor, default_value in DECISION_WEIGHTS.items():
+    key = f"decision_weight_{factor}"
     st.session_state.setdefault(key, float(default_value))
 
-opportunity_factor_weights = {
-    factor: float(st.session_state[f"opportunity_weight_{factor}"])
-    for factor in DEFAULT_OPPORTUNITY_WEIGHTS
+decision_factor_weights = {
+    factor: float(st.session_state[f"decision_weight_{factor}"])
+    for factor in DECISION_WEIGHTS
 }
 
 momentum_weights = config.momentum_weights
@@ -292,7 +289,7 @@ analytics_portfolio = add_momentum(
 )
 analytics_portfolio = apply_decision_engine(
     analytics_portfolio,
-    factor_weights=opportunity_factor_weights,
+    factor_weights=decision_factor_weights,
     max_position_weight=config.max_position_weight,
 ).data
 
@@ -320,7 +317,7 @@ previous_analytics = (
 if not previous_analytics.empty:
     previous_analytics = apply_decision_engine(
         previous_analytics,
-        factor_weights=opportunity_factor_weights,
+        factor_weights=decision_factor_weights,
         max_position_weight=config.max_position_weight,
     ).data
 
@@ -385,7 +382,7 @@ portfolio_health = calculate_portfolio_health(
 
 opportunity_result = build_opportunity_scores(
     analytics_portfolio,
-    factor_weights=opportunity_factor_weights,
+    factor_weights=decision_factor_weights,
     max_position_weight=config.max_position_weight,
 )
 
@@ -590,7 +587,7 @@ with tab_overview:
         a1, a2, a3 = st.columns(3)
         a1.metric(
             "Status",
-            str(best.get("Decision Label", "Datamangel")),
+            str(best.get("Status", "Datamangel")),
             help="Den fælles status fra Decision Engine for denne investeringscase.",
         )
         a2.metric(
@@ -1526,15 +1523,15 @@ with tab_opportunity:
 
     opportunity_data = opportunity_result.data.copy()
     strong_statuses = {"Stærk", "Meget stærk"}
-    if "Opportunity Label" in opportunity_data.columns:
+    if "Decision_Status" in opportunity_data.columns:
         opportunity_data = opportunity_data.loc[
-            opportunity_data["Opportunity Label"].isin(strong_statuses)
+            opportunity_data["Decision_Status"].isin(strong_statuses)
         ].copy()
     else:
         opportunity_data = opportunity_data.iloc[0:0].copy()
 
     opportunity_data = opportunity_data.sort_values(
-        ["Opportunity Score", "Name"],
+        ["Decision_Score", "Name"],
         ascending=[False, True],
         na_position="last",
     ).reset_index(drop=True)
@@ -1550,8 +1547,8 @@ with tab_opportunity:
             "Bedste mulighed",
             str(best_opportunity.get("Name", "N/A")),
             (
-                f"{float(best_opportunity['Opportunity Score']):.0f}/100"
-                if pd.notna(best_opportunity.get("Opportunity Score")) else None
+                f"{float(best_opportunity['Decision_Score']):.0f}/100"
+                if pd.notna(best_opportunity.get("Decision_Score")) else None
             ),
             help=TOOLTIPS["opportunity_score"],
         )
@@ -1559,7 +1556,7 @@ with tab_opportunity:
 
         summary = opportunity_data[
             [
-                "Opportunity Rank", "Name", "Handling",
+                "Decision Rank", "Name", "Handling",
                 "Decision_Score", "Decision_Status",
             ]
         ].copy()
@@ -1680,21 +1677,21 @@ with tab_settings:
             st.rerun()
 
     with st.expander("Decision Engine"):
-        factors = list(DEFAULT_OPPORTUNITY_WEIGHTS.keys())
+        factors = list(DECISION_WEIGHTS.keys())
         columns = st.columns(2)
         for index, factor in enumerate(factors):
             with columns[index % 2]:
                 st.number_input(
                     factor, min_value=0.0, max_value=1.0, step=0.05,
-                    format="%.2f", key=f"opportunity_weight_{factor}",
+                    format="%.2f", key=f"decision_weight_{factor}",
                 )
         total = sum(
             float(st.session_state[f"opportunity_weight_{f}"]) for f in factors
         )
         st.caption(f"Indtastet vægtsum: {total:.2f}. Normaliseres automatisk.")
         if st.button("Nulstil Decision Engine"):
-            for factor, default in DEFAULT_OPPORTUNITY_WEIGHTS.items():
-                st.session_state[f"opportunity_weight_{factor}"] = float(default)
+            for factor, default in DECISION_WEIGHTS.items():
+                st.session_state[f"decision_weight_{factor}"] = float(default)
             st.rerun()
 
     with st.expander("Modeloversigt"):

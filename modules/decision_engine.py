@@ -193,8 +193,7 @@ def apply_decision_engine(
 
     Outputkolonnerne er fælles for alle views:
     Decision_Score, Decision_Status, Handling samt syv scorekomponenter.
-    Legacy Opportunity-kolonner oprettes som aliases, så resten af 6.8-UI'et
-    kan migreres gradvist uden parallel beregningslogik.
+    Der oprettes ingen view-specifikke score- eller statusaliases.
     """
     if portfolio.empty:
         return DecisionResult(data=portfolio.copy(), top_asset=None, top_score=np.nan)
@@ -255,14 +254,6 @@ def apply_decision_engine(
     result["Decision_Status"] = result["Decision_Score"].apply(decision_status)
     result["Handling"] = _decision_action(result)
 
-    # Compatibility aliases. Ingen separat Opportunity-beregning.
-    result["Opportunity Score"] = result["Decision_Score"]
-    result["Opportunity Label"] = result["Decision_Status"]
-    result["Opportunity Rank"] = result["Decision_Score"].rank(
-        ascending=False,
-        method="min",
-    ).astype("Int64")
-
     ordered = result.sort_values(
         ["Decision_Score", "AI_Confidence", "Composite"],
         ascending=[False, False, False],
@@ -319,7 +310,7 @@ def capital_flow_label(
 
 def action_reason(row: pd.Series) -> str:
     handling = row.get("Handling", "Hold")
-    status = row.get("Decision_Status", row.get("Opportunity Label", "Ukendt"))
+    status = row.get("Decision_Status", "Ukendt")
     one_week = row.get("1W", np.nan)
     one_month = row.get("1M", np.nan)
     three_months = row.get("3M", np.nan)

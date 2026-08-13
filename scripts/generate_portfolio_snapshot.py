@@ -13,11 +13,11 @@ import pandas as pd
 
 from modules.analytics_engine import add_momentum
 from modules.config_engine import load_investment_config
-from modules.decision_engine import decision_summary
+from modules.decision_engine import DECISION_WEIGHTS, apply_decision_engine, decision_summary
 from modules.decision_queue_engine import build_decision_queue
 from modules.health_engine import calculate_portfolio_health
 from modules.market_engine import fetch_market_snapshot, fetch_price_history
-from modules.opportunity_engine import DEFAULT_OPPORTUNITY_WEIGHTS, build_opportunity_scores
+from modules.opportunity_engine import build_opportunity_scores
 from modules.portfolio_doctor_engine import build_portfolio_doctor
 from modules.portfolio_engine import (
     calculate_portfolio,
@@ -106,6 +106,12 @@ def main() -> None:
         benchmark_ticker=benchmark_ticker,
     )
 
+    analytics_portfolio = apply_decision_engine(
+        analytics_portfolio,
+        factor_weights=DECISION_WEIGHTS,
+        max_position_weight=config.max_position_weight,
+    ).data
+
     quality_score, quality_notes = data_quality_score(portfolio, market_snapshot)
     metrics = portfolio_summary(portfolio)
     decision = decision_summary(analytics_portfolio)
@@ -156,8 +162,9 @@ def main() -> None:
         "Confidence", "Begrundelse",
     ]
     opportunity_columns = [
-        "Aktiv", "Ticker", "Opportunity Score", "AI_Confidence", "Composite",
-        "Relative_Strength_3M", "Portfolio_Weight", "Handling",
+        "Name", "Yahoo_Ticker", "Decision_Score", "Decision_Status",
+        "AI_Confidence", "Composite", "Relative_Strength_3M",
+        "Portfolio_Weight", "Handling",
     ]
     rebalance_columns = [
         "Aktiv", "Ticker", "Handling", "Nuværende vægt", "Målvægt",

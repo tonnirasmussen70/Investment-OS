@@ -127,9 +127,10 @@ def write_portfolio_snapshot(
         "Begrundelse",
     ]
     opportunity_columns = [
-        "Aktiv",
-        "Ticker",
-        "Opportunity Score",
+        "Name",
+        "Yahoo_Ticker",
+        "Decision_Score",
+        "Decision_Status",
         "AI_Confidence",
         "Composite",
         "Relative_Strength_3M",
