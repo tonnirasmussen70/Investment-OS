@@ -72,15 +72,16 @@ class DecisionEngineConsistencyTests(unittest.TestCase):
             "Positionsbonus": 0.05,
         }
 
-    def test_opportunities_use_exact_same_decision_output(self) -> None:
-        canonical = apply_decision_engine(
+    def test_opportunities_only_rank_existing_decision_output(self) -> None:
+        scored = apply_decision_engine(
             self.frame,
             factor_weights=self.weights,
             max_position_weight=0.12,
-        ).data.set_index("Name")
+        ).data
+        canonical = scored.set_index("Name")
 
         opportunities = build_opportunity_scores(
-            self.frame.copy(),
+            scored.copy(),
             factor_weights=self.weights,
             max_position_weight=0.12,
         ).data.set_index("Name")
@@ -100,6 +101,14 @@ class DecisionEngineConsistencyTests(unittest.TestCase):
             opportunities["Handling"].sort_index(),
             check_names=False,
         )
+
+    def test_opportunities_reject_unscored_input(self) -> None:
+        with self.assertRaises(ValueError):
+            build_opportunity_scores(
+                self.frame.copy(),
+                factor_weights=self.weights,
+                max_position_weight=0.12,
+            )
 
     def test_summary_is_read_only(self) -> None:
         scored = apply_decision_engine(
