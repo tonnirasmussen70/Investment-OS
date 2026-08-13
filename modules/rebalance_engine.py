@@ -75,21 +75,17 @@ def build_rebalance_plan(
     """
     Byg en handlingsorienteret rebalanceringsplan.
 
-    Regler:
-    - Øg: vægten øges med increase_factor, dog højst positionsloftet.
-    - Reducer: vægten reduceres med reduce_factor.
-    - Hold/Afvent: vægten ændres ikke.
-    - Foreslået vægt viser altid modellens ønskede allokering.
-    - Handler under minimum_trade_dkk markeres som ikke-eksekverbare ved at
-      sætte Handel DKK til 0, men den ønskede vægt og ændring bevares.
-    - Der normaliseres ikke automatisk tilbage til 100 %, fordi det ellers
-      skaber kunstige køb/salg i positioner uden et egentligt signal.
+    Investment OS 6.9 bruger Decision Score, Status og Handling direkte fra
+    den centrale Decision Engine. Rebalancering omsætter kun signalet til en
+    foreslået vægt og et handelsbeløb; den genberegner ikke investeringscasen.
     """
     required = {
         "Name",
         "Portfolio_Weight",
         "Composite",
         "AI_Confidence",
+        "Decision_Score",
+        "Decision_Status",
         "Handling",
     }
     missing = required.difference(portfolio.columns)
@@ -104,6 +100,8 @@ def build_rebalance_plan(
             "Portfolio_Weight",
             "Composite",
             "AI_Confidence",
+            "Decision_Score",
+            "Decision_Status",
             "Handling",
         ]
     ].copy()
@@ -121,6 +119,7 @@ def build_rebalance_plan(
         "Portfolio_Weight",
         "Composite",
         "AI_Confidence",
+        "Decision_Score",
     ]:
         data[column] = pd.to_numeric(
             data[column],
@@ -189,7 +188,6 @@ def build_rebalance_plan(
         "",
     )
 
-    # Vis handler først, derefter ingen handel.
     action_order = {
         "Sælg": 0,
         "Køb": 1,
@@ -204,10 +202,12 @@ def build_rebalance_plan(
             "Name": "Aktiv",
             "Portfolio_Weight": "Nuværende vægt",
             "AI_Confidence": "AI",
+            "Decision_Score": "Decision Score",
+            "Decision_Status": "Status",
         }
     ).sort_values(
-        ["_action_order", "Handel DKK"],
-        ascending=[True, False],
+        ["_action_order", "Decision Score", "Handel DKK"],
+        ascending=[True, False, False],
         na_position="last",
     )
 
