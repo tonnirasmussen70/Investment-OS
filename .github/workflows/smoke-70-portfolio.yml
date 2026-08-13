@@ -1,0 +1,39 @@
+name: Investment OS 7.0 portfolio smoke test
+
+on:
+  push:
+    branches:
+      - investment-os-7.0-execution-layer
+
+jobs:
+  smoke:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: investment-os-7.0-execution-layer
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install application dependencies
+        run: pip install -r requirements.txt
+      - name: Generate real portfolio snapshot
+        run: python scripts/generate_portfolio_snapshot.py
+      - name: Validate 7.0 snapshot
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          payload = json.loads(Path('data/portfolio_snapshot.json').read_text(encoding='utf-8'))
+          assert payload['schema_version'] == '2.0'
+          assert 'execution_summary' in payload
+          summary = payload['execution_summary']
+          for key in ['trade_count', 'buy_dkk', 'sell_dkk', 'net_trade_dkk', 'cash_required_dkk', 'constrained_count']:
+              assert key in summary, key
+          for row in payload.get('rebalance', []):
+              for key in ['Aktiv', 'Handling', 'Rebalance handling', 'Nuværende vægt', 'Modelmålvægt', 'Foreslået vægt', 'Decision Score', 'Status']:
+                  assert key in row, (key, row)
+          print('7.0 portfolio smoke test passed')
+          PY
