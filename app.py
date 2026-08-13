@@ -921,6 +921,7 @@ with tab_momentum:
         table["AI"] = table["AI"].apply(
             lambda x: f"{x:.0f}%" if pd.notna(x) else "N/A"
         )
+        table["Score"] = table["Score"].apply(lambda x: score_text(x, 0))
 
         st.dataframe(
             table_style(table),
@@ -1381,6 +1382,9 @@ with tab_rebalance:
                 display[col] = display[col].apply(lambda x: format_pct(x, 1))
             display["AI"] = display["AI"].apply(
                 lambda x: f"{x:.0f}%" if pd.notna(x) else "N/A"
+            )
+            display["Decision Score"] = display["Decision Score"].apply(
+                lambda x: score_text(x, 0)
             )
             display = display.rename(columns={"Composite": "Momentum"})
 
