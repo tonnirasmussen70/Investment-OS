@@ -4,6 +4,7 @@ import unittest
 
 import pandas as pd
 
+from modules.decision_queue_engine import build_decision_queue
 from modules.rebalance_engine import build_rebalance_plan
 
 
@@ -47,14 +48,17 @@ class RebalanceExecutionTests(unittest.TestCase):
             ]
         )
 
-    def test_dynamic_target_is_stronger_for_high_conviction(self) -> None:
-        result = build_rebalance_plan(
+    def _plan(self):
+        return build_rebalance_plan(
             self._base_frame(),
             active_market_value_dkk=1_000_000,
             max_position_weight=0.12,
             max_sector_weight=0.20,
             minimum_trade_dkk=5_000,
-        ).data.set_index("Aktiv")
+        )
+
+    def test_dynamic_target_is_stronger_for_high_conviction(self) -> None:
+        result = self._plan().data.set_index("Aktiv")
 
         self.assertGreater(
             result.loc["HighConviction", "Modelmålvægt"],
@@ -66,13 +70,7 @@ class RebalanceExecutionTests(unittest.TestCase):
         )
 
     def test_position_cap_overrides_hold(self) -> None:
-        result = build_rebalance_plan(
-            self._base_frame(),
-            active_market_value_dkk=1_000_000,
-            max_position_weight=0.12,
-            max_sector_weight=0.20,
-            minimum_trade_dkk=5_000,
-        ).data.set_index("Aktiv")
+        result = self._plan().data.set_index("Aktiv")
 
         self.assertAlmostEqual(result.loc["OverweightHold", "Modelmålvægt"], 0.12)
         self.assertEqual(result.loc["OverweightHold", "Rebalance handling"], "Sælg")
@@ -133,18 +131,28 @@ class RebalanceExecutionTests(unittest.TestCase):
         self.assertTrue(result["Under minimumshandel"])
 
     def test_execution_summary_balances_buy_sell_and_cash_need(self) -> None:
-        result = build_rebalance_plan(
-            self._base_frame(),
-            active_market_value_dkk=1_000_000,
-            max_position_weight=0.12,
-            max_sector_weight=0.20,
-            minimum_trade_dkk=5_000,
-        )
+        result = self._plan()
 
         self.assertAlmostEqual(result.gross_trade_dkk, result.buy_dkk + result.sell_dkk)
         self.assertAlmostEqual(result.net_trade_dkk, result.buy_dkk - result.sell_dkk)
         self.assertAlmostEqual(result.cash_required_dkk, max(result.net_trade_dkk, 0.0))
         self.assertEqual(result.trade_count, int(result.data["Handel DKK"].ne(0).sum()))
+
+    def test_decision_queue_uses_exact_execution_amounts(self) -> None:
+        plan = self._plan()
+        queue = build_decision_queue(plan.data, max_items=10).data
+
+        self.assertFalse(queue.empty)
+        plan_amounts = plan.data.set_index("Aktiv")["Handel DKK"].abs()
+        for _, row in queue.iterrows():
+            self.assertAlmostEqual(
+                float(row["Beløb DKK"]),
+                float(plan_amounts.loc[row["Aktiv"]]),
+            )
+            self.assertEqual(
+                row["Execution"],
+                plan.data.set_index("Aktiv").loc[row["Aktiv"], "Rebalance handling"],
+            )
 
 
 if __name__ == "__main__":
