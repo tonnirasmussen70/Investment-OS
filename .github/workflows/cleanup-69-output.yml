@@ -35,24 +35,27 @@ jobs:
             tests/test_decision_engine_consistency.py
       - name: Regression tests
         run: python -m unittest tests.test_decision_engine_consistency -v
-      - name: Verify legacy columns removed
+      - name: Verify canonical runtime output
         run: |
           python - <<'PY'
-          from pathlib import Path
-          runtime_files = [
-              'app.py',
-              'modules/decision_engine.py',
-              'modules/opportunity_engine.py',
-              'modules/decision_queue_engine.py',
-              'modules/snapshot_engine.py',
-              'scripts/generate_portfolio_snapshot.py',
-          ]
-          forbidden = ['Opportunity Score', 'Opportunity Label', 'Decision Label']
-          for path in runtime_files:
-              text = Path(path).read_text(encoding='utf-8')
-              for token in forbidden:
-                  if token in text:
-                      raise SystemExit(f'Legacy token {token!r} remains in {path}')
+          import pandas as pd
+          from modules.decision_engine import apply_decision_engine
+          from modules.opportunity_engine import build_opportunity_scores
+
+          frame = pd.DataFrame([{
+              'Name': 'Test', 'Composite': 0.12, 'AI_Confidence': 80,
+              'Relative_Strength_3M': 0.04, 'Volatility': 0.25,
+              'Max_Drawdown': -0.12, 'Momentum_Data_Quality': 1.0,
+              'Portfolio_Weight': 0.05, '1W': 0.02, '1M': 0.04,
+              '3M': 0.10, '6M': 0.14, 'Momentum_Acceleration': 0.01,
+              'Rotation_Signal': 'Neutral',
+          }])
+          scored = apply_decision_engine(frame).data
+          opportunities = build_opportunity_scores(scored).data
+          forbidden = {'Opportunity Score', 'Opportunity Label', 'Opportunity Rank', 'Decision Label'}
+          assert not forbidden.intersection(scored.columns)
+          assert not forbidden.intersection(opportunities.columns)
+          assert {'Decision_Score', 'Decision_Status', 'Handling', 'Decision Rank'}.issubset(opportunities.columns)
           print('Canonical output naming verified')
           PY
       - name: Commit cleanup
