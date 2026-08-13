@@ -1,0 +1,38 @@
+name: Investment OS 7.0 settings key fix
+
+on:
+  push:
+    branches:
+      - investment-os-7.0-execution-layer
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: investment-os-7.0-execution-layer
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install test dependencies
+        run: pip install pandas numpy
+      - name: Apply settings key fix
+        run: python scripts/fix_70_settings_key.py
+      - name: Syntax check
+        run: python -m py_compile app.py
+      - name: Decision Engine regression tests
+        run: python -m unittest tests.test_decision_engine_consistency -v
+      - name: Execution-layer regression tests
+        run: python -m unittest tests.test_rebalance_execution -v
+      - name: Commit fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app.py
+          git commit -m "7.0: fix Decision Engine settings session key"
+          git push
