@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 from dataclasses import replace
+from datetime import datetime
 import os
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import numpy as np
 import pandas as pd
@@ -56,13 +58,13 @@ from modules.watchlist_engine import (
 
 
 st.set_page_config(
-    page_title="Investment OS 6.8",
+    page_title="Investment OS 6.9",
     page_icon="📈",
     layout="wide",
 )
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
-APP_VERSION = "6.8.0"
+APP_VERSION = "6.9.0"
 MINIMUM_TRADE_DKK = 5_000.0
 SNAPSHOT_ONLY = os.getenv("INVESTMENT_OS_SNAPSHOT_ONLY") == "1"
 
@@ -160,7 +162,9 @@ def load_data(path: str):
 
 @st.cache_data(ttl=3600, show_spinner=True)
 def load_market_data(tickers, currencies):
-    return fetch_market_snapshot(tickers, currencies)
+    snapshot = fetch_market_snapshot(tickers, currencies)
+    fetched_at = datetime.now(ZoneInfo("Europe/Copenhagen"))
+    return snapshot, fetched_at
 
 
 @st.cache_data(ttl=3600, show_spinner=True)
@@ -168,11 +172,7 @@ def load_history(tickers, period):
     return fetch_price_history(tickers, period=period)
 
 
-st.title("📈 Investment OS 6.8")
-st.caption(
-    "Beslutningsstøtte til få, velbegrundede investeringsbeslutninger "
-    f"· Version {APP_VERSION}"
-)
+st.title("📈 Investment OS 6.9")
 
 try:
     model = load_data(str(DATA_FILE))
@@ -190,7 +190,11 @@ tickers = (
 )
 currencies = raw["Currency"].dropna().astype(str).unique().tolist()
 
-snapshot = load_market_data(tickers, currencies)
+snapshot, data_updated_at = load_market_data(tickers, currencies)
+st.caption(
+    f"Version {APP_VERSION} · Data sidst opdateret: "
+    f"{data_updated_at:%d-%m-%Y kl. %H:%M}"
+)
 portfolio = calculate_portfolio(model, snapshot)
 base_config = load_investment_config(model.settings)
 
@@ -842,7 +846,7 @@ with tab_momentum:
         [
             "Asset_Type", "Name", "1W", "1M", "3M", "6M", "12M",
             "Composite", "Momentum_Acceleration", "Relative_Strength_3M",
-            "AI_Confidence", "Handling",
+            "AI_Confidence", "Decision_Score", "Decision_Status", "Handling",
         ]
     ].copy()
 
@@ -883,7 +887,7 @@ with tab_momentum:
             [
                 "Name", "1W", "1M", "3M", "6M", "12M", "Composite",
                 "Momentum_Acceleration", "Relative_Strength_3M",
-                "AI_Confidence", "Handling",
+                "AI_Confidence", "Decision_Score", "Decision_Status", "Handling",
             ]
         ].copy()
 
@@ -893,6 +897,8 @@ with tab_momentum:
             "Momentum_Acceleration": "Acceleration",
             "Relative_Strength_3M": "RS 3M",
             "AI_Confidence": "AI",
+            "Decision_Score": "Score",
+            "Decision_Status": "Status",
         })
         for col in [
             "1W", "1M", "3M", "6M", "12M",
@@ -1355,7 +1361,7 @@ with tab_rebalance:
             display = section[
                 [
                     "Aktiv", "Nuværende vægt", "Foreslået vægt", "Ændring",
-                    "Risiko", "Composite", "AI", "Handling",
+                    "Risiko", "Composite", "AI", "Decision Score", "Status", "Handling",
                 ]
             ].copy()
 
@@ -1538,7 +1544,7 @@ with tab_opportunity:
         summary = opportunity_data[
             [
                 "Opportunity Rank", "Name", "Handling",
-                "Opportunity Score", "Opportunity Label",
+                "Decision_Score", "Decision_Status",
             ]
         ].copy()
         summary.columns = ["Rank", "Aktiv", "Handling", "Score", "Status"]
@@ -1657,7 +1663,7 @@ with tab_settings:
                 st.session_state[f"health_weight_{factor}"] = float(default)
             st.rerun()
 
-    with st.expander("Opportunity Score"):
+    with st.expander("Decision Engine"):
         factors = list(DEFAULT_OPPORTUNITY_WEIGHTS.keys())
         columns = st.columns(2)
         for index, factor in enumerate(factors):
@@ -1670,7 +1676,7 @@ with tab_settings:
             float(st.session_state[f"opportunity_weight_{f}"]) for f in factors
         )
         st.caption(f"Indtastet vægtsum: {total:.2f}. Normaliseres automatisk.")
-        if st.button("Nulstil Opportunity Score"):
+        if st.button("Nulstil Decision Engine"):
             for factor, default in DEFAULT_OPPORTUNITY_WEIGHTS.items():
                 st.session_state[f"opportunity_weight_{factor}"] = float(default)
             st.rerun()
