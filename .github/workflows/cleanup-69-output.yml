@@ -1,0 +1,68 @@
+name: Cleanup Investment OS 6.9 output
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install test dependencies
+        run: pip install pandas numpy
+      - name: Apply canonical output cleanup
+        run: python scripts/cleanup_69_output.py
+      - name: Syntax check
+        run: |
+          python -m py_compile \
+            app.py \
+            modules/decision_engine.py \
+            modules/opportunity_engine.py \
+            modules/decision_queue_engine.py \
+            modules/snapshot_engine.py \
+            scripts/generate_portfolio_snapshot.py \
+            tests/test_decision_engine_consistency.py
+      - name: Regression tests
+        run: python -m unittest tests.test_decision_engine_consistency -v
+      - name: Verify legacy columns removed
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          runtime_files = [
+              'app.py',
+              'modules/decision_engine.py',
+              'modules/opportunity_engine.py',
+              'modules/decision_queue_engine.py',
+              'modules/snapshot_engine.py',
+              'scripts/generate_portfolio_snapshot.py',
+          ]
+          forbidden = ['Opportunity Score', 'Opportunity Label', 'Decision Label']
+          for path in runtime_files:
+              text = Path(path).read_text(encoding='utf-8')
+              for token in forbidden:
+                  if token in text:
+                      raise SystemExit(f'Legacy token {token!r} remains in {path}')
+          print('Canonical output naming verified')
+          PY
+      - name: Commit cleanup
+        run: |
+          if git diff --quiet -- app.py modules scripts tests; then
+            echo "No runtime changes required"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app.py modules scripts/generate_portfolio_snapshot.py tests
+          git commit -m "6.9: remove legacy decision output aliases"
+          git push
