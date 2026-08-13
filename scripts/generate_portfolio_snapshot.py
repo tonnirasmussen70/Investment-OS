@@ -148,6 +148,7 @@ def main() -> None:
         analytics_portfolio,
         active_market_value_dkk=active_value,
         max_position_weight=config.max_position_weight,
+        max_sector_weight=config.max_sector_weight,
         minimum_trade_dkk=MINIMUM_TRADE_DKK,
     )
 
