@@ -123,6 +123,7 @@ def write_portfolio_snapshot(
         "Aktiv",
         "Beløb DKK",
         "Decision Score",
+        "Status",
         "Confidence",
         "Begrundelse",
     ]
@@ -139,12 +140,19 @@ def write_portfolio_snapshot(
     ]
     rebalance_columns = [
         "Aktiv",
-        "Ticker",
+        "Yahoo_Ticker",
+        "Asset_Type",
+        "Sector",
         "Handling",
+        "Rebalance handling",
         "Nuværende vægt",
-        "Målvægt",
-        "Ændring vægt",
-        "Beløb DKK",
+        "Modelmålvægt",
+        "Foreslået vægt",
+        "Ændring",
+        "Handel DKK",
+        "Decision Score",
+        "Status",
+        "Constraint",
         "Begrundelse",
     ]
 
@@ -156,7 +164,7 @@ def write_portfolio_snapshot(
     ) if "Portfolio_Weight" in active_positions.columns else active_positions
 
     payload = {
-        "schema_version": "1.0",
+        "schema_version": "2.0",
         "app_version": app_version,
         "generated_at": generated_at.isoformat(),
         "generated_at_local": generated_at.strftime("%Y-%m-%d %H:%M:%S %Z"),
@@ -192,6 +200,23 @@ def write_portfolio_snapshot(
             "ai_confidence_label": decision.get("AI_Confidence_Label"),
             "benchmark": benchmark_ticker,
             "max_position_weight": _safe_number(max_position_weight),
+        },
+        "execution_summary": {
+            "trade_count": int(getattr(rebalance_result, "trade_count", 0)),
+            "gross_trade_dkk": _safe_number(
+                getattr(rebalance_result, "gross_trade_dkk", 0.0)
+            ),
+            "buy_dkk": _safe_number(getattr(rebalance_result, "buy_dkk", 0.0)),
+            "sell_dkk": _safe_number(getattr(rebalance_result, "sell_dkk", 0.0)),
+            "net_trade_dkk": _safe_number(
+                getattr(rebalance_result, "net_trade_dkk", 0.0)
+            ),
+            "cash_required_dkk": _safe_number(
+                getattr(rebalance_result, "cash_required_dkk", 0.0)
+            ),
+            "constrained_count": int(
+                getattr(rebalance_result, "constrained_count", 0)
+            ),
         },
         "top_positions": _records(top_positions, position_columns, limit=10),
         "positions": _records(active_positions, position_columns),

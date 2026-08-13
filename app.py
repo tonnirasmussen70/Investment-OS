@@ -55,13 +55,13 @@ from modules.watchlist_engine import (
 
 
 st.set_page_config(
-    page_title="Investment OS 6.9",
+    page_title="Investment OS 7.0",
     page_icon="📈",
     layout="wide",
 )
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
-APP_VERSION = "6.9.0"
+APP_VERSION = "7.0.0"
 MINIMUM_TRADE_DKK = 5_000.0
 SNAPSHOT_ONLY = os.getenv("INVESTMENT_OS_SNAPSHOT_ONLY") == "1"
 
@@ -170,7 +170,7 @@ def load_history(tickers, period):
     return fetch_price_history(tickers, period=period)
 
 
-st.title("📈 Investment OS 6.9")
+st.title("📈 Investment OS 7.0")
 
 try:
     model = load_data(str(DATA_FILE))
@@ -398,17 +398,17 @@ portfolio_doctor = build_portfolio_doctor(
     minimum_trade_dkk=MINIMUM_TRADE_DKK,
 )
 
-decision_queue = build_decision_queue(
-    portfolio_doctor.data,
-    opportunity_result.data,
-    max_items=5,
-)
-
 rebalance_result = build_rebalance_plan(
     analytics_portfolio,
     active_market_value_dkk=return_market_value,
     max_position_weight=config.max_position_weight,
+    max_sector_weight=config.max_sector_weight,
     minimum_trade_dkk=MINIMUM_TRADE_DKK,
+)
+
+decision_queue = build_decision_queue(
+    rebalance_result.data,
+    max_items=5,
 )
 
 snapshot_output = write_portfolio_snapshot(
@@ -527,8 +527,7 @@ with tab_overview:
     # Overblik bruger en bredere kø end morgenbrief/snapshot, så både Aktie-
     # og ETF-universet får mulighed for at levere sin egen topanbefaling.
     overview_queue = build_decision_queue(
-        portfolio_doctor.data,
-        opportunity_result.data,
+        rebalance_result.data,
         max_items=max(20, len(analytics_portfolio)),
     ).data.copy()
 
@@ -571,7 +570,7 @@ with tab_overview:
             return
 
         best = candidates.iloc[0]
-        action = str(best.get("Handling", "Afvent"))
+        action = str(best.get("Execution", best.get("Handling", "Afvent")))
         asset = str(best.get("Aktiv", asset_class))
         amount = abs(float(best.get("Beløb DKK", 0) or 0))
         decision_score = pd.to_numeric(best.get("Decision Score"), errors="coerce")
@@ -636,14 +635,18 @@ with tab_overview:
         st.caption("Ingen yderligere handlinger.")
     else:
         action_table = queue_overview[
-            ["Prioritet", "Handling", "Aktiv", "Beløb DKK", "Decision Score", "Begrundelse"]
+            ["Prioritet", "Execution", "Aktiv", "Beløb DKK", "Decision Score", "Begrundelse"]
         ].copy()
         action_table["Beløb DKK"] = action_table["Beløb DKK"].apply(compact_dkk)
         action_table["Decision Score"] = action_table["Decision Score"].apply(
             lambda value: score_text(value, 0)
         )
         action_table = action_table.rename(
-            columns={"Beløb DKK": "Beløb", "Decision Score": "Score"}
+            columns={
+                "Execution": "Handling",
+                "Beløb DKK": "Beløb",
+                "Decision Score": "Score",
+            }
         )
         st.dataframe(
             table_style(action_table),
@@ -1306,30 +1309,32 @@ with tab_positions:
 with tab_rebalance:
     st.subheader("Rebalancering")
     st.caption(
-        "Aktier og ETF'er vurderes separat, fordi de ligger på hver sin ASK. "
-        "Hver tabel viser nuværende vægt, foreslået allokering og risikostatus."
+        "7.0 omsætter Decision Engine til dynamiske target weights og konkrete handler. "
+        "Aktier og ETF'er vises separat, mens positions- og sektorloft håndhæves som hard constraints."
     )
 
-    r1, r2, r3, r4 = st.columns(4)
-    r1.metric("Øg-signaler", rebalance_result.increase_count)
-    r2.metric("Reducer-signaler", rebalance_result.reduce_count)
-    r3.metric("Foreslåede handler", rebalance_result.trade_count)
-    r4.metric("Brutto handel", compact_dkk(rebalance_result.gross_trade_dkk))
+    r1, r2, r3, r4, r5 = st.columns(5)
+    r1.metric("Handler", rebalance_result.trade_count)
+    r2.metric("Køb", compact_dkk(rebalance_result.buy_dkk))
+    r3.metric("Salg", compact_dkk(rebalance_result.sell_dkk))
+    r4.metric("Kapitalbehov", compact_dkk(rebalance_result.cash_required_dkk))
+    r5.metric("Constraints", rebalance_result.constrained_count)
 
     rebalance = rebalance_result.data.copy()
 
     if rebalance.empty:
         st.success("Ingen rebalancering anbefales.")
     else:
-        asset_type_lookup = analytics_portfolio[["Name", "Asset_Type"]].drop_duplicates(
-            subset=["Name"]
-        )
-        rebalance = rebalance.merge(
-            asset_type_lookup,
-            left_on="Aktiv",
-            right_on="Name",
-            how="left",
-        ).drop(columns=["Name"], errors="ignore")
+        if "Asset_Type" not in rebalance.columns:
+            asset_type_lookup = analytics_portfolio[["Name", "Asset_Type"]].drop_duplicates(
+                subset=["Name"]
+            )
+            rebalance = rebalance.merge(
+                asset_type_lookup,
+                left_on="Aktiv",
+                right_on="Name",
+                how="left",
+            ).drop(columns=["Name"], errors="ignore")
         rebalance["Aktivklasse"] = rebalance["Asset_Type"].replace({
             "Stock": "Aktie",
             "Equity": "Aktie",
@@ -1370,20 +1375,26 @@ with tab_rebalance:
 
             display = section[
                 [
-                    "Aktiv", "Nuværende vægt", "Foreslået vægt", "Ændring",
-                    "Risiko", "Composite", "AI", "Decision Score", "Status", "Handling",
+                    "Aktiv", "Nuværende vægt", "Modelmålvægt", "Foreslået vægt",
+                    "Ændring", "Handel DKK", "Rebalance handling", "Risiko",
+                    "Decision Score", "Status", "Handling", "Constraint",
                 ]
             ].copy()
 
-            for col in ["Nuværende vægt", "Foreslået vægt", "Ændring", "Composite"]:
+            for col in ["Nuværende vægt", "Modelmålvægt", "Foreslået vægt", "Ændring"]:
                 display[col] = display[col].apply(lambda x: format_pct(x, 1))
-            display["AI"] = display["AI"].apply(
-                lambda x: f"{x:.0f}%" if pd.notna(x) else "N/A"
-            )
+            display["Handel DKK"] = display["Handel DKK"].apply(compact_dkk)
             display["Decision Score"] = display["Decision Score"].apply(
                 lambda x: score_text(x, 0)
             )
-            display = display.rename(columns={"Composite": "Momentum"})
+            display = display.rename(
+                columns={
+                    "Modelmålvægt": "Model target",
+                    "Foreslået vægt": "Execution target",
+                    "Handel DKK": "Handel",
+                    "Rebalance handling": "Execution",
+                }
+            )
 
             st.dataframe(
                 table_style(display),
@@ -1425,8 +1436,9 @@ with tab_rebalance:
         show_rebalance_section(rebalance, "ETF", "ETF'er")
 
     st.caption(
-        f"Positionsloft {config.max_position_weight:.0%}. Handler under "
-        f"{compact_dkk(MINIMUM_TRADE_DKK)} filtreres som støj."
+        f"Hard constraints: positionsloft {config.max_position_weight:.0%} og "
+        f"sektorloft {config.max_sector_weight:.0%}. Handler under "
+        f"{compact_dkk(MINIMUM_TRADE_DKK)} eksekveres ikke."
     )
 
     with st.expander("Vis stop-loss og alarmniveauer"):
