@@ -1,0 +1,34 @@
+name: Apply Investment OS 6.9 UI
+
+on:
+  push:
+    branches:
+      - investment-os-6.9-engine-consolidation
+
+permissions:
+  contents: write
+
+jobs:
+  apply-ui:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: investment-os-6.9-engine-consolidation
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply 6.9 UI migration
+        run: python scripts/apply_69_ui.py
+      - name: Commit generated app.py
+        run: |
+          if git diff --quiet -- app.py; then
+            echo "No UI changes required"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app.py
+          git commit -m "6.9: align UI with consolidated Decision Engine"
+          git push
