@@ -1686,7 +1686,7 @@ with tab_settings:
                     format="%.2f", key=f"decision_weight_{factor}",
                 )
         total = sum(
-            float(st.session_state[f"opportunity_weight_{f}"]) for f in factors
+            float(st.session_state[f"decision_weight_{f}"]) for f in factors
         )
         st.caption(f"Indtastet vægtsum: {total:.2f}. Normaliseres automatisk.")
         if st.button("Nulstil Decision Engine"):
