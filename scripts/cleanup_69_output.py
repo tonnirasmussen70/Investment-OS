@@ -4,9 +4,13 @@ from pathlib import Path
 def replace_once(path: str, old: str, new: str) -> None:
     file = Path(path)
     text = file.read_text(encoding="utf-8")
-    if new in text:
+    # Empty replacement means deletion; an empty string is always "in" text,
+    # so only use the idempotency shortcut for non-empty replacements.
+    if new and new in text:
         return
     if old not in text:
+        if not new:
+            return
         raise SystemExit(f"Expected text not found in {path}:\n{old}")
     file.write_text(text.replace(old, new, 1), encoding="utf-8")
 
@@ -28,7 +32,7 @@ replace_once(
 replace_once(
     "modules/decision_engine.py",
     '''    # Compatibility aliases. Ingen separat Opportunity-beregning.\n    result["Opportunity Score"] = result["Decision_Score"]\n    result["Opportunity Label"] = result["Decision_Status"]\n    result["Opportunity Rank"] = result["Decision_Score"].rank(\n        ascending=False,\n        method="min",\n    ).astype("Int64")\n\n''',
-    '''''',
+    '',
 )
 replace_once(
     "modules/decision_engine.py",
@@ -40,12 +44,12 @@ replace_once(
 replace_once(
     "modules/opportunity_engine.py",
     '''from modules.decision_engine import (\n    DECISION_WEIGHTS,\n    apply_decision_engine,\n    normalize_decision_weights,\n)\n\n\n# Behold navnet af hensyn til eksisterende Settings/UI-kompatibilitet.\n# Der findes ikke længere en separat Opportunity-scoredefinition.\nDEFAULT_OPPORTUNITY_WEIGHTS = DECISION_WEIGHTS.copy()\n''',
-    '''''',
+    '',
 )
 replace_once(
     "modules/opportunity_engine.py",
     '''\ndef normalize_opportunity_weights(\n    weights: dict[str, float] | None,\n) -> dict[str, float]:\n    """Legacy alias til den fælles vægtnormalisering."""\n    return normalize_decision_weights(weights)\n\n''',
-    '''\n''',
+    '\n',
 )
 replace_once(
     "modules/opportunity_engine.py",
@@ -55,7 +59,7 @@ replace_once(
 replace_once(
     "modules/opportunity_engine.py",
     '''    result["Opportunity Score"] = result["Decision_Score"]\n    result["Opportunity Label"] = result["Decision_Status"]\n    result["Opportunity Rank"] = result["Decision_Score"].rank(\n''',
-    '''    result["Decision Rank"] = result["Decision_Score"].rank(\n''',
+    '''    result = result.drop(\n        columns=["Opportunity Score", "Opportunity Label", "Opportunity Rank"],\n        errors="ignore",\n    )\n    result["Decision Rank"] = result["Decision_Score"].rank(\n''',
 )
 
 # 3) Decision Queue: canonical Status, ingen Decision Label/Opportunity Score.
