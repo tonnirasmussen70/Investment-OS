@@ -130,6 +130,7 @@ def build_rebalance_plan(
     max_position_weight: float = 0.12,
     max_sector_weight: float = 0.20,
     minimum_trade_dkk: float = 5000.0,
+    minimum_execution_confidence: float = 70.0,
 ) -> RebalanceResult:
     """
     Omsæt Decision Engine-output til en konkret execution-plan.
@@ -137,7 +138,8 @@ def build_rebalance_plan(
     7.0-principper:
     - Decision Engine bestemmer Score, Status og Handling.
     - Rebalancering beregner dynamiske target weights ud fra conviction.
-    - Positionsloft og sektorloft er hard constraints.
+    - Øg/Reducer kræver mindst 70 pct. AI Confidence for normal execution.
+    - Positionsloft og sektorloft er hard constraints og kan altid kræve handel.
     - Hold/Afvent ændres kun, hvis en hard constraint kræver det.
     - Handler under minimumsbeløbet eksekveres ikke.
     """
@@ -190,11 +192,28 @@ def build_rebalance_plan(
     no_action = ~data["Handling"].isin(["Øg", "Reducer"])
     data.loc[no_action, "Modelmålvægt"] = data.loc[no_action, "Portfolio_Weight"]
 
-    # Hard position constraint gælder uanset Action.
+    # Confidence execution gate: Retningen fra Decision Engine bevares, men et
+    # Øg/Reducer-signal må ikke omsættes til en normal handel under tærsklen.
+    # Manglende confidence behandles konservativt som utilstrækkelig confidence.
+    execution_signal = data["Handling"].isin(["Øg", "Reducer"])
+    confidence = pd.to_numeric(data["AI_Confidence"], errors="coerce")
+    low_confidence = execution_signal & (
+        confidence.isna() | confidence.lt(float(minimum_execution_confidence))
+    )
+    data["Konfidensgate"] = low_confidence
+    data.loc[low_confidence, "Modelmålvægt"] = data.loc[
+        low_confidence, "Portfolio_Weight"
+    ]
+    data.loc[low_confidence, "Constraint"] = "Konfidensgate"
+
+    # Hard position constraint gælder uanset Action og uanset confidence gate.
     position_cap = data["Modelmålvægt"].gt(max_position_weight)
     data.loc[position_cap, "Modelmålvægt"] = max_position_weight
-    data.loc[position_cap, "Constraint"] = "Positionsloft"
+    data.loc[position_cap, "Constraint"] = data.loc[
+        position_cap, "Constraint"
+    ].apply(lambda value: "Positionsloft" if not value else f"{value}, Positionsloft")
 
+    # Hard sektorconstraint gælder ligeledes uanset confidence gate.
     _apply_sector_constraint(data, max_sector_weight=max_sector_weight)
 
     data["Modelændring"] = data["Modelmålvægt"] - data["Portfolio_Weight"]
@@ -220,17 +239,22 @@ def build_rebalance_plan(
         default="Ingen handel",
     )
 
+    hard_constraint = data["Constraint"].str.contains("loft", case=False, na=False)
     data["Begrundelse"] = np.select(
         [
+            data["Rebalance handling"].eq("Køb") & hard_constraint,
+            data["Rebalance handling"].eq("Sælg") & hard_constraint,
             data["Rebalance handling"].eq("Køb"),
             data["Rebalance handling"].eq("Sælg") & data["Handling"].eq("Reducer"),
-            data["Rebalance handling"].eq("Sælg") & data["Constraint"].str.contains("loft", case=False, na=False),
+            data["Konfidensgate"] & data["Rebalance handling"].eq("Ingen handel"),
             data["Under minimumshandel"],
         ],
         [
+            "Hard constraint kræver justeret vægt",
+            "Hard constraint kræver lavere vægt",
             "Øg-signal omsat til dynamisk target weight",
             "Reducer-signal omsat til dynamisk target weight",
-            "Hard constraint kræver lavere vægt",
+            f"Signal observeres – konfidens under {float(minimum_execution_confidence):.0f}%, ingen handel",
             "Modelændring under minimumshandel",
         ],
         default="Ingen execution-ændring",
