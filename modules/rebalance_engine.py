@@ -60,7 +60,15 @@ def _apply_sector_constraint(
     data: pd.DataFrame,
     max_sector_weight: float,
 ) -> None:
-    """Håndhæv sektorloft for aktier uden at ændre ETF-targets."""
+    """
+    Anvend sektorloftet som risikoadvarsel og købsgate for aktier.
+
+    Sektorloftet må ikke alene skabe et salg af en attraktiv aktie. Hvis en
+    sektors foreslåede vægt overstiger loftet, fjernes kun positive target-
+    ændringer, indtil sektoren enten er under loftet eller alle nye køb er
+    annulleret. Er sektoren allerede over loftet, bevares eksisterende vægte;
+    overskridelsen markeres som en note fremfor at gennemtvinge salg.
+    """
     if "Sector" not in data.columns or max_sector_weight <= 0:
         return
 
@@ -75,17 +83,21 @@ def _apply_sector_constraint(
 
     for sector, idx in data.loc[stock_mask & valid_sector].groupby("Sector").groups.items():
         indices = list(idx)
-        proposed = float(data.loc[indices, "Modelmålvægt"].sum())
-        if proposed <= max_sector_weight + 1e-12:
+        current_sector_weight = float(data.loc[indices, "Portfolio_Weight"].sum())
+        proposed_sector_weight = float(data.loc[indices, "Modelmålvægt"].sum())
+
+        if proposed_sector_weight <= max_sector_weight + 1e-12:
             continue
 
-        excess = proposed - max_sector_weight
+        excess = proposed_sector_weight - max_sector_weight
         positive_delta = (
             data.loc[indices, "Modelmålvægt"]
             - data.loc[indices, "Portfolio_Weight"]
         ).clip(lower=0)
         positive_total = float(positive_delta.sum())
 
+        # Sektorloftet må begrænse nye køb, men aldrig presse en position under
+        # dens aktuelle vægt alene pga. sektorallokeringen.
         if positive_total > 0:
             reduction = positive_delta * min(1.0, excess / positive_total)
             data.loc[indices, "Modelmålvægt"] = (
@@ -95,33 +107,34 @@ def _apply_sector_constraint(
             constrained_indices = constrained.index[constrained]
             data.loc[constrained_indices, "Constraint"] = data.loc[
                 constrained_indices, "Constraint"
-            ].apply(lambda value: "Sektorloft" if not value else f"{value}, Sektorloft")
-            excess = max(
-                0.0,
-                float(data.loc[indices, "Modelmålvægt"].sum()) - max_sector_weight,
+            ].apply(
+                lambda value: (
+                    "Sektorloft (note)"
+                    if not value
+                    else f"{value}, Sektorloft (note)"
+                )
             )
 
-        # Hvis sektoren allerede var over loftet, skal hard constraint stadig
-        # bringe target ned. Laveste Decision Score reduceres først.
-        if excess > 1e-12:
-            ranked = data.loc[indices].sort_values(
-                ["Decision_Score", "Portfolio_Weight"],
-                ascending=[True, False],
-                na_position="first",
-            )
-            for row_index in ranked.index:
-                if excess <= 1e-12:
-                    break
-                current_target = float(data.at[row_index, "Modelmålvægt"])
-                cut = min(current_target, excess)
-                if cut <= 0:
-                    continue
-                data.at[row_index, "Modelmålvægt"] = current_target - cut
-                existing = str(data.at[row_index, "Constraint"] or "")
-                data.at[row_index, "Constraint"] = (
-                    "Sektorloft" if not existing else f"{existing}, Sektorloft"
+        remaining_sector_weight = float(data.loc[indices, "Modelmålvægt"].sum())
+        sector_still_over = remaining_sector_weight > max_sector_weight + 1e-12
+
+        # Hvis sektoren allerede er over loftet, registreres overskridelsen som
+        # risikonote på positionerne. Der skabes ikke et tvunget salg.
+        if sector_still_over or current_sector_weight > max_sector_weight + 1e-12:
+            note_indices = data.loc[indices].index
+            data.loc[note_indices, "Constraint"] = data.loc[
+                note_indices, "Constraint"
+            ].apply(
+                lambda value: (
+                    value
+                    if "Sektorloft" in str(value)
+                    else (
+                        "Sektorloft (note)"
+                        if not value
+                        else f"{value}, Sektorloft (note)"
+                    )
                 )
-                excess -= cut
+            )
 
 
 def build_rebalance_plan(
@@ -139,8 +152,9 @@ def build_rebalance_plan(
     - Decision Engine bestemmer Score, Status og Handling.
     - Rebalancering beregner dynamiske target weights ud fra conviction.
     - Øg/Reducer kræver mindst 70 pct. AI Confidence for normal execution.
-    - Positionsloft og sektorloft er hard constraints og kan altid kræve handel.
-    - Hold/Afvent ændres kun, hvis en hard constraint kræver det.
+    - Positionsloft er et hard constraint og kan kræve handel.
+    - Sektorloft er en risikoadvarsel/købsgate og må ikke alene skabe salg.
+    - Hold/Afvent ændres kun, hvis et hard constraint kræver det.
     - Handler under minimumsbeløbet eksekveres ikke.
     """
     required = {
@@ -213,7 +227,8 @@ def build_rebalance_plan(
         position_cap, "Constraint"
     ].apply(lambda value: "Positionsloft" if not value else f"{value}, Positionsloft")
 
-    # Hard sektorconstraint gælder ligeledes uanset confidence gate.
+    # Sektorloft er en soft constraint: nye køb kan begrænses, men attraktive
+    # eksisterende positioner må ikke tvangssælges alene pga. sektorvægten.
     _apply_sector_constraint(data, max_sector_weight=max_sector_weight)
 
     data["Modelændring"] = data["Modelmålvægt"] - data["Portfolio_Weight"]
@@ -239,19 +254,22 @@ def build_rebalance_plan(
         default="Ingen handel",
     )
 
-    hard_constraint = data["Constraint"].str.contains("loft", case=False, na=False)
+    position_constraint = data["Constraint"].str.contains("Positionsloft", case=False, na=False)
+    sector_note = data["Constraint"].str.contains("Sektorloft", case=False, na=False)
     data["Begrundelse"] = np.select(
         [
-            data["Rebalance handling"].eq("Køb") & hard_constraint,
-            data["Rebalance handling"].eq("Sælg") & hard_constraint,
+            data["Rebalance handling"].eq("Sælg") & position_constraint,
+            data["Rebalance handling"].eq("Ingen handel") & sector_note & data["Handling"].eq("Øg"),
+            data["Rebalance handling"].eq("Køb") & sector_note,
             data["Rebalance handling"].eq("Køb"),
             data["Rebalance handling"].eq("Sælg") & data["Handling"].eq("Reducer"),
             data["Konfidensgate"] & data["Rebalance handling"].eq("Ingen handel"),
             data["Under minimumshandel"],
         ],
         [
-            "Hard constraint kræver justeret vægt",
-            "Hard constraint kræver lavere vægt",
+            "Positionsloft kræver lavere vægt",
+            "Sektorloft overskredet – underliggende signal: Øg; ingen tvungen reduktion",
+            "Øg-signal begrænset af sektorloft",
             "Øg-signal omsat til dynamisk target weight",
             "Reducer-signal omsat til dynamisk target weight",
             f"Signal observeres – konfidens under {float(minimum_execution_confidence):.0f}%, ingen handel",
