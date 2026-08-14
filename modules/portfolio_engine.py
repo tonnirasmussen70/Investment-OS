@@ -161,7 +161,10 @@ def calculate_portfolio(
         np.nan,
     )
 
-    included = df["Include_Weight"].fillna(False)
+    # Én autoritativ porteføljevægt: investerbar markedsværdi ekskl. Grundfos.
+    # Grundfos indgår fortsat i samlet porteføljeværdi, men aldrig i nævneren
+    # for aktive positionsvægte eller efterfølgende analyser/rebalancering.
+    included = df["Include_Weight"].fillna(False) & ~_is_grundfos(df["Name"])
     total_included = df.loc[included, "Market_Value_DKK"].sum(skipna=True)
 
     df["Portfolio_Weight"] = 0.0
