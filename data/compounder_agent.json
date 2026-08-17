@@ -1,0 +1,78 @@
+{
+  "generated_at": "2026-08-17T09:03:40+02:00",
+  "methodology_version": "7.2",
+  "reconstruction_note": "Seeded from the 2026-08-17 Emerging Compounder agent ranking after the scheduled run did not write its JSON output. Only fields preserved from the verified run output are populated; unknown factor/confidence fields are intentionally omitted rather than estimated.",
+  "candidates": [
+    {
+      "ticker": "ALAB",
+      "name": "Astera Labs",
+      "agent_score": 94,
+      "is_new": false,
+      "thesis": "Top-ranked Emerging Compounder candidate in the 2026-08-17 agent run."
+    },
+    {
+      "ticker": "CRDO",
+      "name": "Credo Technology",
+      "agent_score": 92,
+      "is_new": false,
+      "thesis": "Second-ranked Emerging Compounder candidate in the 2026-08-17 agent run."
+    },
+    {
+      "ticker": "CLS",
+      "name": "Celestica",
+      "agent_score": 92,
+      "is_new": true,
+      "thesis": "New top candidate. Q2 revenue and adjusted EPS showed very strong year-over-year growth, with strong CCS/HPS development and raised 2026 revenue and EPS guidance. Identified by the agent as a deep-dive target."
+    },
+    {
+      "ticker": "NBIS",
+      "name": "Nebius Group",
+      "agent_score": 91,
+      "is_new": true,
+      "thesis": "New high-ranked Emerging Compounder candidate in the 2026-08-17 agent run."
+    },
+    {
+      "ticker": "ANET",
+      "name": "Arista Networks",
+      "agent_score": 90,
+      "is_new": false,
+      "thesis": "High-ranked Emerging Compounder candidate in the 2026-08-17 agent run."
+    },
+    {
+      "ticker": "LITE",
+      "name": "Lumentum Holdings",
+      "agent_score": 89,
+      "score_change": 7,
+      "is_new": false,
+      "thesis": "Strong positive score change in the 2026-08-17 agent run."
+    },
+    {
+      "ticker": "CIEN",
+      "name": "Ciena",
+      "agent_score": 88,
+      "is_new": false,
+      "thesis": "High-ranked Emerging Compounder candidate in the 2026-08-17 agent run."
+    },
+    {
+      "ticker": "VRT",
+      "name": "Vertiv Holdings",
+      "agent_score": 87,
+      "is_new": false,
+      "thesis": "High-ranked Emerging Compounder candidate in the 2026-08-17 agent run."
+    },
+    {
+      "ticker": "FN",
+      "name": "Fabrinet",
+      "agent_score": 85,
+      "is_new": false,
+      "thesis": "Top-10 Emerging Compounder candidate in the 2026-08-17 agent run."
+    },
+    {
+      "ticker": "GEV",
+      "name": "GE Vernova",
+      "agent_score": 84,
+      "is_new": false,
+      "thesis": "Top-10 Emerging Compounder candidate in the 2026-08-17 agent run."
+    }
+  ]
+}
