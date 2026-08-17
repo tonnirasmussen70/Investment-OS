@@ -61,7 +61,7 @@ st.set_page_config(
 )
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
-APP_VERSION = "7.0.0"
+APP_VERSION = "7.1.0"
 MINIMUM_TRADE_DKK = 5_000.0
 SNAPSHOT_ONLY = os.getenv("INVESTMENT_OS_SNAPSHOT_ONLY") == "1"
 
@@ -1600,6 +1600,10 @@ with tab_opportunity:
 
 with tab_compounders:
     st.subheader("Emerging Compounders")
+    st.caption(
+        "7.1 kombinerer den mekaniske kvant-radar med mandags-agentens "
+        "intelligence-lag. Discovery Score er research-prioritering – ikke et købssignal."
+    )
 
     if compounder_error:
         st.warning(compounder_error)
@@ -1609,17 +1613,23 @@ with tab_compounders:
             "`data/compounder_radar.xlsx` eller `data/compounder_radar.csv`."
         )
     else:
-        c1, c2, c3, c4 = st.columns(4)
+        c1, c2, c3, c4, c5 = st.columns(5)
         c1.metric("Kandidater", compounder_summary["Candidate_Count"])
-        c2.metric("AI ≥ 80%", compounder_summary["High_Confidence_Count"])
-        c3.metric(
-            "Gns. konfidens",
+        c2.metric("Nye", compounder_summary.get("New_Candidate_Count", 0))
+        c3.metric("Confidence ≥ 80%", compounder_summary["High_Confidence_Count"])
+        c4.metric(
+            "Gns. confidence",
             (
                 f"{compounder_summary['Average_Confidence']:.0f}%"
                 if pd.notna(compounder_summary["Average_Confidence"]) else "N/A"
             ),
         )
-        c4.metric("Topkandidat", compounder_summary["Top_Candidate"] or "N/A")
+        c5.metric("Topkandidat", compounder_summary["Top_Candidate"] or "N/A")
+
+        if compounder_summary.get("Agent_Generated_At"):
+            st.caption(
+                f"Mandags-agent sidst opdateret: {compounder_summary['Agent_Generated_At']}"
+            )
 
         for note in compounder_radar.notes:
             st.warning(note)
@@ -1629,14 +1639,33 @@ with tab_compounders:
             st.info("Ingen kandidater.")
         else:
             radar = radar.rename(columns={
-                "Name": "Selskab", "Composite_Score": "Composite",
-                "AI_Confidence": "AI Confidence",
+                "Name": "Selskab",
+                "Discovery_Score": "Discovery Score",
+                "Research_Priority": "Research",
+                "Pipeline_Source": "Kilde",
+                "Composite_Score": "Kvant Score",
+                "Agent_Score": "Agent Score",
+                "Unified_Confidence": "Confidence",
+                "Is_New": "Ny",
+                "Agent_Score_Change": "Δ Agent",
                 "Revenue_CAGR_5Y": "Omsætning CAGR 5Y",
                 "EPS_CAGR_5Y": "EPS CAGR 5Y",
                 "Gross_Margin": "Bruttomargin", "Upside_Pct": "Upside",
-                "Risk_Reward": "Risk/Reward", "Risk": "Risiko",
-                "Reason": "Begrundelse",
+                "Risk_Reward": "Risk/Reward", "Risk": "Kvant risiko",
+                "Agent_Risk": "Agent risiko",
+                "Reason": "Kvant begrundelse",
+                "Agent_Thesis": "Agent tese",
+                "News_Classification": "Nyhedsklasse",
             })
+            for score_col in [
+                "Discovery Score", "Kvant Score", "Agent Score", "Confidence", "Δ Agent"
+            ]:
+                if score_col in radar.columns:
+                    radar[score_col] = radar[score_col].apply(
+                        lambda value: score_text(value, 0) if pd.notna(value) else "N/A"
+                    )
+            if "Ny" in radar.columns:
+                radar["Ny"] = radar["Ny"].map({True: "🆕", False: ""}).fillna("")
             st.dataframe(
                 table_style(radar), use_container_width=True,
                 hide_index=True, height=no_scroll_height(radar),
