@@ -55,7 +55,7 @@ from modules.watchlist_engine import (
 
 
 st.set_page_config(
-    page_title="Investment OS 7.0",
+    page_title="Investment OS 7.1",
     page_icon="📈",
     layout="wide",
 )
@@ -170,7 +170,7 @@ def load_history(tickers, period):
     return fetch_price_history(tickers, period=period)
 
 
-st.title("📈 Investment OS 7.0")
+st.title("📈 Investment OS 7.1")
 
 try:
     model = load_data(str(DATA_FILE))
