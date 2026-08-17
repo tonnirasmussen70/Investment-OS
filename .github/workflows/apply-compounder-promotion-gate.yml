@@ -1,0 +1,59 @@
+name: Apply Compounder Promotion Gate
+
+on:
+  push:
+    paths:
+      - "update_compounder_promotion_gate.py"
+      - "tests/test_compounder_promotion_gate.py"
+      - ".github/workflows/apply-compounder-promotion-gate.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-compounder-promotion-gate
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Apply Promotion Gate
+        run: python update_compounder_promotion_gate.py
+
+      - name: Validate syntax
+        run: |
+          python -m py_compile app.py modules/compounder_engine.py
+
+      - name: Run Promotion Gate tests
+        run: pytest -q tests/test_compounder_promotion_gate.py
+
+      - name: Commit result
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app.py modules/compounder_engine.py
+
+          if git diff --cached --quiet; then
+            echo "No Promotion Gate changes to commit"
+          else
+            git commit -m "Add Compounder Promotion Gate"
+            git push
+          fi
