@@ -55,13 +55,13 @@ from modules.watchlist_engine import (
 
 
 st.set_page_config(
-    page_title="Investment OS 7.1",
+    page_title="Investment OS 7.2",
     page_icon="📈",
     layout="wide",
 )
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
-APP_VERSION = "7.1.0"
+APP_VERSION = "7.2.0"
 MINIMUM_TRADE_DKK = 5_000.0
 SNAPSHOT_ONLY = os.getenv("INVESTMENT_OS_SNAPSHOT_ONLY") == "1"
 
@@ -170,7 +170,7 @@ def load_history(tickers, period):
     return fetch_price_history(tickers, period=period)
 
 
-st.title("📈 Investment OS 7.1")
+st.title("📈 Investment OS 7.2")
 
 try:
     model = load_data(str(DATA_FILE))
@@ -1601,8 +1601,9 @@ with tab_opportunity:
 with tab_compounders:
     st.subheader("Emerging Compounders")
     st.caption(
-        "7.1 kombinerer den mekaniske kvant-radar med mandags-agentens "
-        "intelligence-lag. Discovery Score er research-prioritering – ikke et købssignal."
+        "7.2 kombinerer kvant-radar og agent-intelligence med en Promotion Gate: "
+        "Monitor → Deep Research → Fair Value Review → Decision Review. "
+        "Discovery Score er stadig research-prioritering – ikke et købssignal."
     )
 
     if compounder_error:
@@ -1613,18 +1614,18 @@ with tab_compounders:
             "`data/compounder_radar.xlsx` eller `data/compounder_radar.csv`."
         )
     else:
-        c1, c2, c3, c4, c5 = st.columns(5)
+        c1, c2, c3, c4, c5, c6 = st.columns(6)
         c1.metric("Kandidater", compounder_summary["Candidate_Count"])
         c2.metric("Nye", compounder_summary.get("New_Candidate_Count", 0))
-        c3.metric("Confidence ≥ 80%", compounder_summary["High_Confidence_Count"])
-        c4.metric(
-            "Gns. confidence",
-            (
-                f"{compounder_summary['Average_Confidence']:.0f}%"
-                if pd.notna(compounder_summary["Average_Confidence"]) else "N/A"
-            ),
+        c3.metric("Deep Research", compounder_summary.get("Deep_Research_Count", 0))
+        c4.metric("Fair Value", compounder_summary.get("Fair_Value_Count", 0))
+        c5.metric("Decision Review", compounder_summary.get("Decision_Review_Count", 0))
+        c6.metric("Topkandidat", compounder_summary["Top_Candidate"] or "N/A")
+
+        st.caption(
+            "Promotion Gate kræver stigende evidens for hvert trin. Decision Review "
+            "kræver bl.a. valuation, momentum og risiko – og er stadig ikke en købsordre."
         )
-        c5.metric("Topkandidat", compounder_summary["Top_Candidate"] or "N/A")
 
         if compounder_summary.get("Agent_Generated_At"):
             st.caption(
@@ -1642,6 +1643,9 @@ with tab_compounders:
                 "Name": "Selskab",
                 "Discovery_Score": "Discovery Score",
                 "Research_Priority": "Research",
+                "Promotion_Stage": "Pipeline Stage",
+                "Next_Action": "Næste trin",
+                "Promotion_Reasons": "Gate-begrundelse",
                 "Pipeline_Source": "Kilde",
                 "Composite_Score": "Kvant Score",
                 "Agent_Score": "Agent Score",
@@ -1670,6 +1674,56 @@ with tab_compounders:
                 table_style(radar), use_container_width=True,
                 hide_index=True, height=no_scroll_height(radar),
             )
+
+            st.markdown("### Promotion Queue")
+            st.caption(
+                "Kun kandidater, der består mindst Deep Research-gaten, vises her. "
+                "Decision Review-kandidater er klar til separat Investment OS-vurdering."
+            )
+            promotion_source = compounder_radar.data.copy()
+            promotion_queue = promotion_source.loc[
+                promotion_source.get(
+                    "Deep_Research_Ready", pd.Series(False, index=promotion_source.index)
+                ).fillna(False)
+            ].copy()
+            if promotion_queue.empty:
+                st.info("Ingen kandidater består aktuelt Promotion Gate til Deep Research.")
+            else:
+                stage_order = {
+                    "Decision Review": 0,
+                    "Fair Value Review": 1,
+                    "Deep Research": 2,
+                    "Monitor": 3,
+                }
+                promotion_queue["Stage_Order"] = (
+                    promotion_queue["Promotion_Stage"].map(stage_order).fillna(9)
+                )
+                promotion_queue = promotion_queue.sort_values(
+                    ["Stage_Order", "Discovery_Score", "Unified_Confidence"],
+                    ascending=[True, False, False],
+                    na_position="last",
+                )
+                promotion_display = promotion_queue[
+                    [
+                        "Name", "Ticker", "Promotion_Stage", "Next_Action",
+                        "Discovery_Score", "Unified_Confidence",
+                        "Promotion_Reasons",
+                    ]
+                ].head(12).copy()
+                promotion_display.columns = [
+                    "Selskab", "Ticker", "Pipeline Stage", "Næste trin",
+                    "Discovery", "Confidence", "Gate-begrundelse",
+                ]
+                for col in ["Discovery", "Confidence"]:
+                    promotion_display[col] = promotion_display[col].apply(
+                        lambda value: score_text(value, 0) if pd.notna(value) else "N/A"
+                    )
+                st.dataframe(
+                    table_style(promotion_display),
+                    use_container_width=True,
+                    hide_index=True,
+                    height=no_scroll_height(promotion_display),
+                )
 
 
 with tab_watchlist:

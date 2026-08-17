@@ -128,6 +128,150 @@ def _load_agent_intelligence(path: Path) -> tuple[pd.DataFrame, dict[str, object
     return data, metadata
 
 
+def _numeric(frame: pd.DataFrame, column: str) -> pd.Series:
+    if column not in frame.columns:
+        return pd.Series(np.nan, index=frame.index, dtype=float)
+    return pd.to_numeric(frame[column], errors="coerce")
+
+
+def _text(frame: pd.DataFrame, column: str) -> pd.Series:
+    if column not in frame.columns:
+        return pd.Series("", index=frame.index, dtype=object)
+    return frame[column].fillna("").astype(str).str.strip()
+
+
+def apply_promotion_gate(data: pd.DataFrame) -> pd.DataFrame:
+    """
+    Klassificér Emerging Compounders i en kontrolleret research-pipeline.
+
+    Promotion Gate er ikke et købssignal. Den afgør kun, hvor langt en kandidat
+    må bevæge sig i analyseflowet:
+
+    Monitor -> Deep Research -> Fair Value Review -> Decision Review.
+
+    Decision Review kræver dokumenteret valuation og risikogates. Først efter
+    separat Investment OS-analyse kan kandidaten blive en egentlig Opportunity.
+    """
+    if data.empty:
+        return data.copy()
+
+    result = data.copy()
+
+    discovery = _numeric(result, "Discovery_Score")
+    confidence = _numeric(result, "Unified_Confidence")
+    quant_quality = _numeric(result, "Data_Quality")
+    agent_confidence = _numeric(result, "Agent_Confidence")
+
+    revenue_growth = _numeric(result, "Revenue_CAGR_5Y")
+    eps_growth = _numeric(result, "EPS_CAGR_5Y")
+    gross_margin = _numeric(result, "Gross_Margin")
+    growth_score = _numeric(result, "Growth_Score")
+    earnings_score = _numeric(result, "Earnings_Score")
+    moat_score = _numeric(result, "Moat_Score")
+
+    momentum_3m = _numeric(result, "Momentum_3M")
+    momentum_6m = _numeric(result, "Momentum_6M")
+    agent_momentum = _numeric(result, "Agent_Momentum_Score")
+
+    upside = _numeric(result, "Upside_Pct")
+    downside = _numeric(result, "Downside_Pct")
+    risk_reward = _numeric(result, "Risk_Reward")
+    quant_risk = _text(result, "Risk").str.lower()
+    agent_risk = _text(result, "Agent_Risk").str.lower()
+
+    # Deep Research skal være relativt åben: formålet er netop at udfylde
+    # manglende viden på lovende discovery-kandidater.
+    deep_research_ready = discovery.ge(75) & confidence.ge(70)
+
+    data_quality_ok = quant_quality.ge(60) | agent_confidence.ge(80)
+    growth_ok = revenue_growth.ge(0.10) | growth_score.ge(70)
+    earnings_ok = eps_growth.ge(0.12) | earnings_score.ge(70)
+    moat_ok = gross_margin.ge(0.40) | moat_score.ge(70)
+    risk_ok = ~quant_risk.eq("high") & ~agent_risk.eq("high")
+
+    fair_value_ready = (
+        discovery.ge(80)
+        & confidence.ge(75)
+        & data_quality_ok
+        & growth_ok
+        & earnings_ok
+        & moat_ok
+        & risk_ok
+    )
+
+    momentum_ok = (momentum_3m.gt(0) & momentum_6m.gt(0)) | agent_momentum.ge(70)
+    valuation_available = upside.notna() & risk_reward.notna()
+    valuation_ok = valuation_available & upside.ge(0.15) & risk_reward.ge(1.5)
+    downside_ok = downside.isna() | downside.gt(-0.35)
+
+    decision_review_ready = (
+        fair_value_ready
+        & discovery.ge(85)
+        & confidence.ge(80)
+        & momentum_ok
+        & valuation_ok
+        & downside_ok
+    )
+
+    result["Deep_Research_Ready"] = deep_research_ready
+    result["Fair_Value_Ready"] = fair_value_ready
+    result["Decision_Review_Ready"] = decision_review_ready
+
+    result["Promotion_Stage"] = np.select(
+        [decision_review_ready, fair_value_ready, deep_research_ready],
+        ["Decision Review", "Fair Value Review", "Deep Research"],
+        default="Monitor",
+    )
+    result["Next_Action"] = np.select(
+        [decision_review_ready, fair_value_ready, deep_research_ready],
+        [
+            "Send til Decision Review",
+            "Lav/validér fair value",
+            "Start dybdeanalyse",
+        ],
+        default="Overvåg",
+    )
+
+    reason_rows: list[str] = []
+    for idx in result.index:
+        reasons: list[str] = []
+        if bool(decision_review_ready.loc[idx]):
+            reasons.append("Discovery ≥85 og confidence ≥80")
+            reasons.append("Vækst, moat, momentum og risiko består")
+            reasons.append("Upside ≥15% og risk/reward ≥1,5")
+        elif bool(fair_value_ready.loc[idx]):
+            reasons.append("Kvalitet består Promotion Gate")
+            if not bool(valuation_available.loc[idx]):
+                reasons.append("Fair value mangler")
+            elif not bool(valuation_ok.loc[idx]):
+                reasons.append("Valuation består ikke gate")
+            elif not bool(momentum_ok.loc[idx]):
+                reasons.append("Momentum består ikke Decision Review-gate")
+            else:
+                reasons.append("Decision Score-gate endnu ikke opfyldt")
+        elif bool(deep_research_ready.loc[idx]):
+            reasons.append("Discovery ≥75 og confidence ≥70")
+            missing: list[str] = []
+            if not bool(data_quality_ok.loc[idx]):
+                missing.append("datakvalitet")
+            if not bool(growth_ok.loc[idx]):
+                missing.append("vækst")
+            if not bool(earnings_ok.loc[idx]):
+                missing.append("indtjening")
+            if not bool(moat_ok.loc[idx]):
+                missing.append("moat")
+            if not bool(risk_ok.loc[idx]):
+                missing.append("risiko")
+            if missing:
+                reasons.append("Mangler: " + ", ".join(missing))
+        else:
+            reasons.append("Discovery/confidence under Deep Research-gate")
+        reason_rows.append(" · ".join(reasons))
+
+    result["Promotion_Reasons"] = reason_rows
+    return result
+
+
 def _merge_pipeline(
     quant_data: pd.DataFrame,
     agent_data: pd.DataFrame,
@@ -194,6 +338,8 @@ def _merge_pipeline(
         ["Høj", "Middel"],
         default="Monitor",
     )
+
+    result = apply_promotion_gate(result)
 
     return result.sort_values(
         ["Discovery_Score", "Unified_Confidence", "Name"],
@@ -329,6 +475,12 @@ def top_candidates(
         "Ticker",
         "Discovery_Score",
         "Research_Priority",
+        "Promotion_Stage",
+        "Next_Action",
+        "Promotion_Reasons",
+        "Deep_Research_Ready",
+        "Fair_Value_Ready",
+        "Decision_Review_Ready",
         "Pipeline_Source",
         "Composite_Score",
         "Agent_Score",
@@ -363,6 +515,9 @@ def radar_summary(
             "Average_Confidence": np.nan,
             "Top_Candidate": None,
             "New_Candidate_Count": 0,
+            "Deep_Research_Count": 0,
+            "Fair_Value_Count": 0,
+            "Decision_Review_Count": 0,
             "Agent_Generated_At": radar.agent_generated_at,
         }
 
@@ -374,6 +529,21 @@ def radar_summary(
     high_confidence = int((confidence >= 80).sum())
     average_confidence = float(confidence.mean()) if confidence.notna().any() else np.nan
     new_count = int(data.get("Is_New", pd.Series(False, index=data.index)).fillna(False).sum())
+    deep_count = int(
+        data.get("Deep_Research_Ready", pd.Series(False, index=data.index))
+        .fillna(False)
+        .sum()
+    )
+    fair_value_count = int(
+        data.get("Fair_Value_Ready", pd.Series(False, index=data.index))
+        .fillna(False)
+        .sum()
+    )
+    decision_review_count = int(
+        data.get("Decision_Review_Ready", pd.Series(False, index=data.index))
+        .fillna(False)
+        .sum()
+    )
 
     top_candidate = data.iloc[0]["Name"] if not data.empty else None
 
@@ -383,5 +553,8 @@ def radar_summary(
         "Average_Confidence": average_confidence,
         "Top_Candidate": top_candidate,
         "New_Candidate_Count": new_count,
+        "Deep_Research_Count": deep_count,
+        "Fair_Value_Count": fair_value_count,
+        "Decision_Review_Count": decision_review_count,
         "Agent_Generated_At": radar.agent_generated_at,
     }
