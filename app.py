@@ -894,6 +894,12 @@ with tab_positions:
         )
         section = section.sort_values(["Portfolio_Weight_Ex_Grundfos", "Name"], ascending=[False, True], na_position="last").reset_index(drop=True)
 
+        # Sortering/reset_index ændrer DataFrame-indekset. Masken skal derfor
+        # oprettes igen, så boolean-indekseringen matcher section 1:1.
+        grundfos_mask = section["Name"].astype(str).str.contains(
+            "Grundfos", case=False, na=False
+        )
+
         total_market_value = section["Market_Value_DKK"].sum(skipna=True)
         total_weight = section["Portfolio_Weight_Ex_Grundfos"].sum(skipna=True)
         stock_subtotal_value = section.loc[~grundfos_mask, "Market_Value_DKK"].sum(skipna=True)
