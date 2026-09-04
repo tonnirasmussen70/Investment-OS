@@ -75,6 +75,8 @@ def load_master_file(path: str | Path) -> PortfolioModel:
         "Purchase_FX_to_DKK",
         "Current_Price",
         "Current_FX_to_DKK",
+        "Market_Value_DKK",
+        "Market_value_DKK",
     ]:
         if col in portfolio.columns:
             portfolio[col] = pd.to_numeric(portfolio[col], errors="coerce")
@@ -92,14 +94,31 @@ def load_master_file(path: str | Path) -> PortfolioModel:
     )
 
 
+def _master_market_value_dkk(df: pd.DataFrame) -> pd.Series:
+    """Returnér depotets DKK-markedsværdi fra masterfilen, hvis den findes."""
+    values = pd.Series(np.nan, index=df.index, dtype=float)
+
+    # Understøt begge historiske stavemåder i AI_portfolio.xlsx.
+    for column in ["Market_Value_DKK", "Market_value_DKK"]:
+        if column in df.columns:
+            candidate = pd.to_numeric(df[column], errors="coerce")
+            values = values.combine_first(candidate)
+
+    return values
+
+
 def calculate_portfolio(
     model: PortfolioModel,
     snapshot: MarketSnapshot,
 ) -> pd.DataFrame:
     df = model.portfolio.copy()
 
-    # Current market data is owned by Investment OS. Values from the Excel
-    # master are only used as fallback if the live market snapshot is missing.
+    # Depotets DKK-markedsværdi gemmes før live-data beregnes. Denne værdi er
+    # autoritativ for Positioner, Overblik, vægte og rebalancering, når den findes.
+    df["Master_Market_Value_DKK"] = _master_market_value_dkk(df)
+
+    # Yahoo ejer live kursdata og bruges til momentum/tekniske signaler samt som
+    # fallback, hvis masterfilen ikke har en DKK-markedsværdi for en position.
     fetched_prices = df["Yahoo_Ticker"].map(snapshot.prices)
     manual_prices = (
         df["Current_Price"]
@@ -135,10 +154,22 @@ def calculate_portfolio(
         * df["Purchase_Price"]
         * df["Purchase_FX_Effective"]
     )
-    df["Market_Value_DKK"] = (
+
+    # Separat live-estimat bevares til fejlsøgning og transparens.
+    df["Live_Market_Value_DKK"] = (
         df["Quantity"]
         * df["Current_Price"]
         * df["Current_FX_to_DKK"]
+    )
+
+    # Én autoritativ markedsværdi: Saxo/master først, Yahoo-estimat kun fallback.
+    df["Market_Value_DKK"] = df["Master_Market_Value_DKK"].combine_first(
+        df["Live_Market_Value_DKK"]
+    )
+    df["Market_Value_Source"] = np.where(
+        df["Master_Market_Value_DKK"].notna(),
+        "Master/Saxo",
+        "Yahoo live fallback",
     )
 
     df["Local_Return_Pct"] = np.where(
@@ -190,14 +221,20 @@ def data_quality_score(
 
     score = 100 * (0.50 * price_ok + 0.30 * fx_ok + 0.20 * yahoo_ok)
 
-    # Missing historical FX is intentional in the current master-file design
-    # and must therefore not reduce the data-quality score.
     fallback_count = int(portfolio.loc[active, "FX_Fallback_Used"].sum())
     if fallback_count:
         notes.append(
             f"{fallback_count} udenlandske positioner anvender valutan neutralt DKK-afkast; "
-            "historisk FX registreres ikke i masterfilen. Lokalt kursafkast og aktuel "
-            "markedsværdi i DKK er upåvirket."
+            "historisk FX registreres ikke i masterfilen. Lokalt kursafkast er upåvirket."
+        )
+
+    market_value_fallback_count = int(
+        portfolio.loc[active, "Master_Market_Value_DKK"].isna().sum()
+    )
+    if market_value_fallback_count:
+        notes.append(
+            f"{market_value_fallback_count} positioner mangler depotets DKK-markedsværdi "
+            "og anvender derfor Yahoo kurs × FX som fallback."
         )
 
     if snapshot.missing_prices:
@@ -231,25 +268,8 @@ def return_inclusion_mask(portfolio: pd.DataFrame) -> pd.Series:
 
 
 def display_market_value(portfolio: pd.DataFrame) -> pd.Series:
-    """
-    Returnér markedsværdi til samlet porteføljevisning.
-
-    Den beregnede Market_Value_DKK anvendes primært. Hvis masterfilen også
-    indeholder en eksisterende Market_value_DKK-kolonne, bruges den som fallback.
-    """
-    values = pd.to_numeric(
-        portfolio["Market_Value_DKK"],
-        errors="coerce",
-    )
-
-    if "Market_value_DKK" in portfolio.columns:
-        fallback = pd.to_numeric(
-            portfolio["Market_value_DKK"],
-            errors="coerce",
-        )
-        values = values.combine_first(fallback)
-
-    return values
+    """Returnér den autoritative DKK-markedsværdi til visning og summering."""
+    return pd.to_numeric(portfolio["Market_Value_DKK"], errors="coerce")
 
 
 def portfolio_summary(portfolio: pd.DataFrame) -> dict[str, float]:
@@ -259,6 +279,7 @@ def portfolio_summary(portfolio: pd.DataFrame) -> dict[str, float]:
     - Porteføljeværdi inkluderer Grundfos.
     - Afkastprocent ekskluderer Grundfos.
     - Aktiv markedsværdi bruges til rebalancering.
+    - DKK-markedsværdi kommer fra master/Saxo, når tilgængelig.
     """
     market_values = display_market_value(portfolio)
     total_value = float(market_values.sum(skipna=True))
