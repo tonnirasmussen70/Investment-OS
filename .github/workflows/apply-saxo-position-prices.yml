@@ -1,0 +1,33 @@
+name: Apply Saxo Position Prices
+
+on:
+  push:
+    paths:
+      - 'update_saxo_position_prices.py'
+      - '.github/workflows/apply-saxo-position-prices.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply update
+        run: python update_saxo_position_prices.py
+      - name: Syntax check
+        run: |
+          python -m py_compile app.py
+          python -m py_compile modules/portfolio_engine.py
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app.py modules/portfolio_engine.py
+          git diff --cached --quiet || git commit -m "Use Saxo prices in Positioner"
+          git push
