@@ -916,7 +916,8 @@ with tab_positions:
         grundfos_value = section.loc[grundfos_mask, "Market_Value_DKK"].sum(skipna=True)
         stock_subtotal_weight = section.loc[~grundfos_mask, "Portfolio_Weight_Ex_Grundfos"].sum(skipna=True)
 
-        table = section[["Name", "Quantity", "Purchase_Price", "Position_Display_Price", "Sector", "Market_Value_DKK", "Portfolio_Weight_Ex_Grundfos", "Return_Pct", "Composite", "AI_Confidence"]].copy()
+        display_section = section.loc[~grundfos_mask].copy() if asset_class == "Aktie" else section.copy()
+        table = display_section[["Name", "Quantity", "Purchase_Price", "Position_Display_Price", "Sector", "Market_Value_DKK", "Portfolio_Weight_Ex_Grundfos", "Return_Pct", "Composite", "AI_Confidence"]].copy()
         table.columns = ["Navn", "Antal", "Åben kurs", "Dags kurs", "Sektor", "Markedsværdi", "Vægt", "Afkast", "Momentum", "AI"]
         table["Antal"] = table["Antal"].apply(lambda x: compact_dkk(x) if pd.notna(x) else "N/A")
         for col in ["Åben kurs", "Dags kurs"]:
