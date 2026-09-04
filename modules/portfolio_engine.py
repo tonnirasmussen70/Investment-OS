@@ -117,15 +117,19 @@ def calculate_portfolio(
     # autoritativ for Positioner, Overblik, vægte og rebalancering, når den findes.
     df["Master_Market_Value_DKK"] = _master_market_value_dkk(df)
 
-    # Yahoo ejer live kursdata og bruges til momentum/tekniske signaler samt som
-    # fallback, hvis masterfilen ikke har en DKK-markedsværdi for en position.
-    fetched_prices = df["Yahoo_Ticker"].map(snapshot.prices)
+    # Yahoo ejer live kursdata til momentum/tekniske signaler. Saxo/master-
+    # kursen bevares separat og bruges i Positioner, så depotvisningen matcher
+    # den importerede Saxo-rapport.
     manual_prices = (
-        df["Current_Price"]
+        pd.to_numeric(df["Current_Price"], errors="coerce")
         if "Current_Price" in df.columns
         else pd.Series(np.nan, index=df.index)
     )
-    df["Current_Price"] = fetched_prices.combine_first(manual_prices)
+    df["Master_Current_Price"] = manual_prices
+
+    fetched_prices = df["Yahoo_Ticker"].map(snapshot.prices)
+    df["Live_Current_Price"] = fetched_prices.combine_first(manual_prices)
+    df["Current_Price"] = df["Live_Current_Price"]
 
     fetched_fx = df["Currency"].map(snapshot.fx_to_dkk)
     manual_fx = (

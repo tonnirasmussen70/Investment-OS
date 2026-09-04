@@ -866,7 +866,7 @@ with tab_capital_flow:
 
 with tab_positions:
     st.subheader("Positioner")
-    st.caption("Aktier og ETF'er vises separat, men vægten beregnes for begge tabeller mod den samlede porteføljeværdi ekskl. Grundfos. Grundfos vises uden vægt.")
+    st.caption("Aktier og ETF'er vises separat. Dags kurs og markedsværdi følger Saxo/masterfilen, når de findes; Yahoo bruges til momentum og tekniske analyser samt som fallback. Vægten beregnes mod den samlede porteføljeværdi ekskl. Grundfos.")
 
     merge_key = "Asset_ID" if "Asset_ID" in portfolio.columns and "Asset_ID" in analytics_portfolio.columns else "Yahoo_Ticker"
     analysis_lookup = analytics_portfolio[[merge_key, "Composite", "AI_Confidence"]].drop_duplicates(subset=[merge_key])
@@ -876,6 +876,16 @@ with tab_positions:
     position_source["Sector"] = position_source["Sector"].fillna("Ikke angivet").astype(str)
     position_source["Aktivklasse"] = position_source["Asset_Type"].replace({"Stock": "Aktie", "Equity": "Aktie", "Fund": "ETF", "ETF": "ETF"})
     position_source["Market_Value_DKK"] = pd.to_numeric(position_source["Market_Value_DKK"], errors="coerce").fillna(0)
+    master_price = (
+        pd.to_numeric(position_source["Master_Current_Price"], errors="coerce")
+        if "Master_Current_Price" in position_source.columns
+        else pd.Series(np.nan, index=position_source.index)
+    )
+    live_price = pd.to_numeric(position_source["Current_Price"], errors="coerce")
+    position_source["Position_Display_Price"] = master_price.combine_first(live_price)
+    position_source["Position_Price_Source"] = np.where(
+        master_price.notna(), "Master/Saxo", "Yahoo live fallback"
+    )
     grundfos_portfolio_mask = position_source["Name"].astype(str).str.contains("Grundfos", case=False, na=False)
     portfolio_value_ex_grundfos = position_source.loc[~grundfos_portfolio_mask, "Market_Value_DKK"].sum()
 
@@ -906,7 +916,7 @@ with tab_positions:
         grundfos_value = section.loc[grundfos_mask, "Market_Value_DKK"].sum(skipna=True)
         stock_subtotal_weight = section.loc[~grundfos_mask, "Portfolio_Weight_Ex_Grundfos"].sum(skipna=True)
 
-        table = section[["Name", "Quantity", "Purchase_Price", "Current_Price", "Sector", "Market_Value_DKK", "Portfolio_Weight_Ex_Grundfos", "Return_Pct", "Composite", "AI_Confidence"]].copy()
+        table = section[["Name", "Quantity", "Purchase_Price", "Position_Display_Price", "Sector", "Market_Value_DKK", "Portfolio_Weight_Ex_Grundfos", "Return_Pct", "Composite", "AI_Confidence"]].copy()
         table.columns = ["Navn", "Antal", "Åben kurs", "Dags kurs", "Sektor", "Markedsværdi", "Vægt", "Afkast", "Momentum", "AI"]
         table["Antal"] = table["Antal"].apply(lambda x: compact_dkk(x) if pd.notna(x) else "N/A")
         for col in ["Åben kurs", "Dags kurs"]:
