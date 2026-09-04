@@ -70,6 +70,12 @@ TOOLTIPS = {
         "Den samlede markedsværdi af alle positioner. Grundfos er medregnet "
         "i værdien, men ikke i porteføljevægte eller analyser."
     ),
+    "cash": (
+        "Samlet kontantbeholdning registreret i Cash-fanen i AI_portfolio.xlsx."
+    ),
+    "total_portfolio": (
+        "Samlet formue i Investment OS: porteføljeværdi plus registreret cash."
+    ),
     "total_return": (
         "Samlet gevinst eller tab i forhold til kostprisen for de aktive "
         "positioner."
@@ -110,6 +116,59 @@ def compact_dkk(value: float) -> str:
     if pd.isna(value):
         return "N/A"
     return f"{float(value):,.0f}".replace(",", ".")
+
+
+def cash_value_dkk(cash: pd.DataFrame) -> float:
+    """Returnér samlet cash-værdi fra masterfilens Cash-fane.
+
+    Kendte værdikolonner prioriteres. Hvis arket kun indeholder én numerisk
+    kolonne, bruges den som sikker fallback. Ukendt struktur giver 0 i stedet
+    for at blokere resten af Investment OS.
+    """
+    if cash is None or cash.empty:
+        return 0.0
+
+    normalized_columns = {
+        "".join(ch for ch in str(column).strip().casefold() if ch.isalnum()): column
+        for column in cash.columns
+    }
+    candidates = [
+        "cashdkk",
+        "kontantdkk",
+        "valuedkk",
+        "amountdkk",
+        "beløbdkk",
+        "belobdkk",
+        "balancedkk",
+        "saldodkk",
+        "cash",
+        "kontant",
+        "value",
+        "amount",
+        "beløb",
+        "belob",
+        "balance",
+        "saldo",
+    ]
+
+    for candidate in candidates:
+        column = normalized_columns.get(
+            "".join(ch for ch in candidate.casefold() if ch.isalnum())
+        )
+        if column is None:
+            continue
+        values = pd.to_numeric(cash[column], errors="coerce")
+        if values.notna().any():
+            return float(values.sum(skipna=True))
+
+    numeric = cash.apply(pd.to_numeric, errors="coerce")
+    numeric_columns = [
+        column for column in numeric.columns if numeric[column].notna().any()
+    ]
+    if len(numeric_columns) == 1:
+        return float(numeric[numeric_columns[0]].sum(skipna=True))
+
+    return 0.0
 
 
 def percentage_points(value: float) -> str:
@@ -359,6 +418,8 @@ current_sharpe = (
 quality_score, quality_notes = data_quality_score(portfolio, snapshot)
 portfolio_metrics = portfolio_summary(portfolio)
 portfolio_total = portfolio_metrics["Portfolio_Value_DKK"]
+cash_total = cash_value_dkk(model.cash)
+total_portfolio = portfolio_total + cash_total
 return_market_value = portfolio_metrics["Active_Market_Value_DKK"]
 total_return = portfolio_metrics["Total_Return_Pct"]
 
@@ -488,29 +549,39 @@ tabs = st.tabs([
 with tab_overview:
     quality_icon, quality_text = quality_label(quality_score)
 
-    k1, k2, k3, k4, k5 = st.columns(5)
+    k1, k2, k3, k4, k5, k6, k7 = st.columns(7)
     k1.metric(
         "Porteføljeværdi",
         compact_dkk(portfolio_total),
         help=TOOLTIPS["portfolio_value"],
     )
     k2.metric(
+        "Cash",
+        compact_dkk(cash_total),
+        help=TOOLTIPS["cash"],
+    )
+    k3.metric(
+        "Total portefølje",
+        compact_dkk(total_portfolio),
+        help=TOOLTIPS["total_portfolio"],
+    )
+    k4.metric(
         "Samlet afkast",
         format_pct(total_return),
         help=TOOLTIPS["total_return"],
     )
-    k3.metric(
+    k5.metric(
         "Porteføljesundhed",
         score_text(portfolio_health.score, 0),
         help=TOOLTIPS["portfolio_health"],
     )
-    k4.metric(
+    k6.metric(
         "Konfidens",
         f"{avg_confidence:.0f}%" if pd.notna(avg_confidence) else "N/A",
         decision.get("AI_Confidence_Label"),
         help=TOOLTIPS["confidence"],
     )
-    k5.metric(
+    k7.metric(
         "Datakvalitet",
         f"{quality_score:.0f}%",
         f"{quality_icon} {quality_text}",
@@ -1138,6 +1209,9 @@ with tab_positions:
             na_position="last",
         ).reset_index(drop=True)
 
+        total_market_value = section["Market_Value_DKK"].sum(skipna=True)
+        total_weight = section["Portfolio_Weight_Ex_Grundfos"].sum(skipna=True)
+
         table = section[
             [
                 "Name", "Quantity", "Purchase_Price", "Current_Price", "Sector",
@@ -1167,12 +1241,29 @@ with tab_positions:
             lambda x: f"{x:.0f}%" if pd.notna(x) else "N/A"
         )
 
+        total_row = {
+            "Navn": "TOTAL",
+            "Antal": "",
+            "Åben kurs": "",
+            "Dags kurs": "",
+            "Sektor": "",
+            "Markedsværdi": compact_dkk(total_market_value),
+            "Vægt": format_pct(total_weight, 1),
+            "Afkast": "",
+            "Momentum": "",
+            "AI": "",
+        }
+        table = pd.concat([table, pd.DataFrame([total_row])], ignore_index=True)
+
         st.dataframe(
             table_style(table),
             use_container_width=True,
             hide_index=True,
             height=no_scroll_height(table),
         )
+
+        st.markdown(f"#### Samlet værdi – {heading}")
+        st.metric("Markedsværdi", compact_dkk(total_market_value))
 
         chart_data = section.loc[
             section["Portfolio_Weight_Ex_Grundfos"].notna(),
