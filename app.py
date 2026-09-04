@@ -118,13 +118,43 @@ def compact_dkk(value: float) -> str:
     return f"{float(value):,.0f}".replace(",", ".")
 
 
-def cash_value_dkk(cash: pd.DataFrame) -> float:
-    """Returnér samlet cash-værdi fra masterfilens Cash-fane.
+def parse_cash_number(value) -> float:
+    """Konvertér cash-felter, inkl. danske tusindtalsseparatorer, til tal."""
+    if pd.isna(value):
+        return np.nan
+    if isinstance(value, (int, float, np.integer, np.floating)):
+        return float(value)
 
-    Kendte værdikolonner prioriteres. Hvis arket kun indeholder én numerisk
-    kolonne, bruges den som sikker fallback. Ukendt struktur giver 0 i stedet
-    for at blokere resten af Investment OS.
-    """
+    text = str(value).strip().casefold()
+    if not text:
+        return np.nan
+
+    for token in ["dkk", "kr.", "kr"]:
+        text = text.replace(token, "")
+    text = text.replace("\u00a0", "").replace(" ", "")
+    text = "".join(ch for ch in text if ch.isdigit() or ch in ",.-")
+    if not text or text in {"-", ".", ","}:
+        return np.nan
+
+    # Dansk format: 30.629 eller 30.629,50. Hvis både punktum og komma
+    # findes, er punktum tusindtalsseparator og komma decimaltegn.
+    if "." in text and "," in text:
+        text = text.replace(".", "").replace(",", ".")
+    elif "," in text:
+        text = text.replace(".", "").replace(",", ".")
+    elif "." in text:
+        parts = text.lstrip("-").split(".")
+        if len(parts) > 2 or (len(parts) == 2 and len(parts[1]) == 3):
+            text = text.replace(".", "")
+
+    try:
+        return float(text)
+    except ValueError:
+        return np.nan
+
+
+def cash_value_dkk(cash: pd.DataFrame) -> float:
+    """Returnér samlet cash-værdi fra masterfilens Cash-fane."""
     if cash is None or cash.empty:
         return 0.0
 
@@ -157,11 +187,11 @@ def cash_value_dkk(cash: pd.DataFrame) -> float:
         )
         if column is None:
             continue
-        values = pd.to_numeric(cash[column], errors="coerce")
+        values = cash[column].map(parse_cash_number)
         if values.notna().any():
             return float(values.sum(skipna=True))
 
-    numeric = cash.apply(pd.to_numeric, errors="coerce")
+    numeric = cash.apply(lambda series: series.map(parse_cash_number))
     numeric_columns = [
         column for column in numeric.columns if numeric[column].notna().any()
     ]
@@ -255,7 +285,6 @@ st.caption(
 portfolio = calculate_portfolio(model, snapshot)
 base_config = load_investment_config(model.settings)
 
-# Redigerbare modelindstillinger for den aktuelle Streamlit-session.
 st.session_state.setdefault("model_benchmark", base_config.benchmark)
 st.session_state.setdefault(
     "model_max_position_weight", float(base_config.max_position_weight)
@@ -266,8 +295,6 @@ st.session_state.setdefault(
 st.session_state.setdefault("model_minimum_trade_dkk", float(MINIMUM_TRADE_DKK))
 st.session_state.setdefault("model_risk_free_rate", float(base_config.risk_free_rate))
 
-# Redigeringsfelterne holdes adskilt fra de aktive modelværdier.
-# Modellen ændres først, når brugeren vælger "Anvend modelændringer".
 st.session_state.setdefault("draft_model_benchmark", st.session_state["model_benchmark"])
 st.session_state.setdefault(
     "draft_model_max_position_weight",
@@ -496,7 +523,6 @@ if SNAPSHOT_ONLY:
     print(f"Snapshot skrevet til {snapshot_output}")
     raise SystemExit(0)
 
-
 attribution = calculate_attribution(portfolio)
 contributors = top_contributors(attribution, limit=5)
 detractors = top_detractors(attribution, limit=5)
@@ -545,36 +571,15 @@ tabs = st.tabs([
     tab_doctor, tab_opportunity, tab_compounders, tab_watchlist, tab_settings,
 ) = tabs
 
-
 with tab_overview:
     quality_icon, quality_text = quality_label(quality_score)
 
     k1, k2, k3, k4, k5, k6, k7 = st.columns(7)
-    k1.metric(
-        "Porteføljeværdi",
-        compact_dkk(portfolio_total),
-        help=TOOLTIPS["portfolio_value"],
-    )
-    k2.metric(
-        "Cash",
-        compact_dkk(cash_total),
-        help=TOOLTIPS["cash"],
-    )
-    k3.metric(
-        "Total portefølje",
-        compact_dkk(total_portfolio),
-        help=TOOLTIPS["total_portfolio"],
-    )
-    k4.metric(
-        "Samlet afkast",
-        format_pct(total_return),
-        help=TOOLTIPS["total_return"],
-    )
-    k5.metric(
-        "Porteføljesundhed",
-        score_text(portfolio_health.score, 0),
-        help=TOOLTIPS["portfolio_health"],
-    )
+    k1.metric("Porteføljeværdi", compact_dkk(portfolio_total), help=TOOLTIPS["portfolio_value"])
+    k2.metric("Cash", compact_dkk(cash_total), help=TOOLTIPS["cash"])
+    k3.metric("Total portefølje", compact_dkk(total_portfolio), help=TOOLTIPS["total_portfolio"])
+    k4.metric("Samlet afkast", format_pct(total_return), help=TOOLTIPS["total_return"])
+    k5.metric("Porteføljesundhed", score_text(portfolio_health.score, 0), help=TOOLTIPS["portfolio_health"])
     k6.metric(
         "Konfidens",
         f"{avg_confidence:.0f}%" if pd.notna(avg_confidence) else "N/A",
@@ -582,9 +587,7 @@ with tab_overview:
         help=TOOLTIPS["confidence"],
     )
     k7.metric(
-        "Datakvalitet",
-        f"{quality_score:.0f}%",
-        f"{quality_icon} {quality_text}",
+        "Datakvalitet", f"{quality_score:.0f}%", f"{quality_icon} {quality_text}",
         help=TOOLTIPS["data_quality"],
     )
 
@@ -595,8 +598,6 @@ with tab_overview:
         "Derfor vises den højest prioriterede handling i hvert investeringsunivers."
     )
 
-    # Overblik bruger en bredere kø end morgenbrief/snapshot, så både Aktie-
-    # og ETF-universet får mulighed for at levere sin egen topanbefaling.
     overview_queue = build_decision_queue(
         rebalance_result.data,
         max_items=max(20, len(analytics_portfolio)),
@@ -609,29 +610,19 @@ with tab_overview:
         .set_index("Name")["Asset_Type"]
         .to_dict()
     )
-
     if not overview_queue.empty:
         overview_queue["Aktivklasse"] = overview_queue["Aktiv"].map(asset_type_lookup)
         overview_queue["Aktivklasse"] = overview_queue["Aktivklasse"].replace({
-            "Stock": "Aktie",
-            "Equity": "Aktie",
-            "ETF": "ETF",
-            "Fund": "ETF",
+            "Stock": "Aktie", "Equity": "Aktie", "ETF": "ETF", "Fund": "ETF",
         })
 
-    def render_recommended_action(
-        source: pd.DataFrame,
-        asset_class: str,
-        heading: str,
-    ) -> None:
+    def render_recommended_action(source: pd.DataFrame, asset_class: str, heading: str) -> None:
         st.markdown(f"### {heading}")
-
         candidates = (
             source.loc[source["Aktivklasse"] == asset_class].copy()
             if not source.empty and "Aktivklasse" in source.columns
             else pd.DataFrame()
         )
-
         if candidates.empty:
             st.success("**Ingen ændringer anbefales.**")
             st.write(
@@ -655,41 +646,15 @@ with tab_overview:
 
         st.markdown(f"## {action_text}")
         a1, a2, a3 = st.columns(3)
-        a1.metric(
-            "Status",
-            str(best.get("Status", "Datamangel")),
-            help="Den fælles status fra Decision Engine for denne investeringscase.",
-        )
-        a2.metric(
-            "Konfidens",
-            f"{confidence:.0f}%" if pd.notna(confidence) else "N/A",
-            help=TOOLTIPS["confidence"],
-        )
-        a3.metric(
-            "Prioritet",
-            str(best.get("Prioritet", "Normal")),
-            help="Viser hvor hurtigt handlingen bør vurderes.",
-        )
-
+        a1.metric("Status", str(best.get("Status", "Datamangel")), help="Den fælles status fra Decision Engine for denne investeringscase.")
+        a2.metric("Konfidens", f"{confidence:.0f}%" if pd.notna(confidence) else "N/A", help=TOOLTIPS["confidence"])
+        a3.metric("Prioritet", str(best.get("Prioritet", "Normal")), help="Viser hvor hurtigt handlingen bør vurderes.")
         st.markdown("**Begrundelse**")
-        st.write(
-            best.get(
-                "Begrundelse",
-                "Ingen yderligere begrundelse tilgængelig.",
-            )
-        )
-
+        st.write(best.get("Begrundelse", "Ingen yderligere begrundelse tilgængelig."))
         with st.expander("Vis beslutningsdetaljer"):
             d1, d2 = st.columns(2)
-            d1.metric(
-                "Decision Score",
-                score_text(decision_score, 0),
-                help=TOOLTIPS["decision_score"],
-            )
-            d2.metric(
-                "Anbefalet vægtændring",
-                percentage_points(best.get("Anbefalet ændring", np.nan)),
-            )
+            d1.metric("Decision Score", score_text(decision_score, 0), help=TOOLTIPS["decision_score"])
+            d2.metric("Anbefalet vægtændring", percentage_points(best.get("Anbefalet ændring", np.nan)))
 
     stock_col, etf_col = st.columns(2, gap="large")
     with stock_col:
@@ -697,34 +662,17 @@ with tab_overview:
     with etf_col:
         render_recommended_action(overview_queue, "ETF", "ETF")
 
-    # Bevar den eksisterende korte decision queue til tabellen nedenfor.
     queue = decision_queue.data.copy()
-
     st.markdown("### Øvrige prioriterede handlinger")
     queue_overview = queue.head(3).copy()
     if queue_overview.empty:
         st.caption("Ingen yderligere handlinger.")
     else:
-        action_table = queue_overview[
-            ["Prioritet", "Execution", "Aktiv", "Beløb DKK", "Decision Score", "Begrundelse"]
-        ].copy()
+        action_table = queue_overview[["Prioritet", "Execution", "Aktiv", "Beløb DKK", "Decision Score", "Begrundelse"]].copy()
         action_table["Beløb DKK"] = action_table["Beløb DKK"].apply(compact_dkk)
-        action_table["Decision Score"] = action_table["Decision Score"].apply(
-            lambda value: score_text(value, 0)
-        )
-        action_table = action_table.rename(
-            columns={
-                "Execution": "Handling",
-                "Beløb DKK": "Beløb",
-                "Decision Score": "Score",
-            }
-        )
-        st.dataframe(
-            table_style(action_table),
-            use_container_width=True,
-            hide_index=True,
-            height=no_scroll_height(action_table),
-        )
+        action_table["Decision Score"] = action_table["Decision Score"].apply(lambda value: score_text(value, 0))
+        action_table = action_table.rename(columns={"Execution": "Handling", "Beløb DKK": "Beløb", "Decision Score": "Score"})
+        st.dataframe(table_style(action_table), use_container_width=True, hide_index=True, height=no_scroll_height(action_table))
 
     st.markdown("### Ændringer siden seneste handelsdag")
     if change_result.data.empty:
@@ -735,60 +683,35 @@ with tab_overview:
             st.markdown("**Forbedringer**")
             improvements = change_result.improvements[["Name", "Change Score"]].head(3).copy()
             improvements.columns = ["Aktiv", "Ændring"]
-            improvements["Ændring"] = improvements["Ændring"].apply(
-                lambda value: f"{value:+.1f}" if pd.notna(value) else "N/A"
-            )
+            improvements["Ændring"] = improvements["Ændring"].apply(lambda value: f"{value:+.1f}" if pd.notna(value) else "N/A")
             if improvements.empty:
                 st.caption("Ingen tydelige forbedringer.")
             else:
-                st.dataframe(
-                    table_style(improvements), use_container_width=True,
-                    hide_index=True, height=no_scroll_height(improvements),
-                )
+                st.dataframe(table_style(improvements), use_container_width=True, hide_index=True, height=no_scroll_height(improvements))
         with c2:
             st.markdown("**Forværringer**")
-            deteriorations = change_result.deteriorations[
-                ["Name", "Change Score"]
-            ].head(3).copy()
+            deteriorations = change_result.deteriorations[["Name", "Change Score"]].head(3).copy()
             deteriorations.columns = ["Aktiv", "Ændring"]
-            deteriorations["Ændring"] = deteriorations["Ændring"].apply(
-                lambda value: f"{value:+.1f}" if pd.notna(value) else "N/A"
-            )
+            deteriorations["Ændring"] = deteriorations["Ændring"].apply(lambda value: f"{value:+.1f}" if pd.notna(value) else "N/A")
             if deteriorations.empty:
                 st.caption("Ingen tydelige forværringer.")
             else:
-                st.dataframe(
-                    table_style(deteriorations), use_container_width=True,
-                    hide_index=True, height=no_scroll_height(deteriorations),
-                )
+                st.dataframe(table_style(deteriorations), use_container_width=True, hide_index=True, height=no_scroll_height(deteriorations))
         with c3:
             st.markdown("**Nye signaler**")
             signals = change_result.signal_changes.head(3).copy()
             if signals.empty:
                 st.caption("Ingen ændrede signaler.")
             else:
-                signals["Signal"] = signals.apply(
-                    lambda row: row.get("Signal Change")
-                    if str(row.get("Signal Change", "")).strip()
-                    else row.get("Rotation Change", ""),
-                    axis=1,
-                )
+                signals["Signal"] = signals.apply(lambda row: row.get("Signal Change") if str(row.get("Signal Change", "")).strip() else row.get("Rotation Change", ""), axis=1)
                 signals = signals[["Name", "Signal"]]
                 signals.columns = ["Aktiv", "Signal"]
-                st.dataframe(
-                    table_style(signals), use_container_width=True,
-                    hide_index=True, height=no_scroll_height(signals),
-                )
+                st.dataframe(table_style(signals), use_container_width=True, hide_index=True, height=no_scroll_height(signals))
 
     st.markdown("### Kræver opmærksomhed")
     attention_rows = []
-
     if not stop_loss_table.empty:
-        critical_stops = stop_loss_table.loc[
-            stop_loss_table["Risikohandling"].isin(
-                ["Stop brudt", "Alarmniveau", "Stram stop"]
-            )
-        ]
+        critical_stops = stop_loss_table.loc[stop_loss_table["Risikohandling"].isin(["Stop brudt", "Alarmniveau", "Stram stop"])]
         for _, row in critical_stops.head(5).iterrows():
             attention_rows.append({
                 "Prioritet": "Høj" if row.get("Risikohandling") == "Stop brudt" else "Normal",
@@ -796,40 +719,21 @@ with tab_overview:
                 "Årsag": row.get("Risikohandling", "Stop-loss"),
                 "Næste skridt": "Kontrollér position og stopniveau",
             })
-
-    weights = pd.to_numeric(
-        analytics_portfolio["Portfolio_Weight"], errors="coerce"
-    )
+    weights = pd.to_numeric(analytics_portfolio["Portfolio_Weight"], errors="coerce")
     overweight = analytics_portfolio.loc[weights > config.max_position_weight]
     for _, row in overweight.head(5).iterrows():
         attention_rows.append({
-            "Prioritet": "Normal",
-            "Aktiv": row.get("Name", "Ukendt"),
-            "Årsag": (
-                f"Vægt {row.get('Portfolio_Weight', 0):.1%} "
-                f"over loft {config.max_position_weight:.0%}"
-            ),
+            "Prioritet": "Normal", "Aktiv": row.get("Name", "Ukendt"),
+            "Årsag": f"Vægt {row.get('Portfolio_Weight', 0):.1%} over loft {config.max_position_weight:.0%}",
             "Næste skridt": "Vurder reduktion",
         })
-
     for note in quality_notes[:3]:
-        attention_rows.append({
-            "Prioritet": "Høj",
-            "Aktiv": "System",
-            "Årsag": note,
-            "Næste skridt": "Kontrollér datakilden",
-        })
-
+        attention_rows.append({"Prioritet": "Høj", "Aktiv": "System", "Årsag": note, "Næste skridt": "Kontrollér datakilden"})
     attention_table = pd.DataFrame(attention_rows)
     if attention_table.empty:
         st.success("Ingen forhold kræver opmærksomhed.")
     else:
-        st.dataframe(
-            table_style(attention_table),
-            use_container_width=True,
-            hide_index=True,
-            height=no_scroll_height(attention_table),
-        )
+        st.dataframe(table_style(attention_table), use_container_width=True, hide_index=True, height=no_scroll_height(attention_table))
 
     with st.expander("Vis porteføljegrafer og performance"):
         left, right = st.columns(2)
@@ -840,18 +744,9 @@ with tab_overview:
                 comparison = portfolio_curve.rename("Portefølje").to_frame()
                 if not benchmark_returns.empty:
                     benchmark_curve = (1 + benchmark_returns).cumprod() * 100
-                    comparison = comparison.join(
-                        benchmark_curve.rename(benchmark_ticker), how="inner"
-                    )
-                curve_df = (
-                    comparison.reset_index()
-                    .rename(columns={comparison.index.name or "index": "Dato"})
-                    .melt(id_vars="Dato", var_name="Serie", value_name="Indeks")
-                )
-                fig = px.line(
-                    curve_df, x="Dato", y="Indeks", color="Serie",
-                    title=f"Portefølje vs. {benchmark_ticker} – indeks 100",
-                )
+                    comparison = comparison.join(benchmark_curve.rename(benchmark_ticker), how="inner")
+                curve_df = comparison.reset_index().rename(columns={comparison.index.name or "index": "Dato"}).melt(id_vars="Dato", var_name="Serie", value_name="Indeks")
+                fig = px.line(curve_df, x="Dato", y="Indeks", color="Serie", title=f"Portefølje vs. {benchmark_ticker} – indeks 100")
                 fig.update_layout(height=390, yaxis_title="Indeks")
                 st.plotly_chart(fig, use_container_width=True)
                 p1, p2, p3 = st.columns(3)
@@ -860,29 +755,18 @@ with tab_overview:
                 p3.metric("Beta", format_score(portfolio_beta, 2))
             else:
                 st.info("Porteføljeudviklingen kan ikke vises endnu.")
-
         with right:
             st.markdown("#### Sharpe-udvikling")
             if not sharpe_history.empty:
-                sharpe_long = (
-                    sharpe_history.reset_index()
-                    .rename(columns={sharpe_history.index.name or "index": "Dato"})
-                    .melt(id_vars="Dato", var_name="Periode", value_name="Sharpe")
-                    .dropna()
-                )
-                fig = px.line(
-                    sharpe_long, x="Dato", y="Sharpe", color="Periode",
-                    title="Rullende Sharpe",
-                )
+                sharpe_long = sharpe_history.reset_index().rename(columns={sharpe_history.index.name or "index": "Dato"}).melt(id_vars="Dato", var_name="Periode", value_name="Sharpe").dropna()
+                fig = px.line(sharpe_long, x="Dato", y="Sharpe", color="Periode", title="Rullende Sharpe")
                 fig.add_hline(y=1.0, line_dash="dash")
                 fig.update_layout(height=390)
                 st.plotly_chart(fig, use_container_width=True)
                 st.metric("Sharpe 12M", format_score(current_sharpe, 2))
             else:
                 st.info("Sharpe-historikken kan ikke vises endnu.")
-
         st.markdown("#### Performance attribution")
-
         def attribution_table(dataframe: pd.DataFrame) -> pd.DataFrame:
             table = dataframe.copy()
             if table.empty:
@@ -891,10 +775,7 @@ with tab_overview:
             table["Afkast DKK"] = table["Afkast DKK"].apply(compact_dkk)
             table["Afkast %"] = table["Afkast %"].apply(lambda x: format_pct(x, 1))
             table["Bidrag"] = table["Bidrag"].apply(lambda x: format_pct(x, 1))
-            return table[["Aktiv", "Vægt", "Afkast DKK", "Afkast %", "Bidrag"]].rename(
-                columns={"Afkast DKK": "Afkast"}
-            )
-
+            return table[["Aktiv", "Vægt", "Afkast DKK", "Afkast %", "Bidrag"]].rename(columns={"Afkast DKK": "Afkast"})
         a1, a2 = st.columns(2)
         with a1:
             st.markdown("**Største bidrag**")
@@ -902,743 +783,317 @@ with tab_overview:
             if table.empty:
                 st.caption("Ingen positive bidrag.")
             else:
-                st.dataframe(
-                    table_style(table), use_container_width=True,
-                    hide_index=True, height=no_scroll_height(table),
-                )
+                st.dataframe(table_style(table), use_container_width=True, hide_index=True, height=no_scroll_height(table))
         with a2:
             st.markdown("**Største negative bidrag**")
             table = attribution_table(detractors)
             if table.empty:
                 st.caption("Ingen negative bidrag.")
             else:
-                st.dataframe(
-                    table_style(table), use_container_width=True,
-                    hide_index=True, height=no_scroll_height(table),
-                )
-
+                st.dataframe(table_style(table), use_container_width=True, hide_index=True, height=no_scroll_height(table))
 
 with tab_momentum:
     st.subheader("Momentum")
-    st.caption(
-        "Aktier og ETF'er vises separat, fordi de ligger på hver sin ASK og "
-        "derfor skal vurderes som to selvstændige investeringsuniverser."
-    )
+    st.caption("Aktier og ETF'er vises separat, fordi de ligger på hver sin ASK og derfor skal vurderes som to selvstændige investeringsuniverser.")
+    momentum_source = analytics_portfolio[["Asset_Type", "Name", "1W", "1M", "3M", "6M", "12M", "Composite", "Momentum_Acceleration", "Relative_Strength_3M", "AI_Confidence", "Decision_Score", "Decision_Status", "Handling"]].copy()
+    momentum_source["Aktivklasse"] = momentum_source["Asset_Type"].replace({"Stock": "Aktie", "Equity": "Aktie", "Fund": "ETF", "ETF": "ETF"})
 
-    momentum_source = analytics_portfolio[
-        [
-            "Asset_Type", "Name", "1W", "1M", "3M", "6M", "12M",
-            "Composite", "Momentum_Acceleration", "Relative_Strength_3M",
-            "AI_Confidence", "Decision_Score", "Decision_Status", "Handling",
-        ]
-    ].copy()
-
-    momentum_source["Aktivklasse"] = momentum_source["Asset_Type"].replace({
-        "Stock": "Aktie",
-        "Equity": "Aktie",
-        "Fund": "ETF",
-        "ETF": "ETF",
-    })
-
-    def show_momentum_section(
-        source: pd.DataFrame,
-        asset_class: str,
-        heading: str,
-    ) -> None:
+    def show_momentum_section(source: pd.DataFrame, asset_class: str, heading: str) -> None:
         section = source.loc[source["Aktivklasse"] == asset_class].copy()
-
         st.markdown(f"### {heading}")
-
         if section.empty:
             st.info(f"Ingen {heading.lower()} indgår aktuelt i momentum-analysen.")
             return
-
-        section = section.sort_values(
-            ["Composite", "Name"],
-            ascending=[False, True],
-            na_position="last",
-        ).reset_index(drop=True)
-
-        # Behold numeriske værdier til grafen, før tabellen formateres.
+        section = section.sort_values(["Composite", "Name"], ascending=[False, True], na_position="last").reset_index(drop=True)
         chart_data = section[["Name", "Composite"]].copy()
-        chart_data["Composite"] = pd.to_numeric(
-            chart_data["Composite"], errors="coerce"
-        )
+        chart_data["Composite"] = pd.to_numeric(chart_data["Composite"], errors="coerce")
         chart_data = chart_data.dropna(subset=["Composite"])
-
-        table = section[
-            [
-                "Name", "1W", "1M", "3M", "6M", "12M", "Composite",
-                "Momentum_Acceleration", "Relative_Strength_3M",
-                "AI_Confidence", "Decision_Score", "Decision_Status", "Handling",
-            ]
-        ].copy()
-
-        table = table.rename(columns={
-            "Name": "Navn",
-            "Composite": "Momentum",
-            "Momentum_Acceleration": "Acceleration",
-            "Relative_Strength_3M": "RS 3M",
-            "AI_Confidence": "AI",
-            "Decision_Score": "Score",
-            "Decision_Status": "Status",
-        })
-        for col in [
-            "1W", "1M", "3M", "6M", "12M",
-            "Momentum", "Acceleration", "RS 3M",
-        ]:
+        table = section[["Name", "1W", "1M", "3M", "6M", "12M", "Composite", "Momentum_Acceleration", "Relative_Strength_3M", "AI_Confidence", "Decision_Score", "Decision_Status", "Handling"]].copy()
+        table = table.rename(columns={"Name": "Navn", "Composite": "Momentum", "Momentum_Acceleration": "Acceleration", "Relative_Strength_3M": "RS 3M", "AI_Confidence": "AI", "Decision_Score": "Score", "Decision_Status": "Status"})
+        for col in ["1W", "1M", "3M", "6M", "12M", "Momentum", "Acceleration", "RS 3M"]:
             table[col] = table[col].apply(lambda x: format_pct(x, 1))
-
-        table["AI"] = table["AI"].apply(
-            lambda x: f"{x:.0f}%" if pd.notna(x) else "N/A"
-        )
+        table["AI"] = table["AI"].apply(lambda x: f"{x:.0f}%" if pd.notna(x) else "N/A")
         table["Score"] = table["Score"].apply(lambda x: score_text(x, 0))
-
-        st.dataframe(
-            table_style(table),
-            use_container_width=True,
-            hide_index=True,
-            height=no_scroll_height(table),
-        )
-
+        st.dataframe(table_style(table), use_container_width=True, hide_index=True, height=no_scroll_height(table))
         st.markdown(f"#### Samlet momentum pr. {asset_class.lower()}")
         if chart_data.empty:
             st.info("Der er ikke tilstrækkelige data til momentumgrafen.")
         else:
-            chart_data = chart_data.rename(
-                columns={"Name": "Navn", "Composite": "Momentum"}
-            )
-            fig = px.bar(
-                chart_data,
-                x="Navn",
-                y="Momentum",
-                title=f"Samlet momentum – {heading}",
-                text_auto=".1%",
-            )
-            fig.update_layout(
-                height=max(390, min(700, 300 + len(chart_data) * 18)),
-                xaxis_title=None,
-                yaxis_title="Samlet momentum",
-                yaxis_tickformat=".0%",
-                showlegend=False,
-            )
-            fig.update_xaxes(
-                categoryorder="array",
-                categoryarray=chart_data["Navn"].tolist(),
-                tickangle=-45 if len(chart_data) > 8 else 0,
-            )
+            chart_data = chart_data.rename(columns={"Name": "Navn", "Composite": "Momentum"})
+            fig = px.bar(chart_data, x="Navn", y="Momentum", title=f"Samlet momentum – {heading}", text_auto=".1%")
+            fig.update_layout(height=max(390, min(700, 300 + len(chart_data) * 18)), xaxis_title=None, yaxis_title="Samlet momentum", yaxis_tickformat=".0%", showlegend=False)
+            fig.update_xaxes(categoryorder="array", categoryarray=chart_data["Navn"].tolist(), tickangle=-45 if len(chart_data) > 8 else 0)
             fig.add_hline(y=0, line_dash="dash")
             st.plotly_chart(fig, use_container_width=True)
 
     show_momentum_section(momentum_source, "Aktie", "Aktier")
-
     st.divider()
-
     show_momentum_section(momentum_source, "ETF", "ETF'er")
-
-    st.caption(
-        "Grundfos kan vises i positionsoversigten, men indgår ikke i momentum, "
-        "aktiv vægtning eller rebalancering."
-    )
-
+    st.caption("Grundfos kan vises i positionsoversigten, men indgår ikke i momentum, aktiv vægtning eller rebalancering.")
 
 with tab_capital_flow:
     st.subheader("Kapitalflow – sektorrotation")
-    st.caption(
-        "Måler kortsigtet kapitalrotation mellem porteføljens ETF'er. "
-        "1W vægtes højest, så nye bevægelser opdages tidligere."
-    )
-
-    capital_flow = analytics_portfolio.loc[
-        analytics_portfolio["Asset_Type"].isin(["ETF", "Fund"]),
-        ["Name", "Portfolio_Weight", "1W", "1M", "3M", "Rotation_Signal"],
-    ].copy()
-
+    st.caption("Måler kortsigtet kapitalrotation mellem porteføljens ETF'er. 1W vægtes højest, så nye bevægelser opdages tidligere.")
+    capital_flow = analytics_portfolio.loc[analytics_portfolio["Asset_Type"].isin(["ETF", "Fund"]), ["Name", "Portfolio_Weight", "1W", "1M", "3M", "Rotation_Signal"]].copy()
     if capital_flow.empty:
         st.info("Ingen ETF'er med tilstrækkelige data til kapitalflow-analysen.")
     else:
         for column in ["Portfolio_Weight", "1W", "1M", "3M"]:
             capital_flow[column] = pd.to_numeric(capital_flow[column], errors="coerce")
-
-        capital_flow["Flow råscore"] = (
-            capital_flow["1W"].fillna(0) * 0.50
-            + capital_flow["1M"].fillna(0) * 0.30
-            + capital_flow["3M"].fillna(0) * 0.20
-        )
-        capital_flow["Kapitalflow Score"] = (
-            capital_flow["Flow råscore"].rank(pct=True, method="average") * 100
-        )
-        capital_flow["Kapitalflow Signal"] = pd.cut(
-            capital_flow["Kapitalflow Score"],
-            bins=[-np.inf, 25, 45, 55, 75, np.inf],
-            labels=[
-                "Stærkt udflow", "Udflow", "Neutral", "Indflow", "Stærkt indflow"
-            ],
-            include_lowest=True,
-        ).astype(str)
-
-        capital_flow = capital_flow.sort_values(
-            ["Kapitalflow Score", "Name"],
-            ascending=[False, True],
-        ).reset_index(drop=True)
-
+        capital_flow["Flow råscore"] = capital_flow["1W"].fillna(0) * 0.50 + capital_flow["1M"].fillna(0) * 0.30 + capital_flow["3M"].fillna(0) * 0.20
+        capital_flow["Kapitalflow Score"] = capital_flow["Flow råscore"].rank(pct=True, method="average") * 100
+        capital_flow["Kapitalflow Signal"] = pd.cut(capital_flow["Kapitalflow Score"], bins=[-np.inf, 25, 45, 55, 75, np.inf], labels=["Stærkt udflow", "Udflow", "Neutral", "Indflow", "Stærkt indflow"], include_lowest=True).astype(str)
+        capital_flow = capital_flow.sort_values(["Kapitalflow Score", "Name"], ascending=[False, True]).reset_index(drop=True)
         k1, k2, k3 = st.columns(3)
         leader = capital_flow.iloc[0]
         k1.metric("Stærkeste kapitalflow", str(leader["Name"]))
         k2.metric("Flow-score", f"{leader['Kapitalflow Score']:.0f}/100")
-        k3.metric(
-            "Positive flows",
-            int(capital_flow["Kapitalflow Signal"].isin(["Indflow", "Stærkt indflow"]).sum()),
-        )
-
-        display = capital_flow[
-            [
-                "Name", "Portfolio_Weight", "1W", "1M", "3M",
-                "Rotation_Signal", "Kapitalflow Score", "Kapitalflow Signal",
-            ]
-        ].copy()
-        display.columns = [
-            "ETF", "Vægt", "1W", "1M", "3M", "Rotationssignal",
-            "Kapitalflow-score", "Kapitalflow-signal",
-        ]
+        k3.metric("Positive flows", int(capital_flow["Kapitalflow Signal"].isin(["Indflow", "Stærkt indflow"]).sum()))
+        display = capital_flow[["Name", "Portfolio_Weight", "1W", "1M", "3M", "Rotation_Signal", "Kapitalflow Score", "Kapitalflow Signal"]].copy()
+        display.columns = ["ETF", "Vægt", "1W", "1M", "3M", "Rotationssignal", "Kapitalflow-score", "Kapitalflow-signal"]
         display["Vægt"] = display["Vægt"].apply(lambda x: format_pct(x, 1))
         for column in ["1W", "1M", "3M"]:
             display[column] = display[column].apply(lambda x: format_pct(x, 1))
-        display["Kapitalflow-score"] = display["Kapitalflow-score"].apply(
-            lambda x: f"{x:.0f}/100" if pd.notna(x) else "N/A"
-        )
-
-        st.dataframe(
-            table_style(display),
-            use_container_width=True,
-            hide_index=True,
-            height=no_scroll_height(display),
-        )
-
+        display["Kapitalflow-score"] = display["Kapitalflow-score"].apply(lambda x: f"{x:.0f}/100" if pd.notna(x) else "N/A")
+        st.dataframe(table_style(display), use_container_width=True, hide_index=True, height=no_scroll_height(display))
         st.markdown("### Kapitalflow-score pr. ETF")
-        chart_data = capital_flow[["Name", "Kapitalflow Score"]].rename(
-            columns={"Name": "ETF", "Kapitalflow Score": "Score"}
-        )
-        fig = px.bar(
-            chart_data,
-            x="ETF",
-            y="Score",
-            title="Relativ kapitalrotation mellem ETF'er",
-            text_auto=".0f",
-        )
-        fig.update_layout(
-            height=max(390, min(700, 300 + len(chart_data) * 18)),
-            xaxis_title=None,
-            yaxis_title="Kapitalflow-score",
-            yaxis_range=[0, 100],
-            showlegend=False,
-        )
+        chart_data = capital_flow[["Name", "Kapitalflow Score"]].rename(columns={"Name": "ETF", "Kapitalflow Score": "Score"})
+        fig = px.bar(chart_data, x="ETF", y="Score", title="Relativ kapitalrotation mellem ETF'er", text_auto=".0f")
+        fig.update_layout(height=max(390, min(700, 300 + len(chart_data) * 18)), xaxis_title=None, yaxis_title="Kapitalflow-score", yaxis_range=[0, 100], showlegend=False)
         fig.update_xaxes(tickangle=-45 if len(chart_data) > 8 else 0)
         st.plotly_chart(fig, use_container_width=True)
-
-        st.caption(
-            "Scoren er relativ inden for ETF-universet og bygger på 50% 1W, "
-            "30% 1M og 20% 3M. Den viser rotation – ikke faktisk fondskapital."
-        )
+        st.caption("Scoren er relativ inden for ETF-universet og bygger på 50% 1W, 30% 1M og 20% 3M. Den viser rotation – ikke faktisk fondskapital.")
 
 with tab_positions:
     st.subheader("Positioner")
-    st.caption(
-        "Aktier og ETF'er vises separat, men vægten beregnes for begge tabeller "
-        "mod den samlede porteføljeværdi ekskl. Grundfos. Grundfos vises uden vægt."
-    )
+    st.caption("Aktier og ETF'er vises separat, men vægten beregnes for begge tabeller mod den samlede porteføljeværdi ekskl. Grundfos. Grundfos vises uden vægt.")
 
-    merge_key = (
-        "Asset_ID"
-        if "Asset_ID" in portfolio.columns and "Asset_ID" in analytics_portfolio.columns
-        else "Yahoo_Ticker"
-    )
-    analysis_lookup = analytics_portfolio[
-        [merge_key, "Composite", "AI_Confidence"]
-    ].drop_duplicates(subset=[merge_key])
-    position_source = portfolio.merge(
-        analysis_lookup, on=merge_key, how="left", suffixes=("", "_analysis")
-    )
-
+    merge_key = "Asset_ID" if "Asset_ID" in portfolio.columns and "Asset_ID" in analytics_portfolio.columns else "Yahoo_Ticker"
+    analysis_lookup = analytics_portfolio[[merge_key, "Composite", "AI_Confidence"]].drop_duplicates(subset=[merge_key])
+    position_source = portfolio.merge(analysis_lookup, on=merge_key, how="left", suffixes=("", "_analysis"))
     if "Sector" not in position_source.columns:
         position_source["Sector"] = "Ikke angivet"
-    position_source["Sector"] = (
-        position_source["Sector"].fillna("Ikke angivet").astype(str)
-    )
-    position_source["Aktivklasse"] = position_source["Asset_Type"].replace({
-        "Stock": "Aktie",
-        "Equity": "Aktie",
-        "Fund": "ETF",
-        "ETF": "ETF",
-    })
+    position_source["Sector"] = position_source["Sector"].fillna("Ikke angivet").astype(str)
+    position_source["Aktivklasse"] = position_source["Asset_Type"].replace({"Stock": "Aktie", "Equity": "Aktie", "Fund": "ETF", "ETF": "ETF"})
+    position_source["Market_Value_DKK"] = pd.to_numeric(position_source["Market_Value_DKK"], errors="coerce").fillna(0)
+    grundfos_portfolio_mask = position_source["Name"].astype(str).str.contains("Grundfos", case=False, na=False)
+    portfolio_value_ex_grundfos = position_source.loc[~grundfos_portfolio_mask, "Market_Value_DKK"].sum()
 
-    # Alle viste positionsvægte bruger samme nævner: hele porteføljen ekskl. Grundfos.
-    position_source["Market_Value_DKK"] = pd.to_numeric(
-        position_source["Market_Value_DKK"], errors="coerce"
-    ).fillna(0)
-    grundfos_portfolio_mask = position_source["Name"].astype(str).str.contains(
-        "Grundfos", case=False, na=False
-    )
-    portfolio_value_ex_grundfos = position_source.loc[
-        ~grundfos_portfolio_mask, "Market_Value_DKK"
-    ].sum()
-
-    def show_position_section(
-        source: pd.DataFrame,
-        asset_class: str,
-        heading: str,
-    ) -> None:
+    def show_position_section(source: pd.DataFrame, asset_class: str, heading: str) -> None:
         section = source.loc[source["Aktivklasse"] == asset_class].copy()
         st.markdown(f"### {heading}")
-
         if section.empty:
             st.info(f"Ingen {heading.lower()} er registreret.")
             return
 
-        grundfos_mask = section["Name"].astype(str).str.contains(
-            "Grundfos", case=False, na=False
-        )
+        grundfos_mask = section["Name"].astype(str).str.contains("Grundfos", case=False, na=False)
         section["Portfolio_Weight_Ex_Grundfos"] = np.where(
             ~grundfos_mask & (portfolio_value_ex_grundfos > 0),
             section["Market_Value_DKK"] / portfolio_value_ex_grundfos,
             np.nan,
         )
-        section = section.sort_values(
-            ["Portfolio_Weight_Ex_Grundfos", "Name"],
-            ascending=[False, True],
-            na_position="last",
-        ).reset_index(drop=True)
+        section = section.sort_values(["Portfolio_Weight_Ex_Grundfos", "Name"], ascending=[False, True], na_position="last").reset_index(drop=True)
 
         total_market_value = section["Market_Value_DKK"].sum(skipna=True)
         total_weight = section["Portfolio_Weight_Ex_Grundfos"].sum(skipna=True)
+        stock_subtotal_value = section.loc[~grundfos_mask, "Market_Value_DKK"].sum(skipna=True)
+        grundfos_value = section.loc[grundfos_mask, "Market_Value_DKK"].sum(skipna=True)
+        stock_subtotal_weight = section.loc[~grundfos_mask, "Portfolio_Weight_Ex_Grundfos"].sum(skipna=True)
 
-        table = section[
-            [
-                "Name", "Quantity", "Purchase_Price", "Current_Price", "Sector",
-                "Market_Value_DKK", "Portfolio_Weight_Ex_Grundfos", "Return_Pct", "Composite",
-                "AI_Confidence",
-            ]
-        ].copy()
-        table.columns = [
-            "Navn", "Antal", "Åben kurs", "Dags kurs", "Sektor",
-            "Markedsværdi", "Vægt", "Afkast", "Momentum", "AI",
-        ]
-
-        table["Antal"] = table["Antal"].apply(
-            lambda x: compact_dkk(x) if pd.notna(x) else "N/A"
-        )
+        table = section[["Name", "Quantity", "Purchase_Price", "Current_Price", "Sector", "Market_Value_DKK", "Portfolio_Weight_Ex_Grundfos", "Return_Pct", "Composite", "AI_Confidence"]].copy()
+        table.columns = ["Navn", "Antal", "Åben kurs", "Dags kurs", "Sektor", "Markedsværdi", "Vægt", "Afkast", "Momentum", "AI"]
+        table["Antal"] = table["Antal"].apply(lambda x: compact_dkk(x) if pd.notna(x) else "N/A")
         for col in ["Åben kurs", "Dags kurs"]:
-            table[col] = table[col].apply(
-                lambda x: compact_dkk(x) if pd.notna(x) else "N/A"
-            )
+            table[col] = table[col].apply(lambda x: compact_dkk(x) if pd.notna(x) else "N/A")
         table["Markedsværdi"] = table["Markedsværdi"].apply(compact_dkk)
-        table["Vægt"] = table["Vægt"].apply(
-            lambda x: format_pct(x, 1) if pd.notna(x) else "-"
-        )
+        table["Vægt"] = table["Vægt"].apply(lambda x: format_pct(x, 1) if pd.notna(x) else "-")
         table["Afkast"] = table["Afkast"].apply(lambda x: format_pct(x, 1))
         table["Momentum"] = table["Momentum"].apply(lambda x: format_pct(x, 1))
-        table["AI"] = table["AI"].apply(
-            lambda x: f"{x:.0f}%" if pd.notna(x) else "N/A"
-        )
+        table["AI"] = table["AI"].apply(lambda x: f"{x:.0f}%" if pd.notna(x) else "N/A")
 
-        total_row = {
-            "Navn": "TOTAL",
-            "Antal": "",
-            "Åben kurs": "",
-            "Dags kurs": "",
-            "Sektor": "",
-            "Markedsværdi": compact_dkk(total_market_value),
-            "Vægt": format_pct(total_weight, 1),
-            "Afkast": "",
-            "Momentum": "",
-            "AI": "",
-        }
-        table = pd.concat([table, pd.DataFrame([total_row])], ignore_index=True)
+        if asset_class == "Aktie":
+            total_rows = [
+                {
+                    "Navn": "SUBTOTAL AKTIER",
+                    "Antal": "", "Åben kurs": "", "Dags kurs": "", "Sektor": "",
+                    "Markedsværdi": compact_dkk(stock_subtotal_value),
+                    "Vægt": format_pct(stock_subtotal_weight, 1),
+                    "Afkast": "", "Momentum": "", "AI": "",
+                },
+                {
+                    "Navn": "GRUNDFOS",
+                    "Antal": "", "Åben kurs": "", "Dags kurs": "", "Sektor": "",
+                    "Markedsværdi": compact_dkk(grundfos_value),
+                    "Vægt": "-",
+                    "Afkast": "", "Momentum": "", "AI": "",
+                },
+                {
+                    "Navn": "TOTAL AKTIER + GRUNDFOS",
+                    "Antal": "", "Åben kurs": "", "Dags kurs": "", "Sektor": "",
+                    "Markedsværdi": compact_dkk(total_market_value),
+                    "Vægt": format_pct(total_weight, 1),
+                    "Afkast": "", "Momentum": "", "AI": "",
+                },
+            ]
+        else:
+            total_rows = [{
+                "Navn": "TOTAL ETF",
+                "Antal": "", "Åben kurs": "", "Dags kurs": "", "Sektor": "",
+                "Markedsværdi": compact_dkk(total_market_value),
+                "Vægt": format_pct(total_weight, 1),
+                "Afkast": "", "Momentum": "", "AI": "",
+            }]
 
-        st.dataframe(
-            table_style(table),
-            use_container_width=True,
-            hide_index=True,
-            height=no_scroll_height(table),
-        )
+        table = pd.concat([table, pd.DataFrame(total_rows)], ignore_index=True)
+        st.dataframe(table_style(table), use_container_width=True, hide_index=True, height=no_scroll_height(table))
 
-        st.markdown(f"#### Samlet værdi – {heading}")
-        st.metric("Markedsværdi", compact_dkk(total_market_value))
-
-        chart_data = section.loc[
-            section["Portfolio_Weight_Ex_Grundfos"].notna(),
-            ["Name", "Portfolio_Weight_Ex_Grundfos"],
-        ].copy()
+        chart_data = section.loc[section["Portfolio_Weight_Ex_Grundfos"].notna(), ["Name", "Portfolio_Weight_Ex_Grundfos"]].copy()
         st.markdown(f"#### Vægtning pr. {asset_class.lower()}")
         if chart_data.empty:
             st.info("Der er ikke tilstrækkelige data til vægtningsgrafen.")
         else:
-            chart_data = chart_data.rename(
-                columns={"Name": "Navn", "Portfolio_Weight_Ex_Grundfos": "Vægt"}
-            )
-            fig = px.bar(
-                chart_data,
-                x="Navn",
-                y="Vægt",
-                title=f"Vægtning – {heading}",
-                text_auto=".1%",
-            )
-            fig.update_layout(
-                height=max(390, min(700, 300 + len(chart_data) * 18)),
-                xaxis_title=None,
-                yaxis_title="Vægt af portefølje ekskl. Grundfos",
-                yaxis_tickformat=".0%",
-                showlegend=False,
-            )
-            fig.update_xaxes(
-                categoryorder="array",
-                categoryarray=chart_data["Navn"].tolist(),
-                tickangle=-45 if len(chart_data) > 8 else 0,
-            )
+            chart_data = chart_data.rename(columns={"Name": "Navn", "Portfolio_Weight_Ex_Grundfos": "Vægt"})
+            fig = px.bar(chart_data, x="Navn", y="Vægt", title=f"Vægtning – {heading}", text_auto=".1%")
+            fig.update_layout(height=max(390, min(700, 300 + len(chart_data) * 18)), xaxis_title=None, yaxis_title="Vægt af portefølje ekskl. Grundfos", yaxis_tickformat=".0%", showlegend=False)
+            fig.update_xaxes(categoryorder="array", categoryarray=chart_data["Navn"].tolist(), tickangle=-45 if len(chart_data) > 8 else 0)
             st.plotly_chart(fig, use_container_width=True)
 
         if asset_class == "Aktie":
-            sector_data = section.loc[
-                section["Portfolio_Weight_Ex_Grundfos"].notna(),
-                ["Sector", "Market_Value_DKK"],
-            ].copy()
-            sector_data["Market_Value_DKK"] = pd.to_numeric(
-                sector_data["Market_Value_DKK"], errors="coerce"
-            ).fillna(0)
-            sector_data = (
-                sector_data.groupby("Sector", as_index=False)["Market_Value_DKK"]
-                .sum()
-                .loc[lambda df: df["Market_Value_DKK"] > 0]
-                .sort_values("Market_Value_DKK", ascending=False)
-            )
-
+            sector_data = section.loc[section["Portfolio_Weight_Ex_Grundfos"].notna(), ["Sector", "Market_Value_DKK"]].copy()
+            sector_data["Market_Value_DKK"] = pd.to_numeric(sector_data["Market_Value_DKK"], errors="coerce").fillna(0)
+            sector_data = sector_data.groupby("Sector", as_index=False)["Market_Value_DKK"].sum().loc[lambda df: df["Market_Value_DKK"] > 0].sort_values("Market_Value_DKK", ascending=False)
             st.markdown("#### Sektorfordeling – aktier")
             if sector_data.empty:
                 st.info("Der er ikke tilstrækkelige sektordata.")
             else:
-                sector_data = sector_data.rename(
-                    columns={"Sector": "Sektor", "Market_Value_DKK": "Markedsværdi"}
-                )
-                fig = px.pie(
-                    sector_data,
-                    names="Sektor",
-                    values="Markedsværdi",
-                    title="Sektorfordeling – aktie-ASK",
-                    hole=0.35,
-                )
+                sector_data = sector_data.rename(columns={"Sector": "Sektor", "Market_Value_DKK": "Markedsværdi"})
+                fig = px.pie(sector_data, names="Sektor", values="Markedsværdi", title="Sektorfordeling – aktie-ASK", hole=0.35)
                 fig.update_traces(textposition="inside", textinfo="percent+label")
                 fig.update_layout(height=500)
                 st.plotly_chart(fig, use_container_width=True)
 
     show_position_section(position_source, "Aktie", "Aktier")
-
     st.divider()
-
     show_position_section(position_source, "ETF", "ETF'er")
 
     st.divider()
     st.markdown("### Samlet vægtning – hele porteføljen")
-    st.caption(
-        "Alle aktier og ETF'er anvender samme nævner: samlet porteføljeværdi "
-        "ekskl. Grundfos. Derfor summerer de viste vægte til 100%."
-    )
-
-    overall_weights = position_source.loc[
-        ~grundfos_portfolio_mask
-        & position_source["Aktivklasse"].isin(["Aktie", "ETF"])
-        & (position_source["Market_Value_DKK"] > 0),
-        ["Name", "Aktivklasse", "Market_Value_DKK"],
-    ].copy()
-
+    st.caption("Alle aktier og ETF'er anvender samme nævner: samlet porteføljeværdi ekskl. Grundfos. Derfor summerer de viste vægte til 100%.")
+    overall_weights = position_source.loc[~grundfos_portfolio_mask & position_source["Aktivklasse"].isin(["Aktie", "ETF"]) & (position_source["Market_Value_DKK"] > 0), ["Name", "Aktivklasse", "Market_Value_DKK"]].copy()
     if overall_weights.empty or portfolio_value_ex_grundfos <= 0:
         st.info("Der er ikke tilstrækkelige data til den samlede vægtning.")
     else:
-        overall_weights["Vægt"] = (
-            overall_weights["Market_Value_DKK"] / portfolio_value_ex_grundfos
-        )
-        overall_weights = overall_weights.sort_values(
-            ["Vægt", "Name"], ascending=[False, True]
-        ).reset_index(drop=True)
-
-        stock_weight = overall_weights.loc[
-            overall_weights["Aktivklasse"] == "Aktie", "Vægt"
-        ].sum()
-        etf_weight = overall_weights.loc[
-            overall_weights["Aktivklasse"] == "ETF", "Vægt"
-        ].sum()
+        overall_weights["Vægt"] = overall_weights["Market_Value_DKK"] / portfolio_value_ex_grundfos
+        overall_weights = overall_weights.sort_values(["Vægt", "Name"], ascending=[False, True]).reset_index(drop=True)
+        stock_weight = overall_weights.loc[overall_weights["Aktivklasse"] == "Aktie", "Vægt"].sum()
+        etf_weight = overall_weights.loc[overall_weights["Aktivklasse"] == "ETF", "Vægt"].sum()
         total_weight = overall_weights["Vægt"].sum()
-
         w1, w2, w3 = st.columns(3)
         w1.metric("Aktier", format_pct(stock_weight, 1))
         w2.metric("ETF'er", format_pct(etf_weight, 1))
         w3.metric("Samlet", format_pct(total_weight, 1))
-
         overall_chart = overall_weights.rename(columns={"Name": "Navn"})
-        fig = px.bar(
-            overall_chart,
-            x="Navn",
-            y="Vægt",
-            color="Aktivklasse",
-            title="Samlet positionsvægt – portefølje ekskl. Grundfos",
-            text_auto=".1%",
-        )
-        fig.update_layout(
-            height=max(430, min(760, 320 + len(overall_chart) * 18)),
-            xaxis_title=None,
-            yaxis_title="Vægt af samlet portefølje",
-            yaxis_tickformat=".0%",
-            legend_title_text="Aktivklasse",
-        )
-        fig.update_xaxes(
-            categoryorder="array",
-            categoryarray=overall_chart["Navn"].tolist(),
-            tickangle=-45 if len(overall_chart) > 8 else 0,
-        )
+        fig = px.bar(overall_chart, x="Navn", y="Vægt", color="Aktivklasse", title="Samlet positionsvægt – portefølje ekskl. Grundfos", text_auto=".1%")
+        fig.update_layout(height=max(430, min(760, 320 + len(overall_chart) * 18)), xaxis_title=None, yaxis_title="Vægt af samlet portefølje", yaxis_tickformat=".0%", legend_title_text="Aktivklasse")
+        fig.update_xaxes(categoryorder="array", categoryarray=overall_chart["Navn"].tolist(), tickangle=-45 if len(overall_chart) > 8 else 0)
         st.plotly_chart(fig, use_container_width=True)
-
 
 with tab_rebalance:
     st.subheader("Rebalancering")
-    st.caption(
-        "7.0 omsætter Decision Engine til dynamiske target weights og konkrete handler. "
-        "Aktier og ETF'er vises separat, mens positions- og sektorloft håndhæves som hard constraints."
-    )
-
+    st.caption("7.0 omsætter Decision Engine til dynamiske target weights og konkrete handler. Aktier og ETF'er vises separat, mens positions- og sektorloft håndhæves som hard constraints.")
     r1, r2, r3, r4, r5 = st.columns(5)
     r1.metric("Handler", rebalance_result.trade_count)
     r2.metric("Køb", compact_dkk(rebalance_result.buy_dkk))
     r3.metric("Salg", compact_dkk(rebalance_result.sell_dkk))
     r4.metric("Kapitalbehov", compact_dkk(rebalance_result.cash_required_dkk))
     r5.metric("Constraints", rebalance_result.constrained_count)
-
     rebalance = rebalance_result.data.copy()
-
     if rebalance.empty:
         st.success("Ingen rebalancering anbefales.")
     else:
         if "Asset_Type" not in rebalance.columns:
-            asset_type_lookup = analytics_portfolio[["Name", "Asset_Type"]].drop_duplicates(
-                subset=["Name"]
-            )
-            rebalance = rebalance.merge(
-                asset_type_lookup,
-                left_on="Aktiv",
-                right_on="Name",
-                how="left",
-            ).drop(columns=["Name"], errors="ignore")
-        rebalance["Aktivklasse"] = rebalance["Asset_Type"].replace({
-            "Stock": "Aktie",
-            "Equity": "Aktie",
-            "Fund": "ETF",
-            "ETF": "ETF",
-        })
-
-        risk_lookup = (
-            stop_loss_table[["Aktiv", "Risikohandling"]]
-            .drop_duplicates(subset=["Aktiv"])
-            if not stop_loss_table.empty
-            else pd.DataFrame(columns=["Aktiv", "Risikohandling"])
-        )
+            asset_type_lookup = analytics_portfolio[["Name", "Asset_Type"]].drop_duplicates(subset=["Name"])
+            rebalance = rebalance.merge(asset_type_lookup, left_on="Aktiv", right_on="Name", how="left").drop(columns=["Name"], errors="ignore")
+        rebalance["Aktivklasse"] = rebalance["Asset_Type"].replace({"Stock": "Aktie", "Equity": "Aktie", "Fund": "ETF", "ETF": "ETF"})
+        risk_lookup = stop_loss_table[["Aktiv", "Risikohandling"]].drop_duplicates(subset=["Aktiv"]) if not stop_loss_table.empty else pd.DataFrame(columns=["Aktiv", "Risikohandling"])
         rebalance = rebalance.merge(risk_lookup, on="Aktiv", how="left")
         rebalance["Risiko"] = rebalance["Risikohandling"].fillna("Ikke vurderet")
 
-        def show_rebalance_section(
-            source: pd.DataFrame,
-            asset_class: str,
-            heading: str,
-        ) -> None:
+        def show_rebalance_section(source: pd.DataFrame, asset_class: str, heading: str) -> None:
             section = source.loc[source["Aktivklasse"] == asset_class].copy()
             st.markdown(f"### {heading}")
-
             if section.empty:
                 st.info(f"Ingen {heading.lower()} indgår aktuelt i rebalanceringen.")
                 return
-
-            section = section.sort_values(
-                ["Foreslået vægt", "Aktiv"],
-                ascending=[False, True],
-                na_position="last",
-            ).reset_index(drop=True)
-
-            chart_data = section[
-                ["Aktiv", "Nuværende vægt", "Foreslået vægt"]
-            ].copy()
-
-            display = section[
-                [
-                    "Aktiv", "Nuværende vægt", "Modelmålvægt", "Foreslået vægt",
-                    "Ændring", "Handel DKK", "Rebalance handling", "Risiko",
-                    "Decision Score", "Status", "Handling", "Constraint",
-                ]
-            ].copy()
-
+            section = section.sort_values(["Foreslået vægt", "Aktiv"], ascending=[False, True], na_position="last").reset_index(drop=True)
+            chart_data = section[["Aktiv", "Nuværende vægt", "Foreslået vægt"]].copy()
+            display = section[["Aktiv", "Nuværende vægt", "Modelmålvægt", "Foreslået vægt", "Ændring", "Handel DKK", "Rebalance handling", "Risiko", "Decision Score", "Status", "Handling", "Constraint"]].copy()
             for col in ["Nuværende vægt", "Modelmålvægt", "Foreslået vægt", "Ændring"]:
                 display[col] = display[col].apply(lambda x: format_pct(x, 1))
             display["Handel DKK"] = display["Handel DKK"].apply(compact_dkk)
-            display["Decision Score"] = display["Decision Score"].apply(
-                lambda x: score_text(x, 0)
-            )
-            display = display.rename(
-                columns={
-                    "Modelmålvægt": "Model target",
-                    "Foreslået vægt": "Execution target",
-                    "Handel DKK": "Handel",
-                    "Rebalance handling": "Execution",
-                }
-            )
-
-            st.dataframe(
-                table_style(display),
-                use_container_width=True,
-                hide_index=True,
-                height=no_scroll_height(display),
-            )
-
+            display["Decision Score"] = display["Decision Score"].apply(lambda x: score_text(x, 0))
+            display = display.rename(columns={"Modelmålvægt": "Model target", "Foreslået vægt": "Execution target", "Handel DKK": "Handel", "Rebalance handling": "Execution"})
+            st.dataframe(table_style(display), use_container_width=True, hide_index=True, height=no_scroll_height(display))
             st.markdown("#### Nuværende vægt vs. foreslået allokering")
-            chart_long = chart_data.melt(
-                id_vars="Aktiv",
-                value_vars=["Nuværende vægt", "Foreslået vægt"],
-                var_name="Allokering",
-                value_name="Vægt",
-            )
-            fig = px.bar(
-                chart_long,
-                x="Aktiv",
-                y="Vægt",
-                color="Allokering",
-                barmode="group",
-                title=f"Nuværende vægt vs. foreslået allokering – {heading}",
-                text_auto=".1%",
-            )
-            fig.update_layout(
-                height=max(390, min(700, 300 + len(section) * 18)),
-                xaxis_title=None,
-                yaxis_title="Vægt",
-                yaxis_tickformat=".0%",
-                legend_title_text=None,
-            )
+            chart_long = chart_data.melt(id_vars="Aktiv", value_vars=["Nuværende vægt", "Foreslået vægt"], var_name="Allokering", value_name="Vægt")
+            fig = px.bar(chart_long, x="Aktiv", y="Vægt", color="Allokering", barmode="group", title=f"Nuværende vægt vs. foreslået allokering – {heading}", text_auto=".1%")
+            fig.update_layout(height=max(390, min(700, 300 + len(section) * 18)), xaxis_title=None, yaxis_title="Vægt", yaxis_tickformat=".0%", legend_title_text=None)
             fig.update_xaxes(tickangle=-45 if len(section) > 8 else 0)
             st.plotly_chart(fig, use_container_width=True)
 
         show_rebalance_section(rebalance, "Aktie", "Aktier")
-
         st.divider()
-
         show_rebalance_section(rebalance, "ETF", "ETF'er")
 
-    st.caption(
-        f"Hard constraints: positionsloft {config.max_position_weight:.0%} og "
-        f"sektorloft {config.max_sector_weight:.0%}. Handler under "
-        f"{compact_dkk(MINIMUM_TRADE_DKK)} eksekveres ikke."
-    )
-
+    st.caption(f"Hard constraints: positionsloft {config.max_position_weight:.0%} og sektorloft {config.max_sector_weight:.0%}. Handler under {compact_dkk(MINIMUM_TRADE_DKK)} eksekveres ikke.")
     with st.expander("Vis stop-loss og alarmniveauer"):
         s1, s2, s3 = st.columns(3)
         s1.metric("Stop brudt", stop_loss_metrics["Stop_Broken"])
         s2.metric("Alarmniveau", stop_loss_metrics["Alarm"])
         s3.metric("Stram stop", stop_loss_metrics["Tighten"])
-
         if stop_loss_table.empty:
             st.info("Ingen stop-loss-data.")
         else:
             stop_display = stop_loss_table.copy()
             for col in ["Kurs", "3M høj", "Stopkurs", "Alarmkurs"]:
-                stop_display[col] = stop_display[col].apply(
-                    lambda x: format_score(x, 2) if pd.notna(x) else "N/A"
-                )
+                stop_display[col] = stop_display[col].apply(lambda x: format_score(x, 2) if pd.notna(x) else "N/A")
             for col in ["Stopafstand", "Afstand til stop"]:
-                stop_display[col] = stop_display[col].apply(
-                    lambda x: format_pct(x, 1)
-                )
-            stop_display = stop_display[
-                [
-                    "Aktiv", "Kurs", "3M høj", "Stopafstand", "Stopkurs",
-                    "Alarmkurs", "Afstand til stop", "Modelhandling",
-                    "Risikohandling",
-                ]
-            ]
-            st.dataframe(
-                table_style(stop_display), use_container_width=True,
-                hide_index=True, height=no_scroll_height(stop_display),
-            )
-
+                stop_display[col] = stop_display[col].apply(lambda x: format_pct(x, 1))
+            stop_display = stop_display[["Aktiv", "Kurs", "3M høj", "Stopafstand", "Stopkurs", "Alarmkurs", "Afstand til stop", "Modelhandling", "Risikohandling"]]
+            st.dataframe(table_style(stop_display), use_container_width=True, hide_index=True, height=no_scroll_height(stop_display))
 
 with tab_doctor:
     st.subheader("Portfolio Doctor")
-    st.caption(
-        "Tester moderate vægtændringer og viser, om de forbedrer den aktuelle "
-        "Portfolio Health-model. Resultatet er beslutningsstøtte, ikke en ordre."
-    )
-
+    st.caption("Tester moderate vægtændringer og viser, om de forbedrer den aktuelle Portfolio Health-model. Resultatet er beslutningsstøtte, ikke en ordre.")
     d1, d2, d3 = st.columns(3)
-    d1.metric(
-        "Porteføljesundhed nu",
-        score_text(portfolio_doctor.current_health, 1),
-        help=TOOLTIPS["portfolio_health"],
-    )
-    d2.metric(
-        "Bedste simulation",
-        score_text(portfolio_doctor.best_simulated_health, 1),
-    )
+    d1.metric("Porteføljesundhed nu", score_text(portfolio_doctor.current_health, 1), help=TOOLTIPS["portfolio_health"])
+    d2.metric("Bedste simulation", score_text(portfolio_doctor.best_simulated_health, 1))
     d3.metric("Handlingsforslag", portfolio_doctor.actionable_count)
-
     doctor_data = portfolio_doctor.data.copy()
     if doctor_data.empty:
         st.success("Ingen ændringer opfylder de aktuelle krav.")
     else:
-        display = doctor_data[
-            [
-                "Aktiv", "Handling", "Anbefalet ændring", "Beløb DKK",
-                "Health effekt", "Confidence", "Prioritet", "Begrundelse",
-            ]
-        ].copy()
-        display["Anbefalet ændring"] = display["Anbefalet ændring"].apply(
-            percentage_points
-        )
+        display = doctor_data[["Aktiv", "Handling", "Anbefalet ændring", "Beløb DKK", "Health effekt", "Confidence", "Prioritet", "Begrundelse"]].copy()
+        display["Anbefalet ændring"] = display["Anbefalet ændring"].apply(percentage_points)
         display["Beløb DKK"] = display["Beløb DKK"].apply(compact_dkk)
-        display["Health effekt"] = display["Health effekt"].apply(
-            lambda x: score_text(x, 1)
-        )
-        display["Confidence"] = display["Confidence"].apply(
-            lambda x: f"{x:.0f}%" if pd.notna(x) else "N/A"
-        )
+        display["Health effekt"] = display["Health effekt"].apply(lambda x: score_text(x, 1))
+        display["Confidence"] = display["Confidence"].apply(lambda x: f"{x:.0f}%" if pd.notna(x) else "N/A")
         display = display.rename(columns={"Beløb DKK": "Beløb"})
-        st.dataframe(
-            table_style(display), use_container_width=True,
-            hide_index=True, height=no_scroll_height(display),
-        )
-
+        st.dataframe(table_style(display), use_container_width=True, hide_index=True, height=no_scroll_height(display))
         with st.expander("Vis modeldetaljer"):
-            detail = doctor_data[
-                ["Aktiv", "Health før", "Health efter", "Health effekt"]
-            ].copy()
-            st.dataframe(
-                table_style(detail), use_container_width=True, hide_index=True
-            )
-
+            detail = doctor_data[["Aktiv", "Health før", "Health efter", "Health effekt"]].copy()
+            st.dataframe(table_style(detail), use_container_width=True, hide_index=True)
 
 with tab_opportunity:
     st.subheader("Opportunities")
-    st.caption(
-        "Viser kun kandidater med status Stærk eller Meget stærk. "
-        "Svagere signaler skjules som irrelevant støj."
-    )
-
+    st.caption("Viser kun kandidater med status Stærk eller Meget stærk. Svagere signaler skjules som irrelevant støj.")
     opportunity_data = opportunity_result.data.copy()
     strong_statuses = {"Stærk", "Meget stærk"}
     if "Decision_Status" in opportunity_data.columns:
-        opportunity_data = opportunity_data.loc[
-            opportunity_data["Decision_Status"].isin(strong_statuses)
-        ].copy()
+        opportunity_data = opportunity_data.loc[opportunity_data["Decision_Status"].isin(strong_statuses)].copy()
     else:
         opportunity_data = opportunity_data.iloc[0:0].copy()
-
-    opportunity_data = opportunity_data.sort_values(
-        ["Decision_Score", "Name"],
-        ascending=[False, True],
-        na_position="last",
-    ).reset_index(drop=True)
-
+    opportunity_data = opportunity_data.sort_values(["Decision_Score", "Name"], ascending=[False, True], na_position="last").reset_index(drop=True)
     o1, o2 = st.columns(2)
     if opportunity_data.empty:
         o1.metric("Bedste mulighed", "Ingen")
@@ -1646,64 +1101,26 @@ with tab_opportunity:
         st.info("Ingen kandidater har aktuelt status Stærk eller Meget stærk.")
     else:
         best_opportunity = opportunity_data.iloc[0]
-        o1.metric(
-            "Bedste mulighed",
-            str(best_opportunity.get("Name", "N/A")),
-            (
-                f"{float(best_opportunity['Decision_Score']):.0f}/100"
-                if pd.notna(best_opportunity.get("Decision_Score")) else None
-            ),
-            help=TOOLTIPS["opportunity_score"],
-        )
+        o1.metric("Bedste mulighed", str(best_opportunity.get("Name", "N/A")), f"{float(best_opportunity['Decision_Score']):.0f}/100" if pd.notna(best_opportunity.get("Decision_Score")) else None, help=TOOLTIPS["opportunity_score"])
         o2.metric("Stærke kandidater", len(opportunity_data))
-
-        summary = opportunity_data[
-            [
-                "Decision Rank", "Name", "Handling",
-                "Decision_Score", "Decision_Status",
-            ]
-        ].copy()
+        summary = opportunity_data[["Decision Rank", "Name", "Handling", "Decision_Score", "Decision_Status"]].copy()
         summary.columns = ["Rank", "Aktiv", "Handling", "Score", "Status"]
         summary["Score"] = summary["Score"].apply(lambda x: score_text(x, 0))
-        st.dataframe(
-            table_style(summary), use_container_width=True,
-            hide_index=True, height=no_scroll_height(summary),
-        )
-
+        st.dataframe(table_style(summary), use_container_width=True, hide_index=True, height=no_scroll_height(summary))
         with st.expander("Vis scorekomponenter"):
-            details = opportunity_data[
-                [
-                    "Name", "Momentum Score", "AI Score", "RS Score",
-                    "Trend Score", "Risk Score", "Data Score", "Position Score",
-                ]
-            ].copy()
-            details.columns = [
-                "Aktiv", "Momentum", "AI", "RS", "Trend",
-                "Risiko", "Data", "Positionsbonus",
-            ]
+            details = opportunity_data[["Name", "Momentum Score", "AI Score", "RS Score", "Trend Score", "Risk Score", "Data Score", "Position Score"]].copy()
+            details.columns = ["Aktiv", "Momentum", "AI", "RS", "Trend", "Risiko", "Data", "Positionsbonus"]
             for col in details.columns[1:]:
                 details[col] = details[col].apply(lambda x: score_text(x, 0))
-            st.dataframe(
-                table_style(details), use_container_width=True,
-                hide_index=True, height=no_scroll_height(details),
-            )
-
+            st.dataframe(table_style(details), use_container_width=True, hide_index=True, height=no_scroll_height(details))
 
 with tab_compounders:
     st.subheader("Emerging Compounders")
-    st.caption(
-        "7.2 kombinerer kvant-radar og agent-intelligence med en Promotion Gate: "
-        "Monitor → Deep Research → Fair Value Review → Decision Review. "
-        "Discovery Score er stadig research-prioritering – ikke et købssignal."
-    )
-
+    st.caption("7.2 kombinerer kvant-radar og agent-intelligence med en Promotion Gate: Monitor → Deep Research → Fair Value Review → Decision Review. Discovery Score er stadig research-prioritering – ikke et købssignal.")
     if compounder_error:
         st.warning(compounder_error)
     elif compounder_radar is None or not compounder_radar.exists:
-        st.info(
-            "Radarfilen mangler. Læg ugens resultat i "
-            "`data/compounder_radar.xlsx` eller `data/compounder_radar.csv`."
-        )
+        st.info("Radarfilen mangler. Læg ugens resultat i `data/compounder_radar.xlsx` eller `data/compounder_radar.csv`.")
     else:
         c1, c2, c3, c4, c5, c6 = st.columns(6)
         c1.metric("Kandidater", compounder_summary["Candidate_Count"])
@@ -1712,114 +1129,40 @@ with tab_compounders:
         c4.metric("Fair Value", compounder_summary.get("Fair_Value_Count", 0))
         c5.metric("Decision Review", compounder_summary.get("Decision_Review_Count", 0))
         c6.metric("Topkandidat", compounder_summary["Top_Candidate"] or "N/A")
-
-        st.caption(
-            "Promotion Gate kræver stigende evidens for hvert trin. Decision Review "
-            "kræver bl.a. valuation, momentum og risiko – og er stadig ikke en købsordre."
-        )
-
+        st.caption("Promotion Gate kræver stigende evidens for hvert trin. Decision Review kræver bl.a. valuation, momentum og risiko – og er stadig ikke en købsordre.")
         if compounder_summary.get("Agent_Generated_At"):
-            st.caption(
-                f"Mandags-agent sidst opdateret: {compounder_summary['Agent_Generated_At']}"
-            )
-
+            st.caption(f"Mandags-agent sidst opdateret: {compounder_summary['Agent_Generated_At']}")
         for note in compounder_radar.notes:
             st.warning(note)
-
         radar = top_candidates(compounder_radar, limit=20)
         if radar.empty:
             st.info("Ingen kandidater.")
         else:
-            radar = radar.rename(columns={
-                "Name": "Selskab",
-                "Discovery_Score": "Discovery Score",
-                "Research_Priority": "Research",
-                "Promotion_Stage": "Pipeline Stage",
-                "Next_Action": "Næste trin",
-                "Promotion_Reasons": "Gate-begrundelse",
-                "Pipeline_Source": "Kilde",
-                "Composite_Score": "Kvant Score",
-                "Agent_Score": "Agent Score",
-                "Unified_Confidence": "Confidence",
-                "Is_New": "Ny",
-                "Agent_Score_Change": "Δ Agent",
-                "Revenue_CAGR_5Y": "Omsætning CAGR 5Y",
-                "EPS_CAGR_5Y": "EPS CAGR 5Y",
-                "Gross_Margin": "Bruttomargin", "Upside_Pct": "Upside",
-                "Risk_Reward": "Risk/Reward", "Risk": "Kvant risiko",
-                "Agent_Risk": "Agent risiko",
-                "Reason": "Kvant begrundelse",
-                "Agent_Thesis": "Agent tese",
-                "News_Classification": "Nyhedsklasse",
-            })
-            for score_col in [
-                "Discovery Score", "Kvant Score", "Agent Score", "Confidence", "Δ Agent"
-            ]:
+            radar = radar.rename(columns={"Name": "Selskab", "Discovery_Score": "Discovery Score", "Research_Priority": "Research", "Promotion_Stage": "Pipeline Stage", "Next_Action": "Næste trin", "Promotion_Reasons": "Gate-begrundelse", "Pipeline_Source": "Kilde", "Composite_Score": "Kvant Score", "Agent_Score": "Agent Score", "Unified_Confidence": "Confidence", "Is_New": "Ny", "Agent_Score_Change": "Δ Agent", "Revenue_CAGR_5Y": "Omsætning CAGR 5Y", "EPS_CAGR_5Y": "EPS CAGR 5Y", "Gross_Margin": "Bruttomargin", "Upside_Pct": "Upside", "Risk_Reward": "Risk/Reward", "Risk": "Kvant risiko", "Agent_Risk": "Agent risiko", "Reason": "Kvant begrundelse", "Agent_Thesis": "Agent tese", "News_Classification": "Nyhedsklasse"})
+            for score_col in ["Discovery Score", "Kvant Score", "Agent Score", "Confidence", "Δ Agent"]:
                 if score_col in radar.columns:
-                    radar[score_col] = radar[score_col].apply(
-                        lambda value: score_text(value, 0) if pd.notna(value) else "N/A"
-                    )
+                    radar[score_col] = radar[score_col].apply(lambda value: score_text(value, 0) if pd.notna(value) else "N/A")
             if "Ny" in radar.columns:
                 radar["Ny"] = radar["Ny"].map({True: "🆕", False: ""}).fillna("")
-            st.dataframe(
-                table_style(radar), use_container_width=True,
-                hide_index=True, height=no_scroll_height(radar),
-            )
-
+            st.dataframe(table_style(radar), use_container_width=True, hide_index=True, height=no_scroll_height(radar))
             st.markdown("### Promotion Queue")
-            st.caption(
-                "Kun kandidater, der består mindst Deep Research-gaten, vises her. "
-                "Decision Review-kandidater er klar til separat Investment OS-vurdering."
-            )
+            st.caption("Kun kandidater, der består mindst Deep Research-gaten, vises her. Decision Review-kandidater er klar til separat Investment OS-vurdering.")
             promotion_source = compounder_radar.data.copy()
-            promotion_queue = promotion_source.loc[
-                promotion_source.get(
-                    "Deep_Research_Ready", pd.Series(False, index=promotion_source.index)
-                ).fillna(False)
-            ].copy()
+            promotion_queue = promotion_source.loc[promotion_source.get("Deep_Research_Ready", pd.Series(False, index=promotion_source.index)).fillna(False)].copy()
             if promotion_queue.empty:
                 st.info("Ingen kandidater består aktuelt Promotion Gate til Deep Research.")
             else:
-                stage_order = {
-                    "Decision Review": 0,
-                    "Fair Value Review": 1,
-                    "Deep Research": 2,
-                    "Monitor": 3,
-                }
-                promotion_queue["Stage_Order"] = (
-                    promotion_queue["Promotion_Stage"].map(stage_order).fillna(9)
-                )
-                promotion_queue = promotion_queue.sort_values(
-                    ["Stage_Order", "Discovery_Score", "Unified_Confidence"],
-                    ascending=[True, False, False],
-                    na_position="last",
-                )
-                promotion_display = promotion_queue[
-                    [
-                        "Name", "Ticker", "Promotion_Stage", "Next_Action",
-                        "Discovery_Score", "Unified_Confidence",
-                        "Promotion_Reasons",
-                    ]
-                ].head(12).copy()
-                promotion_display.columns = [
-                    "Selskab", "Ticker", "Pipeline Stage", "Næste trin",
-                    "Discovery", "Confidence", "Gate-begrundelse",
-                ]
+                stage_order = {"Decision Review": 0, "Fair Value Review": 1, "Deep Research": 2, "Monitor": 3}
+                promotion_queue["Stage_Order"] = promotion_queue["Promotion_Stage"].map(stage_order).fillna(9)
+                promotion_queue = promotion_queue.sort_values(["Stage_Order", "Discovery_Score", "Unified_Confidence"], ascending=[True, False, False], na_position="last")
+                promotion_display = promotion_queue[["Name", "Ticker", "Promotion_Stage", "Next_Action", "Discovery_Score", "Unified_Confidence", "Promotion_Reasons"]].head(12).copy()
+                promotion_display.columns = ["Selskab", "Ticker", "Pipeline Stage", "Næste trin", "Discovery", "Confidence", "Gate-begrundelse"]
                 for col in ["Discovery", "Confidence"]:
-                    promotion_display[col] = promotion_display[col].apply(
-                        lambda value: score_text(value, 0) if pd.notna(value) else "N/A"
-                    )
-                st.dataframe(
-                    table_style(promotion_display),
-                    use_container_width=True,
-                    hide_index=True,
-                    height=no_scroll_height(promotion_display),
-                )
-
+                    promotion_display[col] = promotion_display[col].apply(lambda value: score_text(value, 0) if pd.notna(value) else "N/A")
+                st.dataframe(table_style(promotion_display), use_container_width=True, hide_index=True, height=no_scroll_height(promotion_display))
 
 with tab_watchlist:
     st.subheader("Watchlist")
-
     if watchlist_error:
         st.warning(watchlist_error)
     elif watchlist_result is None or watchlist_result.data.empty:
@@ -1829,147 +1172,67 @@ with tab_watchlist:
         w1.metric("Kandidater", watchlist_metrics["Count"])
         w2.metric("AI ≥ 80%", watchlist_metrics["High_Confidence"])
         w3.metric("Topkandidat", watchlist_metrics["Top_Candidate"] or "N/A")
-
         for note in watchlist_result.notes:
             st.warning(note)
-
         watchlist_table = format_watchlist_table(watchlist_result)
-        st.dataframe(
-            table_style(watchlist_table), use_container_width=True,
-            hide_index=True, height=no_scroll_height(watchlist_table),
-        )
-
+        st.dataframe(table_style(watchlist_table), use_container_width=True, hide_index=True, height=no_scroll_height(watchlist_table))
 
 with tab_settings:
     st.subheader("Settings")
-    st.caption(
-        "Kontrolcenter for modellen. Sessionens ændringer nulstilles ved genstart."
-    )
-
+    st.caption("Kontrolcenter for modellen. Sessionens ændringer nulstilles ved genstart.")
     with st.expander("Portfolio Health", expanded=True):
         factors = list(config.health_weights.keys())
         columns = st.columns(2)
         for index, factor in enumerate(factors):
             with columns[index % 2]:
-                st.number_input(
-                    factor, min_value=0.0, max_value=1.0, step=0.05,
-                    format="%.2f", key=f"health_weight_{factor}",
-                )
+                st.number_input(factor, min_value=0.0, max_value=1.0, step=0.05, format="%.2f", key=f"health_weight_{factor}")
         total = sum(float(st.session_state[f"health_weight_{f}"]) for f in factors)
         st.caption(f"Indtastet vægtsum: {total:.2f}. Normaliseres automatisk.")
         if st.button("Nulstil Portfolio Health"):
             for factor, default in config.health_weights.items():
                 st.session_state[f"health_weight_{factor}"] = float(default)
             st.rerun()
-
     with st.expander("Decision Engine"):
         factors = list(DECISION_WEIGHTS.keys())
         columns = st.columns(2)
         for index, factor in enumerate(factors):
             with columns[index % 2]:
-                st.number_input(
-                    factor, min_value=0.0, max_value=1.0, step=0.05,
-                    format="%.2f", key=f"decision_weight_{factor}",
-                )
-        total = sum(
-            float(st.session_state[f"decision_weight_{f}"]) for f in factors
-        )
+                st.number_input(factor, min_value=0.0, max_value=1.0, step=0.05, format="%.2f", key=f"decision_weight_{factor}")
+        total = sum(float(st.session_state[f"decision_weight_{f}"]) for f in factors)
         st.caption(f"Indtastet vægtsum: {total:.2f}. Normaliseres automatisk.")
         if st.button("Nulstil Decision Engine"):
             for factor, default in DECISION_WEIGHTS.items():
                 st.session_state[f"decision_weight_{factor}"] = float(default)
             st.rerun()
-
     with st.expander("Modeloversigt"):
-        st.caption(
-            "Redigér værdierne og vælg Anvend modelændringer. Derefter "
-            "genberegnes hele modellen med de nye parametre."
-        )
+        st.caption("Redigér værdierne og vælg Anvend modelændringer. Derefter genberegnes hele modellen med de nye parametre.")
         m1, m2 = st.columns(2)
         with m1:
             st.text_input("Benchmark", key="draft_model_benchmark")
-            st.number_input(
-                "Maks. positionsvægt",
-                min_value=0.01,
-                max_value=1.00,
-                step=0.01,
-                format="%.2f",
-                key="draft_model_max_position_weight",
-                help="Angives som decimal. 0,12 svarer til 12 %.",
-            )
-            st.number_input(
-                "Minimum handel (DKK)",
-                min_value=0.0,
-                step=500.0,
-                format="%.0f",
-                key="draft_model_minimum_trade_dkk",
-            )
+            st.number_input("Maks. positionsvægt", min_value=0.01, max_value=1.00, step=0.01, format="%.2f", key="draft_model_max_position_weight", help="Angives som decimal. 0,12 svarer til 12 %.")
+            st.number_input("Minimum handel (DKK)", min_value=0.0, step=500.0, format="%.0f", key="draft_model_minimum_trade_dkk")
         with m2:
-            st.number_input(
-                "Maks. sektorvægt",
-                min_value=0.01,
-                max_value=1.00,
-                step=0.01,
-                format="%.2f",
-                key="draft_model_max_sector_weight",
-                help="Angives som decimal. 0,20 svarer til 20 %.",
-            )
-            st.number_input(
-                "Risikofri rente",
-                min_value=0.0,
-                max_value=0.25,
-                step=0.005,
-                format="%.3f",
-                key="draft_model_risk_free_rate",
-                help="Angives som decimal. 0,02 svarer til 2 %.",
-            )
+            st.number_input("Maks. sektorvægt", min_value=0.01, max_value=1.00, step=0.01, format="%.2f", key="draft_model_max_sector_weight", help="Angives som decimal. 0,20 svarer til 20 %.")
+            st.number_input("Risikofri rente", min_value=0.0, max_value=0.25, step=0.005, format="%.3f", key="draft_model_risk_free_rate", help="Angives som decimal. 0,02 svarer til 2 %.")
             st.text_input("App-version", value=APP_VERSION, disabled=True)
-            st.text_input(
-                "Datakilde", value="AI_portfolio.xlsx + yfinance", disabled=True
-            )
-
+            st.text_input("Datakilde", value="AI_portfolio.xlsx + yfinance", disabled=True)
         active_settings = pd.DataFrame([
             {"Aktiv parameter": "Benchmark", "Værdi": config.benchmark},
-            {
-                "Aktiv parameter": "Maks. positionsvægt",
-                "Værdi": format_pct(config.max_position_weight, 0),
-            },
-            {
-                "Aktiv parameter": "Maks. sektorvægt",
-                "Værdi": format_pct(config.max_sector_weight, 0),
-            },
-            {
-                "Aktiv parameter": "Minimum handel",
-                "Værdi": compact_dkk(MINIMUM_TRADE_DKK),
-            },
-            {
-                "Aktiv parameter": "Risikofri rente",
-                "Værdi": format_pct(config.risk_free_rate, 1),
-            },
+            {"Aktiv parameter": "Maks. positionsvægt", "Værdi": format_pct(config.max_position_weight, 0)},
+            {"Aktiv parameter": "Maks. sektorvægt", "Værdi": format_pct(config.max_sector_weight, 0)},
+            {"Aktiv parameter": "Minimum handel", "Værdi": compact_dkk(MINIMUM_TRADE_DKK)},
+            {"Aktiv parameter": "Risikofri rente", "Værdi": format_pct(config.risk_free_rate, 1)},
         ])
         st.dataframe(active_settings, use_container_width=True, hide_index=True)
-
         apply_col, reset_col = st.columns(2)
         with apply_col:
             if st.button("Anvend modelændringer", type="primary"):
-                st.session_state["model_benchmark"] = (
-                    str(st.session_state["draft_model_benchmark"]).strip()
-                    or base_config.benchmark
-                )
-                st.session_state["model_max_position_weight"] = float(
-                    st.session_state["draft_model_max_position_weight"]
-                )
-                st.session_state["model_max_sector_weight"] = float(
-                    st.session_state["draft_model_max_sector_weight"]
-                )
-                st.session_state["model_minimum_trade_dkk"] = float(
-                    st.session_state["draft_model_minimum_trade_dkk"]
-                )
-                st.session_state["model_risk_free_rate"] = float(
-                    st.session_state["draft_model_risk_free_rate"]
-                )
+                st.session_state["model_benchmark"] = str(st.session_state["draft_model_benchmark"]).strip() or base_config.benchmark
+                st.session_state["model_max_position_weight"] = float(st.session_state["draft_model_max_position_weight"])
+                st.session_state["model_max_sector_weight"] = float(st.session_state["draft_model_max_sector_weight"])
+                st.session_state["model_minimum_trade_dkk"] = float(st.session_state["draft_model_minimum_trade_dkk"])
+                st.session_state["model_risk_free_rate"] = float(st.session_state["draft_model_risk_free_rate"])
                 st.rerun()
-
         with reset_col:
             if st.button("Nulstil Modeloversigt"):
                 defaults = {
@@ -1983,40 +1246,20 @@ with tab_settings:
                     st.session_state[key] = value
                     st.session_state[f"draft_{key}"] = value
                 st.rerun()
-
     with st.expander("Momentum-vægte"):
-        st.caption(
-            "Indtast rå vægte. De normaliseres automatisk, så den aktive sum er 100 %."
-        )
+        st.caption("Indtast rå vægte. De normaliseres automatisk, så den aktive sum er 100 %.")
         periods = list(base_config.momentum_weights.keys())
         columns = st.columns(len(periods))
         for index, period in enumerate(periods):
             with columns[index]:
-                st.number_input(
-                    period,
-                    min_value=0.0,
-                    max_value=1.0,
-                    step=0.05,
-                    format="%.2f",
-                    key=f"momentum_weight_{period}",
-                )
-
+                st.number_input(period, min_value=0.0, max_value=1.0, step=0.05, format="%.2f", key=f"momentum_weight_{period}")
         active_momentum = pd.DataFrame({
             "Periode": periods,
-            "Indtastet vægt": [
-                format_pct(st.session_state[f"momentum_weight_{period}"], 0)
-                for period in periods
-            ],
-            "Aktiv normaliseret vægt": [
-                format_pct(momentum_weights[period], 0) for period in periods
-            ],
+            "Indtastet vægt": [format_pct(st.session_state[f"momentum_weight_{period}"], 0) for period in periods],
+            "Aktiv normaliseret vægt": [format_pct(momentum_weights[period], 0) for period in periods],
         })
         st.dataframe(active_momentum, use_container_width=True, hide_index=True)
-        st.caption(
-            f"Indtastet vægtsum: {sum(raw_momentum_weights.values()):.2f}. "
-            "Aktiv vægtsum: 1,00."
-        )
-
+        st.caption(f"Indtastet vægtsum: {sum(raw_momentum_weights.values()):.2f}. Aktiv vægtsum: 1,00.")
         if st.button("Nulstil Momentum-vægte"):
             for period, default in base_config.momentum_weights.items():
                 st.session_state[f"momentum_weight_{period}"] = float(default)
