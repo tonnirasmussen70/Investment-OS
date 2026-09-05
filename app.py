@@ -55,13 +55,13 @@ from modules.watchlist_engine import (
 
 
 st.set_page_config(
-    page_title="Investment OS 7.2",
+    page_title="Investment OS 7.2.1",
     page_icon="📈",
     layout="wide",
 )
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
-APP_VERSION = "7.2.0"
+APP_VERSION = "7.2.1"
 MINIMUM_TRADE_DKK = 5_000.0
 SNAPSHOT_ONLY = os.getenv("INVESTMENT_OS_SNAPSHOT_ONLY") == "1"
 
@@ -116,6 +116,14 @@ def compact_dkk(value: float) -> str:
     if pd.isna(value):
         return "N/A"
     return f"{float(value):,.0f}".replace(",", ".")
+
+
+def format_market_price(value: float) -> str:
+    """Vis kurs med to decimaler og dansk talformat uden heltalsafrunding."""
+    if pd.isna(value):
+        return "N/A"
+    formatted = f"{float(value):,.2f}"
+    return formatted.replace(",", "X").replace(".", ",").replace("X", ".")
 
 
 def parse_cash_number(value) -> float:
@@ -247,7 +255,7 @@ def load_data(path: str):
     return load_master_file(path)
 
 
-@st.cache_data(ttl=3600, show_spinner=True)
+@st.cache_data(ttl=300, show_spinner=True)
 def load_market_data(tickers, currencies):
     snapshot = fetch_market_snapshot(tickers, currencies)
     fetched_at = datetime.now(ZoneInfo("Europe/Copenhagen"))
@@ -259,7 +267,7 @@ def load_history(tickers, period):
     return fetch_price_history(tickers, period=period)
 
 
-st.title("📈 Investment OS 7.2")
+st.title(f"📈 Investment OS {APP_VERSION}")
 
 try:
     model = load_data(str(DATA_FILE))
@@ -277,10 +285,29 @@ tickers = (
 )
 currencies = raw["Currency"].dropna().astype(str).unique().tolist()
 
+if st.button(
+    "↻ Opdater Yahoo-lukkekurser",
+    help="Rydder markedscachen og henter de seneste afsluttede dagskurser fra Yahoo igen.",
+):
+    load_market_data.clear()
+    load_history.clear()
+
 snapshot, data_updated_at = load_market_data(tickers, currencies)
+market_dates = sorted(
+    {
+        pd.Timestamp(timestamp).date()
+        for timestamp in snapshot.price_dates.values()
+        if pd.notna(timestamp)
+    }
+)
+market_date_text = (
+    market_dates[-1].strftime("%d-%m-%Y")
+    if market_dates
+    else "ukendt"
+)
 st.caption(
-    f"Version {APP_VERSION} · Data sidst opdateret: "
-    f"{data_updated_at:%d-%m-%Y kl. %H:%M}"
+    f"Yahoo-lukkekurser senest pr. {market_date_text} · "
+    f"Hentet {data_updated_at:%d-%m-%Y kl. %H:%M}"
 )
 portfolio = calculate_portfolio(model, snapshot)
 base_config = load_investment_config(model.settings)
@@ -921,7 +948,7 @@ with tab_positions:
         table.columns = ["Navn", "Antal", "Åben kurs", "Dags kurs", "Sektor", "Markedsværdi", "Vægt", "Afkast", "Momentum", "AI"]
         table["Antal"] = table["Antal"].apply(lambda x: compact_dkk(x) if pd.notna(x) else "N/A")
         for col in ["Åben kurs", "Dags kurs"]:
-            table[col] = table[col].apply(lambda x: compact_dkk(x) if pd.notna(x) else "N/A")
+            table[col] = table[col].apply(format_market_price)
         table["Markedsværdi"] = table["Markedsværdi"].apply(compact_dkk)
         table["Vægt"] = table["Vægt"].apply(lambda x: format_pct(x, 1) if pd.notna(x) else "-")
         table["Afkast"] = table["Afkast"].apply(lambda x: format_pct(x, 1))
