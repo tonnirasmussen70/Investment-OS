@@ -2,6 +2,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
+import json
+from urllib.parse import quote
+from urllib.request import Request, urlopen
 
 import pandas as pd
 import yfinance as yf
@@ -34,6 +37,7 @@ def _download_close(
     period: str = "18mo",
     *,
     auto_adjust: bool = True,
+    drop_empty_rows: bool = True,
 ) -> pd.DataFrame:
     cleaned = sorted({str(t).strip() for t in tickers if str(t).strip()})
     if not cleaned:
@@ -64,7 +68,66 @@ def _download_close(
     if len(cleaned) == 1 and data.shape[1] == 1:
         data.columns = cleaned
 
-    return data.sort_index().dropna(how="all")
+    data = data.sort_index()
+    return data.dropna(how="all") if drop_empty_rows else data
+
+
+def _timestamp(value) -> pd.Timestamp | None:
+    """Normalisér Yahoo-tid til et UTC timestamp."""
+    if value is None:
+        return None
+    try:
+        if isinstance(value, (int, float)):
+            return pd.to_datetime(value, unit="s", utc=True)
+        timestamp = pd.Timestamp(value)
+        return (
+            timestamp.tz_localize("UTC")
+            if timestamp.tzinfo is None
+            else timestamp.tz_convert("UTC")
+        )
+    except (TypeError, ValueError, OverflowError):
+        return None
+
+
+def _latest_regular_market_quote(
+    ticker: str,
+) -> tuple[float, pd.Timestamp] | None:
+    """
+    Hent Yahoo-quote som fallback, når seneste dagsbar har tom Close.
+
+    Nogle mindre likvide ETF'er får en dagsbar med Open/High/Low og volumen,
+    men uden Close. Yahoo-siden viser samtidig den afsluttede kurs i
+    regularMarketPrice. Den anvendes kun efter den ordinære handelssessions
+    sluttid, så en intradag-kurs ikke fejlagtigt vises som lukkekurs.
+    """
+    encoded_ticker = quote(str(ticker).strip(), safe="")
+    url = (
+        "https://query1.finance.yahoo.com/v8/finance/chart/"
+        f"{encoded_ticker}?range=5d&interval=1d&events=div%2Csplits"
+    )
+    request = Request(url, headers={"User-Agent": "Mozilla/5.0"})
+
+    try:
+        with urlopen(request, timeout=8) as response:
+            payload = json.load(response)
+        result = payload["chart"]["result"][0]
+        metadata = result["meta"]
+        price = float(metadata["regularMarketPrice"])
+    except (KeyError, IndexError, TypeError, ValueError, OSError, json.JSONDecodeError):
+        return None
+
+    quote_time = _timestamp(metadata.get("regularMarketTime"))
+    market_end = _timestamp(
+        metadata.get("currentTradingPeriod", {})
+        .get("regular", {})
+        .get("end")
+    )
+    if quote_time is None:
+        return None
+    if market_end is not None and pd.Timestamp.now(tz="UTC") < market_end:
+        return None
+
+    return price, quote_time
 
 
 def _latest_price(
@@ -106,10 +169,19 @@ def fetch_market_snapshot(
         cleaned_tickers,
         period="10d",
         auto_adjust=False,
+        # Bevar også den seneste Yahoo-række, når alle Close-værdier er tomme.
+        # Datoen bruges til at opdage forsinkede ETF-dagsbarer nedenfor.
+        drop_empty_rows=False,
     )
     prices: dict[str, float] = {}
     price_dates: dict[str, pd.Timestamp] = {}
     retry_prices: list[str] = []
+    quote_retry_prices: list[str] = []
+    latest_batch_date = (
+        pd.Timestamp(price_history.index[-1]).date()
+        if not price_history.empty
+        else None
+    )
 
     for ticker in cleaned_tickers:
         if ticker in price_history.columns:
@@ -117,6 +189,11 @@ def fetch_market_snapshot(
             if not series.empty:
                 prices[ticker] = float(series.iloc[-1])
                 price_dates[ticker] = pd.Timestamp(series.index[-1])
+                if (
+                    latest_batch_date is not None
+                    and price_dates[ticker].date() < latest_batch_date
+                ):
+                    quote_retry_prices.append(ticker)
                 continue
         retry_prices.append(ticker)
 
@@ -130,6 +207,23 @@ def fetch_market_snapshot(
             missing_prices.append(ticker)
         else:
             prices[ticker], price_dates[ticker] = latest_price
+
+    # Yahoo kan publicere fredagens regularMarketPrice, mens Close stadig er
+    # tom for enkelte ETF'er. Opgradér kun kursen, når quote-datoen er nyere
+    # end den seneste udfyldte dagsbar.
+    for ticker in sorted(set([*retry_prices, *quote_retry_prices])):
+        latest_quote = _latest_regular_market_quote(ticker)
+        if latest_quote is None:
+            continue
+        quote_price, quote_time = latest_quote
+        history_date = price_dates.get(ticker)
+        if history_date is None or quote_time.date() > history_date.date():
+            prices[ticker] = quote_price
+            price_dates[ticker] = quote_time
+
+    missing_prices = [
+        ticker for ticker in missing_prices if ticker not in prices
+    ]
 
     fx_to_dkk = {"DKK": 1.0}
     requested_fx = {
