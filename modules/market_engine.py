@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 
 import pandas as pd
@@ -26,9 +26,15 @@ class MarketSnapshot:
     updated_at: pd.Timestamp
     missing_prices: list[str]
     missing_fx: list[str]
+    price_dates: dict[str, pd.Timestamp] = field(default_factory=dict)
 
 
-def _download_close(tickers: list[str], period: str = "18mo") -> pd.DataFrame:
+def _download_close(
+    tickers: list[str],
+    period: str = "18mo",
+    *,
+    auto_adjust: bool = True,
+) -> pd.DataFrame:
     cleaned = sorted({str(t).strip() for t in tickers if str(t).strip()})
     if not cleaned:
         return pd.DataFrame()
@@ -37,7 +43,8 @@ def _download_close(tickers: list[str], period: str = "18mo") -> pd.DataFrame:
         data = yf.download(
             cleaned,
             period=period,
-            auto_adjust=True,
+            interval="1d",
+            auto_adjust=auto_adjust,
             progress=False,
             group_by="column",
             threads=True,
@@ -60,9 +67,12 @@ def _download_close(tickers: list[str], period: str = "18mo") -> pd.DataFrame:
     return data.sort_index().dropna(how="all")
 
 
-def _latest_price(ticker: str, period: str = "10d") -> float | None:
-    """Hent seneste pris for én ticker som robust fallback efter bulk-download."""
-    history = _download_close([ticker], period=period)
+def _latest_price(
+    ticker: str,
+    period: str = "10d",
+) -> tuple[float, pd.Timestamp] | None:
+    """Hent seneste ujusterede lukkekurs og handelsdato for én ticker."""
+    history = _download_close([ticker], period=period, auto_adjust=False)
     if ticker not in history.columns:
         return None
 
@@ -70,11 +80,13 @@ def _latest_price(ticker: str, period: str = "10d") -> float | None:
     if series.empty:
         return None
 
-    return float(series.iloc[-1])
+    return float(series.iloc[-1]), pd.Timestamp(series.index[-1])
 
 
 def fetch_price_history(tickers: list[str], period: str = "18mo") -> pd.DataFrame:
-    return _download_close(tickers, period=period)
+    # Momentum beregnes på justerede kurser, så udbytter og splits ikke skaber
+    # kunstige kursgab i den historiske analyse.
+    return _download_close(tickers, period=period, auto_adjust=True)
 
 
 def fetch_market_snapshot(
@@ -87,8 +99,16 @@ def fetch_market_snapshot(
         if str(ticker).strip()
     ]
 
-    price_history = _download_close(cleaned_tickers, period="10d")
+    # Positioner skal matche Yahoo Finances viste officielle Close. Historiske
+    # analyser bruger justerede kurser, men den aktuelle positionskurs må ikke
+    # auto-justeres for udbytter eller splits.
+    price_history = _download_close(
+        cleaned_tickers,
+        period="10d",
+        auto_adjust=False,
+    )
     prices: dict[str, float] = {}
+    price_dates: dict[str, pd.Timestamp] = {}
     retry_prices: list[str] = []
 
     for ticker in cleaned_tickers:
@@ -96,6 +116,7 @@ def fetch_market_snapshot(
             series = price_history[ticker].dropna()
             if not series.empty:
                 prices[ticker] = float(series.iloc[-1])
+                price_dates[ticker] = pd.Timestamp(series.index[-1])
                 continue
         retry_prices.append(ticker)
 
@@ -104,11 +125,11 @@ def fetch_market_snapshot(
     # før de klassificeres som reelt manglende markedskurser.
     missing_prices: list[str] = []
     for ticker in retry_prices:
-        latest = _latest_price(ticker, period="10d")
-        if latest is None:
+        latest_price = _latest_price(ticker, period="10d")
+        if latest_price is None:
             missing_prices.append(ticker)
         else:
-            prices[ticker] = latest
+            prices[ticker], price_dates[ticker] = latest_price
 
     fx_to_dkk = {"DKK": 1.0}
     requested_fx = {
@@ -117,7 +138,11 @@ def fetch_market_snapshot(
         if currency != "DKK" and currency in FX_TICKERS
     }
 
-    fx_history = _download_close(list(requested_fx.values()), period="10d")
+    fx_history = _download_close(
+        list(requested_fx.values()),
+        period="10d",
+        auto_adjust=False,
+    )
     retry_fx: list[tuple[str, str]] = []
 
     for currency, ticker in requested_fx.items():
@@ -130,11 +155,11 @@ def fetch_market_snapshot(
 
     missing_fx: list[str] = []
     for currency, ticker in retry_fx:
-        latest = _latest_price(ticker, period="10d")
-        if latest is None:
+        latest_price = _latest_price(ticker, period="10d")
+        if latest_price is None:
             missing_fx.append(currency)
         else:
-            fx_to_dkk[currency] = latest
+            fx_to_dkk[currency] = latest_price[0]
 
     return MarketSnapshot(
         prices=prices,
@@ -142,4 +167,5 @@ def fetch_market_snapshot(
         updated_at=pd.Timestamp(datetime.now(timezone.utc)),
         missing_prices=missing_prices,
         missing_fx=missing_fx,
+        price_dates=price_dates,
     )
