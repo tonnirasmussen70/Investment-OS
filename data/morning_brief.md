@@ -1,60 +1,72 @@
 # Investment OS – Morgenbrief
-**Lørdag 5. september 2026**
+**Søndag 6. september 2026**
 
 ## A. Executive view
-Fredagens stærke amerikanske jobrapport ændrede rentebilledet markant: USA skabte 162.000 jobs i august mod ca. 56.000 ventet, arbejdsløsheden holdt 4,1 %, og markedet løftede sandsynligheden for en Fed-forhøjelse i september til omkring 60 %. Amerikanske aktier sluttede lavere, og 10-årsrenten endte omkring 4,78 %. Samtidig holder oliechokket inflationsrisikoen høj.
+Markederne er lukkede søndag, og USA holder desuden lukket mandag for Labor Day. Fredagens stærke amerikanske jobrapport har gjort rente/inflation til den vigtigste makrofaktor: S&P 500 faldt 0,38 %, Nasdaq 0,29 %, mens 10-årsrenten steg til omkring 4,8 %. Semiconductors skilte sig positivt ud fredag trods det generelle rentechok. citeturn0news43turn0news49
 
-Investment OS-snapshotet er friskt og viser en interessant divergens: porteføljeværdien er faldet til 1.153.867 kr. og afkastet til +9,30 %, men Portfolio Health er steget til 72,57 og AI Confidence til 57,61. Modellen har to køb i execution-planen – Vestas og iShares MSCI Korea UCITS ETF – mens ASML og ABB står Reducer. Dagens hovedhandling er derfor ikke at reagere på fredagens markedsstøj, men at vurdere de to nye købssignaler disciplineret. Ingen handler udføres.
+Investment OS-snapshotet er verificeret og fortsat friskt. Porteføljeværdien er 1.153.645 kr., Portfolio Health 71,92 og AI Confidence 57,67. Modellen har nu kun ét execution-signal: Vestas Øg/Køb ca. 20.262 kr. Korea-ETF-signalet fra gårsdagens brief er bortfaldet, mens TSMC er forbedret til Øg. Dagens opgave er derfor at forberede kapitalallokeringen – ikke at handle. **Ingen handler udføres.** fileciteturn0file0 fileciteturn9file1
 
 ## B. Portfolio status
-Snapshot-status: FRISKT / verificeret. `generated_at`: 2026-09-04T17:27:32.417494+02:00. `source.commit_sha`: 9ed5eb87418c59a3b89d9596bef54245735a1a0c. `source.portfolio_file_sha256`: 5465dbb16806bc2d4bd015d2a4966258bb78e9f30c13ce356a7a4acf0473ce53. `data_quality.score`: 100/100. Snapshotet er ca. 13½ time gammelt og dermed ikke stale.
+Snapshot-status: **FRISKT / verificeret**. `generated_at`: **2026-09-05T11:57:44.804982+02:00**. `source.commit_sha`: **32849faa7ed8c7dc9d735db2999956a9788a8875**. `source.portfolio_file_sha256`: **312373496d83a293acdf329f07083110dcc15a7460b3b85b77b85b4d3ce6aa36**. `data_quality.score`: **100/100**. Snapshotet er ca. 19 timer gammelt og dermed under 24-timersgrænsen. fileciteturn0file0
 
-Porteføljeværdi: 1.153.867 kr.; aktiv markedsværdi: 721.747 kr.; samlet afkast: +9,30 %; Portfolio Health: 72,57; AI Confidence: 57,61 – Moderat; positionsloft: 14 %. Største positioner er Novo Nordisk 13,87 %, ASML 9,16 %, Danske Bank 8,00 %, NKT 7,94 %, Microsoft 7,15 %, SEC0 6,40 % og TSMC 5,32 %. Novo ligger dermed kun ca. 0,13 procentpoint under positionsloftet.
+Porteføljeværdi: **1.153.645 kr.**; aktiv markedsværdi: **721.525 kr.**; samlet afkast: **+9,26 %**; Portfolio Health: **71,92**; AI Confidence: **57,67 – Moderat**; positionsloft: **14 %**. Største positioner er Novo Nordisk **13,88 %**, ASML **9,12 %**, Danske Bank **8,00 %**, NKT **7,95 %**, Microsoft **7,14 %**, SEC0 **6,37 %** og TSMC **5,36 %**. Novo ligger dermed kun ca. **0,12 procentpoint** under positionsloftet. fileciteturn0file0
 
-Datakvaliteten er 100/100, men snapshotet oplyser to relevante begrænsninger: 22 udenlandske positioner anvender valutan neutralt DKK-afkast, og 22 positioner mangler depotets DKK-markedsværdi og bruger derfor Yahoo-kurs × FX som fallback.
+Datakvaliteten er 100/100, men 22 udenlandske positioner anvender valutan neutralt DKK-afkast, og 22 positioner mangler depotets DKK-markedsværdi og bruger Yahoo-kurs × FX som fallback. Det ændrer ikke modellens angivne score, men bør fortsat indgå i vurderingen af præcisionen på DKK-afkast. fileciteturn0file0
 
 ## C. Markedsstatus og makro
-Fredagens amerikanske jobrapport var klart stærkere end ventet: nonfarm payrolls steg 162.000 mod ca. 56.000 ventet, mens arbejdsløsheden var uændret på 4,1 %. Det sendte 2-årsrenten til ca. 4,37 % og 10-årsrenten til omkring 4,78 %. Fed-futures indikerede efter rapporten omtrent 60 % sandsynlighed for en renteforhøjelse på mødet 15.-16. september. Fokus flytter nu til næste uges CPI/PPI.
+Fredag sluttede S&P 500 i **7.718,60 (-0,38 %)**, Dow i **53.414,25 (-0,51 %)** og Nasdaq i **26.506,99 (-0,29 %)**. August-jobrapporten viste **162.000 nye jobs** mod cirka 56.000 ventet, og markedets sandsynlighed for en Fed-forhøjelse i september steg til omkring 58-61 %. Den amerikanske 10-årige rente handlede omkring **4,8 %**, og 2-årsrenten omkring **4,4 %** efter rapporten. citeturn0news43turn0news49
 
-S&P 500 faldt fredag ca. 0,4 %, Nasdaq ca. 0,3 % og Dow ca. 0,5 %. S&P 500 sluttede dog ugen omtrent +0,1 % og Nasdaq +0,4 %. Brent sluttede omkring USD 92,68/fad og steg 7,6 % på ugen; WTI sluttede omkring USD 91,48. Spotguld sluttede omkring USD 4.419/oz efter et fald på ca. 1,2 % fredag. Dollarindekset steg ca. 0,2 % fredag. Et tilstrækkeligt sikkert aktuelt kobbertal kunne ikke verificeres i denne kørsel og angives derfor N/A.
+Brent sluttede ugen omkring **USD 96,28/fad**, +7,6 % på ugen, mens WTI sluttede omkring **USD 91,48**. Guld-futures sluttede omkring **USD 4.429,80/oz**, -1,4 % fredag. LME 3M-kobber handlede fredag omkring **USD 14.373/ton**, understøttet af lave lagre uden for USA. Dollarindekset lå omkring 99,2 efter jobrapporten. citeturn2news25turn2news30turn2search1turn0search1
+
+Makroregimet er derfor **vækst robust / inflation og renter fortsat høje**. Det er ikke et ideelt miljø for dyr duration, men heller ikke et klassisk recession-regime. Den næste store test bliver amerikansk PPI torsdag 10. september og CPI fredag 11. september. citeturn1news24
 
 ## D. Sektor- og kapitalstrømsrotation
-Kapitalstrømmene er defensive. Amerikanske aktiefonde havde netto-outflow på USD 11,12 mia. i ugen til 2. september, heraf USD 1,39 mia. fra teknologi, USD 1,31 mia. fra finans og USD 0,62 mia. fra industri. Samtidig modtog amerikanske money-market-fonde USD 48,76 mia. Det er et tydeligt signal om højere risikopræmie – ikke nødvendigvis starten på et bear-marked.
+**Semiconductors:** trods fredagens højere renter steg semiconductor-segmentet ifølge Reuters ca. **3,4 %**, hvilket er et vigtigt tegn på relativ styrke. Det passer med Investment OS' forbedring i TSMC, som nu står **Øg**, mens ASML og SEC0 fortsat står **Reducer**. Det er altså ikke et generelt chip-signal, men en intern rotation mod de stærkeste dele af komplekset. citeturn0news43 fileciteturn0file0
 
-Semiconductors/AI: strukturel AI-efterspørgsel er fortsat stærk, men højere renter og kapitaludstrømning fra teknologi giver modvind til duration. Investment OS viser ASML Reducer, Microsoft Afvent, SEC0 Afvent og TSMC Hold. Defense: geopolitikken støtter fortsat temaet, men højere renter og energiomkostninger kan dæmpe multipler. Clean energy: Vestas er nu Øg og er et af dagens to execution-signaler. Mining/rare earths/uranium/infrastructure: ingen nye verificerede Investment OS-execution-signaler; højere renter er kortsigtet modvind, mens energi- og forsyningssikkerhed fortsat er en langsigtet strukturel støtte.
+**Defense/infrastructure:** højere statsrenter presser multipler, men Europas strategiske investeringer fortsætter. Lørdag gennemførte Isar Aerospace Europas første kommercielle orbitalopsendelse fra kontinental jord, endnu et signal om Europas voksende strategiske industri- og forsvarsinfrastruktur. citeturn0news37
+
+**Uranium/nuclear:** IAEA har fået etableret en midlertidig våbenhvile omkring Zaporizjzja-værket for kritiske elreparationer. Det reducerer en akut sikkerhedsrisiko, men ændrer ikke den langsigtede strukturelle nuclear/uranium-case. citeturn0news36
+
+**Rare earths/mining:** kinesiske leverandører har ifølge Reuters stoppet dele af rare-earth-forsendelserne til USA, mens Brasilien samtidig har vedtaget ny regulering og incitamenter for kritiske mineraler. Det styrker den langsigtede investeringscase for diversificering af vestlige forsyningskæder. citeturn0news42turn0news40
+
+**Clean energy:** Vestas forbliver porteføljens klareste modelbaserede clean-energy-signal med 1M **+21,09 %**, 3M **+26,29 %**, AI Confidence **83,94** og accelererende rotation. fileciteturn0file0
 
 ## E. Porteføljepåvirkning
-ASML: Reducer; vægt 9,16 %, 1W -1,30 %, 1M -1,27 %, 3M -2,10 %, AI Confidence 51,27 og negativ rotation. Microsoft: Afvent; vægt 7,15 %, 1M +0,32 %, 3M +23,84 %, AI Confidence 65,52, men momentum aftager. TSMC: Hold; vægt 5,32 %, 1M +1,88 %, 3M +2,87 %, AI Confidence 67,10. SEC0: Afvent; vægt 6,40 %, 1M -1,63 %, 3M -6,64 %, AI Confidence 62,02.
+**ASML:** Reducer; vægt **9,12 %**, 1W **-1,81 %**, 1M **-1,78 %**, 3M **-2,60 %**, AI Confidence **49,49**, negativ rotation. Den langsigtede trend er stadig stærk – 6M +28,30 % og 12M +116,19 % – men kort/mellemlangt momentum er svagt. fileciteturn0file0
 
-Novo Nordisk: Hold; vægt 13,87 %, 1M +3,10 %, 3M +12,32 %, AI Confidence 64,29. Positionen er praktisk talt ved 14 %-loftet, så yderligere køb er ikke attraktivt ud fra koncentrationsreglen. Vestas: Øg; vægt 3,25 %, 1M +21,09 %, 3M +26,29 %, AI Confidence 83,94 og accelererende momentum. NKT: Afvent; vægt 7,94 %, 3M -6,03 %, AI Confidence 47,78. Danske Bank: Afvent; vægt 8,00 %, 3M +13,66 %, AI Confidence 73,85. AL Sydbank: Hold; vægt 4,42 %, 3M +35,47 %, AI Confidence 85,23.
+**Microsoft:** Afvent; vægt **7,14 %**, 1M **+0,28 %**, 3M **+23,78 %**, AI Confidence **65,52**, men momentum aftager. **TSMC:** Øg; vægt **5,36 %**, 1W **+2,73 %**, 1M **+2,56 %**, 3M **+3,55 %**, AI Confidence **73,87**, accelererende rotation. **SEC0:** Reducer; vægt **6,37 %**, 1M **-4,91 %**, 3M **-9,76 %**, AI Confidence **55,25**, negativ rotation. fileciteturn0file0
 
-Frontline er fortsat nr. 1 i opportunities med Decision Score 91,03 og status Meget stærk, men er ikke blandt dagens execution-køb. Det er vigtigt: opportunity-score og faktisk decision queue skal ikke blandes sammen.
+**Novo Nordisk:** Hold; vægt **13,88 %**, 1M **+3,10 %**, 3M **+12,32 %**, AI Confidence **64,29**. Momentum er positivt, men positionen er reelt fuldt vægtet mod 14 %-loftet. **Vestas:** Øg; vægt **3,25 %**, AI Confidence **83,94**. **NKT:** Afvent; vægt **7,95 %**, 3M **-6,03 %**, AI Confidence **47,78**, men rotation accelererer. **Danske Bank:** Afvent; vægt **8,00 %**, 3M **+13,66 %**, AI Confidence **73,85**. **AL Sydbank:** Hold; vægt **4,42 %**, 3M **+35,47 %**, AI Confidence **87,01**. fileciteturn0file0
 
 ## F. Ændringer siden seneste brief
-Porteføljeværdien er faldet fra 1.178.185 kr. til 1.153.867 kr., ca. -24.318 kr., og samlet afkast fra +10,25 % til +9,30 %. Portfolio Health er derimod steget fra 71,67 til 72,57, og AI Confidence fra 56,57 til 57,61. Sammenligningen skal læses med forsigtighed, fordi `portfolio_file_sha256` er ændret siden gårsdagens snapshot; masterfilen er altså opdateret, så hele forskellen kan ikke fortolkes som markedsafkast alene.
+Siden lørdagens brief er porteføljeværdien ændret fra **1.153.867 kr. til 1.153.645 kr.**, cirka **-222 kr.** Portfolio Health er faldet fra **72,57 til 71,92**, mens AI Confidence er næsten uændret og marginalt højere fra **57,61 til 57,67**. Masterfilens SHA er igen ændret, så forskellene må ikke fortolkes som rent markedsafkast. fileciteturn1file0 fileciteturn0file0
 
-Decision queue/execution har nu to køb: Vestas Wind System ca. 20.268 kr. med Decision Score 85,70 og iShares MSCI Korea UCITS ETF ca. 11.132 kr. med Decision Score 70,51. Samlet execution er 2 handler og ca. 31.400 kr. køb. Frontline er fortsat en stærk opportunity, men ikke dagens execution-signal.
+Den vigtigste modelændring er decision queue: gårsdagens **Korea-ETF-køb er bortfaldet**. Execution summary viser nu kun **1 handel**, samlet køb **20.261,57 kr.**, og signalet er **Vestas Wind System – Øg**, Decision Score **85,70**, Confidence **83,94**. fileciteturn4file0 fileciteturn9file1
 
-Stop-loss-summary er forbedret til 9 Stop_Broken / 3 Alarm / 2 Tighten mod gårsdagens 10 / 3 / 2. Det er en lille, men reel forbedring i risikobilledet.
+Samtidig er **TSMC forbedret fra Hold til Øg**, mens **SEC0 er gået fra Afvent til Reducer**. ASML og ABB er fortsat Reducer. Stop-loss-summary er uændret på **9 Stop_Broken / 3 Alarm / 2 Tighten**. fileciteturn0file0 fileciteturn6file4
 
 ## G. Dagens vigtigste begivenheder og kommende regnskaber
-Lørdag er markederne lukkede, så dagens opgave er analyse frem for execution. Den vigtigste nye information er fredagens stærke jobrapport og dens effekt på renterne. Næste store makrokatalysator er amerikansk CPI/PPI i den kommende uge, som bliver afgørende for, om Fed faktisk hæver renten 15.-16. september.
+Søndag er markederne lukkede, og de amerikanske aktie- og obligationsmarkeder er også lukkede **mandag 7. september** for Labor Day. Det betyder, at europæisk handel mandag ikke får normal amerikansk prisbekræftelse. citeturn1news25
 
-Hormuz er fortsat den største geopolitiske markedsrisiko. Reuters/Kpler registrerede torsdag kun fire commodity-skibe gennem strædet mod et 10-dages gennemsnit på 15. Det understøtter fortsat høj olie- og fragtrisikopræmie og er relevant for Frontline, men gør casen stærkt eventdrevet.
+Ugens vigtigste makrodata er **USA PPI torsdag 10. september** og **CPI fredag 11. september**. ECB holder også rentemøde torsdag. For porteføljen er **TSMC's august-omsætning 10. september** særligt relevant og bør ses som en konkret fundamental kontrol af det nye Øg-signal. citeturn1search0turn1search13
+
+Der er ingen planlagte regnskaber fra ASML, Microsoft, TSMC, Novo Nordisk, Vestas, NKT eller de danske banker i den kommende uge, som jeg kan verificere i de anvendte kalendere. Blandt større globale rapporter er bl.a. Adobe på torsdag. citeturn1news26
 
 ## H. Handlingsorienteret vurdering
-Investment OS-output: Vestas Wind System Øg/Køb ca. 20.268 kr., Decision Score 85,70. iShares MSCI Korea UCITS ETF køb ca. 11.132 kr., Decision Score 70,51. Execution summary: 2 handler / ca. 31.400 kr. køb / 0 kr. salg. ASML og ABB står Reducer i positionsoutputtet. Frontline står fortsat meget stærkt i Opportunities, men er ikke i decision queue. Der udføres ingen handler.
+**Investment OS-output:** Vestas Wind System **Øg/Køb ca. 20.262 kr.**, Decision Score **85,70**, Confidence **83,94**. Execution summary: **1 handel / 20.262 kr. køb / 0 kr. salg**. TSMC står **Øg** i positionsoutputtet, men er ikke et execution-køb i den aktuelle decision queue. ASML, SEC0 og ABB står **Reducer**. **Der udføres ingen handler.** fileciteturn9file1 fileciteturn0file0
 
-Egen vurdering: Vestas-signalet er det mest interessante. Det har stærkt 1M/3M momentum, høj AI Confidence og accelererende rotation, samtidig med at den nuværende vægt kun er ca. 3,25 %. Det giver mere porteføljemæssig plads end Novo eller ASML. Korea-ETF-signalet er mindre stærkt og bør vurderes i sammenhæng med den eksisterende semiconductor/Asien-eksponering, før ny kapital allokeres.
+**Egen vurdering:** Vestas er fortsat det mest robuste nye kapitalallokeringssignal. Kombinationen af lav porteføljevægt, stærkt 1M/3M-momentum, høj AI Confidence og accelererende rotation gør signalet mere attraktivt end at øge allerede koncentrerede positioner. Korea-ETF'ens bortfald efter kun én dag understreger samtidig værdien af ikke at handle mekanisk på hvert nyt signal.
 
-Jeg ville ikke bruge lørdagens brief til at reagere på ASMLs Reducer-signal isoleret. Den stærke amerikanske jobrapport og højere renter er en reel kortsigtet modvind, men ASMLs 6M/12M momentum er fortsat positivt. Det relevante er, om den negative 1M/3M-rotation fortsætter, når markedet åbner igen.
+TSMC er den mest interessante ændring i den eksisterende portefølje. Momentum er nu positivt på 1W/1M/3M, Confidence er 73,87, og rotationen accelererer. Jeg ville dog afvente TSMC's august-omsætning torsdag før en eventuel selvstændig kapitalallokeringsbeslutning, især fordi porteføljen allerede har betydelig semiconductor/AI-eksponering.
+
+ASML/SEC0 bør overvåges, men jeg ser ikke søndagens data som grundlag for en forhastet reduktion. ASML har svagt kort momentum, men meget stærkt 6M/12M momentum; SEC0's 1M/3M-svækkelse er mere udtalt og fortjener derfor størst opmærksomhed.
 
 ## I. Usikkerheder og datakvalitet
-Snapshotet er friskt og har 100/100 datakvalitet, men masterfilens SHA er ændret siden gårsdagens brief. Derfor skal ændringen i porteføljeværdi ikke læses som rent markedsafkast. 22 udenlandske positioner bruger desuden fallback-markedsværdi baseret på Yahoo-kurs × FX.
+Snapshotet er verificeret og har **100/100 datakvalitet**, men er søndag morgen ca. 19 timer gammelt. Det er derfor friskt efter 24-timersreglen, men indeholder naturligt ingen nye markedskurser fra weekenden. De 22 udenlandske fallback-værdiansættelser og valutaneutrale DKK-afkast er fortsat den vigtigste interne databegrænsning. fileciteturn0file0
 
-Makroregimet er blevet mindre komfortabelt for vækstaktier: stærkere jobs, højere Fed-hike-sandsynlighed, 10-årsrente omkring 4,78 % og olie over USD 90. Til gengæld er Portfolio Health, AI Confidence og stop-loss-summary forbedret. Det er netop et miljø, hvor Investment OS' disciplin er vigtigere end enkeltstående overskrifter.
+Den største eksterne usikkerhed er kombinationen af **olie omkring USD 96, høje amerikanske renter og næste uges inflationstal**. Hvis CPI/PPI overrasker opad, vil det især være negativt for højt prissatte vækstaktiver. Omvendt vil lavere inflation kunne genåbne duration-handlen. Derfor er kvaliteten af næste signal vigtigere end hastigheden.
 
 ### Dagens beslutningspunkter
-1. Vestas er dagens stærkeste nye Investment OS-signal: Øg/Køb ca. 20.268 kr., høj AI Confidence og god plads under positionsloftet – vurder signalet, men udfør ingen handel i briefen.
-2. Korea-ETF-købet på ca. 11.132 kr. bør først vurderes mod samlet semiconductor/Asien-overlap; Decision Score er væsentligt lavere end Vestas.
-3. Ingen forhastet reduktion af ASML: Reducer-signalet er reelt, men brug næste handelsdags momentum efter job-/rentechokket som ekstra bekræftelse.
+1. **Vestas forbliver eneste konkrete Investment OS-execution-signal:** Øg/Køb ca. 20.262 kr.; vurder signalet til næste åbne handelsdag, men udfør ingen handel fra briefen.
+2. **TSMC er forbedret markant til Øg:** afvent august-omsætningen 10. september som fundamental bekræftelse og kontrollér semiconductor-overlap før ny kapital.
+3. **Ingen ny kapital til Novo og ingen automatisk reduktion af ASML:** Novo er allerede på 13,88 % mod 14 %-loftet; ASML/SEC0 skal vurderes på fortsat momentumsvækkelse frem for én weekends makrostøj.
