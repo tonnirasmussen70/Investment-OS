@@ -844,14 +844,14 @@ with tab_overview:
             fig.add_hrect(
                 y0=5.00,
                 y1=5.25,
-                fillcolor="rgba(230, 126, 34, 0.16)",
+                fillcolor="rgba(255, 140, 0, 0.32)",
                 line_width=0,
                 layer="below",
             )
             fig.add_hrect(
                 y0=5.25,
-                y1=max(6.0, float(treasury_10y.max()) + 0.25),
-                fillcolor="rgba(231, 76, 60, 0.14)",
+                y1=upper_red,
+                fillcolor="rgba(220, 20, 60, 0.28)",
                 line_width=0,
                 layer="below",
             )
