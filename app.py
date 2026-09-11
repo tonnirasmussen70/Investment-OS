@@ -830,14 +830,14 @@ with tab_overview:
             fig.add_hrect(
                 y0=0,
                 y1=4.75,
-                fillcolor="rgba(46, 204, 113, 0.10)",
+                fillcolor="rgba(0, 170, 0, 0.22)",
                 line_width=0,
                 layer="below",
             )
             fig.add_hrect(
                 y0=4.75,
                 y1=5.00,
-                fillcolor="rgba(241, 196, 15, 0.15)",
+                fillcolor="rgba(255, 215, 0, 0.30)",
                 line_width=0,
                 layer="below",
             )
