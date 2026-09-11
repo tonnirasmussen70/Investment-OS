@@ -55,13 +55,13 @@ from modules.watchlist_engine import (
 
 
 st.set_page_config(
-    page_title="Investment OS 7.2.2",
+    page_title="Investment OS 7.2.3",
     page_icon="📈",
     layout="wide",
 )
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
-APP_VERSION = "7.2.2"
+APP_VERSION = "7.2.3"
 MINIMUM_TRADE_DKK = 5_000.0
 SNAPSHOT_ONLY = os.getenv("INVESTMENT_OS_SNAPSHOT_ONLY") == "1"
 
@@ -793,6 +793,93 @@ with tab_overview:
                 st.metric("Sharpe 12M", format_score(current_sharpe, 2))
             else:
                 st.info("Sharpe-historikken kan ikke vises endnu.")
+
+        st.markdown("#### USA lang rente – 10-årig Treasury")
+        st.caption(
+            "Risikozoner følger den daglige langrente-overvågning: "
+            "grøn < 4,75 %, gul 4,75–5,00 %, orange 5,00–5,25 % og rød > 5,25 %."
+        )
+        treasury_history = fetch_price_history(["^TNX"], period="18mo")
+        if "^TNX" in treasury_history.columns:
+            treasury_10y = pd.to_numeric(treasury_history["^TNX"], errors="coerce").dropna()
+        else:
+            treasury_10y = pd.Series(dtype=float)
+
+        if not treasury_10y.empty:
+            treasury_df = treasury_10y.rename("Rente").reset_index()
+            treasury_df = treasury_df.rename(
+                columns={treasury_df.columns[0]: "Dato"}
+            )
+            current_10y = float(treasury_10y.iloc[-1])
+
+            if current_10y < 4.75:
+                rate_zone = "Grøn"
+            elif current_10y < 5.00:
+                rate_zone = "Gul"
+            elif current_10y <= 5.25:
+                rate_zone = "Orange"
+            else:
+                rate_zone = "Rød"
+
+            fig = px.line(
+                treasury_df,
+                x="Dato",
+                y="Rente",
+                title="USA 10Y Treasury – udvikling og risikozoner",
+            )
+            fig.add_hrect(
+                y0=0,
+                y1=4.75,
+                fillcolor="rgba(46, 204, 113, 0.10)",
+                line_width=0,
+                layer="below",
+            )
+            fig.add_hrect(
+                y0=4.75,
+                y1=5.00,
+                fillcolor="rgba(241, 196, 15, 0.15)",
+                line_width=0,
+                layer="below",
+            )
+            fig.add_hrect(
+                y0=5.00,
+                y1=5.25,
+                fillcolor="rgba(230, 126, 34, 0.16)",
+                line_width=0,
+                layer="below",
+            )
+            fig.add_hrect(
+                y0=5.25,
+                y1=max(6.0, float(treasury_10y.max()) + 0.25),
+                fillcolor="rgba(231, 76, 60, 0.14)",
+                line_width=0,
+                layer="below",
+            )
+            fig.add_hline(y=4.75, line_dash="dot", line_width=1)
+            fig.add_hline(y=5.00, line_dash="dot", line_width=1)
+            fig.add_hline(y=5.25, line_dash="dot", line_width=1)
+            fig.update_layout(
+                height=420,
+                xaxis_title=None,
+                yaxis_title="Rente (%)",
+                hovermode="x unified",
+                showlegend=False,
+            )
+            fig.update_yaxes(ticksuffix=" %")
+            st.plotly_chart(fig, use_container_width=True)
+
+            r1, r2, r3 = st.columns(3)
+            r1.metric("USA 10Y", f"{current_10y:.2f} %")
+            r2.metric("Risikozone", rate_zone)
+            r3.metric(
+                "Afstand til rød zone",
+                f"{max(0.0, 5.25 - current_10y):.2f} %-point"
+                if current_10y <= 5.25
+                else f"{current_10y - 5.25:.2f} %-point over",
+            )
+        else:
+            st.info("USA 10Y-rentedata kan ikke hentes fra Yahoo Finance lige nu.")
+
         st.markdown("#### Performance attribution")
         def attribution_table(dataframe: pd.DataFrame) -> pd.DataFrame:
             table = dataframe.copy()
