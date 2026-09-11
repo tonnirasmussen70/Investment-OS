@@ -850,7 +850,7 @@ with tab_overview:
             )
             fig.add_hrect(
                 y0=5.25,
-                y1=upper_red,
+                y1=5.50,
                 fillcolor="rgba(220, 20, 60, 0.28)",
                 line_width=0,
                 layer="below",
