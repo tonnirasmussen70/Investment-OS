@@ -35,6 +35,11 @@ from modules.decision_queue_engine import build_decision_queue
 from modules.formatting import format_dkk, format_pct, format_score
 from modules.health_engine import calculate_portfolio_health
 from modules.market_engine import fetch_market_snapshot, fetch_price_history
+from modules.macro_rate_engine import (
+    COMPONENT_WEIGHTS,
+    calculate_macro_rate_regime,
+    fetch_fred_macro_history,
+)
 from modules.opportunity_engine import build_opportunity_scores
 from modules.portfolio_doctor_engine import build_portfolio_doctor
 from modules.portfolio_engine import (
@@ -55,13 +60,13 @@ from modules.watchlist_engine import (
 
 
 st.set_page_config(
-    page_title="Investment OS 7.2.3",
+    page_title="Investment OS 7.3.0",
     page_icon="📈",
     layout="wide",
 )
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
-APP_VERSION = "7.2.3"
+APP_VERSION = "7.3.0"
 MINIMUM_TRADE_DKK = 5_000.0
 SNAPSHOT_ONLY = os.getenv("INVESTMENT_OS_SNAPSHOT_ONLY") == "1"
 
@@ -107,6 +112,11 @@ TOOLTIPS = {
     "opportunity_score": (
         "Rangerer attraktiviteten ud fra momentum, AI Confidence, relativ "
         "styrke, trend, risiko, datakvalitet og plads under positionsloftet."
+    ),
+    "macro_rate_risk": (
+        "Observeret risikofaktor 0-100 baseret på lange renter, rentekurve, "
+        "inflationsforventning og kreditspænd. Overlayet ændrer ikke "
+        "Decision Score, køb/salg-status eller handelsbeløb."
     ),
 }
 
@@ -267,6 +277,11 @@ def load_history(tickers, period):
     return fetch_price_history(tickers, period=period)
 
 
+@st.cache_data(ttl=3600, show_spinner=False)
+def load_macro_rate_history():
+    return fetch_fred_macro_history(years=3)
+
+
 st.title(f"📈 Investment OS {APP_VERSION}")
 
 try:
@@ -390,6 +405,34 @@ benchmark_ticker = config.benchmark
 history_tickers = sorted(set([*tickers, benchmark_ticker]))
 history = load_history(history_tickers, "18mo")
 
+# Macro/Rate Regime anvender offentlige FRED-serier. Yahoo ^TNX bruges som
+# frisk 10Y-fallback og til den eksisterende rentegraf.
+try:
+    macro_rate_history = load_macro_rate_history()
+    macro_rate_error = None
+except Exception as exc:
+    macro_rate_history = pd.DataFrame()
+    macro_rate_error = str(exc)
+
+treasury_history = load_history(["^TNX"], "18mo")
+if "^TNX" in treasury_history.columns:
+    yahoo_10y = pd.to_numeric(treasury_history["^TNX"], errors="coerce").dropna()
+    yahoo_10y.index = pd.to_datetime(yahoo_10y.index).tz_localize(None).normalize()
+    if macro_rate_history.empty:
+        macro_rate_history = yahoo_10y.rename("US10Y").to_frame()
+    else:
+        macro_rate_history.index = pd.to_datetime(
+            macro_rate_history.index
+        ).tz_localize(None).normalize()
+        macro_rate_history = macro_rate_history.reindex(
+            macro_rate_history.index.union(yahoo_10y.index)
+        ).sort_index()
+        macro_rate_history["US10Y"] = yahoo_10y.combine_first(
+            macro_rate_history.get("US10Y", pd.Series(dtype=float))
+        )
+
+macro_rate_regime = calculate_macro_rate_regime(macro_rate_history)
+
 analytics_portfolio = portfolio.loc[
     portfolio["Include_Analytics"].fillna(False)
 ].copy()
@@ -404,6 +447,7 @@ analytics_portfolio = apply_decision_engine(
     analytics_portfolio,
     factor_weights=decision_factor_weights,
     max_position_weight=config.max_position_weight,
+    macro_rate_regime=macro_rate_regime,
 ).data
 
 previous_history = history.iloc[:-1] if len(history) > 1 else history.iloc[0:0]
@@ -432,6 +476,7 @@ if not previous_analytics.empty:
         previous_analytics,
         factor_weights=decision_factor_weights,
         max_position_weight=config.max_position_weight,
+        macro_rate_regime=macro_rate_regime,
     ).data
 
 change_result = build_change_engine(analytics_portfolio, previous_analytics)
@@ -544,6 +589,7 @@ snapshot_output = write_portfolio_snapshot(
     opportunity_result=opportunity_result,
     rebalance_result=rebalance_result,
     stop_loss_metrics=stop_loss_metrics,
+    macro_rate_regime=macro_rate_regime,
 )
 
 if SNAPSHOT_ONLY:
@@ -625,6 +671,28 @@ with tab_overview:
         "Derfor vises den højest prioriterede handling i hvert investeringsunivers."
     )
 
+    macro_score_text = (
+        f"{macro_rate_regime.score:.0f}/100"
+        if pd.notna(macro_rate_regime.score)
+        else "N/A"
+    )
+    macro_message = (
+        f"**Decision Engine · Macro/Rate Risk: {macro_score_text} — "
+        f"{macro_rate_regime.level}.** Primær driver: "
+        f"{macro_rate_regime.primary_driver}. {macro_rate_regime.impact}. "
+        "Vises som risiko-overlay; køb/salg-logikken er uændret."
+    )
+    if macro_rate_regime.level == "Ukendt":
+        st.info(macro_message)
+    elif macro_rate_regime.level == "Meget høj":
+        st.error(macro_message)
+    elif macro_rate_regime.level == "Høj":
+        st.warning(macro_message)
+    elif macro_rate_regime.level == "Moderat":
+        st.info(macro_message)
+    else:
+        st.success(macro_message)
+
     overview_queue = build_decision_queue(
         rebalance_result.data,
         max_items=max(20, len(analytics_portfolio)),
@@ -679,9 +747,15 @@ with tab_overview:
         st.markdown("**Begrundelse**")
         st.write(best.get("Begrundelse", "Ingen yderligere begrundelse tilgængelig."))
         with st.expander("Vis beslutningsdetaljer"):
-            d1, d2 = st.columns(2)
+            d1, d2, d3 = st.columns(3)
             d1.metric("Decision Score", score_text(decision_score, 0), help=TOOLTIPS["decision_score"])
             d2.metric("Anbefalet vægtændring", percentage_points(best.get("Anbefalet ændring", np.nan)))
+            d3.metric(
+                "Macro/Rate Risk",
+                macro_score_text,
+                macro_rate_regime.level,
+                help=TOOLTIPS["macro_rate_risk"],
+            )
 
     stock_col, etf_col = st.columns(2, gap="large")
     with stock_col:
@@ -799,9 +873,8 @@ with tab_overview:
             "Risikozoner følger den daglige langrente-overvågning: "
             "grøn < 4,75 %, gul 4,75–5,00 %, orange 5,00–5,25 % og rød > 5,25 %."
         )
-        treasury_history = fetch_price_history(["^TNX"], period="18mo")
-        if "^TNX" in treasury_history.columns:
-            treasury_10y = pd.to_numeric(treasury_history["^TNX"], errors="coerce").dropna()
+        if "US10Y" in macro_rate_history.columns:
+            treasury_10y = pd.to_numeric(macro_rate_history["US10Y"], errors="coerce").dropna()
         else:
             treasury_10y = pd.Series(dtype=float)
 
@@ -877,6 +950,35 @@ with tab_overview:
                 if current_10y <= 5.25
                 else f"{current_10y - 5.25:.2f} %-point over",
             )
+
+            st.markdown("##### Macro/Rate Regime – komponenter")
+            component_rows = []
+            for component, weight in COMPONENT_WEIGHTS.items():
+                value = macro_rate_regime.components.get(component, np.nan)
+                component_rows.append(
+                    {
+                        "Risikofaktor": component,
+                        "Vægt": f"{weight:.0%}",
+                        "Delscore": f"{value:.0f}/100" if pd.notna(value) else "Datamangel",
+                    }
+                )
+            component_table = pd.DataFrame(component_rows)
+            st.dataframe(
+                table_style(component_table),
+                use_container_width=True,
+                hide_index=True,
+                height=no_scroll_height(component_table),
+            )
+            st.caption(
+                f"Datadækning: {macro_rate_regime.data_quality:.0f}% · "
+                "Scoren renormaliseres efter tilgængelige komponenter. "
+                "Den er en risikofaktor og ikke et selvstændigt handelssignal."
+            )
+            if macro_rate_error:
+                st.caption(
+                    "De supplerende makroserier kunne ikke hentes; "
+                    "vurderingen bruger den tilgængelige 10Y-serie."
+                )
         else:
             st.info("USA 10Y-rentedata kan ikke hentes fra Yahoo Finance lige nu.")
 

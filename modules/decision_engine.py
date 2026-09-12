@@ -5,6 +5,8 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 
+from modules.macro_rate_engine import MacroRateRegime, apply_macro_rate_overlay
+
 
 # Investment OS 6.9: én autoritativ scoredefinition.
 # Disse vægte bruges af Momentum, Opportunities, Rebalancering og Overblik.
@@ -186,6 +188,7 @@ def apply_decision_engine(
     *,
     factor_weights: dict[str, float] | None = None,
     max_position_weight: float = 0.12,
+    macro_rate_regime: MacroRateRegime | None = None,
     inplace: bool = False,
 ) -> DecisionResult:
     """
@@ -193,6 +196,8 @@ def apply_decision_engine(
 
     Outputkolonnerne er fælles for alle views:
     Decision_Score, Decision_Status, Handling samt syv scorekomponenter.
+    Macro/Rate Regime tilføjes alene som et forklarende risiko-overlay og
+    ændrer ikke score, status eller handling.
     Der oprettes ingen view-specifikke score- eller statusaliases.
     """
     if portfolio.empty:
@@ -253,6 +258,9 @@ def apply_decision_engine(
 
     result["Decision_Status"] = result["Decision_Score"].apply(decision_status)
     result["Handling"] = _decision_action(result)
+    overlay_columns = apply_macro_rate_overlay(result, macro_rate_regime)
+    for column in overlay_columns.columns.difference(result.columns):
+        result[column] = overlay_columns[column]
 
     ordered = result.sort_values(
         ["Decision_Score", "AI_Confidence", "Composite"],
@@ -453,6 +461,7 @@ def decision_summary(portfolio: pd.DataFrame) -> dict[str, object]:
     )
     ai_confidence = portfolio_ai_confidence(scored)
     flow_label, positive_share = capital_flow_label(scored)
+    macro_row = scored.iloc[0] if not scored.empty else pd.Series(dtype=object)
 
     return {
         "AI_Confidence": ai_confidence,
@@ -461,5 +470,16 @@ def decision_summary(portfolio: pd.DataFrame) -> dict[str, object]:
         "Positive_Momentum_Share": positive_share,
         "Top_Decision_Asset": top_asset,
         "Top_Decision_Score": top_score,
+        "Macro_Rate_Risk_Score": macro_row.get("Macro_Rate_Risk_Score", np.nan),
+        "Macro_Rate_Risk_Level": macro_row.get("Macro_Rate_Risk_Level", "Ukendt"),
+        "Macro_Rate_Primary_Driver": macro_row.get(
+            "Macro_Rate_Primary_Driver", "Utilstrækkelige data"
+        ),
+        "Macro_Rate_Risk_Impact": macro_row.get(
+            "Macro_Rate_Risk_Impact", "Kan ikke vurderes"
+        ),
+        "Macro_Rate_Data_Quality": macro_row.get(
+            "Macro_Rate_Data_Quality", np.nan
+        ),
         "Actions": build_action_table(scored),
     }

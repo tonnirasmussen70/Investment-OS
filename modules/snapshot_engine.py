@@ -88,6 +88,7 @@ def write_portfolio_snapshot(
     opportunity_result: Any,
     rebalance_result: Any,
     stop_loss_metrics: dict[str, Any],
+    macro_rate_regime: Any | None = None,
 ) -> Path:
     """Write a UTF-8 JSON snapshot from already calculated Investment OS data."""
 
@@ -200,6 +201,31 @@ def write_portfolio_snapshot(
             "ai_confidence_label": decision.get("AI_Confidence_Label"),
             "benchmark": benchmark_ticker,
             "max_position_weight": _safe_number(max_position_weight),
+        },
+        "macro_rate_regime": {
+            "score": _safe_number(getattr(macro_rate_regime, "score", None)),
+            "level": getattr(macro_rate_regime, "level", "Ukendt"),
+            "primary_driver": getattr(
+                macro_rate_regime, "primary_driver", "Utilstrækkelige data"
+            ),
+            "impact": getattr(macro_rate_regime, "impact", "Kan ikke vurderes"),
+            "data_quality": _safe_number(
+                getattr(macro_rate_regime, "data_quality", None)
+            ),
+            "as_of": _json_value(getattr(macro_rate_regime, "as_of", None)),
+            "components": {
+                str(key): _safe_number(value)
+                for key, value in getattr(
+                    macro_rate_regime, "components", {}
+                ).items()
+            },
+            "observations": {
+                str(key): _safe_number(value)
+                for key, value in getattr(
+                    macro_rate_regime, "observations", {}
+                ).items()
+            },
+            "changes_buy_sell_logic": False,
         },
         "execution_summary": {
             "trade_count": int(getattr(rebalance_result, "trade_count", 0)),

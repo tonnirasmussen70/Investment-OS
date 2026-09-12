@@ -151,6 +151,15 @@ class DecisionEngineConsistencyTests(unittest.TestCase):
             {"Stærk", "Meget stærk"},
         )
 
+    def test_default_decision_output_has_no_macro_overlay(self) -> None:
+        scored = apply_decision_engine(
+            self.frame,
+            factor_weights=self.weights,
+            max_position_weight=0.12,
+        ).data
+
+        self.assertNotIn("Macro_Rate_Risk_Score", scored.columns)
+
 
 if __name__ == "__main__":
     unittest.main()

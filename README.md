@@ -1,4 +1,4 @@
-# Investment OS 3.0 – første fundament
+# Investment OS 7.3.0
 
 Denne version indfører:
 
@@ -10,6 +10,8 @@ Denne version indfører:
 - Fokuseret fanestruktur uden heatmap
 - Selvstændige faner til Emerging Compounders og Watchlist
 - Fælles styling, hvor alle negative tabelværdier vises rødt
+- Macro/Rate Regime som forklarende risikofaktor i Decision Engine. Overlayet
+  ændrer ikke `Decision_Score`, `Decision_Status`, `Handling` eller rebalancering.
 
 ## Start
 
