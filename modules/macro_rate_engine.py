@@ -289,9 +289,13 @@ def apply_macro_rate_overlay(
     result = portfolio.copy()
     if regime is None:
         return result
-    result["Macro_Rate_Risk_Score"] = regime.score
-    result["Macro_Rate_Risk_Level"] = regime.level
-    result["Macro_Rate_Primary_Driver"] = regime.primary_driver
-    result["Macro_Rate_Risk_Impact"] = regime.impact
-    result["Macro_Rate_Data_Quality"] = regime.data_quality
+    overlay = {
+        "Macro_Rate_Risk_Score": regime.score,
+        "Macro_Rate_Risk_Level": regime.level,
+        "Macro_Rate_Primary_Driver": regime.primary_driver,
+        "Macro_Rate_Risk_Impact": regime.impact,
+        "Macro_Rate_Data_Quality": regime.data_quality,
+    }
+    for column, value in overlay.items():
+        result[column] = value
     return result

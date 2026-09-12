@@ -37,6 +37,7 @@ from modules.health_engine import calculate_portfolio_health
 from modules.market_engine import fetch_market_snapshot, fetch_price_history
 from modules.macro_rate_engine import (
     COMPONENT_WEIGHTS,
+    apply_macro_rate_overlay,
     calculate_macro_rate_regime,
     fetch_fred_macro_history,
 )
@@ -447,8 +448,11 @@ analytics_portfolio = apply_decision_engine(
     analytics_portfolio,
     factor_weights=decision_factor_weights,
     max_position_weight=config.max_position_weight,
-    macro_rate_regime=macro_rate_regime,
 ).data
+analytics_portfolio = apply_macro_rate_overlay(
+    analytics_portfolio,
+    macro_rate_regime,
+)
 
 previous_history = history.iloc[:-1] if len(history) > 1 else history.iloc[0:0]
 analysis_columns_to_remove = {
@@ -476,8 +480,11 @@ if not previous_analytics.empty:
         previous_analytics,
         factor_weights=decision_factor_weights,
         max_position_weight=config.max_position_weight,
-        macro_rate_regime=macro_rate_regime,
     ).data
+    previous_analytics = apply_macro_rate_overlay(
+        previous_analytics,
+        macro_rate_regime,
+    )
 
 change_result = build_change_engine(analytics_portfolio, previous_analytics)
 
