@@ -653,8 +653,19 @@ tabs = st.tabs([
 
 with tab_overview:
     quality_icon, quality_text = quality_label(quality_score)
+    macro_score_text = (
+        f"{macro_rate_regime.score:.0f}/100"
+        if pd.notna(macro_rate_regime.score)
+        else "N/A"
+    )
+    macro_help = (
+        f"{TOOLTIPS['macro_rate_risk']} "
+        f"Aktuelt niveau: {macro_rate_regime.level}. "
+        f"Primær driver: {macro_rate_regime.primary_driver}. "
+        f"{macro_rate_regime.impact}"
+    )
 
-    k1, k2, k3, k4, k5, k6, k7 = st.columns(7)
+    k1, k2, k3, k4, k5, k6, k7, k8 = st.columns(8)
     k1.metric("Porteføljeværdi", compact_dkk(portfolio_total), help=TOOLTIPS["portfolio_value"])
     k2.metric("Cash", compact_dkk(cash_total), help=TOOLTIPS["cash"])
     k3.metric("Total portefølje", compact_dkk(total_portfolio), help=TOOLTIPS["total_portfolio"])
@@ -670,6 +681,12 @@ with tab_overview:
         "Datakvalitet", f"{quality_score:.0f}%", f"{quality_icon} {quality_text}",
         help=TOOLTIPS["data_quality"],
     )
+    k8.metric(
+        "Macro/Rate Risk",
+        macro_score_text,
+        macro_rate_regime.level,
+        help=macro_help,
+    )
 
     st.divider()
     st.subheader("Næste anbefalede handling")
@@ -677,28 +694,6 @@ with tab_overview:
         "Aktier og ETF'er vurderes separat, fordi de ligger på hver sin ASK. "
         "Derfor vises den højest prioriterede handling i hvert investeringsunivers."
     )
-
-    macro_score_text = (
-        f"{macro_rate_regime.score:.0f}/100"
-        if pd.notna(macro_rate_regime.score)
-        else "N/A"
-    )
-    macro_message = (
-        f"**Decision Engine · Macro/Rate Risk: {macro_score_text} — "
-        f"{macro_rate_regime.level}.** Primær driver: "
-        f"{macro_rate_regime.primary_driver}. {macro_rate_regime.impact}. "
-        "Vises som risiko-overlay; køb/salg-logikken er uændret."
-    )
-    if macro_rate_regime.level == "Ukendt":
-        st.info(macro_message)
-    elif macro_rate_regime.level == "Meget høj":
-        st.error(macro_message)
-    elif macro_rate_regime.level == "Høj":
-        st.warning(macro_message)
-    elif macro_rate_regime.level == "Moderat":
-        st.info(macro_message)
-    else:
-        st.success(macro_message)
 
     overview_queue = build_decision_queue(
         rebalance_result.data,
