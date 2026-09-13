@@ -14,8 +14,11 @@ class KpiGaugeTests(unittest.TestCase):
             gauge_id="quality-gradient",
         )
 
-        self.assertIn('stroke-dasharray="100.0 100"', html)
-        self.assertLess(html.index("#ef4444"), html.index("#22c55e"))
+        self.assertIn('stroke="#ff4b55"', html)
+        self.assertIn('stroke="#ffcc33"', html)
+        self.assertIn('stroke="#00d084"', html)
+        self.assertLess(html.index("#ff4b55"), html.index("#00d084"))
+        self.assertIn('fill="#f8fafc"', html)
         self.assertIn('title="Forklaring"', html)
 
     def test_risk_gauge_reverses_color_scale(self):
@@ -29,8 +32,9 @@ class KpiGaugeTests(unittest.TestCase):
             gauge_id="risk-gradient",
         )
 
-        self.assertIn('stroke-dasharray="77.0 100"', html)
-        self.assertLess(html.index("#22c55e"), html.index("#ef4444"))
+        self.assertLess(html.index("#00d084"), html.index("#ff4b55"))
+        self.assertIn('height="106"', html)
+        self.assertIn('opacity="1"', html)
         self.assertEqual(gauge_status_color(77, inverse=True), "#ef4444")
 
     def test_missing_value_has_no_active_arc(self):

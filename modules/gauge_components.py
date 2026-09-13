@@ -40,14 +40,16 @@ def build_kpi_gauge_html(
     """Byg en kompakt, tilgængelig halvcirkel-gauge til KPI-rækken."""
     has_value = _is_number(value)
     clamped = min(100.0, max(0.0, float(value))) if has_value else 0.0
-    active_length = f"{clamped:.1f}"
-    gradient_stops = (
-        ("#22c55e", "#facc15", "#ef4444")
+    zone_colors = (
+        ("#00d084", "#ffcc33", "#ff4b55")
         if inverse
-        else ("#ef4444", "#facc15", "#22c55e")
+        else ("#ff4b55", "#ffcc33", "#00d084")
     )
     status_color = gauge_status_color(value, inverse=inverse)
-    opacity = "1" if has_value else "0"
+    marker_angle = math.pi * (1.0 - clamped / 100.0)
+    marker_x = 80.0 + 60.0 * math.cos(marker_angle)
+    marker_y = 78.0 - 60.0 * math.sin(marker_angle)
+    marker_opacity = "1" if has_value else "0"
 
     safe_title = escape(title)
     safe_display = escape(display_value)
@@ -63,25 +65,29 @@ def build_kpi_gauge_html(
         <span class="ios-kpi-gauge__help" title="{safe_help}"
               aria-label="Information om {safe_title}" tabindex="0">?</span>
       </div>
-      <svg class="ios-kpi-gauge__svg" viewBox="0 0 160 103"
+      <svg class="ios-kpi-gauge__svg" viewBox="0 0 160 106"
+           id="{safe_gauge_id}" width="160" height="106"
            aria-hidden="true" focusable="false">
-        <defs>
-          <linearGradient id="{safe_gauge_id}" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="{gradient_stops[0]}" />
-            <stop offset="50%" stop-color="{gradient_stops[1]}" />
-            <stop offset="100%" stop-color="{gradient_stops[2]}" />
-          </linearGradient>
-        </defs>
         <path d="M 20 78 A 60 60 0 0 1 140 78"
-              pathLength="100" fill="none" stroke="#293241"
-              stroke-width="11" stroke-linecap="round" />
+              pathLength="100" fill="none" stroke="#475569"
+              stroke-width="14" stroke-linecap="round" />
         <path d="M 20 78 A 60 60 0 0 1 140 78"
-              pathLength="100" fill="none" stroke="url(#{safe_gauge_id})"
-              stroke-width="11" stroke-linecap="round"
-              stroke-dasharray="{active_length} 100" opacity="{opacity}" />
+              pathLength="100" fill="none" stroke="{zone_colors[0]}"
+              stroke-width="10" stroke-linecap="round"
+              stroke-dasharray="31 69" />
+        <path d="M 20 78 A 60 60 0 0 1 140 78"
+              pathLength="100" fill="none" stroke="{zone_colors[1]}"
+              stroke-width="10" stroke-linecap="round"
+              stroke-dasharray="31 69" stroke-dashoffset="-34" />
+        <path d="M 20 78 A 60 60 0 0 1 140 78"
+              pathLength="100" fill="none" stroke="{zone_colors[2]}"
+              stroke-width="10" stroke-linecap="round"
+              stroke-dasharray="32 68" stroke-dashoffset="-68" />
         <text x="80" y="68" text-anchor="middle"
-              class="ios-kpi-gauge__value">{safe_display}</text>
-        <circle cx="80" cy="78" r="2.5" fill="{status_color}" />
+              class="ios-kpi-gauge__value" fill="#f8fafc">{safe_display}</text>
+        <circle cx="{marker_x:.1f}" cy="{marker_y:.1f}" r="6"
+                fill="{status_color}" stroke="#ffffff" stroke-width="2.5"
+                opacity="{marker_opacity}" />
         <text x="80" y="99" text-anchor="middle"
               class="ios-kpi-gauge__status" fill="{status_color}">{safe_status}</text>
       </svg>
@@ -123,12 +129,11 @@ def build_kpi_gauge_html(
         display: block;
         width: 100%;
         max-width: 176px;
-        height: auto;
+        height: 112px;
         margin: 0 auto;
         overflow: visible;
       }}
       .ios-kpi-gauge__value {{
-        fill: currentColor;
         font-size: 24px;
         font-weight: 650;
         font-variant-numeric: tabular-nums;

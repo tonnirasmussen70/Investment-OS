@@ -1,4 +1,4 @@
-# Investment OS 7.3.1
+# Investment OS 7.3.2
 
 Denne version indfører:
 
