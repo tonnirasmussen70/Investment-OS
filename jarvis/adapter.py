@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 from api.contracts import response_metadata
-from api.service import build_investment_brief, build_system_status
+from api.service import build_investment_brief, build_stock_status, build_system_status
 
 
 class JarvisCommandError(ValueError):
@@ -51,6 +51,26 @@ def _number(value: Any) -> str:
         return f"{float(value):.1f}".replace(".", ",")
     except (TypeError, ValueError):
         return "N/A"
+
+
+def _percent(value: Any) -> str:
+    try:
+        return f"{float(value) * 100:.1f}%".replace(".", ",")
+    except (TypeError, ValueError):
+        return "N/A"
+
+
+def extract_ticker(command: str) -> str:
+    """Extract the final ticker-like token from an approved analysis command."""
+    tokens = re.findall(r"[A-Za-z0-9.^-]+", command or "")
+    ignored = {"jarvis", "analyser", "analyze", "analyse", "aktien", "aktie"}
+    candidates = [token for token in tokens if token.lower() not in ignored]
+    if not candidates:
+        raise JarvisCommandError("TICKER_MISSING", "Angiv en ticker, der skal analyseres.")
+    ticker = candidates[-1].upper()
+    if len(ticker) > 20:
+        raise JarvisCommandError("TICKER_INVALID", "Tickerformatet er ugyldigt.")
+    return ticker
 
 
 def _format_changes(changes: dict[str, Any]) -> str:
@@ -139,6 +159,57 @@ def format_investment_brief(brief: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def format_stock_status(stock: dict[str, Any]) -> str:
+    """Format a concise Danish OS-only stock analysis."""
+    identity = stock.get("identity") or {}
+    signals = stock.get("signals") or {}
+    portfolio = stock.get("portfolio_context") or {}
+    watchlist = stock.get("watchlist_context") or {}
+    returns = signals.get("returns") or {}
+    name = identity.get("name") or identity.get("ticker") or "Ukendt"
+    ticker = identity.get("ticker") or "Ukendt"
+
+    lines = [f"{name} ({ticker}) – Investment OS-status."]
+    if any(signals.get(field) is not None for field in ("decision_score", "handling", "composite")):
+        lines.append(
+            f"Decision Score {_number(signals.get('decision_score'))}/100, "
+            f"status {signals.get('decision_status') or 'Ukendt'}, "
+            f"handling {signals.get('handling') or 'Ukendt'} og "
+            f"AI Confidence {_number(signals.get('ai_confidence'))}/100."
+        )
+        lines.append(
+            "Momentum: "
+            + ", ".join(
+                f"{period} {_percent(returns.get(period))}"
+                for period in ("1W", "1M", "3M", "6M", "12M")
+            )
+            + f". RS 3M {_percent(signals.get('relative_strength_3m'))}."
+        )
+    else:
+        lines.append(
+            "Aktien har ingen beregnede momentum- eller Decision Engine-signaler i det aktuelle snapshot."
+        )
+    if portfolio.get("is_position"):
+        lines.append(
+            f"Porteføljevægt {_percent(portfolio.get('portfolio_weight'))}; "
+            f"markedsværdi {_number(portfolio.get('market_value_dkk'))} DKK."
+        )
+    elif watchlist:
+        lines.append(
+            f"Watchlist-status {watchlist.get('Status') or 'Ukendt'}, "
+            f"AI Confidence {_number(watchlist.get('AI_Confidence'))}/100, "
+            f"target buy {_number(watchlist.get('Target_Buy'))} og "
+            f"makspris {_number(watchlist.get('Max_Price'))} {watchlist.get('Currency') or ''}."
+        )
+        if watchlist.get("Notes"):
+            lines.append(f"Watchlist-note: {watchlist['Notes']}.")
+    lines.append(
+        "Analysen omfatter kun eksisterende Investment OS-data og indeholder ikke ny fundamental research."
+    )
+    lines.append(f"Data pr. {stock.get('as_of') or 'ukendt'} · run {stock.get('run_id') or 'ukendt'}.")
+    return "\n".join(lines)
+
+
 def execute_command(
     command: str,
     snapshot: dict[str, Any],
@@ -156,11 +227,9 @@ def execute_command(
             f"Snapshot er {data.get('data_freshness', {}).get('status', 'ukendt')}."
         )
     else:
-        raise JarvisCommandError(
-            "INTENT_NOT_IMPLEMENTED",
-            "Aktieanalyse er genkendt, men bliver implementeret i en senere sprint.",
-            status_code=501,
-        )
+        ticker = extract_ticker(command)
+        data = build_stock_status(snapshot, ticker, request_id=request_id)
+        message = format_stock_status(data)
     result = response_metadata(
         request_id=request_id,
         run_id=str(data.get("run_id") or "unavailable"),

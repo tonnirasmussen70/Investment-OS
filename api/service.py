@@ -18,6 +18,10 @@ DEFAULT_MAX_AGE_SECONDS = 4 * 60 * 60
 NON_CODE_SNAPSHOT_PATHS = {"data/portfolio_snapshot.json"}
 
 
+class StockNotFoundError(LookupError):
+    """Raised when a ticker is absent from every Investment OS snapshot section."""
+
+
 def _now() -> datetime:
     return datetime.now(timezone.utc)
 
@@ -236,6 +240,112 @@ def build_portfolio_status(
                 "changes_buy_sell_logic": bool(
                     macro.get("changes_buy_sell_logic", False)
                 ),
+            },
+            "data_freshness": freshness,
+            "warnings": warnings,
+        }
+    )
+    return payload
+
+
+def _ticker_match(record: dict[str, Any], ticker: str) -> bool:
+    requested = ticker.strip().upper()
+    return any(
+        str(record.get(field) or "").strip().upper() == requested
+        for field in ("Ticker", "Yahoo_Ticker")
+    )
+
+
+def _find_stock_record(records: Any, ticker: str) -> dict[str, Any] | None:
+    for record in records or []:
+        if isinstance(record, dict) and _ticker_match(record, ticker):
+            return record
+    return None
+
+
+def build_stock_status(
+    snapshot: dict[str, Any],
+    ticker: str,
+    *,
+    request_id: str | None = None,
+    now: datetime | None = None,
+    max_age_seconds: int = DEFAULT_MAX_AGE_SECONDS,
+) -> dict[str, Any]:
+    """Return existing OS fields for one ticker without calculating new signals."""
+    requested = ticker.strip().upper()
+    if not requested:
+        raise StockNotFoundError("Ticker mangler.")
+
+    position = _find_stock_record(snapshot.get("positions"), requested)
+    opportunity = _find_stock_record(snapshot.get("opportunities"), requested)
+    watchlist = _find_stock_record(snapshot.get("watchlist"), requested)
+    if position is None and opportunity is None and watchlist is None:
+        raise StockNotFoundError(
+            f"{requested} findes ikke i det aktuelle Investment OS-snapshot."
+        )
+
+    timestamp = now or _now()
+    run_id = str(snapshot.get("run_id") or _legacy_run_id(snapshot))
+    freshness, warnings = _freshness(
+        snapshot, now=timestamp, max_age_seconds=max_age_seconds
+    )
+    warnings.extend(_snapshot_warnings(snapshot, current_commit=_current_commit()))
+    quality = snapshot.get("data_quality") or {}
+    source_records = [
+        name
+        for name, record in (
+            ("portfolio", position),
+            ("opportunities", opportunity),
+            ("watchlist", watchlist),
+        )
+        if record is not None
+    ]
+    name = next(
+        (
+            record.get("Aktiv") or record.get("Name")
+            for record in (position, opportunity, watchlist)
+            if record is not None and (record.get("Aktiv") or record.get("Name"))
+        ),
+        requested,
+    )
+    signal_source = position or opportunity or {}
+    payload: dict[str, Any] = response_metadata(
+        request_id=request_id or str(uuid.uuid4()),
+        run_id=run_id,
+        generated_at=timestamp,
+    )
+    payload.update(
+        {
+            "as_of": freshness["as_of"],
+            "identity": {
+                "ticker": requested,
+                "name": name,
+                "source_sections": source_records,
+            },
+            "signals": {
+                "decision_score": signal_source.get("Decision_Score"),
+                "decision_status": signal_source.get("Decision_Status"),
+                "handling": signal_source.get("Handling"),
+                "ai_confidence": signal_source.get("AI_Confidence"),
+                "composite": signal_source.get("Composite"),
+                "relative_strength_3m": signal_source.get("Relative_Strength_3M"),
+                "momentum_acceleration": signal_source.get("Momentum_Acceleration"),
+                "rotation_signal": signal_source.get("Rotation_Signal"),
+                "returns": {
+                    period: signal_source.get(period)
+                    for period in ("1W", "1M", "3M", "6M", "12M")
+                },
+            },
+            "portfolio_context": {
+                "is_position": position is not None,
+                "portfolio_weight": position.get("Portfolio_Weight") if position else None,
+                "market_value_dkk": position.get("Market_Value_DKK") if position else None,
+            },
+            "watchlist_context": watchlist,
+            "opportunity_context": opportunity,
+            "data_quality": {
+                "score": quality.get("score"),
+                "notes": list(quality.get("notes") or []),
             },
             "data_freshness": freshness,
             "warnings": warnings,

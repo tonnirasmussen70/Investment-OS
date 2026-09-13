@@ -8,8 +8,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from api.service import (
+    StockNotFoundError,
     build_investment_brief,
     build_portfolio_status,
+    build_stock_status,
     build_system_status,
     load_snapshot,
 )
@@ -57,6 +59,39 @@ def fixture_snapshot() -> dict:
             {"Name": "Example E", "Decision_Score": 71.0, "Handling": "Hold"},
         ],
         "stop_loss_summary": {"Alarm": 1, "Stop_Broken": 0},
+        "positions": [
+            {
+                "Aktiv": "Frontline PLC",
+                "Ticker": "FRO",
+                "Yahoo_Ticker": "FRO",
+                "Decision_Score": 84.0,
+                "Decision_Status": "Meget stærk",
+                "Handling": "Øg",
+                "AI_Confidence": 88.0,
+                "Composite": 0.18,
+                "Relative_Strength_3M": 0.07,
+                "Portfolio_Weight": 0.06,
+                "Market_Value_DKK": 42000.0,
+                "1W": 0.02,
+                "1M": 0.05,
+                "3M": 0.14,
+                "6M": 0.20,
+                "12M": 0.30,
+            }
+        ],
+        "watchlist": [
+            {
+                "Name": "Celestica",
+                "Ticker": "CLS",
+                "Yahoo_Ticker": "CLS",
+                "Currency": "USD",
+                "Status": "Watch",
+                "Target_Buy": 290.0,
+                "Max_Price": 365.0,
+                "AI_Confidence": 91.0,
+                "Notes": "Entry 295$, FV 365$, support 260$",
+            }
+        ],
     }
 
 
@@ -187,6 +222,25 @@ class JarvisApiContractTests(unittest.TestCase):
         self.assertTrue(result["changes"]["available"])
         self.assertEqual(result["changes"]["previous_run_id"], "previous-run")
         self.assertEqual(result["changes"]["kpi_deltas"]["portfolio_health"], 2.5)
+
+    def test_stock_status_projects_position_signals(self) -> None:
+        snapshot = fixture_snapshot()
+        result = build_stock_status(snapshot, "fro", request_id="stock-1", now=NOW)
+        self.assertEqual(result["identity"]["ticker"], "FRO")
+        self.assertEqual(result["signals"]["decision_score"], 84.0)
+        self.assertEqual(result["signals"]["handling"], "Øg")
+        self.assertTrue(result["portfolio_context"]["is_position"])
+
+    def test_stock_status_supports_watchlist_without_inventing_signals(self) -> None:
+        result = build_stock_status(fixture_snapshot(), "CLS", now=NOW)
+        self.assertEqual(result["identity"]["name"], "Celestica")
+        self.assertEqual(result["identity"]["source_sections"], ["watchlist"])
+        self.assertIsNone(result["signals"]["decision_score"])
+        self.assertEqual(result["watchlist_context"]["Target_Buy"], 290.0)
+
+    def test_unknown_stock_is_rejected(self) -> None:
+        with self.assertRaises(StockNotFoundError):
+            build_stock_status(fixture_snapshot(), "UNKNOWN", now=NOW)
 
 
 if __name__ == "__main__":

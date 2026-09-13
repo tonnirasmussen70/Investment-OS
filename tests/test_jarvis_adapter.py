@@ -9,6 +9,7 @@ from jarvis.adapter import (
     classify_intent,
     execute_command,
     format_investment_brief,
+    format_stock_status,
 )
 from tests.test_jarvis_api import fixture_snapshot
 
@@ -57,11 +58,34 @@ class JarvisAdapterTests(unittest.TestCase):
         self.assertEqual(result["data"]["decisions"]["items"], snapshot["decision_queue"])
         self.assertEqual(json.dumps(snapshot, sort_keys=True), before)
 
-    def test_stock_analysis_is_recognized_but_not_executed(self) -> None:
-        with self.assertRaises(JarvisCommandError) as context:
-            execute_command("Analyser CLS", fixture_snapshot(), request_id="request-2")
-        self.assertEqual(context.exception.code, "INTENT_NOT_IMPLEMENTED")
-        self.assertEqual(context.exception.status_code, 501)
+    def test_stock_analysis_uses_watchlist_data(self) -> None:
+        result = execute_command(
+            "Jarvis, analyser aktien CLS",
+            fixture_snapshot(),
+            request_id="request-2",
+        )
+        self.assertEqual(result["intent"], "stock_analysis")
+        self.assertEqual(result["data"]["identity"]["ticker"], "CLS")
+        self.assertIn("Watchlist-status Watch", result["message"])
+        self.assertIn("ingen beregnede momentum", result["message"])
+
+    def test_stock_formatter_discloses_scope(self) -> None:
+        data = {
+            "identity": {"name": "Frontline PLC", "ticker": "FRO"},
+            "signals": {
+                "decision_score": 84.0,
+                "decision_status": "Meget stærk",
+                "handling": "Øg",
+                "ai_confidence": 88.0,
+                "returns": {"1W": 0.02, "1M": 0.05},
+            },
+            "portfolio_context": {"is_position": True, "portfolio_weight": 0.06},
+            "run_id": "run-1",
+        }
+        text = format_stock_status(data)
+        self.assertIn("Decision Score 84,0/100", text)
+        self.assertIn("Porteføljevægt 6,0%", text)
+        self.assertIn("ikke ny fundamental research", text)
 
     def test_schema_transition_is_not_reported_as_signal_changes(self) -> None:
         brief = {

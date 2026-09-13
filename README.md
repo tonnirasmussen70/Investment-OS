@@ -35,6 +35,7 @@ Første kontrakter:
 - `GET /v1/system/status`
 - `GET /v1/portfolio/status`
 - `GET /v1/briefs/investment`
+- `GET /v1/stocks/{ticker}`
 
 `/v1/briefs/investment` leverer det strukturerede grundlag for kommandoen
 "Giv mig min investeringsbrief": KPI'er, eksisterende decision queue, de tre
@@ -56,7 +57,10 @@ Content-Type: application/json
 
 Svaret indeholder et kort dansk `message` samt det komplette strukturerede
 `data`-grundlag. Kommandoer uden for de godkendte MVP-intents afvises. Intentet
-`stock_analysis` genkendes, men udføres først, når aktie-endpointet er etableret.
+`stock_analysis` slår tickeren op i snapshot'ets positioner, opportunities og
+watchlist og gengiver kun eksisterende Investment OS-data. Hvis en watchlistaktie
+som CLS endnu ikke har momentum- og Decision Engine-signaler, oplyses dette
+eksplicit i stedet for at estimere dem.
 
 Begge svar indeholder `schema_version`, `request_id`, `run_id`,
 `generated_at`, data-freshness og maskinlæsbare warnings. Et indgående

@@ -601,6 +601,7 @@ snapshot_output = write_portfolio_snapshot(
     rebalance_result=rebalance_result,
     stop_loss_metrics=stop_loss_metrics,
     macro_rate_regime=macro_rate_regime,
+    watchlist=model.watchlist,
 )
 
 if SNAPSHOT_ONLY:

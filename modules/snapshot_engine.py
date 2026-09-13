@@ -241,6 +241,7 @@ def write_portfolio_snapshot(
     rebalance_result: Any,
     stop_loss_metrics: dict[str, Any],
     macro_rate_regime: Any | None = None,
+    watchlist: pd.DataFrame | None = None,
 ) -> Path:
     """Write a UTF-8 JSON snapshot from already calculated Investment OS data."""
 
@@ -314,6 +315,18 @@ def write_portfolio_snapshot(
         "Status",
         "Constraint",
         "Begrundelse",
+    ]
+    watchlist_columns = [
+        "Name",
+        "Ticker",
+        "Yahoo_Ticker",
+        "Currency",
+        "Sector",
+        "Status",
+        "Target_Buy",
+        "Max_Price",
+        "AI_Confidence",
+        "Notes",
     ]
 
     active_positions = analytics_portfolio.copy()
@@ -420,6 +433,7 @@ def write_portfolio_snapshot(
             getattr(rebalance_result, "data", None),
             rebalance_columns,
         ),
+        "watchlist": _records(watchlist, watchlist_columns),
         "stop_loss_summary": {
             key: _json_value(value)
             for key, value in stop_loss_metrics.items()

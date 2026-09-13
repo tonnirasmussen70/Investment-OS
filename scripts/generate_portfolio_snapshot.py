@@ -150,6 +150,7 @@ def main() -> None:
         rebalance_result=rebalance,
         stop_loss_metrics=stop_metrics,
         macro_rate_regime=macro_rate_regime,
+        watchlist=model.watchlist,
     )
     print(f"Wrote {output} with {len(analytics_portfolio)} analytics positions")
 

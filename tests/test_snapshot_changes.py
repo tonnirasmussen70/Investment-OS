@@ -106,6 +106,7 @@ class SnapshotChangesTests(unittest.TestCase):
                 "opportunity_result": SimpleNamespace(data=empty),
                 "rebalance_result": SimpleNamespace(data=empty),
                 "stop_loss_metrics": {},
+                "watchlist": empty,
             }
             write_portfolio_snapshot(
                 portfolio_health=SimpleNamespace(score=70.0), **common
