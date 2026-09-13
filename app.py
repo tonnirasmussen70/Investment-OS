@@ -33,7 +33,10 @@ from modules.config_engine import load_investment_config
 from modules.decision_engine import DECISION_WEIGHTS, apply_decision_engine, decision_summary
 from modules.decision_queue_engine import build_decision_queue
 from modules.formatting import format_dkk, format_pct, format_score
-from modules.gauge_components import build_kpi_gauge_html
+from modules.gauge_components import (
+    build_kpi_gauge_figure,
+    build_kpi_gauge_label_html,
+)
 from modules.health_engine import calculate_portfolio_health
 from modules.market_engine import fetch_market_snapshot, fetch_price_history
 from modules.macro_rate_engine import (
@@ -62,13 +65,13 @@ from modules.watchlist_engine import (
 
 
 st.set_page_config(
-    page_title="Investment OS 7.3.2",
+    page_title="Investment OS 7.3.3",
     page_icon="📈",
     layout="wide",
 )
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
-APP_VERSION = "7.3.2"
+APP_VERSION = "7.3.3"
 MINIMUM_TRADE_DKK = 5_000.0
 SNAPSHOT_ONLY = os.getenv("INVESTMENT_OS_SNAPSHOT_ONLY") == "1"
 
@@ -672,42 +675,60 @@ with tab_overview:
     k3.metric("Total portefølje", compact_dkk(total_portfolio), help=TOOLTIPS["total_portfolio"])
     k4.metric("Samlet afkast", format_pct(total_return), help=TOOLTIPS["total_return"])
     with k5:
-        st.html(build_kpi_gauge_html(
-            "Porteføljesundhed",
-            portfolio_health.score,
-            score_text(portfolio_health.score, 0),
-            portfolio_health.label,
-            TOOLTIPS["portfolio_health"],
-            gauge_id="portfolio-health-gradient",
+        st.html(build_kpi_gauge_label_html(
+            "Porteføljesundhed", TOOLTIPS["portfolio_health"]
         ))
+        st.plotly_chart(
+            build_kpi_gauge_figure(
+                "Porteføljesundhed",
+                portfolio_health.score,
+                portfolio_health.label,
+            ),
+            use_container_width=True,
+            config={"displayModeBar": False},
+            key="overview-portfolio-health-gauge",
+        )
     with k6:
-        st.html(build_kpi_gauge_html(
-            "Konfidens",
-            avg_confidence,
-            f"{avg_confidence:.0f}%" if pd.notna(avg_confidence) else "N/A",
-            str(decision.get("AI_Confidence_Label", "Ukendt")),
-            TOOLTIPS["confidence"],
-            gauge_id="confidence-gradient",
+        st.html(build_kpi_gauge_label_html(
+            "Konfidens", TOOLTIPS["confidence"]
         ))
+        st.plotly_chart(
+            build_kpi_gauge_figure(
+                "Konfidens",
+                avg_confidence,
+                str(decision.get("AI_Confidence_Label", "Ukendt")),
+            ),
+            use_container_width=True,
+            config={"displayModeBar": False},
+            key="overview-confidence-gauge",
+        )
     with k7:
-        st.html(build_kpi_gauge_html(
-            "Datakvalitet",
-            quality_score,
-            f"{quality_score:.0f}%" if pd.notna(quality_score) else "N/A",
-            quality_text,
-            TOOLTIPS["data_quality"],
-            gauge_id="data-quality-gradient",
+        st.html(build_kpi_gauge_label_html(
+            "Datakvalitet", TOOLTIPS["data_quality"]
         ))
+        st.plotly_chart(
+            build_kpi_gauge_figure(
+                "Datakvalitet", quality_score, quality_text
+            ),
+            use_container_width=True,
+            config={"displayModeBar": False},
+            key="overview-data-quality-gauge",
+        )
     with k8:
-        st.html(build_kpi_gauge_html(
-            "Macro/Rate Risk",
-            macro_rate_regime.score,
-            macro_score_text,
-            macro_rate_regime.level,
-            macro_help,
-            inverse=True,
-            gauge_id="macro-rate-risk-gradient",
+        st.html(build_kpi_gauge_label_html(
+            "Macro/Rate Risk", macro_help
         ))
+        st.plotly_chart(
+            build_kpi_gauge_figure(
+                "Macro/Rate Risk",
+                macro_rate_regime.score,
+                macro_rate_regime.level,
+                inverse=True,
+            ),
+            use_container_width=True,
+            config={"displayModeBar": False},
+            key="overview-macro-rate-risk-gauge",
+        )
 
     st.divider()
     st.subheader("Næste anbefalede handling")
