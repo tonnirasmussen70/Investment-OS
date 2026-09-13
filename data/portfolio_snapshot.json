@@ -1,13 +1,13 @@
 {
   "schema_version": "2.0",
-  "run_id": "ios-9212aa61f063ac13",
+  "run_id": "ios-e9c8029622de979f",
   "app_version": "7.3.3",
-  "generated_at": "2026-09-13T16:15:32.786160+02:00",
-  "generated_at_local": "2026-09-13 16:15:32 CEST",
+  "generated_at": "2026-09-13T16:27:04.904026+02:00",
+  "generated_at_local": "2026-09-13 16:27:04 CEST",
   "source": {
     "repository": "tonnirasmussen70/Investment-OS",
     "branch": "main",
-    "commit_sha": "02a20ada51aee66fcd0c0a6e14a7b95db99404cd",
+    "commit_sha": "90a67d2a7c5494c11e96f93c4128736e46eeb29c",
     "portfolio_file": "data/AI_portfolio.xlsx",
     "portfolio_file_sha256": "1b52512a439f49073550469ff795801c70c402a3b78112a4e791e59e4d784401"
   },
@@ -25,8 +25,8 @@
     "value_dkk": 1170705.7155946563,
     "active_market_value_dkk": 738585.7155946563,
     "total_return_pct": 0.08782946499197641,
-    "health_score": 65.28832047301061,
-    "ai_confidence": 53.63116869033134,
+    "health_score": 65.288320006032,
+    "ai_confidence": 53.631168406280345,
     "ai_confidence_label": "Moderat",
     "benchmark": "URTH",
     "max_position_weight": 0.14
@@ -58,11 +58,11 @@
   },
   "execution_summary": {
     "trade_count": 1,
-    "gross_trade_dkk": 23319.49268418706,
-    "buy_dkk": 23319.49268418706,
+    "gross_trade_dkk": 23319.49252267007,
+    "buy_dkk": 23319.49252267007,
     "sell_dkk": -0.0,
-    "net_trade_dkk": 23319.49268418706,
-    "cash_required_dkk": 23319.49268418706,
+    "net_trade_dkk": 23319.49252267007,
+    "cash_required_dkk": 23319.49252267007,
     "constrained_count": 14
   },
   "top_positions": [
@@ -77,7 +77,9 @@
       "6M": 0.16831962437189874,
       "12M": -0.19659802310223884,
       "Composite": -0.027049499193248925,
-      "AI_Confidence": 20.812105335802585,
+      "AI_Confidence": 20.81210456361412,
+      "Decision_Score": 27.385943510189826,
+      "Decision_Status": "Lav conviction",
       "Relative_Strength_3M": -0.05711884218544583,
       "Momentum_Acceleration": -0.06663983110462293,
       "Rotation_Signal": "Negativ rotation",
@@ -91,12 +93,14 @@
       "1W": 0.03863987568964711,
       "1M": -0.05654114587488035,
       "3M": -0.08754751535401206,
-      "6M": 0.25759023671480774,
-      "12M": 1.0401234310544978,
-      "Composite": 0.13354556983130061,
-      "AI_Confidence": 54.49616668601516,
+      "6M": 0.25759010612888433,
+      "12M": 1.0401236028853025,
+      "Composite": 0.1335455608971964,
+      "AI_Confidence": 54.49616896028753,
+      "Decision_Score": 52.390668400205485,
+      "Decision_Status": "Neutral",
       "Relative_Strength_3M": -0.12495404248004738,
-      "Momentum_Acceleration": 0.0026102095497208717,
+      "Momentum_Acceleration": 0.002610216079017043,
       "Rotation_Signal": "Tidlig vending",
       "Handling": "Afvent"
     },
@@ -109,9 +113,11 @@
       "1M": 0.021621621621621623,
       "3M": 0.10882958864112258,
       "6M": 0.30952493724245733,
-      "12M": 0.5798077314295838,
-      "Composite": 0.15013689503915742,
-      "AI_Confidence": 84.23195926725896,
+      "12M": 0.5798076306815192,
+      "Composite": 0.15013688496435096,
+      "AI_Confidence": 84.2319584484035,
+      "Decision_Score": 84.50212635300866,
+      "Decision_Status": "Stærk",
       "Relative_Strength_3M": 0.07142306151508726,
       "Momentum_Acceleration": -0.019154576043649486,
       "Rotation_Signal": "Neutral",
@@ -129,6 +135,8 @@
       "12M": 0.5306291390728477,
       "Composite": 0.054361888917538584,
       "AI_Confidence": 37.8918384417843,
+      "Decision_Score": 41.36270371084211,
+      "Decision_Status": "Neutral",
       "Relative_Strength_3M": -0.10356814328765152,
       "Momentum_Acceleration": -0.016411319995239832,
       "Rotation_Signal": "Negativ rotation",
@@ -145,7 +153,9 @@
       "6M": 0.24055657099468575,
       "12M": 0.0076040821596898844,
       "Composite": 0.09136890969072842,
-      "AI_Confidence": 69.11629264323744,
+      "AI_Confidence": 69.11629042052499,
+      "Decision_Score": 74.8573510700884,
+      "Decision_Status": "Stærk",
       "Relative_Strength_3M": 0.20954071572114774,
       "Momentum_Acceleration": -0.06350422515826003,
       "Rotation_Signal": "Aftager",
@@ -163,6 +173,8 @@
       "12M": 1.3024764146847656,
       "Composite": 0.21152499790357465,
       "AI_Confidence": 63.816319956298514,
+      "Decision_Score": 59.064629854598614,
+      "Decision_Status": "Interessant",
       "Relative_Strength_3M": -0.14269674998116122,
       "Momentum_Acceleration": -0.009390040254364435,
       "Rotation_Signal": "Neutral",
@@ -177,9 +189,11 @@
       "1M": 0.009530458804753339,
       "3M": 0.028902516680048285,
       "6M": 0.2933332300834366,
-      "12M": 0.6818900033373823,
-      "Composite": 0.144748734945088,
-      "AI_Confidence": 73.93098870235552,
+      "12M": 0.6818898040789749,
+      "Composite": 0.14474871501924727,
+      "AI_Confidence": 73.9309859191059,
+      "Decision_Score": 72.94263492250703,
+      "Decision_Status": "Stærk",
       "Relative_Strength_3M": -0.008504010445987031,
       "Momentum_Acceleration": 0.0033170397501758077,
       "Rotation_Signal": "Accelererer",
@@ -197,6 +211,8 @@
       "12M": 0.5044707221461835,
       "Composite": 0.20668367598605805,
       "AI_Confidence": 87.02300716394458,
+      "Decision_Score": 89.7402179804787,
+      "Decision_Status": "Meget stærk",
       "Relative_Strength_3M": 0.20812918715967887,
       "Momentum_Acceleration": -0.014942908352642583,
       "Rotation_Signal": "Neutral",
@@ -213,7 +229,9 @@
       "6M": 0.66895587743858,
       "12M": 1.3474875356715086,
       "Composite": 0.4269215686658863,
-      "AI_Confidence": 89.99290303596236,
+      "AI_Confidence": 89.99290276168057,
+      "Decision_Score": 89.88780426747607,
+      "Decision_Status": "Meget stærk",
       "Relative_Strength_3M": 0.3456737582021552,
       "Momentum_Acceleration": 0.023897550486852825,
       "Rotation_Signal": "Accelererer",
@@ -231,6 +249,8 @@
       "12M": 0.41874240350838643,
       "Composite": 0.06285115417103163,
       "AI_Confidence": 48.438640602124735,
+      "Decision_Score": 52.888009379260204,
+      "Decision_Status": "Neutral",
       "Relative_Strength_3M": -0.0695375391411931,
       "Momentum_Acceleration": -0.006097140242572856,
       "Rotation_Signal": "Neutral",
@@ -250,6 +270,8 @@
       "12M": 0.41874240350838643,
       "Composite": 0.06285115417103163,
       "AI_Confidence": 48.438640602124735,
+      "Decision_Score": 52.888009379260204,
+      "Decision_Status": "Neutral",
       "Relative_Strength_3M": -0.0695375391411931,
       "Momentum_Acceleration": -0.006097140242572856,
       "Rotation_Signal": "Neutral",
@@ -267,6 +289,8 @@
       "12M": 0.5044707221461835,
       "Composite": 0.20668367598605805,
       "AI_Confidence": 87.02300716394458,
+      "Decision_Score": 89.7402179804787,
+      "Decision_Status": "Meget stærk",
       "Relative_Strength_3M": 0.20812918715967887,
       "Momentum_Acceleration": -0.014942908352642583,
       "Rotation_Signal": "Neutral",
@@ -280,12 +304,14 @@
       "1W": 0.03863987568964711,
       "1M": -0.05654114587488035,
       "3M": -0.08754751535401206,
-      "6M": 0.25759023671480774,
-      "12M": 1.0401234310544978,
-      "Composite": 0.13354556983130061,
-      "AI_Confidence": 54.49616668601516,
+      "6M": 0.25759010612888433,
+      "12M": 1.0401236028853025,
+      "Composite": 0.1335455608971964,
+      "AI_Confidence": 54.49616896028753,
+      "Decision_Score": 52.390668400205485,
+      "Decision_Status": "Neutral",
       "Relative_Strength_3M": -0.12495404248004738,
-      "Momentum_Acceleration": 0.0026102095497208717,
+      "Momentum_Acceleration": 0.002610216079017043,
       "Rotation_Signal": "Tidlig vending",
       "Handling": "Afvent"
     },
@@ -298,9 +324,11 @@
       "1M": 0.021621621621621623,
       "3M": 0.10882958864112258,
       "6M": 0.30952493724245733,
-      "12M": 0.5798077314295838,
-      "Composite": 0.15013689503915742,
-      "AI_Confidence": 84.23195926725896,
+      "12M": 0.5798076306815192,
+      "Composite": 0.15013688496435096,
+      "AI_Confidence": 84.2319584484035,
+      "Decision_Score": 84.50212635300866,
+      "Decision_Status": "Stærk",
       "Relative_Strength_3M": 0.07142306151508726,
       "Momentum_Acceleration": -0.019154576043649486,
       "Rotation_Signal": "Neutral",
@@ -317,7 +345,9 @@
       "6M": 0.66895587743858,
       "12M": 1.3474875356715086,
       "Composite": 0.4269215686658863,
-      "AI_Confidence": 89.99290303596236,
+      "AI_Confidence": 89.99290276168057,
+      "Decision_Score": 89.88780426747607,
+      "Decision_Status": "Meget stærk",
       "Relative_Strength_3M": 0.3456737582021552,
       "Momentum_Acceleration": 0.023897550486852825,
       "Rotation_Signal": "Accelererer",
@@ -334,7 +364,9 @@
       "6M": 0.24055657099468575,
       "12M": 0.0076040821596898844,
       "Composite": 0.09136890969072842,
-      "AI_Confidence": 69.11629264323744,
+      "AI_Confidence": 69.11629042052499,
+      "Decision_Score": 74.8573510700884,
+      "Decision_Status": "Stærk",
       "Relative_Strength_3M": 0.20954071572114774,
       "Momentum_Acceleration": -0.06350422515826003,
       "Rotation_Signal": "Aftager",
@@ -352,6 +384,8 @@
       "12M": 0.5306291390728477,
       "Composite": 0.054361888917538584,
       "AI_Confidence": 37.8918384417843,
+      "Decision_Score": 41.36270371084211,
+      "Decision_Status": "Neutral",
       "Relative_Strength_3M": -0.10356814328765152,
       "Momentum_Acceleration": -0.016411319995239832,
       "Rotation_Signal": "Negativ rotation",
@@ -368,7 +402,9 @@
       "6M": 0.16831962437189874,
       "12M": -0.19659802310223884,
       "Composite": -0.027049499193248925,
-      "AI_Confidence": 20.812105335802585,
+      "AI_Confidence": 20.81210456361412,
+      "Decision_Score": 27.385943510189826,
+      "Decision_Status": "Lav conviction",
       "Relative_Strength_3M": -0.05711884218544583,
       "Momentum_Acceleration": -0.06663983110462293,
       "Rotation_Signal": "Negativ rotation",
@@ -385,7 +421,9 @@
       "6M": 0.6957306779352521,
       "12M": -0.02605000340517072,
       "Composite": 0.182076310186908,
-      "AI_Confidence": 76.74070621314898,
+      "AI_Confidence": 76.74070621507329,
+      "Decision_Score": 79.7546415552488,
+      "Decision_Status": "Stærk",
       "Relative_Strength_3M": 0.20915595380047836,
       "Momentum_Acceleration": -0.08617023676603475,
       "Rotation_Signal": "Aftager",
@@ -403,6 +441,8 @@
       "12M": -0.29169793513183406,
       "Composite": 0.042878155843296836,
       "AI_Confidence": 53.26313289207714,
+      "Decision_Score": 63.12178007706339,
+      "Decision_Status": "Interessant",
       "Relative_Strength_3M": 0.20030378441646168,
       "Momentum_Acceleration": -0.06722073933455883,
       "Rotation_Signal": "Aftager",
@@ -420,6 +460,8 @@
       "12M": 0.5402421954987835,
       "Composite": 0.010243199623354397,
       "AI_Confidence": 28.10989824176281,
+      "Decision_Score": 35.58692513351899,
+      "Decision_Status": "Lav conviction",
       "Relative_Strength_3M": -0.11384700519699609,
       "Momentum_Acceleration": -0.024918042221865958,
       "Rotation_Signal": "Negativ rotation",
@@ -434,9 +476,11 @@
       "1M": 0.009530458804753339,
       "3M": 0.028902516680048285,
       "6M": 0.2933332300834366,
-      "12M": 0.6818900033373823,
-      "Composite": 0.144748734945088,
-      "AI_Confidence": 73.93098870235552,
+      "12M": 0.6818898040789749,
+      "Composite": 0.14474871501924727,
+      "AI_Confidence": 73.9309859191059,
+      "Decision_Score": 72.94263492250703,
+      "Decision_Status": "Stærk",
       "Relative_Strength_3M": -0.008504010445987031,
       "Momentum_Acceleration": 0.0033170397501758077,
       "Rotation_Signal": "Accelererer",
@@ -454,6 +498,8 @@
       "12M": 0.7620659426532104,
       "Composite": 0.21243833445430066,
       "AI_Confidence": 85.77764175180927,
+      "Decision_Score": 87.02386714172376,
+      "Decision_Status": "Meget stærk",
       "Relative_Strength_3M": 0.23499910545421332,
       "Momentum_Acceleration": -0.05209664630541698,
       "Rotation_Signal": "Neutral",
@@ -471,6 +517,8 @@
       "12M": 0.7964641591865123,
       "Composite": 0.11545010759019472,
       "AI_Confidence": 60.26924698753313,
+      "Decision_Score": 65.54960226269962,
+      "Decision_Status": "Interessant",
       "Relative_Strength_3M": -0.03275383889278527,
       "Momentum_Acceleration": -0.005754353340300744,
       "Rotation_Signal": "Aftager",
@@ -488,6 +536,8 @@
       "12M": 0.18859710182662193,
       "Composite": -0.00711759704531215,
       "AI_Confidence": 30.538434386636133,
+      "Decision_Score": 40.038264559776586,
+      "Decision_Status": "Neutral",
       "Relative_Strength_3M": -0.11667293436488058,
       "Momentum_Acceleration": -0.021031948694810523,
       "Rotation_Signal": "Negativ rotation",
@@ -505,6 +555,8 @@
       "12M": 0.21430822942242456,
       "Composite": -0.04347095779326877,
       "AI_Confidence": 11.740725368383927,
+      "Decision_Score": 23.53338788927395,
+      "Decision_Status": "Lav conviction",
       "Relative_Strength_3M": -0.1578034245055836,
       "Momentum_Acceleration": -0.029800399935496106,
       "Rotation_Signal": "Negativ rotation",
@@ -522,6 +574,8 @@
       "12M": 0.1943925848936554,
       "Composite": 0.03335858898465849,
       "AI_Confidence": 44.93823708752929,
+      "Decision_Score": 56.5697101103731,
+      "Decision_Status": "Interessant",
       "Relative_Strength_3M": -0.025262940233165665,
       "Momentum_Acceleration": -0.0207289231716719,
       "Rotation_Signal": "Negativ rotation",
@@ -538,7 +592,9 @@
       "6M": -0.029407762286140726,
       "12M": 0.25060905686894497,
       "Composite": -0.011691742962108433,
-      "AI_Confidence": 25.24152400375104,
+      "AI_Confidence": 25.241523663209055,
+      "Decision_Score": 33.95299275089203,
+      "Decision_Status": "Lav conviction",
       "Relative_Strength_3M": -0.1840719108063763,
       "Momentum_Acceleration": 0.025691737661332734,
       "Rotation_Signal": "Tidlig vending",
@@ -556,6 +612,8 @@
       "12M": 1.3024764146847656,
       "Composite": 0.21152499790357465,
       "AI_Confidence": 63.816319956298514,
+      "Decision_Score": 59.064629854598614,
+      "Decision_Status": "Interessant",
       "Relative_Strength_3M": -0.14269674998116122,
       "Momentum_Acceleration": -0.009390040254364435,
       "Rotation_Signal": "Neutral",
@@ -572,7 +630,9 @@
       "6M": 0.4245116958709443,
       "12M": 1.6109224651223069,
       "Composite": 0.24927930501936763,
-      "AI_Confidence": 71.92728098452342,
+      "AI_Confidence": 71.92728085021824,
+      "Decision_Score": 67.26333552496665,
+      "Decision_Status": "Interessant",
       "Relative_Strength_3M": -0.11425748662195656,
       "Momentum_Acceleration": 0.018074570359560813,
       "Rotation_Signal": "Accelererer",
@@ -590,6 +650,8 @@
       "12M": 0.4683863247514173,
       "Composite": 0.10883064664066744,
       "AI_Confidence": 72.50476891025322,
+      "Decision_Score": 80.61732116287891,
+      "Decision_Status": "Stærk",
       "Relative_Strength_3M": 0.1292377402247047,
       "Momentum_Acceleration": -0.0534976279152173,
       "Rotation_Signal": "Aftager",
@@ -607,6 +669,8 @@
       "12M": 0.012914716620983313,
       "Composite": -0.0786863541605384,
       "AI_Confidence": 13.05319792684935,
+      "Decision_Score": 27.688901320718855,
+      "Decision_Status": "Lav conviction",
       "Relative_Strength_3M": -0.07479322607741135,
       "Momentum_Acceleration": -0.031750210826127924,
       "Rotation_Signal": "Negativ rotation",
@@ -624,6 +688,8 @@
       "12M": 0.35336328513410176,
       "Composite": 0.05837429779811947,
       "AI_Confidence": 46.06153503845974,
+      "Decision_Score": 49.079596175083346,
+      "Decision_Status": "Neutral",
       "Relative_Strength_3M": -0.1051061808970406,
       "Momentum_Acceleration": -0.008758871217086761,
       "Rotation_Signal": "Neutral",
@@ -641,6 +707,8 @@
       "12M": 0.2758331607617881,
       "Composite": -0.090976903679967,
       "AI_Confidence": 7.433344550470938,
+      "Decision_Score": 19.15663587529431,
+      "Decision_Status": "Lav conviction",
       "Relative_Strength_3M": -0.29608396408260296,
       "Momentum_Acceleration": 0.002526189519433229,
       "Rotation_Signal": "Negativ rotation",
@@ -658,6 +726,8 @@
       "12M": 0.5604105333034906,
       "Composite": 0.09022819369891347,
       "AI_Confidence": 61.396393499004354,
+      "Decision_Score": 67.32623021612794,
+      "Decision_Status": "Interessant",
       "Relative_Strength_3M": 0.002958500173687151,
       "Momentum_Acceleration": -0.0017229136900198906,
       "Rotation_Signal": "Aftager",
@@ -675,6 +745,8 @@
       "12M": 0.4534546855230541,
       "Composite": -0.0448474405174408,
       "AI_Confidence": 10.86062012646165,
+      "Decision_Score": 21.348924685650047,
+      "Decision_Status": "Lav conviction",
       "Relative_Strength_3M": -0.24274805043286518,
       "Momentum_Acceleration": -0.017455223511483896,
       "Rotation_Signal": "Negativ rotation",
@@ -692,6 +764,8 @@
       "12M": 0.16735398586843475,
       "Composite": 0.0033471089388877103,
       "AI_Confidence": 33.10264769143669,
+      "Decision_Score": 45.319552646580796,
+      "Decision_Status": "Neutral",
       "Relative_Strength_3M": -0.05803472867445514,
       "Momentum_Acceleration": -0.022181670839424395,
       "Rotation_Signal": "Negativ rotation",
@@ -709,6 +783,8 @@
       "12M": 0.2145872374417661,
       "Composite": 0.04559639581973982,
       "AI_Confidence": 48.312634981592225,
+      "Decision_Score": 58.603240367911255,
+      "Decision_Status": "Interessant",
       "Relative_Strength_3M": -0.0209591776620357,
       "Momentum_Acceleration": -0.016995254292751293,
       "Rotation_Signal": "Negativ rotation",
@@ -720,10 +796,10 @@
       "Prioritet": 1,
       "Handling": "Øg",
       "Aktiv": "Frontline PLC",
-      "Beløb DKK": 23319.49268418706,
-      "Decision Score": 89.88780452989704,
+      "Beløb DKK": 23319.49252267007,
+      "Decision Score": 89.88780426747607,
       "Status": "Meget stærk",
-      "Confidence": 89.99290303596236,
+      "Confidence": 89.99290276168057,
       "Begrundelse": "Øg-signal omsat til dynamisk target weight"
     }
   ],
@@ -731,9 +807,9 @@
     {
       "Name": "Frontline PLC",
       "Yahoo_Ticker": "FRO",
-      "Decision_Score": 89.88780452989704,
+      "Decision_Score": 89.88780426747607,
       "Decision_Status": "Meget stærk",
-      "AI_Confidence": 89.99290303596236,
+      "AI_Confidence": 89.99290276168057,
       "Composite": 0.4269215686658863,
       "Relative_Strength_3M": 0.3456737582021552,
       "Portfolio_Weight": 0.0407891890884478,
@@ -764,10 +840,10 @@
     {
       "Name": "Danske Bank A/S",
       "Yahoo_Ticker": "DANSKE.CO",
-      "Decision_Score": 84.50212793258544,
+      "Decision_Score": 84.50212635300866,
       "Decision_Status": "Stærk",
-      "AI_Confidence": 84.23195926725896,
-      "Composite": 0.15013689503915742,
+      "AI_Confidence": 84.2319584484035,
+      "Composite": 0.15013688496435096,
       "Relative_Strength_3M": 0.07142306151508726,
       "Portfolio_Weight": 0.07817941612032141,
       "Handling": "Hold"
@@ -786,9 +862,9 @@
     {
       "Name": "Pandora A/S",
       "Yahoo_Ticker": "PNDORA.CO",
-      "Decision_Score": 79.7546415534077,
+      "Decision_Score": 79.7546415552488,
       "Decision_Status": "Stærk",
-      "AI_Confidence": 76.74070621314898,
+      "AI_Confidence": 76.74070621507329,
       "Composite": 0.182076310186908,
       "Relative_Strength_3M": 0.20915595380047836,
       "Portfolio_Weight": 0.02063727970656447,
@@ -797,9 +873,9 @@
     {
       "Name": "MICROSOFT CORPORATION",
       "Yahoo_Ticker": "MSF.DE",
-      "Decision_Score": 74.85735319668355,
+      "Decision_Score": 74.8573510700884,
       "Decision_Status": "Stærk",
-      "AI_Confidence": 69.11629264323744,
+      "AI_Confidence": 69.11629042052499,
       "Composite": 0.09136890969072842,
       "Relative_Strength_3M": 0.20954071572114774,
       "Portfolio_Weight": 0.06925524792493702,
@@ -808,10 +884,10 @@
     {
       "Name": "Taiwan Semiconductor Manufacturing Co. Ltd.",
       "Yahoo_Ticker": "TSM",
-      "Decision_Score": 72.94263758539991,
+      "Decision_Score": 72.94263492250703,
       "Decision_Status": "Stærk",
-      "AI_Confidence": 73.93098870235552,
-      "Composite": 0.144748734945088,
+      "AI_Confidence": 73.9309859191059,
+      "Composite": 0.14474871501924727,
       "Relative_Strength_3M": -0.008504010445987031,
       "Portfolio_Weight": 0.05292059058506173,
       "Handling": "Øg"
@@ -830,9 +906,9 @@
     {
       "Name": "iShares MSCI Korea UCITS ETF",
       "Yahoo_Ticker": "IQQK.DE",
-      "Decision_Score": 67.26333565346403,
+      "Decision_Score": 67.26333552496665,
       "Decision_Status": "Interessant",
-      "AI_Confidence": 71.92728098452342,
+      "AI_Confidence": 71.92728085021824,
       "Composite": 0.24927930501936763,
       "Relative_Strength_3M": -0.11425748662195656,
       "Portfolio_Weight": 0.010765976259303553,
@@ -848,11 +924,11 @@
       "Handling": "Øg",
       "Rebalance handling": "Køb",
       "Nuværende vægt": 0.0407891890884478,
-      "Modelmålvægt": 0.07236235953002867,
-      "Foreslået vægt": 0.07236235953002867,
-      "Ændring": 0.031573170441580874,
-      "Handel DKK": 23319.49268418706,
-      "Decision Score": 89.88780452989704,
+      "Modelmålvægt": 0.07236235931134452,
+      "Foreslået vægt": 0.07236235931134452,
+      "Ændring": 0.03157317022289672,
+      "Handel DKK": 23319.49252267007,
+      "Decision Score": 89.88780426747607,
       "Status": "Meget stærk",
       "Constraint": "",
       "Begrundelse": "Øg-signal omsat til dynamisk target weight"
@@ -903,7 +979,7 @@
       "Foreslået vægt": 0.07817941612032141,
       "Ændring": 0.0,
       "Handel DKK": 0.0,
-      "Decision Score": 84.50212793258544,
+      "Decision Score": 84.50212635300866,
       "Status": "Stærk",
       "Constraint": "",
       "Begrundelse": "Ingen execution-ændring"
@@ -937,7 +1013,7 @@
       "Foreslået vægt": 0.02063727970656447,
       "Ændring": 0.0,
       "Handel DKK": 0.0,
-      "Decision Score": 79.7546415534077,
+      "Decision Score": 79.7546415552488,
       "Status": "Stærk",
       "Constraint": "",
       "Begrundelse": "Ingen execution-ændring"
@@ -954,7 +1030,7 @@
       "Foreslået vægt": 0.06925524792493702,
       "Ændring": 0.0,
       "Handel DKK": 0.0,
-      "Decision Score": 74.85735319668355,
+      "Decision Score": 74.8573510700884,
       "Status": "Stærk",
       "Constraint": "Sektorloft (note)",
       "Begrundelse": "Ingen execution-ændring"
@@ -971,7 +1047,7 @@
       "Foreslået vægt": 0.05292059058506173,
       "Ændring": 0.0,
       "Handel DKK": 0.0,
-      "Decision Score": 72.94263758539991,
+      "Decision Score": 72.94263492250703,
       "Status": "Stærk",
       "Constraint": "Sektorloft (note)",
       "Begrundelse": "Sektorloft overskredet – underliggende signal: Øg; ingen tvungen reduktion"
@@ -1005,7 +1081,7 @@
       "Foreslået vægt": 0.010765976259303553,
       "Ændring": 0.0,
       "Handel DKK": 0.0,
-      "Decision Score": 67.26333565346403,
+      "Decision Score": 67.26333552496665,
       "Status": "Interessant",
       "Constraint": "",
       "Begrundelse": "Ingen execution-ændring"
@@ -1124,7 +1200,7 @@
       "Foreslået vægt": 0.08977112225344148,
       "Ændring": 0.0,
       "Handel DKK": 0.0,
-      "Decision Score": 52.390666224280025,
+      "Decision Score": 52.390668400205485,
       "Status": "Neutral",
       "Constraint": "Sektorloft (note)",
       "Begrundelse": "Ingen execution-ændring"
@@ -1226,7 +1302,7 @@
       "Foreslået vægt": 0.01672111558356205,
       "Ændring": 0.0,
       "Handel DKK": 0.0,
-      "Decision Score": 33.95299307670788,
+      "Decision Score": 33.95299275089203,
       "Status": "Lav conviction",
       "Constraint": "Konfidensgate",
       "Begrundelse": "Signal observeres – konfidens under 70%, ingen handel"
@@ -1260,7 +1336,7 @@
       "Foreslået vægt": 0.13556720348887888,
       "Ændring": 0.0,
       "Handel DKK": 0.0,
-      "Decision Score": 27.385944248986355,
+      "Decision Score": 27.385943510189826,
       "Status": "Lav conviction",
       "Constraint": "Konfidensgate",
       "Begrundelse": "Signal observeres – konfidens under 70%, ingen handel"
@@ -1321,5 +1397,127 @@
     "Stop_Broken": 9,
     "Alarm": 4,
     "Tighten": 1
+  },
+  "changes": {
+    "available": true,
+    "reason": null,
+    "previous_run_id": "ios-9212aa61f063ac13",
+    "previous_generated_at": "2026-09-13T16:15:32.786160+02:00",
+    "kpi_deltas": {
+      "portfolio_health": -0.0,
+      "confidence": -0.0,
+      "data_quality": 0.0,
+      "macro_rate_risk": 0.0
+    },
+    "decision_changes": {
+      "count": 28,
+      "items": [
+        {
+          "asset": "ABB.ST",
+          "ticker": "ABB.ST",
+          "changes": {
+            "Decision_Status": {
+              "from": null,
+              "to": "Neutral"
+            }
+          }
+        },
+        {
+          "asset": "ALSYDB.CO",
+          "ticker": "ALSYDB.CO",
+          "changes": {
+            "Decision_Status": {
+              "from": null,
+              "to": "Meget stærk"
+            }
+          }
+        },
+        {
+          "asset": "ASML.AS",
+          "ticker": "ASML.AS",
+          "changes": {
+            "Decision_Status": {
+              "from": null,
+              "to": "Neutral"
+            }
+          }
+        },
+        {
+          "asset": "DANSKE.CO",
+          "ticker": "DANSKE.CO",
+          "changes": {
+            "Decision_Status": {
+              "from": null,
+              "to": "Stærk"
+            }
+          }
+        },
+        {
+          "asset": "FRO",
+          "ticker": "FRO",
+          "changes": {
+            "Decision_Status": {
+              "from": null,
+              "to": "Meget stærk"
+            }
+          }
+        },
+        {
+          "asset": "MSF.DE",
+          "ticker": "MSF.DE",
+          "changes": {
+            "Decision_Status": {
+              "from": null,
+              "to": "Stærk"
+            }
+          }
+        },
+        {
+          "asset": "NKT.CO",
+          "ticker": "NKT.CO",
+          "changes": {
+            "Decision_Status": {
+              "from": null,
+              "to": "Neutral"
+            }
+          }
+        },
+        {
+          "asset": "NOVO-B.CO",
+          "ticker": "NOVO-B.CO",
+          "changes": {
+            "Decision_Status": {
+              "from": null,
+              "to": "Lav conviction"
+            }
+          }
+        },
+        {
+          "asset": "PNDORA.CO",
+          "ticker": "PNDORA.CO",
+          "changes": {
+            "Decision_Status": {
+              "from": null,
+              "to": "Stærk"
+            }
+          }
+        },
+        {
+          "asset": "4S0.DE",
+          "ticker": "4S0.DE",
+          "changes": {
+            "Decision_Status": {
+              "from": null,
+              "to": "Interessant"
+            }
+          }
+        }
+      ]
+    },
+    "opportunity_changes": {
+      "entered": [],
+      "exited": [],
+      "rank_changes": []
+    }
   }
 }
