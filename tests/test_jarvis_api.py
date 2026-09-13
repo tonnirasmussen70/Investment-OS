@@ -168,6 +168,26 @@ class JarvisApiContractTests(unittest.TestCase):
         self.assertEqual(len(macro_items), 1)
         self.assertFalse(macro_items[0]["changes_buy_sell_logic"])
 
+    def test_investment_brief_projects_snapshot_changes(self) -> None:
+        snapshot = fixture_snapshot()
+        snapshot["changes"] = {
+            "available": True,
+            "reason": None,
+            "previous_run_id": "previous-run",
+            "previous_generated_at": "2026-09-13T10:00:00+02:00",
+            "kpi_deltas": {"portfolio_health": 2.5},
+            "decision_changes": {"count": 1, "items": [{"asset": "Alpha"}]},
+            "opportunity_changes": {
+                "entered": [{"ticker": "NEW", "rank": 1}],
+                "exited": [],
+                "rank_changes": [],
+            },
+        }
+        result = build_investment_brief(snapshot, now=NOW)
+        self.assertTrue(result["changes"]["available"])
+        self.assertEqual(result["changes"]["previous_run_id"], "previous-run")
+        self.assertEqual(result["changes"]["kpi_deltas"]["portfolio_health"], 2.5)
+
 
 if __name__ == "__main__":
     unittest.main()

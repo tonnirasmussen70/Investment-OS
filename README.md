@@ -40,6 +40,10 @@ Første kontrakter:
 "Giv mig min investeringsbrief": KPI'er, eksisterende decision queue, de tre
 højest rangerede opportunities, opmærksomhedspunkter og sporbarhed. Endpointet
 formidler kun felter fra snapshot'et og ændrer ikke signaler eller handlinger.
+Fra andet snapshot indeholder briefen også observerede KPI-deltaer, ændringer i
+`Handling`, `Decision_Status` og `Decision_Score` samt ind- og udtræden eller
+rangændringer blandt opportunities. Første snapshot markeres med
+`NO_PREVIOUS_SNAPSHOT`.
 
 Begge svar indeholder `schema_version`, `request_id`, `run_id`,
 `generated_at`, data-freshness og maskinlæsbare warnings. Et indgående

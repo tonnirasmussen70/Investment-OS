@@ -265,7 +265,7 @@ def build_investment_brief(
     decisions = list(snapshot.get("decision_queue") or [])
     opportunities = list(snapshot.get("opportunities") or [])
     stop_loss = snapshot.get("stop_loss_summary") or {}
-    changes = snapshot.get("changes")
+    changes = snapshot.get("changes") or {}
 
     attention: list[dict[str, Any]] = []
     for item in warnings:
@@ -316,9 +316,15 @@ def build_investment_brief(
                 "macro_rate_level": macro.get("level"),
             },
             "changes": {
-                "available": isinstance(changes, (dict, list)),
-                "items": changes if isinstance(changes, list) else [],
-                "summary": changes if isinstance(changes, dict) else None,
+                "available": bool(changes.get("available", False)),
+                "reason": changes.get("reason"),
+                "previous_run_id": changes.get("previous_run_id"),
+                "previous_generated_at": changes.get("previous_generated_at"),
+                "kpi_deltas": changes.get("kpi_deltas") or {},
+                "decision_changes": changes.get("decision_changes")
+                or {"count": 0, "items": []},
+                "opportunity_changes": changes.get("opportunity_changes")
+                or {"entered": [], "exited": [], "rank_changes": []},
             },
             "decisions": {
                 "count": len(decisions),
