@@ -33,6 +33,7 @@ from modules.config_engine import load_investment_config
 from modules.decision_engine import DECISION_WEIGHTS, apply_decision_engine, decision_summary
 from modules.decision_queue_engine import build_decision_queue
 from modules.formatting import format_dkk, format_pct, format_score
+from modules.gauge_components import build_kpi_gauge_html
 from modules.health_engine import calculate_portfolio_health
 from modules.market_engine import fetch_market_snapshot, fetch_price_history
 from modules.macro_rate_engine import (
@@ -61,13 +62,13 @@ from modules.watchlist_engine import (
 
 
 st.set_page_config(
-    page_title="Investment OS 7.3.0",
+    page_title="Investment OS 7.3.1",
     page_icon="📈",
     layout="wide",
 )
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
-APP_VERSION = "7.3.0"
+APP_VERSION = "7.3.1"
 MINIMUM_TRADE_DKK = 5_000.0
 SNAPSHOT_ONLY = os.getenv("INVESTMENT_OS_SNAPSHOT_ONLY") == "1"
 
@@ -652,7 +653,7 @@ tabs = st.tabs([
 ) = tabs
 
 with tab_overview:
-    quality_icon, quality_text = quality_label(quality_score)
+    _, quality_text = quality_label(quality_score)
     macro_score_text = (
         f"{macro_rate_regime.score:.0f}/100"
         if pd.notna(macro_rate_regime.score)
@@ -670,23 +671,43 @@ with tab_overview:
     k2.metric("Cash", compact_dkk(cash_total), help=TOOLTIPS["cash"])
     k3.metric("Total portefølje", compact_dkk(total_portfolio), help=TOOLTIPS["total_portfolio"])
     k4.metric("Samlet afkast", format_pct(total_return), help=TOOLTIPS["total_return"])
-    k5.metric("Porteføljesundhed", score_text(portfolio_health.score, 0), help=TOOLTIPS["portfolio_health"])
-    k6.metric(
-        "Konfidens",
-        f"{avg_confidence:.0f}%" if pd.notna(avg_confidence) else "N/A",
-        decision.get("AI_Confidence_Label"),
-        help=TOOLTIPS["confidence"],
-    )
-    k7.metric(
-        "Datakvalitet", f"{quality_score:.0f}%", f"{quality_icon} {quality_text}",
-        help=TOOLTIPS["data_quality"],
-    )
-    k8.metric(
-        "Macro/Rate Risk",
-        macro_score_text,
-        macro_rate_regime.level,
-        help=macro_help,
-    )
+    with k5:
+        st.html(build_kpi_gauge_html(
+            "Porteføljesundhed",
+            portfolio_health.score,
+            score_text(portfolio_health.score, 0),
+            portfolio_health.label,
+            TOOLTIPS["portfolio_health"],
+            gauge_id="portfolio-health-gradient",
+        ))
+    with k6:
+        st.html(build_kpi_gauge_html(
+            "Konfidens",
+            avg_confidence,
+            f"{avg_confidence:.0f}%" if pd.notna(avg_confidence) else "N/A",
+            str(decision.get("AI_Confidence_Label", "Ukendt")),
+            TOOLTIPS["confidence"],
+            gauge_id="confidence-gradient",
+        ))
+    with k7:
+        st.html(build_kpi_gauge_html(
+            "Datakvalitet",
+            quality_score,
+            f"{quality_score:.0f}%" if pd.notna(quality_score) else "N/A",
+            quality_text,
+            TOOLTIPS["data_quality"],
+            gauge_id="data-quality-gradient",
+        ))
+    with k8:
+        st.html(build_kpi_gauge_html(
+            "Macro/Rate Risk",
+            macro_rate_regime.score,
+            macro_score_text,
+            macro_rate_regime.level,
+            macro_help,
+            inverse=True,
+            gauge_id="macro-rate-risk-gradient",
+        ))
 
     st.divider()
     st.subheader("Næste anbefalede handling")
