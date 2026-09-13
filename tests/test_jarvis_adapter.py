@@ -9,6 +9,7 @@ from jarvis.adapter import (
     classify_intent,
     execute_command,
     format_investment_brief,
+    format_portfolio_signals,
     format_stock_status,
 )
 from tests.test_jarvis_api import fixture_snapshot
@@ -40,6 +41,8 @@ class JarvisAdapterTests(unittest.TestCase):
         self.assertEqual(classify_intent("Giv mig min investeringsbrief"), "investment_brief")
         self.assertEqual(classify_intent("Hvordan ser porteføljen ud?"), "investment_brief")
         self.assertEqual(classify_intent("Hvad er status på Investment OS?"), "system_status")
+        self.assertEqual(classify_intent("Vis mine investeringssignaler"), "portfolio_signals")
+        self.assertEqual(classify_intent("Hvilke signaler kræver handling?"), "portfolio_signals")
         self.assertEqual(classify_intent("Analyser CLS"), "stock_analysis")
         with self.assertRaises(JarvisCommandError):
             classify_intent("Køb CLS nu")
@@ -93,6 +96,35 @@ class JarvisAdapterTests(unittest.TestCase):
         self.assertIn("Ekstern research (Yahoo Finance via yfinance", result["message"])
         self.assertIn("ændrer ikke Investment OS' Decision Score", result["message"])
         self.assertEqual(result["data"]["research"]["ticker"], "CLS")
+
+    def test_execute_signal_command_preserves_canonical_queue(self) -> None:
+        snapshot = fixture_snapshot()
+        with patch("api.service._current_commit", return_value="abc123"):
+            result = execute_command(
+                "Jarvis, vis mine investeringssignaler",
+                snapshot,
+                request_id="signals-command",
+            )
+
+        self.assertEqual(result["intent"], "portfolio_signals")
+        self.assertEqual(result["data"]["decision_queue"], snapshot["decision_queue"])
+        self.assertIn("1 autoritative positionssignaler", result["message"])
+        self.assertIn("API'et beregner eller ændrer ingen signaler", result["message"])
+
+    def test_signal_formatter_blocks_action_when_readiness_is_insufficient(self) -> None:
+        text = format_portfolio_signals(
+            {
+                "summary": {"signal_count": 1, "handling_counts": {"Øg": 1}},
+                "decision_readiness": {
+                    "status": "insufficient",
+                    "blocking_warning_codes": ["SNAPSHOT_STALE"],
+                },
+                "decision_queue": [],
+                "run_id": "run-1",
+            }
+        )
+        self.assertIn("bør ikke bruges til handling", text)
+        self.assertIn("SNAPSHOT_STALE", text)
 
     def test_stock_formatter_discloses_scope(self) -> None:
         data = {

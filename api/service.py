@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
 
-from api.contracts import response_metadata, warning
+from api.contracts import SIGNAL_SCHEMA_VERSION, response_metadata, warning
 from modules.version import APP_VERSION
 from research.provider import get_stock_research
 
@@ -242,6 +242,262 @@ def build_portfolio_status(
                     macro.get("changes_buy_sell_logic", False)
                 ),
             },
+            "data_freshness": freshness,
+            "warnings": warnings,
+        }
+    )
+    return payload
+
+
+def _canonical_ticker(record: dict[str, Any]) -> str | None:
+    value = record.get("Yahoo_Ticker") or record.get("Ticker")
+    rendered = str(value or "").strip().upper()
+    return rendered or None
+
+
+def _signal_direction(handling: Any) -> str:
+    return {
+        "Øg": "increase",
+        "Reducer": "decrease",
+        "Hold": "hold",
+        "Afvent": "wait",
+    }.get(str(handling or ""), "unknown")
+
+
+def _signal_id(run_id: str, ticker: str, index: int) -> str:
+    seed = f"{run_id}|positions|{index}|{ticker}"
+    return "signal-" + hashlib.sha256(seed.encode("utf-8")).hexdigest()[:16]
+
+
+def _queue_reason(snapshot: dict[str, Any], name: str | None) -> str | None:
+    if not name:
+        return None
+    for item in snapshot.get("decision_queue") or []:
+        if not isinstance(item, dict):
+            continue
+        if str(item.get("Aktiv") or "").strip() == name:
+            value = str(item.get("Begrundelse") or "").strip()
+            return value or None
+    return None
+
+
+def build_portfolio_signals(
+    snapshot: dict[str, Any],
+    *,
+    request_id: str | None = None,
+    now: datetime | None = None,
+    max_age_seconds: int = DEFAULT_MAX_AGE_SECONDS,
+) -> dict[str, Any]:
+    """Project canonical Decision Engine outputs without recalculating them."""
+    timestamp = now or _now()
+    run_id = str(snapshot.get("run_id") or _legacy_run_id(snapshot))
+    freshness, warnings = _freshness(
+        snapshot, now=timestamp, max_age_seconds=max_age_seconds
+    )
+    warnings.extend(_snapshot_warnings(snapshot, current_commit=_current_commit()))
+    source = snapshot.get("source") or {}
+    positions = list(snapshot.get("positions") or [])
+    critical_fields = (
+        "Decision_Score",
+        "Decision_Status",
+        "Handling",
+        "AI_Confidence",
+    )
+    factor_fields = {
+        "momentum": "Momentum Score",
+        "ai_confidence": "AI Score",
+        "relative_strength": "RS Score",
+        "trend": "Trend Score",
+        "risk": "Risk Score",
+        "data_quality": "Data Score",
+        "position": "Position Score",
+    }
+    momentum_fields = (
+        "1W",
+        "1M",
+        "3M",
+        "6M",
+        "12M",
+        "Composite",
+        "Relative_Strength_3M",
+        "Momentum_Acceleration",
+        "Rotation_Signal",
+    )
+
+    signals: list[dict[str, Any]] = []
+    missing_critical: list[dict[str, Any]] = []
+    missing_factor_evidence = 0
+    seen_tickers: set[str] = set()
+    duplicate_tickers: set[str] = set()
+    for index, record in enumerate(positions):
+        if not isinstance(record, dict):
+            missing_critical.append({"index": index, "fields": ["record"]})
+            continue
+        ticker = _canonical_ticker(record) or f"UNKNOWN-{index + 1}"
+        name_value = record.get("Aktiv") or record.get("Name")
+        name = str(name_value).strip() if name_value not in (None, "") else ticker
+        missing = [
+            field for field in critical_fields if record.get(field) is None
+        ]
+        if missing:
+            missing_critical.append(
+                {"ticker": ticker, "index": index, "fields": missing}
+            )
+
+        if ticker in seen_tickers:
+            duplicate_tickers.add(ticker)
+        else:
+            seen_tickers.add(ticker)
+
+        factors = {
+            key: record.get(field)
+            for key, field in factor_fields.items()
+            if record.get(field) is not None
+        }
+        if len(factors) < len(factor_fields):
+            missing_factor_evidence += 1
+        momentum = {
+            field: record.get(field)
+            for field in momentum_fields
+            if field in record
+        }
+        evidence = [
+            {
+                "ref": f"positions[{index}].{field}",
+                "field": field,
+                "value": record.get(field),
+            }
+            for field in (
+                *critical_fields,
+                *momentum_fields,
+                *factor_fields.values(),
+            )
+            if field in record
+        ]
+        signals.append(
+            {
+                "signal_id": _signal_id(run_id, ticker, index),
+                "signal_type": "investment_decision",
+                "ticker": ticker,
+                "name": name,
+                "direction": _signal_direction(record.get("Handling")),
+                "horizon": "current_snapshot",
+                "generated_at": freshness.get("as_of"),
+                "decision": {
+                    "score": record.get("Decision_Score"),
+                    "status": record.get("Decision_Status"),
+                    "handling": record.get("Handling"),
+                    "confidence": record.get("AI_Confidence"),
+                },
+                "factor_scores": factors,
+                "momentum": momentum,
+                "rationale": _queue_reason(snapshot, name),
+                "evidence": evidence,
+                "source": {
+                    "authority": "Investment OS Decision Engine",
+                    "section": "positions",
+                    "index": index,
+                },
+            }
+        )
+
+    if not positions:
+        warnings.append(
+            warning(
+                "SIGNALS_MISSING",
+                "Snapshot'et indeholder ingen positionssignaler.",
+            )
+        )
+    if missing_critical:
+        warnings.append(
+            warning(
+                "SIGNAL_FIELDS_MISSING",
+                "Et eller flere signaler mangler autoritative beslutningsfelter.",
+                items=missing_critical,
+            )
+        )
+    if duplicate_tickers:
+        warnings.append(
+            warning(
+                "DUPLICATE_TICKER_SIGNALS",
+                "Snapshot'et indeholder flere positionssignaler for samme ticker.",
+                tickers=sorted(duplicate_tickers),
+            )
+        )
+    if signals and missing_factor_evidence:
+        warnings.append(
+            warning(
+                "SIGNAL_EVIDENCE_PARTIAL",
+                "Faktorscorer mangler i et eller flere signaler; de tilgængelige "
+                "Decision Engine-resultater er ikke genberegnet.",
+                affected_signals=missing_factor_evidence,
+                total_signals=len(signals),
+            )
+        )
+
+    blocking_codes = {
+        "SNAPSHOT_TIME_MISSING",
+        "SNAPSHOT_STALE",
+        "APP_VERSION_MISMATCH",
+        "COMMIT_MISMATCH",
+        "SIGNALS_MISSING",
+        "SIGNAL_FIELDS_MISSING",
+        "DUPLICATE_TICKER_SIGNALS",
+    }
+    warning_codes = {item.get("code") for item in warnings}
+    blocking = sorted(code for code in warning_codes if code in blocking_codes)
+    readiness = "insufficient" if blocking else (
+        "limited" if "SIGNAL_EVIDENCE_PARTIAL" in warning_codes else "ready"
+    )
+    handling_counts: dict[str, int] = {}
+    status_counts: dict[str, int] = {}
+    for signal in signals:
+        decision = signal["decision"]
+        handling = str(decision.get("handling") or "Ukendt")
+        status = str(decision.get("status") or "Ukendt")
+        handling_counts[handling] = handling_counts.get(handling, 0) + 1
+        status_counts[status] = status_counts.get(status, 0) + 1
+
+    payload: dict[str, Any] = response_metadata(
+        request_id=request_id or str(uuid.uuid4()),
+        run_id=run_id,
+        generated_at=timestamp,
+    )
+    payload.update(
+        {
+            "signal_schema_version": SIGNAL_SCHEMA_VERSION,
+            "status": "ok" if readiness == "ready" else "degraded",
+            "as_of": freshness.get("as_of"),
+            "decision_readiness": {
+                "status": readiness,
+                "blocking_warning_codes": blocking,
+            },
+            "summary": {
+                "signal_count": len(signals),
+                "handling_counts": handling_counts,
+                "status_counts": status_counts,
+                "decision_queue_count": len(snapshot.get("decision_queue") or []),
+            },
+            "authority": {
+                "system": "Investment OS",
+                "engine": "Decision Engine",
+                "app_version": snapshot.get("app_version"),
+                "ruleset_version": snapshot.get("app_version"),
+                "calculation_performed_by_api": False,
+                "research_changes_signals": False,
+            },
+            "source": {
+                "section": "positions",
+                "snapshot_run_id": run_id,
+                "snapshot_schema_version": snapshot.get("schema_version"),
+                "snapshot_commit": source.get("commit_sha"),
+                "snapshot_sha256": source.get("portfolio_file_sha256"),
+                "repository": source.get("repository"),
+                "branch": source.get("branch"),
+            },
+            "signals": signals,
+            "decision_queue": list(snapshot.get("decision_queue") or []),
+            "data_quality": dict(snapshot.get("data_quality") or {}),
             "data_freshness": freshness,
             "warnings": warnings,
         }

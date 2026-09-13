@@ -11,6 +11,7 @@ from pathlib import Path
 from api.service import (
     StockNotFoundError,
     build_investment_brief,
+    build_portfolio_signals,
     build_portfolio_status,
     build_stock_research,
     build_stock_status,
@@ -71,6 +72,13 @@ def fixture_snapshot() -> dict:
                 "Decision_Status": "Meget stærk",
                 "Handling": "Øg",
                 "AI_Confidence": 88.0,
+                "Momentum Score": 91.0,
+                "AI Score": 88.0,
+                "RS Score": 85.0,
+                "Trend Score": 90.0,
+                "Risk Score": 72.0,
+                "Data Score": 96.0,
+                "Position Score": 75.0,
                 "Composite": 0.18,
                 "Relative_Strength_3M": 0.07,
                 "Portfolio_Weight": 0.06,
@@ -127,6 +135,69 @@ class JarvisApiContractTests(unittest.TestCase):
         self.assertEqual(result["macro_rate_risk"]["score"], snapshot["macro_rate_regime"]["score"])
         self.assertFalse(result["macro_rate_risk"]["changes_buy_sell_logic"])
         self.assertEqual(json.dumps(snapshot, sort_keys=True), before)
+
+    def test_portfolio_signals_preserve_authoritative_decision_fields(self) -> None:
+        snapshot = fixture_snapshot()
+        before = json.dumps(snapshot, sort_keys=True)
+        with patch("api.service._current_commit", return_value="abc123"):
+            result = build_portfolio_signals(
+                snapshot,
+                request_id="signals-1",
+                now=NOW,
+            )
+
+        signal = result["signals"][0]
+        source = snapshot["positions"][0]
+        self.assertEqual(result["signal_schema_version"], "1.0")
+        self.assertEqual(result["decision_readiness"]["status"], "ready")
+        self.assertEqual(signal["decision"]["score"], source["Decision_Score"])
+        self.assertEqual(signal["decision"]["status"], source["Decision_Status"])
+        self.assertEqual(signal["decision"]["handling"], source["Handling"])
+        self.assertEqual(signal["decision"]["confidence"], source["AI_Confidence"])
+        self.assertEqual(signal["generated_at"], result["as_of"])
+        self.assertFalse(result["authority"]["calculation_performed_by_api"])
+        self.assertEqual(result["authority"]["ruleset_version"], "7.3.3")
+        self.assertEqual(result["source"]["snapshot_schema_version"], "2.0")
+        self.assertEqual(result["decision_queue"], snapshot["decision_queue"])
+        self.assertEqual(json.dumps(snapshot, sort_keys=True), before)
+
+    def test_stale_signal_snapshot_is_not_action_ready(self) -> None:
+        snapshot = fixture_snapshot()
+        snapshot["generated_at"] = "2026-09-12T00:00:00+00:00"
+        with patch("api.service._current_commit", return_value="abc123"):
+            result = build_portfolio_signals(snapshot, now=NOW)
+
+        self.assertEqual(result["decision_readiness"]["status"], "insufficient")
+        self.assertIn(
+            "SNAPSHOT_STALE",
+            result["decision_readiness"]["blocking_warning_codes"],
+        )
+
+    def test_missing_or_duplicate_signal_fields_block_readiness(self) -> None:
+        snapshot = fixture_snapshot()
+        duplicate = dict(snapshot["positions"][0])
+        duplicate["Decision_Score"] = None
+        snapshot["positions"].append(duplicate)
+        with patch("api.service._current_commit", return_value="abc123"):
+            result = build_portfolio_signals(snapshot, now=NOW)
+
+        codes = set(result["decision_readiness"]["blocking_warning_codes"])
+        self.assertEqual(result["decision_readiness"]["status"], "insufficient")
+        self.assertIn("SIGNAL_FIELDS_MISSING", codes)
+        self.assertIn("DUPLICATE_TICKER_SIGNALS", codes)
+
+    def test_missing_factor_evidence_limits_but_does_not_recalculate(self) -> None:
+        snapshot = fixture_snapshot()
+        del snapshot["positions"][0]["Momentum Score"]
+        with patch("api.service._current_commit", return_value="abc123"):
+            result = build_portfolio_signals(snapshot, now=NOW)
+
+        self.assertEqual(result["decision_readiness"]["status"], "limited")
+        self.assertIn(
+            "SIGNAL_EVIDENCE_PARTIAL",
+            {item["code"] for item in result["warnings"]},
+        )
+        self.assertNotIn("momentum", result["signals"][0]["factor_scores"])
 
     def test_stale_and_version_mismatch_are_machine_readable(self) -> None:
         snapshot = fixture_snapshot()
@@ -268,6 +339,12 @@ class JarvisApiContractTests(unittest.TestCase):
     def test_research_route_is_registered(self) -> None:
         self.assertIn(
             "/v1/research/stocks/{ticker:str}",
+            {route.path for route in app.routes},
+        )
+
+    def test_signal_route_is_registered(self) -> None:
+        self.assertIn(
+            "/v1/portfolio/signals",
             {route.path for route in app.routes},
         )
 

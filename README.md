@@ -34,6 +34,7 @@ Første kontrakter:
 
 - `GET /v1/system/status`
 - `GET /v1/portfolio/status`
+- `GET /v1/portfolio/signals`
 - `GET /v1/briefs/investment`
 - `GET /v1/stocks/{ticker}`
 - `GET /v1/research/stocks/{ticker}`
@@ -74,6 +75,20 @@ freshness `stale`.
 API-svarene indeholder `schema_version`, `request_id`, `run_id`,
 `generated_at`, data-freshness og maskinlæsbare warnings. Et indgående
 `X-Request-ID` bevares, så Jarvis-kald kan spores gennem kæden.
+
+`/v1/portfolio/signals` er Decision/Signal Layer v0.1. Endpointet projekterer
+de autoritative `Decision_Score`, `Decision_Status`, `Handling`, confidence,
+momentumfelter og faktorscorer direkte fra snapshot'et. Hvert signal har et
+deterministisk signal-ID pr. snapshot, evidencereferencer og kildeangivelse.
+API'et genberegner ikke felterne. Stale snapshots, manglende kernefelter eller
+dublerede tickere giver `decision_readiness: insufficient`; manglende,
+ikke-kritiske faktorscorer giver `limited`.
+
+Den deterministiske Jarvis-kommando kan eksempelvis kaldes med:
+
+```json
+{"command": "Vis mine investeringssignaler"}
+```
 
 ## Vigtig databegrænsning
 

@@ -14,6 +14,7 @@ from api.contracts import response_metadata
 from api.service import (
     StockNotFoundError,
     build_investment_brief,
+    build_portfolio_signals,
     build_portfolio_status,
     build_stock_research,
     build_stock_status,
@@ -58,6 +59,17 @@ async def system_status(request: Request) -> JSONResponse:
 async def portfolio_status(request: Request) -> JSONResponse:
     try:
         payload = build_portfolio_status(
+            load_snapshot(_snapshot_path()),
+            request_id=request.headers.get("x-request-id"),
+        )
+    except RuntimeError as exc:
+        return JSONResponse(_unavailable_payload(request, exc), status_code=503)
+    return JSONResponse(payload)
+
+
+async def portfolio_signals(request: Request) -> JSONResponse:
+    try:
+        payload = build_portfolio_signals(
             load_snapshot(_snapshot_path()),
             request_id=request.headers.get("x-request-id"),
         )
@@ -167,6 +179,7 @@ app = Starlette(
     routes=[
         Route("/v1/system/status", system_status, methods=["GET"]),
         Route("/v1/portfolio/status", portfolio_status, methods=["GET"]),
+        Route("/v1/portfolio/signals", portfolio_signals, methods=["GET"]),
         Route("/v1/stocks/{ticker:str}", stock_status, methods=["GET"]),
         Route("/v1/research/stocks/{ticker:str}", stock_research, methods=["GET"]),
         Route("/v1/briefs/investment", investment_brief, methods=["GET"]),

@@ -121,6 +121,57 @@ class SnapshotChangesTests(unittest.TestCase):
             self.assertTrue(second["changes"]["available"])
             self.assertEqual(second["changes"]["kpi_deltas"]["portfolio_health"], 2.0)
 
+    def test_writer_preserves_existing_factor_scores_for_signal_api(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "snapshot.json"
+            data_file = Path(directory) / "portfolio.xlsx"
+            data_file.write_bytes(b"test")
+            analytics = pd.DataFrame(
+                [
+                    {
+                        "Name": "Alpha",
+                        "Yahoo_Ticker": "AAA",
+                        "Decision_Score": 82.0,
+                        "Decision_Status": "Stærk",
+                        "Handling": "Øg",
+                        "AI_Confidence": 88.0,
+                        "Momentum Score": 90.0,
+                        "AI Score": 88.0,
+                        "RS Score": 84.0,
+                        "Trend Score": 86.0,
+                        "Risk Score": 70.0,
+                        "Data Score": 96.0,
+                        "Position Score": 75.0,
+                    }
+                ]
+            )
+            empty = pd.DataFrame()
+            write_portfolio_snapshot(
+                output_file=output,
+                data_file=data_file,
+                app_version="test",
+                portfolio=analytics,
+                analytics_portfolio=analytics,
+                portfolio_metrics={},
+                portfolio_health=SimpleNamespace(score=70.0),
+                decision={},
+                quality_score=100.0,
+                quality_notes=[],
+                benchmark_ticker="TEST",
+                max_position_weight=0.12,
+                history=empty,
+                decision_queue=SimpleNamespace(data=empty),
+                opportunity_result=SimpleNamespace(data=empty),
+                rebalance_result=SimpleNamespace(data=empty),
+                stop_loss_metrics={},
+                watchlist=empty,
+            )
+
+            result = json.loads(output.read_text(encoding="utf-8"))["positions"][0]
+            self.assertEqual(result["Name"], "Alpha")
+            self.assertEqual(result["Momentum Score"], 90.0)
+            self.assertEqual(result["Position Score"], 75.0)
+
 
 if __name__ == "__main__":
     unittest.main()

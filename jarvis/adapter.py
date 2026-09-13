@@ -6,7 +6,12 @@ from datetime import datetime, timezone
 from typing import Any, Callable
 
 from api.contracts import response_metadata
-from api.service import build_investment_brief, build_stock_status, build_system_status
+from api.service import (
+    build_investment_brief,
+    build_portfolio_signals,
+    build_stock_status,
+    build_system_status,
+)
 from research.provider import (
     ResearchUnavailableError,
     get_stock_research,
@@ -43,6 +48,8 @@ def classify_intent(command: str) -> str:
         word in normalized for word in ("status", "version", "drift")
     ):
         return "system_status"
+    if any("signal" in word for word in normalized.split()):
+        return "portfolio_signals"
     if any(word in normalized.split() for word in ("analyser", "analyze", "analyse")):
         return "stock_analysis"
     raise JarvisCommandError(
@@ -283,6 +290,57 @@ def format_stock_status(stock: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def format_portfolio_signals(payload: dict[str, Any]) -> str:
+    """Explain canonical signal outputs without creating a recommendation."""
+    summary = payload.get("summary") or {}
+    readiness = payload.get("decision_readiness") or {}
+    handling_counts = summary.get("handling_counts") or {}
+    signal_count = int(summary.get("signal_count") or 0)
+    rendered_counts = [
+        f"{handling} {int(count)}"
+        for handling in ("Øg", "Reducer", "Hold", "Afvent", "Ukendt")
+        if (count := handling_counts.get(handling))
+    ]
+    lines = [
+        f"Investment OS har {signal_count} autoritative positionssignaler"
+        + (": " + ", ".join(rendered_counts) if rendered_counts else "")
+        + "."
+    ]
+    readiness_status = readiness.get("status") or "ukendt"
+    if readiness_status == "insufficient":
+        codes = ", ".join(readiness.get("blocking_warning_codes") or [])
+        lines.append(
+            "Beslutningsgrundlaget er utilstrækkeligt og bør ikke bruges til handling"
+            + (f" ({codes})" if codes else "")
+            + "."
+        )
+    elif readiness_status == "limited":
+        lines.append(
+            "Beslutningsfelterne er tilgængelige, men forklaringsgrundlaget er "
+            "begrænset af manglende faktorscorer."
+        )
+    else:
+        lines.append("Beslutningsgrundlaget er markeret klar.")
+
+    queue = payload.get("decision_queue") or []
+    if queue:
+        items = [
+            f"{item.get('Aktiv') or 'Ukendt'}: {item.get('Handling') or 'Ukendt'}"
+            for item in queue[:3]
+        ]
+        lines.append("Aktuel Decision Queue: " + "; ".join(items) + ".")
+    else:
+        lines.append("Aktuel Decision Queue er tom.")
+    lines.append(
+        "Jarvis viser uændrede snapshotfelter; API'et beregner eller ændrer ingen signaler."
+    )
+    lines.append(
+        f"Data pr. {payload.get('as_of') or 'ukendt'} · run "
+        f"{payload.get('run_id') or 'ukendt'}."
+    )
+    return "\n".join(lines)
+
+
 def execute_command(
     command: str,
     snapshot: dict[str, Any],
@@ -300,6 +358,9 @@ def execute_command(
             f"Investment OS {data.get('app_version')} har status {data.get('status')}. "
             f"Snapshot er {data.get('data_freshness', {}).get('status', 'ukendt')}."
         )
+    elif intent == "portfolio_signals":
+        data = build_portfolio_signals(snapshot, request_id=request_id)
+        message = format_portfolio_signals(data)
     else:
         ticker = extract_ticker(command)
         data = build_stock_status(snapshot, ticker, request_id=request_id)

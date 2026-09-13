@@ -5,6 +5,7 @@ from typing import Any
 
 
 SCHEMA_VERSION = "1.0"
+SIGNAL_SCHEMA_VERSION = "1.0"
 
 
 def response_metadata(*, request_id: str, run_id: str, generated_at: datetime) -> dict[str, str]:
@@ -23,4 +24,3 @@ def warning(code: str, message: str, **details: Any) -> dict[str, Any]:
     if details:
         payload["details"] = details
     return payload
-
