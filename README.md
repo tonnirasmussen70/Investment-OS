@@ -45,6 +45,19 @@ Fra andet snapshot indeholder briefen også observerede KPI-deltaer, ændringer 
 rangændringer blandt opportunities. Første snapshot markeres med
 `NO_PREVIOUS_SNAPSHOT`.
 
+Jarvis-kommandoadapteren kaldes med:
+
+```http
+POST /v1/jarvis/command
+Content-Type: application/json
+
+{"command": "Giv mig min investeringsbrief"}
+```
+
+Svaret indeholder et kort dansk `message` samt det komplette strukturerede
+`data`-grundlag. Kommandoer uden for de godkendte MVP-intents afvises. Intentet
+`stock_analysis` genkendes, men udføres først, når aktie-endpointet er etableret.
+
 Begge svar indeholder `schema_version`, `request_id`, `run_id`,
 `generated_at`, data-freshness og maskinlæsbare warnings. Et indgående
 `X-Request-ID` bevares, så Jarvis-kald kan spores gennem kæden.

@@ -137,13 +137,15 @@ def build_snapshot_changes(
             continue
         field_changes: dict[str, dict[str, Any]] = {}
         for field in ("Handling", "Decision_Status"):
-            if item.get(field) != before.get(field):
+            if field in item and field in before and item.get(field) != before.get(field):
                 field_changes[field] = {
                     "from": before.get(field),
                     "to": item.get(field),
                 }
-        score_delta = _numeric_delta(
-            item.get("Decision_Score"), before.get("Decision_Score")
+        score_delta = (
+            _numeric_delta(item.get("Decision_Score"), before.get("Decision_Score"))
+            if "Decision_Score" in item and "Decision_Score" in before
+            else None
         )
         if score_delta not in (None, 0.0):
             field_changes["Decision_Score"] = {
