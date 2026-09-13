@@ -15,6 +15,7 @@ from modules.version import APP_VERSION
 
 DEFAULT_SNAPSHOT = Path("data/portfolio_snapshot.json")
 DEFAULT_MAX_AGE_SECONDS = 4 * 60 * 60
+NON_CODE_SNAPSHOT_PATHS = {"data/portfolio_snapshot.json"}
 
 
 def _now() -> datetime:
@@ -49,6 +50,22 @@ def _current_commit() -> str | None:
         return None
     value = result.stdout.strip()
     return value or None
+
+
+def _code_matches_snapshot(snapshot_commit: str, current_commit: str) -> bool:
+    """Accept a data-only snapshot commit made after its calculation run."""
+    try:
+        result = subprocess.run(
+            ["git", "diff", "--name-only", f"{snapshot_commit}..{current_commit}"],
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=2,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return False
+    changed = {line.strip() for line in result.stdout.splitlines() if line.strip()}
+    return bool(changed) and changed.issubset(NON_CODE_SNAPSHOT_PATHS)
 
 
 def load_snapshot(path: str | Path = DEFAULT_SNAPSHOT) -> dict[str, Any]:
@@ -125,7 +142,12 @@ def _snapshot_warnings(
             )
         )
     snapshot_commit = (snapshot.get("source") or {}).get("commit_sha")
-    if current_commit and snapshot_commit and current_commit != snapshot_commit:
+    if (
+        current_commit
+        and snapshot_commit
+        and current_commit != snapshot_commit
+        and not _code_matches_snapshot(snapshot_commit, current_commit)
+    ):
         result.append(
             warning(
                 "COMMIT_MISMATCH",
@@ -221,3 +243,95 @@ def build_portfolio_status(
     )
     return payload
 
+
+def build_investment_brief(
+    snapshot: dict[str, Any],
+    *,
+    request_id: str | None = None,
+    now: datetime | None = None,
+    max_age_seconds: int = DEFAULT_MAX_AGE_SECONDS,
+) -> dict[str, Any]:
+    """Build Jarvis' first brief solely from canonical snapshot output."""
+    timestamp = now or _now()
+    run_id = str(snapshot.get("run_id") or _legacy_run_id(snapshot))
+    freshness, warnings = _freshness(
+        snapshot, now=timestamp, max_age_seconds=max_age_seconds
+    )
+    warnings.extend(_snapshot_warnings(snapshot, current_commit=_current_commit()))
+
+    portfolio = snapshot.get("portfolio") or {}
+    quality = snapshot.get("data_quality") or {}
+    macro = snapshot.get("macro_rate_regime") or {}
+    decisions = list(snapshot.get("decision_queue") or [])
+    opportunities = list(snapshot.get("opportunities") or [])
+    stop_loss = snapshot.get("stop_loss_summary") or {}
+    changes = snapshot.get("changes")
+
+    attention: list[dict[str, Any]] = []
+    for item in warnings:
+        attention.append(
+            {
+                "code": item["code"],
+                "severity": "warning",
+                "message": item["message"],
+            }
+        )
+    for note in list(quality.get("notes") or []):
+        attention.append(
+            {
+                "code": "DATA_QUALITY_NOTE",
+                "severity": "info",
+                "message": str(note),
+            }
+        )
+    if macro.get("level") not in (None, "Ukendt"):
+        attention.append(
+            {
+                "code": "MACRO_RATE_REGIME",
+                "severity": "risk",
+                "message": str(macro.get("impact") or macro.get("level")),
+                "level": macro.get("level"),
+                "score": macro.get("score"),
+                "changes_buy_sell_logic": bool(
+                    macro.get("changes_buy_sell_logic", False)
+                ),
+            }
+        )
+
+    payload: dict[str, Any] = response_metadata(
+        request_id=request_id or str(uuid.uuid4()),
+        run_id=run_id,
+        generated_at=timestamp,
+    )
+    payload.update(
+        {
+            "brief_type": "investment",
+            "as_of": freshness["as_of"],
+            "kpis": {
+                "portfolio_health": portfolio.get("health_score"),
+                "confidence": portfolio.get("ai_confidence"),
+                "confidence_label": portfolio.get("ai_confidence_label"),
+                "data_quality": quality.get("score"),
+                "macro_rate_risk": macro.get("score"),
+                "macro_rate_level": macro.get("level"),
+            },
+            "changes": {
+                "available": isinstance(changes, (dict, list)),
+                "items": changes if isinstance(changes, list) else [],
+                "summary": changes if isinstance(changes, dict) else None,
+            },
+            "decisions": {
+                "count": len(decisions),
+                "items": decisions[:5],
+            },
+            "opportunities": {
+                "count": len(opportunities),
+                "items": opportunities[:3],
+            },
+            "attention": attention,
+            "stop_loss_summary": stop_loss,
+            "data_freshness": freshness,
+            "warnings": warnings,
+        }
+    )
+    return payload

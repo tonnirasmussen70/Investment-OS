@@ -34,6 +34,12 @@ Første kontrakter:
 
 - `GET /v1/system/status`
 - `GET /v1/portfolio/status`
+- `GET /v1/briefs/investment`
+
+`/v1/briefs/investment` leverer det strukturerede grundlag for kommandoen
+"Giv mig min investeringsbrief": KPI'er, eksisterende decision queue, de tre
+højest rangerede opportunities, opmærksomhedspunkter og sporbarhed. Endpointet
+formidler kun felter fra snapshot'et og ændrer ikke signaler eller handlinger.
 
 Begge svar indeholder `schema_version`, `request_id`, `run_id`,
 `generated_at`, data-freshness og maskinlæsbare warnings. Et indgående

@@ -3,10 +3,16 @@ from __future__ import annotations
 import json
 import tempfile
 import unittest
+from unittest.mock import patch
 from datetime import datetime, timezone
 from pathlib import Path
 
-from api.service import build_portfolio_status, build_system_status, load_snapshot
+from api.service import (
+    build_investment_brief,
+    build_portfolio_status,
+    build_system_status,
+    load_snapshot,
+)
 from api.app import _unavailable_payload
 from starlette.requests import Request
 
@@ -36,6 +42,21 @@ def fixture_snapshot() -> dict:
             "as_of": "2026-09-12T00:00:00",
             "changes_buy_sell_logic": False,
         },
+        "decision_queue": [
+            {
+                "Aktiv": "Example A",
+                "Handling": "Reducer",
+                "Decision Score": 48.0,
+                "Begrundelse": "Canonical reason",
+            }
+        ],
+        "opportunities": [
+            {"Name": "Example B", "Decision_Score": 82.0, "Handling": "Øg"},
+            {"Name": "Example C", "Decision_Score": 78.0, "Handling": "Hold"},
+            {"Name": "Example D", "Decision_Score": 74.0, "Handling": "Hold"},
+            {"Name": "Example E", "Decision_Score": 71.0, "Handling": "Hold"},
+        ],
+        "stop_loss_summary": {"Alarm": 1, "Stop_Broken": 0},
     }
 
 
@@ -73,16 +94,30 @@ class JarvisApiContractTests(unittest.TestCase):
         snapshot = fixture_snapshot()
         snapshot["generated_at"] = "2026-09-12T00:00:00+00:00"
         snapshot["app_version"] = "7.0.0"
-        result = build_system_status(
-            snapshot,
-            now=NOW,
-            current_commit="different",
-        )
+        with patch("api.service._code_matches_snapshot", return_value=False):
+            result = build_system_status(
+                snapshot,
+                now=NOW,
+                current_commit="different",
+            )
         codes = {item["code"] for item in result["warnings"]}
         self.assertEqual(result["status"], "degraded")
         self.assertIn("SNAPSHOT_STALE", codes)
         self.assertIn("APP_VERSION_MISMATCH", codes)
         self.assertIn("COMMIT_MISMATCH", codes)
+
+    def test_data_only_snapshot_commit_is_not_a_code_mismatch(self) -> None:
+        snapshot = fixture_snapshot()
+        with patch("api.service._code_matches_snapshot", return_value=True):
+            result = build_system_status(
+                snapshot,
+                now=NOW,
+                current_commit="data-only-child",
+            )
+        self.assertNotIn(
+            "COMMIT_MISMATCH",
+            {item["code"] for item in result["warnings"]},
+        )
 
     def test_snapshot_loader_rejects_non_object_json(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -105,6 +140,33 @@ class JarvisApiContractTests(unittest.TestCase):
         self.assertEqual(result["request_id"], "request-error")
         self.assertEqual(result["run_id"], "unavailable")
         self.assertEqual(result["error"]["code"], "SNAPSHOT_UNAVAILABLE")
+
+    def test_investment_brief_preserves_canonical_decisions(self) -> None:
+        snapshot = fixture_snapshot()
+        before = json.dumps(snapshot, sort_keys=True)
+        result = build_investment_brief(
+            snapshot,
+            request_id="brief-request",
+            now=NOW,
+        )
+        self.assertEqual(result["brief_type"], "investment")
+        self.assertEqual(result["request_id"], "brief-request")
+        self.assertEqual(result["kpis"]["portfolio_health"], 81.25)
+        self.assertEqual(result["decisions"]["items"], snapshot["decision_queue"])
+        self.assertEqual(
+            result["opportunities"]["items"], snapshot["opportunities"][:3]
+        )
+        self.assertFalse(result["changes"]["available"])
+        self.assertEqual(json.dumps(snapshot, sort_keys=True), before)
+
+    def test_investment_brief_discloses_macro_overlay_rule(self) -> None:
+        result = build_investment_brief(fixture_snapshot(), now=NOW)
+        macro_items = [
+            item for item in result["attention"]
+            if item["code"] == "MACRO_RATE_REGIME"
+        ]
+        self.assertEqual(len(macro_items), 1)
+        self.assertFalse(macro_items[0]["changes_buy_sell_logic"])
 
 
 if __name__ == "__main__":

@@ -10,7 +10,12 @@ from starlette.responses import JSONResponse
 from starlette.routing import Route
 
 from api.contracts import response_metadata
-from api.service import build_portfolio_status, build_system_status, load_snapshot
+from api.service import (
+    build_investment_brief,
+    build_portfolio_status,
+    build_system_status,
+    load_snapshot,
+)
 
 
 def _snapshot_path() -> str:
@@ -55,10 +60,22 @@ async def portfolio_status(request: Request) -> JSONResponse:
     return JSONResponse(payload)
 
 
+async def investment_brief(request: Request) -> JSONResponse:
+    try:
+        payload = build_investment_brief(
+            load_snapshot(_snapshot_path()),
+            request_id=request.headers.get("x-request-id"),
+        )
+    except RuntimeError as exc:
+        return JSONResponse(_unavailable_payload(request, exc), status_code=503)
+    return JSONResponse(payload)
+
+
 app = Starlette(
     debug=False,
     routes=[
         Route("/v1/system/status", system_status, methods=["GET"]),
         Route("/v1/portfolio/status", portfolio_status, methods=["GET"]),
+        Route("/v1/briefs/investment", investment_brief, methods=["GET"]),
     ],
 )
