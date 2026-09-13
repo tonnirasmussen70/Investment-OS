@@ -36,6 +36,7 @@ Første kontrakter:
 - `GET /v1/portfolio/status`
 - `GET /v1/briefs/investment`
 - `GET /v1/stocks/{ticker}`
+- `GET /v1/research/stocks/{ticker}`
 
 `/v1/briefs/investment` leverer det strukturerede grundlag for kommandoen
 "Giv mig min investeringsbrief": KPI'er, eksisterende decision queue, de tre
@@ -62,7 +63,15 @@ watchlist og gengiver kun eksisterende Investment OS-data. Hvis en watchlistakti
 som CLS endnu ikke har momentum- og Decision Engine-signaler, oplyses dette
 eksplicit i stedet for at estimere dem.
 
-Begge svar indeholder `schema_version`, `request_id`, `run_id`,
+Aktieanalysen kan suppleres med et separat fundamentalt research-snapshot fra
+Yahoo Finance via den installerede `yfinance`-adapter. Researchdata har egen
+kilde, hentetid, feltdækning, warnings og en seks timers cache. De præsenteres
+kun som kontekst og kan ikke ændre Investment OS' `Decision_Score`, `Handling`
+eller andre signaler. Ved kildefejl leverer Jarvis fortsat OS-status og markerer
+research som utilgængelig; findes et ældre cachet snapshot, returneres dette med
+freshness `stale`.
+
+API-svarene indeholder `schema_version`, `request_id`, `run_id`,
 `generated_at`, data-freshness og maskinlæsbare warnings. Et indgående
 `X-Request-ID` bevares, så Jarvis-kald kan spores gennem kæden.
 

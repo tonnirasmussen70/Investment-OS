@@ -8,17 +8,20 @@ from starlette.applications import Starlette
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 from starlette.routing import Route
+from starlette.concurrency import run_in_threadpool
 
 from api.contracts import response_metadata
 from api.service import (
     StockNotFoundError,
     build_investment_brief,
     build_portfolio_status,
+    build_stock_research,
     build_stock_status,
     build_system_status,
     load_snapshot,
 )
 from jarvis.adapter import JarvisCommandError, execute_command
+from research.provider import ResearchUnavailableError, unavailable_research
 
 
 def _snapshot_path() -> str:
@@ -90,6 +93,31 @@ async def stock_status(request: Request) -> JSONResponse:
     return JSONResponse(payload)
 
 
+async def stock_research(request: Request) -> JSONResponse:
+    request_id = request.headers.get("x-request-id") or str(uuid.uuid4())
+    try:
+        payload = await run_in_threadpool(
+            build_stock_research,
+            request.path_params["ticker"],
+            request_id=request_id,
+        )
+    except ResearchUnavailableError as exc:
+        payload = unavailable_research(
+            request.path_params["ticker"],
+            str(exc),
+        )
+        payload.update(
+            response_metadata(
+                request_id=request_id,
+                run_id="unavailable",
+                generated_at=datetime.now(timezone.utc),
+            )
+        )
+        payload["error"] = {"code": "RESEARCH_UNAVAILABLE", "message": str(exc)}
+        return JSONResponse(payload, status_code=503)
+    return JSONResponse(payload)
+
+
 async def investment_brief(request: Request) -> JSONResponse:
     try:
         payload = build_investment_brief(
@@ -107,7 +135,8 @@ async def jarvis_command(request: Request) -> JSONResponse:
         body = await request.json()
         if not isinstance(body, dict):
             raise JarvisCommandError("INVALID_REQUEST", "JSON-body skal være et objekt.")
-        payload = execute_command(
+        payload = await run_in_threadpool(
+            execute_command,
             str(body.get("command") or ""),
             load_snapshot(_snapshot_path()),
             request_id=request_id,
@@ -139,6 +168,7 @@ app = Starlette(
         Route("/v1/system/status", system_status, methods=["GET"]),
         Route("/v1/portfolio/status", portfolio_status, methods=["GET"]),
         Route("/v1/stocks/{ticker:str}", stock_status, methods=["GET"]),
+        Route("/v1/research/stocks/{ticker:str}", stock_research, methods=["GET"]),
         Route("/v1/briefs/investment", investment_brief, methods=["GET"]),
         Route("/v1/jarvis/command", jarvis_command, methods=["POST"]),
     ],

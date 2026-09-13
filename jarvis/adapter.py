@@ -3,10 +3,15 @@ from __future__ import annotations
 import re
 import unicodedata
 from datetime import datetime, timezone
-from typing import Any
+from typing import Any, Callable
 
 from api.contracts import response_metadata
 from api.service import build_investment_brief, build_stock_status, build_system_status
+from research.provider import (
+    ResearchUnavailableError,
+    get_stock_research,
+    unavailable_research,
+)
 
 
 class JarvisCommandError(ValueError):
@@ -58,6 +63,22 @@ def _percent(value: Any) -> str:
         return f"{float(value) * 100:.1f}%".replace(".", ",")
     except (TypeError, ValueError):
         return "N/A"
+
+
+def _compact_amount(value: Any, currency: str | None = None) -> str:
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return "N/A"
+    suffix = ""
+    if abs(number) >= 1_000_000_000:
+        number /= 1_000_000_000
+        suffix = " mia."
+    elif abs(number) >= 1_000_000:
+        number /= 1_000_000
+        suffix = " mio."
+    rendered = f"{number:.1f}".replace(".", ",")
+    return f"{rendered}{suffix}{' ' + currency if currency else ''}"
 
 
 def extract_ticker(command: str) -> str:
@@ -160,7 +181,7 @@ def format_investment_brief(brief: dict[str, Any]) -> str:
 
 
 def format_stock_status(stock: dict[str, Any]) -> str:
-    """Format a concise Danish OS-only stock analysis."""
+    """Format OS status first and label optional external research separately."""
     identity = stock.get("identity") or {}
     signals = stock.get("signals") or {}
     portfolio = stock.get("portfolio_context") or {}
@@ -203,9 +224,61 @@ def format_stock_status(stock: dict[str, Any]) -> str:
         )
         if watchlist.get("Notes"):
             lines.append(f"Watchlist-note: {watchlist['Notes']}.")
-    lines.append(
-        "Analysen omfatter kun eksisterende Investment OS-data og indeholder ikke ny fundamental research."
-    )
+    research = stock.get("research")
+    if research and research.get("status") in {"available", "partial"}:
+        source = research.get("source") or {}
+        market = research.get("market") or {}
+        valuation = research.get("valuation") or {}
+        growth = research.get("growth") or {}
+        profitability = research.get("profitability") or {}
+        currency = market.get("currency")
+        lines.append(
+            f"Ekstern research ({source.get('provider') or 'ukendt kilde'} via "
+            f"{source.get('adapter') or 'ukendt adapter'}, hentet "
+            f"{research.get('as_of') or 'ukendt'}): "
+            f"kurs {_number(market.get('current_price'))} {currency or ''}, "
+            f"markedsværdi {_compact_amount(market.get('market_cap'), currency)}."
+        )
+        metrics = []
+        if valuation.get("forward_pe") is not None:
+            metrics.append(f"forward P/E {_number(valuation.get('forward_pe'))}")
+        if valuation.get("enterprise_to_ebitda") is not None:
+            metrics.append(f"EV/EBITDA {_number(valuation.get('enterprise_to_ebitda'))}")
+        if growth.get("revenue_growth") is not None:
+            metrics.append(f"omsætningsvækst {_percent(growth.get('revenue_growth'))}")
+        if profitability.get("operating_margin") is not None:
+            metrics.append(f"driftsmargin {_percent(profitability.get('operating_margin'))}")
+        if metrics:
+            lines.append("Fundamentale datapunkter: " + ", ".join(metrics) + ".")
+        quality = research.get("data_quality") or {}
+        freshness = research.get("freshness") or {}
+        if freshness.get("status") == "stale":
+            lines.append(
+                "Researchsnapshot'et er cachet og markeret stale, fordi kilden "
+                "ikke kunne opdateres."
+            )
+        lines.append(
+            f"Research-datakvalitet {quality.get('status') or 'ukendt'} "
+            f"({_percent(quality.get('coverage'))} feltdækning). "
+            "Dataene er kontekst og ændrer ikke Investment OS' Decision Score eller handling."
+        )
+    elif research and research.get("status") == "unavailable":
+        warning_items = research.get("warnings") or []
+        reason = next(
+            (
+                item.get("message")
+                for item in warning_items
+                if item.get("code") == "RESEARCH_UNAVAILABLE"
+            ),
+            "Researchkilden er midlertidigt utilgængelig.",
+        )
+        lines.append(f"Ekstern fundamental research er ikke tilgængelig: {reason}")
+        lines.append("Investment OS-dataene ovenfor er uændrede af researchfejlen.")
+    else:
+        lines.append(
+            "Analysen omfatter kun eksisterende Investment OS-data og indeholder "
+            "ikke ny fundamental research."
+        )
     lines.append(f"Data pr. {stock.get('as_of') or 'ukendt'} · run {stock.get('run_id') or 'ukendt'}.")
     return "\n".join(lines)
 
@@ -215,6 +288,7 @@ def execute_command(
     snapshot: dict[str, Any],
     *,
     request_id: str,
+    research_loader: Callable[[str], dict[str, Any]] | None = get_stock_research,
 ) -> dict[str, Any]:
     intent = classify_intent(command)
     if intent == "investment_brief":
@@ -229,6 +303,11 @@ def execute_command(
     else:
         ticker = extract_ticker(command)
         data = build_stock_status(snapshot, ticker, request_id=request_id)
+        if research_loader is not None:
+            try:
+                data["research"] = research_loader(ticker)
+            except ResearchUnavailableError as exc:
+                data["research"] = unavailable_research(ticker, str(exc))
         message = format_stock_status(data)
     result = response_metadata(
         request_id=request_id,

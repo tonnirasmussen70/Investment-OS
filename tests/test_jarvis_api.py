@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import json
 import tempfile
 import unittest
@@ -11,11 +12,13 @@ from api.service import (
     StockNotFoundError,
     build_investment_brief,
     build_portfolio_status,
+    build_stock_research,
     build_stock_status,
     build_system_status,
     load_snapshot,
 )
-from api.app import _unavailable_payload
+from api.app import _unavailable_payload, app, stock_research
+from research.provider import ResearchUnavailableError
 from starlette.requests import Request
 
 
@@ -241,6 +244,58 @@ class JarvisApiContractTests(unittest.TestCase):
     def test_unknown_stock_is_rejected(self) -> None:
         with self.assertRaises(StockNotFoundError):
             build_stock_status(fixture_snapshot(), "UNKNOWN", now=NOW)
+
+    def test_research_endpoint_contract_uses_separate_run_id(self) -> None:
+        research = {
+            "ticker": "CLS",
+            "status": "available",
+            "as_of": "2026-09-13T11:55:00+00:00",
+            "source": {"provider": "Yahoo Finance", "adapter": "yfinance"},
+            "warnings": [],
+        }
+        result = build_stock_research(
+            "CLS",
+            request_id="research-request",
+            now=NOW,
+            research_loader=lambda ticker: research,
+        )
+
+        self.assertEqual(result["schema_version"], "1.0")
+        self.assertEqual(result["request_id"], "research-request")
+        self.assertTrue(result["run_id"].startswith("research-"))
+        self.assertEqual(result["source"]["provider"], "Yahoo Finance")
+
+    def test_research_route_is_registered(self) -> None:
+        self.assertIn(
+            "/v1/research/stocks/{ticker:str}",
+            {route.path for route in app.routes},
+        )
+
+    def test_research_route_returns_explicit_unavailable_response(self) -> None:
+        request = Request(
+            {
+                "type": "http",
+                "method": "GET",
+                "path": "/v1/research/stocks/CLS",
+                "path_params": {"ticker": "CLS"},
+                "headers": [(b"x-request-id", b"research-error")],
+            }
+        )
+        with patch(
+            "api.app.build_stock_research",
+            side_effect=ResearchUnavailableError("Rate limited."),
+        ):
+            response = asyncio.run(stock_research(request))
+
+        payload = json.loads(response.body)
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(payload["request_id"], "research-error")
+        self.assertEqual(payload["error"]["code"], "RESEARCH_UNAVAILABLE")
+        self.assertEqual(payload["source"]["provider"], "Yahoo Finance")
+        self.assertIn(
+            "RESEARCH_UNAVAILABLE",
+            {item["code"] for item in payload["warnings"]},
+        )
 
 
 if __name__ == "__main__":

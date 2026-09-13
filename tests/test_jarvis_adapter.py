@@ -12,6 +12,27 @@ from jarvis.adapter import (
     format_stock_status,
 )
 from tests.test_jarvis_api import fixture_snapshot
+from research.provider import ResearchUnavailableError
+
+
+def fixture_research() -> dict:
+    return {
+        "research_type": "fundamental_snapshot",
+        "ticker": "CLS",
+        "status": "available",
+        "as_of": "2026-09-13T12:00:00+00:00",
+        "source": {"provider": "Yahoo Finance", "adapter": "yfinance"},
+        "market": {
+            "currency": "USD",
+            "current_price": 301.25,
+            "market_cap": 35_000_000_000,
+        },
+        "valuation": {"forward_pe": 24.5, "enterprise_to_ebitda": 21.0},
+        "growth": {"revenue_growth": 0.22},
+        "profitability": {"operating_margin": 0.09},
+        "data_quality": {"status": "good", "coverage": 0.82},
+        "warnings": [],
+    }
 
 
 class JarvisAdapterTests(unittest.TestCase):
@@ -63,11 +84,15 @@ class JarvisAdapterTests(unittest.TestCase):
             "Jarvis, analyser aktien CLS",
             fixture_snapshot(),
             request_id="request-2",
+            research_loader=lambda ticker: fixture_research(),
         )
         self.assertEqual(result["intent"], "stock_analysis")
         self.assertEqual(result["data"]["identity"]["ticker"], "CLS")
         self.assertIn("Watchlist-status Watch", result["message"])
         self.assertIn("ingen beregnede momentum", result["message"])
+        self.assertIn("Ekstern research (Yahoo Finance via yfinance", result["message"])
+        self.assertIn("ændrer ikke Investment OS' Decision Score", result["message"])
+        self.assertEqual(result["data"]["research"]["ticker"], "CLS")
 
     def test_stock_formatter_discloses_scope(self) -> None:
         data = {
@@ -86,6 +111,22 @@ class JarvisAdapterTests(unittest.TestCase):
         self.assertIn("Decision Score 84,0/100", text)
         self.assertIn("Porteføljevægt 6,0%", text)
         self.assertIn("ikke ny fundamental research", text)
+
+    def test_research_failure_preserves_os_stock_analysis(self) -> None:
+        def unavailable(_: str) -> dict:
+            raise ResearchUnavailableError("Researchdata kunne ikke hentes for CLS.")
+
+        result = execute_command(
+            "Analyser CLS",
+            fixture_snapshot(),
+            request_id="request-3",
+            research_loader=unavailable,
+        )
+
+        self.assertEqual(result["data"]["identity"]["ticker"], "CLS")
+        self.assertEqual(result["data"]["research"]["status"], "unavailable")
+        self.assertIn("Ekstern fundamental research er ikke tilgængelig", result["message"])
+        self.assertIn("Investment OS-dataene ovenfor er uændrede", result["message"])
 
     def test_schema_transition_is_not_reported_as_signal_changes(self) -> None:
         brief = {

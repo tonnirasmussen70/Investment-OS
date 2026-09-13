@@ -7,10 +7,11 @@ import subprocess
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 from api.contracts import response_metadata, warning
 from modules.version import APP_VERSION
+from research.provider import get_stock_research
 
 
 DEFAULT_SNAPSHOT = Path("data/portfolio_snapshot.json")
@@ -350,6 +351,31 @@ def build_stock_status(
             "data_freshness": freshness,
             "warnings": warnings,
         }
+    )
+    return payload
+
+
+def build_stock_research(
+    ticker: str,
+    *,
+    request_id: str | None = None,
+    now: datetime | None = None,
+    research_loader: Callable[[str], dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    """Wrap a separate external research snapshot in the common API contract."""
+    timestamp = now or _now()
+    loader = research_loader or get_stock_research
+    research = loader(ticker)
+    research_as_of = str(research.get("as_of") or "unavailable")
+    seed = f"{research.get('ticker') or ticker}|{research_as_of}"
+    run_id = "research-" + hashlib.sha256(seed.encode("utf-8")).hexdigest()[:16]
+    payload = dict(research)
+    payload.update(
+        response_metadata(
+            request_id=request_id or str(uuid.uuid4()),
+            run_id=run_id,
+            generated_at=timestamp,
+        )
     )
     return payload
 
