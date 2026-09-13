@@ -21,6 +21,24 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
+## Jarvis API
+
+API'et er et read-only lag oven på `data/portfolio_snapshot.json`. Det
+genberegner ikke signaler og ændrer ikke portefølje, beslutninger eller handler.
+
+```bash
+uvicorn api.app:app --host 127.0.0.1 --port 8000
+```
+
+Første kontrakter:
+
+- `GET /v1/system/status`
+- `GET /v1/portfolio/status`
+
+Begge svar indeholder `schema_version`, `request_id`, `run_id`,
+`generated_at`, data-freshness og maskinlæsbare warnings. Et indgående
+`X-Request-ID` bevares, så Jarvis-kald kan spores gennem kæden.
+
 ## Vigtig databegrænsning
 
 Historisk valutakurs ved køb er endnu ikke udfyldt for alle udenlandske

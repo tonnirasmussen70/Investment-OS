@@ -95,6 +95,11 @@ def write_portfolio_snapshot(
     output_path = Path(output_file)
     source_path = Path(data_file)
     generated_at = datetime.now(TIMEZONE)
+    source_hash = _file_sha256(source_path)
+    run_seed = "|".join(
+        [generated_at.isoformat(), app_version, source_hash or ""]
+    )
+    run_id = "ios-" + hashlib.sha256(run_seed.encode("utf-8")).hexdigest()[:16]
 
     position_columns = [
         "Aktiv",
@@ -166,6 +171,7 @@ def write_portfolio_snapshot(
 
     payload = {
         "schema_version": "2.0",
+        "run_id": run_id,
         "app_version": app_version,
         "generated_at": generated_at.isoformat(),
         "generated_at_local": generated_at.strftime("%Y-%m-%d %H:%M:%S %Z"),
@@ -177,7 +183,7 @@ def write_portfolio_snapshot(
             "branch": os.getenv("GITHUB_REF_NAME", "main"),
             "commit_sha": os.getenv("GITHUB_SHA"),
             "portfolio_file": str(source_path),
-            "portfolio_file_sha256": _file_sha256(source_path),
+            "portfolio_file_sha256": source_hash,
         },
         "data_quality": {
             "score": _safe_number(quality_score),

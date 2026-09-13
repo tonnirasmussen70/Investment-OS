@@ -62,6 +62,7 @@ from modules.watchlist_engine import (
     prepare_watchlist,
     watchlist_summary,
 )
+from modules.version import APP_VERSION
 
 
 st.set_page_config(
@@ -71,7 +72,6 @@ st.set_page_config(
 )
 
 DATA_FILE = Path("data/AI_portfolio.xlsx")
-APP_VERSION = "7.3.3"
 MINIMUM_TRADE_DKK = 5_000.0
 SNAPSHOT_ONLY = os.getenv("INVESTMENT_OS_SNAPSHOT_ONLY") == "1"
 
