@@ -1,13 +1,13 @@
 {
   "schema_version": "2.0",
-  "run_id": "ios-e9c8029622de979f",
+  "run_id": "ios-4092b7b0ac57f57d",
   "app_version": "7.3.3",
-  "generated_at": "2026-09-13T16:27:04.904026+02:00",
-  "generated_at_local": "2026-09-13 16:27:04 CEST",
+  "generated_at": "2026-09-13T16:32:28.218099+02:00",
+  "generated_at_local": "2026-09-13 16:32:28 CEST",
   "source": {
     "repository": "tonnirasmussen70/Investment-OS",
     "branch": "main",
-    "commit_sha": "90a67d2a7c5494c11e96f93c4128736e46eeb29c",
+    "commit_sha": "fa5c0903609d8eb9c47dae1d4e91cc5efd2b5bd5",
     "portfolio_file": "data/AI_portfolio.xlsx",
     "portfolio_file_sha256": "1b52512a439f49073550469ff795801c70c402a3b78112a4e791e59e4d784401"
   },
@@ -25,8 +25,8 @@
     "value_dkk": 1170705.7155946563,
     "active_market_value_dkk": 738585.7155946563,
     "total_return_pct": 0.08782946499197641,
-    "health_score": 65.288320006032,
-    "ai_confidence": 53.631168406280345,
+    "health_score": 65.28832027124108,
+    "ai_confidence": 53.6311685504863,
     "ai_confidence_label": "Moderat",
     "benchmark": "URTH",
     "max_position_weight": 0.14
@@ -58,11 +58,11 @@
   },
   "execution_summary": {
     "trade_count": 1,
-    "gross_trade_dkk": 23319.49252267007,
-    "buy_dkk": 23319.49252267007,
+    "gross_trade_dkk": 23319.49144270651,
+    "buy_dkk": 23319.49144270651,
     "sell_dkk": -0.0,
-    "net_trade_dkk": 23319.49252267007,
-    "cash_required_dkk": 23319.49252267007,
+    "net_trade_dkk": 23319.49144270651,
+    "cash_required_dkk": 23319.49144270651,
     "constrained_count": 14
   },
   "top_positions": [
@@ -77,8 +77,8 @@
       "6M": 0.16831962437189874,
       "12M": -0.19659802310223884,
       "Composite": -0.027049499193248925,
-      "AI_Confidence": 20.81210456361412,
-      "Decision_Score": 27.385943510189826,
+      "AI_Confidence": 20.81210513907858,
+      "Decision_Score": 27.385944060769333,
       "Decision_Status": "Lav conviction",
       "Relative_Strength_3M": -0.05711884218544583,
       "Momentum_Acceleration": -0.06663983110462293,
@@ -93,14 +93,14 @@
       "1W": 0.03863987568964711,
       "1M": -0.05654114587488035,
       "3M": -0.08754751535401206,
-      "6M": 0.25759010612888433,
-      "12M": 1.0401236028853025,
-      "Composite": 0.1335455608971964,
-      "AI_Confidence": 54.49616896028753,
-      "Decision_Score": 52.390668400205485,
+      "6M": 0.25759023671480774,
+      "12M": 1.0401234310544978,
+      "Composite": 0.13354556983130061,
+      "AI_Confidence": 54.49616723783891,
+      "Decision_Score": 52.39066675224114,
       "Decision_Status": "Neutral",
       "Relative_Strength_3M": -0.12495404248004738,
-      "Momentum_Acceleration": 0.002610216079017043,
+      "Momentum_Acceleration": 0.0026102095497208717,
       "Rotation_Signal": "Tidlig vending",
       "Handling": "Afvent"
     },
@@ -113,10 +113,10 @@
       "1M": 0.021621621621621623,
       "3M": 0.10882958864112258,
       "6M": 0.30952493724245733,
-      "12M": 0.5798076306815192,
-      "Composite": 0.15013688496435096,
-      "AI_Confidence": 84.2319584484035,
-      "Decision_Score": 84.50212635300866,
+      "12M": 0.5798077314295838,
+      "Composite": 0.15013689503915742,
+      "AI_Confidence": 84.23195926725896,
+      "Decision_Score": 84.50212793258544,
       "Decision_Status": "Stærk",
       "Relative_Strength_3M": 0.07142306151508726,
       "Momentum_Acceleration": -0.019154576043649486,
@@ -153,8 +153,8 @@
       "6M": 0.24055657099468575,
       "12M": 0.0076040821596898844,
       "Composite": 0.09136890969072842,
-      "AI_Confidence": 69.11629042052499,
-      "Decision_Score": 74.8573510700884,
+      "AI_Confidence": 69.11629235315897,
+      "Decision_Score": 74.85735342394698,
       "Decision_Status": "Stærk",
       "Relative_Strength_3M": 0.20954071572114774,
       "Momentum_Acceleration": -0.06350422515826003,
@@ -191,8 +191,8 @@
       "6M": 0.2933332300834366,
       "12M": 0.6818898040789749,
       "Composite": 0.14474871501924727,
-      "AI_Confidence": 73.9309859191059,
-      "Decision_Score": 72.94263492250703,
+      "AI_Confidence": 73.93098794065968,
+      "Decision_Score": 72.94263685664227,
       "Decision_Status": "Stærk",
       "Relative_Strength_3M": -0.008504010445987031,
       "Momentum_Acceleration": 0.0033170397501758077,
@@ -229,8 +229,8 @@
       "6M": 0.66895587743858,
       "12M": 1.3474875356715086,
       "Composite": 0.4269215686658863,
-      "AI_Confidence": 89.99290276168057,
-      "Decision_Score": 89.88780426747607,
+      "AI_Confidence": 89.9929009277288,
+      "Decision_Score": 89.88780251283032,
       "Decision_Status": "Meget stærk",
       "Relative_Strength_3M": 0.3456737582021552,
       "Momentum_Acceleration": 0.023897550486852825,
@@ -248,8 +248,8 @@
       "6M": 0.16752148479352202,
       "12M": 0.41874240350838643,
       "Composite": 0.06285115417103163,
-      "AI_Confidence": 48.438640602124735,
-      "Decision_Score": 52.888009379260204,
+      "AI_Confidence": 48.43864044543661,
+      "Decision_Score": 52.88800922934778,
       "Decision_Status": "Neutral",
       "Relative_Strength_3M": -0.0695375391411931,
       "Momentum_Acceleration": -0.006097140242572856,
@@ -269,8 +269,8 @@
       "6M": 0.16752148479352202,
       "12M": 0.41874240350838643,
       "Composite": 0.06285115417103163,
-      "AI_Confidence": 48.438640602124735,
-      "Decision_Score": 52.888009379260204,
+      "AI_Confidence": 48.43864044543661,
+      "Decision_Score": 52.88800922934778,
       "Decision_Status": "Neutral",
       "Relative_Strength_3M": -0.0695375391411931,
       "Momentum_Acceleration": -0.006097140242572856,
@@ -304,14 +304,14 @@
       "1W": 0.03863987568964711,
       "1M": -0.05654114587488035,
       "3M": -0.08754751535401206,
-      "6M": 0.25759010612888433,
-      "12M": 1.0401236028853025,
-      "Composite": 0.1335455608971964,
-      "AI_Confidence": 54.49616896028753,
-      "Decision_Score": 52.390668400205485,
+      "6M": 0.25759023671480774,
+      "12M": 1.0401234310544978,
+      "Composite": 0.13354556983130061,
+      "AI_Confidence": 54.49616723783891,
+      "Decision_Score": 52.39066675224114,
       "Decision_Status": "Neutral",
       "Relative_Strength_3M": -0.12495404248004738,
-      "Momentum_Acceleration": 0.002610216079017043,
+      "Momentum_Acceleration": 0.0026102095497208717,
       "Rotation_Signal": "Tidlig vending",
       "Handling": "Afvent"
     },
@@ -324,10 +324,10 @@
       "1M": 0.021621621621621623,
       "3M": 0.10882958864112258,
       "6M": 0.30952493724245733,
-      "12M": 0.5798076306815192,
-      "Composite": 0.15013688496435096,
-      "AI_Confidence": 84.2319584484035,
-      "Decision_Score": 84.50212635300866,
+      "12M": 0.5798077314295838,
+      "Composite": 0.15013689503915742,
+      "AI_Confidence": 84.23195926725896,
+      "Decision_Score": 84.50212793258544,
       "Decision_Status": "Stærk",
       "Relative_Strength_3M": 0.07142306151508726,
       "Momentum_Acceleration": -0.019154576043649486,
@@ -345,8 +345,8 @@
       "6M": 0.66895587743858,
       "12M": 1.3474875356715086,
       "Composite": 0.4269215686658863,
-      "AI_Confidence": 89.99290276168057,
-      "Decision_Score": 89.88780426747607,
+      "AI_Confidence": 89.9929009277288,
+      "Decision_Score": 89.88780251283032,
       "Decision_Status": "Meget stærk",
       "Relative_Strength_3M": 0.3456737582021552,
       "Momentum_Acceleration": 0.023897550486852825,
@@ -364,8 +364,8 @@
       "6M": 0.24055657099468575,
       "12M": 0.0076040821596898844,
       "Composite": 0.09136890969072842,
-      "AI_Confidence": 69.11629042052499,
-      "Decision_Score": 74.8573510700884,
+      "AI_Confidence": 69.11629235315897,
+      "Decision_Score": 74.85735342394698,
       "Decision_Status": "Stærk",
       "Relative_Strength_3M": 0.20954071572114774,
       "Momentum_Acceleration": -0.06350422515826003,
@@ -402,8 +402,8 @@
       "6M": 0.16831962437189874,
       "12M": -0.19659802310223884,
       "Composite": -0.027049499193248925,
-      "AI_Confidence": 20.81210456361412,
-      "Decision_Score": 27.385943510189826,
+      "AI_Confidence": 20.81210513907858,
+      "Decision_Score": 27.385944060769333,
       "Decision_Status": "Lav conviction",
       "Relative_Strength_3M": -0.05711884218544583,
       "Momentum_Acceleration": -0.06663983110462293,
@@ -478,8 +478,8 @@
       "6M": 0.2933332300834366,
       "12M": 0.6818898040789749,
       "Composite": 0.14474871501924727,
-      "AI_Confidence": 73.9309859191059,
-      "Decision_Score": 72.94263492250703,
+      "AI_Confidence": 73.93098794065968,
+      "Decision_Score": 72.94263685664227,
       "Decision_Status": "Stærk",
       "Relative_Strength_3M": -0.008504010445987031,
       "Momentum_Acceleration": 0.0033170397501758077,
@@ -497,8 +497,8 @@
       "6M": 0.3799108457013205,
       "12M": 0.7620659426532104,
       "Composite": 0.21243833445430066,
-      "AI_Confidence": 85.77764175180927,
-      "Decision_Score": 87.02386714172376,
+      "AI_Confidence": 85.7776416563446,
+      "Decision_Score": 87.02386705038728,
       "Decision_Status": "Meget stærk",
       "Relative_Strength_3M": 0.23499910545421332,
       "Momentum_Acceleration": -0.05209664630541698,
@@ -796,10 +796,10 @@
       "Prioritet": 1,
       "Handling": "Øg",
       "Aktiv": "Frontline PLC",
-      "Beløb DKK": 23319.49252267007,
-      "Decision Score": 89.88780426747607,
+      "Beløb DKK": 23319.49144270651,
+      "Decision Score": 89.88780251283032,
       "Status": "Meget stærk",
-      "Confidence": 89.99290276168057,
+      "Confidence": 89.9929009277288,
       "Begrundelse": "Øg-signal omsat til dynamisk target weight"
     }
   ],
@@ -807,9 +807,9 @@
     {
       "Name": "Frontline PLC",
       "Yahoo_Ticker": "FRO",
-      "Decision_Score": 89.88780426747607,
+      "Decision_Score": 89.88780251283032,
       "Decision_Status": "Meget stærk",
-      "AI_Confidence": 89.99290276168057,
+      "AI_Confidence": 89.9929009277288,
       "Composite": 0.4269215686658863,
       "Relative_Strength_3M": 0.3456737582021552,
       "Portfolio_Weight": 0.0407891890884478,
@@ -829,9 +829,9 @@
     {
       "Name": "Vestas Wind System",
       "Yahoo_Ticker": "VWS.CO",
-      "Decision_Score": 87.02386714172376,
+      "Decision_Score": 87.02386705038728,
       "Decision_Status": "Meget stærk",
-      "AI_Confidence": 85.77764175180927,
+      "AI_Confidence": 85.7776416563446,
       "Composite": 0.21243833445430066,
       "Relative_Strength_3M": 0.23499910545421332,
       "Portfolio_Weight": 0.03179204458496014,
@@ -840,10 +840,10 @@
     {
       "Name": "Danske Bank A/S",
       "Yahoo_Ticker": "DANSKE.CO",
-      "Decision_Score": 84.50212635300866,
+      "Decision_Score": 84.50212793258544,
       "Decision_Status": "Stærk",
-      "AI_Confidence": 84.2319584484035,
-      "Composite": 0.15013688496435096,
+      "AI_Confidence": 84.23195926725896,
+      "Composite": 0.15013689503915742,
       "Relative_Strength_3M": 0.07142306151508726,
       "Portfolio_Weight": 0.07817941612032141,
       "Handling": "Hold"
@@ -873,9 +873,9 @@
     {
       "Name": "MICROSOFT CORPORATION",
       "Yahoo_Ticker": "MSF.DE",
-      "Decision_Score": 74.8573510700884,
+      "Decision_Score": 74.85735342394698,
       "Decision_Status": "Stærk",
-      "AI_Confidence": 69.11629042052499,
+      "AI_Confidence": 69.11629235315897,
       "Composite": 0.09136890969072842,
       "Relative_Strength_3M": 0.20954071572114774,
       "Portfolio_Weight": 0.06925524792493702,
@@ -884,9 +884,9 @@
     {
       "Name": "Taiwan Semiconductor Manufacturing Co. Ltd.",
       "Yahoo_Ticker": "TSM",
-      "Decision_Score": 72.94263492250703,
+      "Decision_Score": 72.94263685664227,
       "Decision_Status": "Stærk",
-      "AI_Confidence": 73.9309859191059,
+      "AI_Confidence": 73.93098794065968,
       "Composite": 0.14474871501924727,
       "Relative_Strength_3M": -0.008504010445987031,
       "Portfolio_Weight": 0.05292059058506173,
@@ -924,11 +924,11 @@
       "Handling": "Øg",
       "Rebalance handling": "Køb",
       "Nuværende vægt": 0.0407891890884478,
-      "Modelmålvægt": 0.07236235931134452,
-      "Foreslået vægt": 0.07236235931134452,
-      "Ændring": 0.03157317022289672,
-      "Handel DKK": 23319.49252267007,
-      "Decision Score": 89.88780426747607,
+      "Modelmålvægt": 0.07236235784913975,
+      "Foreslået vægt": 0.07236235784913975,
+      "Ændring": 0.031573168760691946,
+      "Handel DKK": 23319.49144270651,
+      "Decision Score": 89.88780251283032,
       "Status": "Meget stærk",
       "Constraint": "",
       "Begrundelse": "Øg-signal omsat til dynamisk target weight"
@@ -962,7 +962,7 @@
       "Foreslået vægt": 0.03179204458496014,
       "Ændring": 0.0,
       "Handel DKK": 0.0,
-      "Decision Score": 87.02386714172376,
+      "Decision Score": 87.02386705038728,
       "Status": "Meget stærk",
       "Constraint": "",
       "Begrundelse": "Ingen execution-ændring"
@@ -979,7 +979,7 @@
       "Foreslået vægt": 0.07817941612032141,
       "Ændring": 0.0,
       "Handel DKK": 0.0,
-      "Decision Score": 84.50212635300866,
+      "Decision Score": 84.50212793258544,
       "Status": "Stærk",
       "Constraint": "",
       "Begrundelse": "Ingen execution-ændring"
@@ -1030,7 +1030,7 @@
       "Foreslået vægt": 0.06925524792493702,
       "Ændring": 0.0,
       "Handel DKK": 0.0,
-      "Decision Score": 74.8573510700884,
+      "Decision Score": 74.85735342394698,
       "Status": "Stærk",
       "Constraint": "Sektorloft (note)",
       "Begrundelse": "Ingen execution-ændring"
@@ -1047,7 +1047,7 @@
       "Foreslået vægt": 0.05292059058506173,
       "Ændring": 0.0,
       "Handel DKK": 0.0,
-      "Decision Score": 72.94263492250703,
+      "Decision Score": 72.94263685664227,
       "Status": "Stærk",
       "Constraint": "Sektorloft (note)",
       "Begrundelse": "Sektorloft overskredet – underliggende signal: Øg; ingen tvungen reduktion"
@@ -1183,7 +1183,7 @@
       "Foreslået vægt": 0.039480298672363204,
       "Ændring": 0.0,
       "Handel DKK": 0.0,
-      "Decision Score": 52.888009379260204,
+      "Decision Score": 52.88800922934778,
       "Status": "Neutral",
       "Constraint": "",
       "Begrundelse": "Ingen execution-ændring"
@@ -1200,7 +1200,7 @@
       "Foreslået vægt": 0.08977112225344148,
       "Ændring": 0.0,
       "Handel DKK": 0.0,
-      "Decision Score": 52.390668400205485,
+      "Decision Score": 52.39066675224114,
       "Status": "Neutral",
       "Constraint": "Sektorloft (note)",
       "Begrundelse": "Ingen execution-ændring"
@@ -1336,7 +1336,7 @@
       "Foreslået vægt": 0.13556720348887888,
       "Ændring": 0.0,
       "Handel DKK": 0.0,
-      "Decision Score": 27.385943510189826,
+      "Decision Score": 27.385944060769333,
       "Status": "Lav conviction",
       "Constraint": "Konfidensgate",
       "Begrundelse": "Signal observeres – konfidens under 70%, ingen handel"
@@ -1401,44 +1401,25 @@
   "changes": {
     "available": true,
     "reason": null,
-    "previous_run_id": "ios-9212aa61f063ac13",
-    "previous_generated_at": "2026-09-13T16:15:32.786160+02:00",
+    "previous_run_id": "ios-e9c8029622de979f",
+    "previous_generated_at": "2026-09-13T16:27:04.904026+02:00",
     "kpi_deltas": {
-      "portfolio_health": -0.0,
-      "confidence": -0.0,
+      "portfolio_health": 0.0,
+      "confidence": 0.0,
       "data_quality": 0.0,
       "macro_rate_risk": 0.0
     },
     "decision_changes": {
-      "count": 28,
+      "count": 6,
       "items": [
-        {
-          "asset": "ABB.ST",
-          "ticker": "ABB.ST",
-          "changes": {
-            "Decision_Status": {
-              "from": null,
-              "to": "Neutral"
-            }
-          }
-        },
-        {
-          "asset": "ALSYDB.CO",
-          "ticker": "ALSYDB.CO",
-          "changes": {
-            "Decision_Status": {
-              "from": null,
-              "to": "Meget stærk"
-            }
-          }
-        },
         {
           "asset": "ASML.AS",
           "ticker": "ASML.AS",
           "changes": {
-            "Decision_Status": {
-              "from": null,
-              "to": "Neutral"
+            "Decision_Score": {
+              "from": 52.390668400205485,
+              "to": 52.39066675224114,
+              "delta": -2e-06
             }
           }
         },
@@ -1446,9 +1427,10 @@
           "asset": "DANSKE.CO",
           "ticker": "DANSKE.CO",
           "changes": {
-            "Decision_Status": {
-              "from": null,
-              "to": "Stærk"
+            "Decision_Score": {
+              "from": 84.50212635300866,
+              "to": 84.50212793258544,
+              "delta": 2e-06
             }
           }
         },
@@ -1456,9 +1438,10 @@
           "asset": "FRO",
           "ticker": "FRO",
           "changes": {
-            "Decision_Status": {
-              "from": null,
-              "to": "Meget stærk"
+            "Decision_Score": {
+              "from": 89.88780426747607,
+              "to": 89.88780251283032,
+              "delta": -2e-06
             }
           }
         },
@@ -1466,19 +1449,10 @@
           "asset": "MSF.DE",
           "ticker": "MSF.DE",
           "changes": {
-            "Decision_Status": {
-              "from": null,
-              "to": "Stærk"
-            }
-          }
-        },
-        {
-          "asset": "NKT.CO",
-          "ticker": "NKT.CO",
-          "changes": {
-            "Decision_Status": {
-              "from": null,
-              "to": "Neutral"
+            "Decision_Score": {
+              "from": 74.8573510700884,
+              "to": 74.85735342394698,
+              "delta": 2e-06
             }
           }
         },
@@ -1486,29 +1460,21 @@
           "asset": "NOVO-B.CO",
           "ticker": "NOVO-B.CO",
           "changes": {
-            "Decision_Status": {
-              "from": null,
-              "to": "Lav conviction"
+            "Decision_Score": {
+              "from": 27.385943510189826,
+              "to": 27.385944060769333,
+              "delta": 1e-06
             }
           }
         },
         {
-          "asset": "PNDORA.CO",
-          "ticker": "PNDORA.CO",
+          "asset": "TSM",
+          "ticker": "TSM",
           "changes": {
-            "Decision_Status": {
-              "from": null,
-              "to": "Stærk"
-            }
-          }
-        },
-        {
-          "asset": "4S0.DE",
-          "ticker": "4S0.DE",
-          "changes": {
-            "Decision_Status": {
-              "from": null,
-              "to": "Interessant"
+            "Decision_Score": {
+              "from": 72.94263492250703,
+              "to": 72.94263685664227,
+              "delta": 2e-06
             }
           }
         }
