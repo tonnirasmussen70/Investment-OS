@@ -163,6 +163,54 @@ def build_command_audit_event(
     }
 
 
+def build_access_audit_event(
+    *,
+    request_id: str,
+    error_code: str,
+    http_status: int,
+    duration_ms: float,
+    method: str,
+    endpoint_scope: str,
+    occurred_at: datetime | None = None,
+) -> dict[str, Any]:
+    """Build a data-minimised event for an authentication or rate-limit denial."""
+    event_time = (occurred_at or datetime.now(timezone.utc)).astimezone(timezone.utc)
+    return {
+        "audit_schema_version": AUDIT_SCHEMA_VERSION,
+        "event_id": str(uuid.uuid4()),
+        "event_type": "jarvis.access.rejected",
+        "occurred_at": event_time.isoformat(),
+        "trace": {
+            "request_id": _safe_identifier(request_id),
+            "run_id": "unavailable",
+        },
+        "request": {
+            "method": str(method or "unknown").upper(),
+            "endpoint_scope": str(endpoint_scope or "unknown"),
+            "path_recorded": False,
+            "credentials_recorded": False,
+        },
+        "authorization": {
+            "approval_required": False,
+            "approval_status": "not_applicable",
+            "investment_execution_allowed": False,
+        },
+        "versions": {
+            "jarvis": JARVIS_VERSION,
+            "response_mode": "deterministic",
+            "model": None,
+            "api_schema": SCHEMA_VERSION,
+            "investment_os": APP_VERSION,
+        },
+        "result": {
+            "outcome": "rejected",
+            "http_status": int(http_status),
+            "error_code": str(error_code),
+            "duration_ms": round(max(0.0, float(duration_ms)), 3),
+        },
+    }
+
+
 def append_audit_event(event: dict[str, Any], path: str | Path | None = None) -> None:
     """Append one compact event with owner-only permissions where supported."""
     target = Path(path) if path is not None else audit_log_path()

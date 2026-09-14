@@ -12,6 +12,7 @@ from starlette.routing import Route
 from starlette.concurrency import run_in_threadpool
 
 from api.contracts import response_metadata, warning
+from api.security import JarvisSecurityMiddleware
 from api.service import (
     StockNotFoundError,
     build_investment_brief,
@@ -148,6 +149,11 @@ async def investment_brief(request: Request) -> JSONResponse:
     return JSONResponse(payload)
 
 
+async def healthz(request: Request) -> JSONResponse:
+    """Public liveness probe with no portfolio, version, or repository data."""
+    return JSONResponse({"status": "ok"})
+
+
 async def jarvis_command(request: Request) -> JSONResponse:
     started = time.perf_counter()
     request_id = request.headers.get("x-request-id") or str(uuid.uuid4())
@@ -219,6 +225,7 @@ async def jarvis_command(request: Request) -> JSONResponse:
 app = Starlette(
     debug=False,
     routes=[
+        Route("/healthz", healthz, methods=["GET"]),
         Route("/v1/system/status", system_status, methods=["GET"]),
         Route("/v1/portfolio/status", portfolio_status, methods=["GET"]),
         Route("/v1/portfolio/signals", portfolio_signals, methods=["GET"]),
@@ -228,3 +235,4 @@ app = Starlette(
         Route("/v1/jarvis/command", jarvis_command, methods=["POST"]),
     ],
 )
+app.add_middleware(JarvisSecurityMiddleware)

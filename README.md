@@ -109,6 +109,34 @@ Placeringen kan sættes uden for repositoryet med miljøvariablen
 `JARVIS_AUDIT_LOG`. Hvis et event ikke kan gemmes, gennemføres det read-only
 kald, og svaret markeres med `AUDIT_LOG_UNAVAILABLE`.
 
+### API-sikkerhed
+
+I standardtilstanden `development` kan API'et kun bruges uden token fra
+localhost. Sættes `JARVIS_API_TOKEN`, kræves tokenet også lokalt. Alle `/v1/`
+endpoints beskyttes; `/healthz` er en offentlig liveness-probe uden portefølje-,
+versions- eller repositorydata.
+
+Development uden token må kun bindes direkte til `127.0.0.1` og må ikke
+eksponeres via `0.0.0.0` eller en reverse proxy. Brug production-konfigurationen
+ved enhver netværkseksponering.
+
+Production er fail-closed og kræver tre miljøvariable:
+
+```text
+JARVIS_ENV=production
+JARVIS_API_TOKEN=<tilfældigt token på mindst 32 tegn>
+JARVIS_RATE_LIMIT_PER_MINUTE=<positivt heltal valgt for deploymentet>
+```
+
+Tokenet sendes som `Authorization: Bearer <token>`. Det gemmes ikke i kode,
+API-svar eller audit-log. Rate-limit har bevidst ingen skjult production-default;
+deploymentet skal vælge værdien eksplicit. Afviste adgangs- og rate-limit-kald
+auditeres uden credentials, rå URL eller forespørgselsindhold.
+
+Alle API-svar markeres `no-store` og får sikkerhedsheaders. En fejlagtig
+production-konfiguration giver `SECURITY_CONFIGURATION_INVALID` frem for at
+starte i en usikker fallback-tilstand.
+
 ## Vigtig databegrænsning
 
 Historisk valutakurs ved køb er endnu ikke udfyldt for alle udenlandske
