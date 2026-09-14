@@ -64,10 +64,16 @@ class RebalanceExecutionTests(unittest.TestCase):
             result.loc["HighConviction", "Modelmålvægt"],
             result.loc["HighConviction", "Nuværende vægt"],
         )
-        self.assertLess(
-            result.loc["Weak", "Modelmålvægt"],
-            result.loc["Weak", "Nuværende vægt"],
-        )
+    def test_low_confidence_signal_is_observed_without_execution(self) -> None:
+        result = self._plan().data.set_index("Aktiv").loc["Weak"]
+
+        self.assertEqual(result["Handling"], "Reducer")
+        self.assertTrue(result["Konfidensgate"])
+        self.assertAlmostEqual(result["Modelmålvægt"], result["Nuværende vægt"])
+        self.assertAlmostEqual(result["Foreslået vægt"], result["Nuværende vægt"])
+        self.assertEqual(result["Handel DKK"], 0.0)
+        self.assertEqual(result["Rebalance handling"], "Ingen handel")
+        self.assertIn("Konfidensgate", result["Constraint"])
 
     def test_position_cap_overrides_hold(self) -> None:
         result = self._plan().data.set_index("Aktiv")

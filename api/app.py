@@ -24,6 +24,7 @@ from api.service import (
     load_snapshot,
 )
 from jarvis.adapter import JarvisCommandError, execute_command
+from jarvis.operations import build_operational_service_indicators
 from jarvis.audit import (
     AuditLogError,
     append_audit_event,
@@ -62,6 +63,14 @@ async def system_status(request: Request) -> JSONResponse:
     except RuntimeError as exc:
         return JSONResponse(_unavailable_payload(request, exc), status_code=503)
     return JSONResponse(payload)
+
+
+async def system_operations(request: Request) -> JSONResponse:
+    payload = await run_in_threadpool(
+        build_operational_service_indicators,
+        request_id=request.headers.get("x-request-id"),
+    )
+    return JSONResponse(payload, status_code=503 if payload["status"] == "unavailable" else 200)
 
 
 async def portfolio_status(request: Request) -> JSONResponse:
@@ -227,6 +236,7 @@ app = Starlette(
     routes=[
         Route("/healthz", healthz, methods=["GET"]),
         Route("/v1/system/status", system_status, methods=["GET"]),
+        Route("/v1/system/operations", system_operations, methods=["GET"]),
         Route("/v1/portfolio/status", portfolio_status, methods=["GET"]),
         Route("/v1/portfolio/signals", portfolio_signals, methods=["GET"]),
         Route("/v1/stocks/{ticker:str}", stock_status, methods=["GET"]),

@@ -33,6 +33,7 @@ uvicorn api.app:app --host 127.0.0.1 --port 8000
 Første kontrakter:
 
 - `GET /v1/system/status`
+- `GET /v1/system/operations`
 - `GET /v1/portfolio/status`
 - `GET /v1/portfolio/signals`
 - `GET /v1/briefs/investment`
@@ -136,6 +137,20 @@ auditeres uden credentials, rå URL eller forespørgselsindhold.
 Alle API-svar markeres `no-store` og får sikkerhedsheaders. En fejlagtig
 production-konfiguration giver `SECURITY_CONFIGURATION_INVALID` frem for at
 starte i en usikker fallback-tilstand.
+
+### Operationelle serviceindikatorer
+
+`GET /v1/system/operations` sammenfatter de seneste 24 timers privacy-minimerede
+audit-events. Svaret viser observeret availability, p50/p95-latency samt antal
+færdigbehandlede kommandoer, tekniske fejl, kommandoafvisninger og
+adgangsafvisninger. Afviste kommandoer og adgangsforsøg tæller som behandlede
+requests; kun tekniske fejl og 5xx-resultater reducerer availability.
+
+Endpointet kontrollerer samtidig audit-schema, dublerede event-ID'er og tegn på
+private payloadfelter. Privacy-målet er eksplicit nul hændelser. Der er endnu
+ikke fastsat en availability-SLA, og status vises derfor som `unconfigured`
+frem for at opfinde en tærskel. Indikatorerne er observerbarhed fra audit-loggen,
+ikke ekstern uptime-monitorering, og rå audit-events returneres aldrig.
 
 ## Vigtig databegrænsning
 
