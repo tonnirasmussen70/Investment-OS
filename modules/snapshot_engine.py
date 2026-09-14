@@ -23,13 +23,33 @@ def _safe_number(value: Any) -> float | None:
     return number if np.isfinite(number) else None
 
 
+def _safe_int(value: Any, default: int = 0) -> int:
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
 def _json_value(value: Any) -> Any:
+    """Convert pandas/numpy/runtime values into JSON-safe Python values."""
+    if value is None:
+        return None
+    if isinstance(value, (np.bool_, bool)):
+        return bool(value)
     if isinstance(value, np.integer):
         return int(value)
     if isinstance(value, (np.floating, float)):
         return _safe_number(value)
     if isinstance(value, (pd.Timestamp, datetime)):
         return value.isoformat()
+    if isinstance(value, Path):
+        return str(value)
+    if isinstance(value, dict):
+        return {str(key): _json_value(item) for key, item in value.items()}
+    if isinstance(value, np.ndarray):
+        return [_json_value(item) for item in value.tolist()]
+    if isinstance(value, (list, tuple, set)):
+        return [_json_value(item) for item in value]
     try:
         if pd.isna(value):
             return None
@@ -408,20 +428,20 @@ def write_portfolio_snapshot(
             "as_of": _json_value(getattr(macro_rate_regime, "as_of", None)),
             "components": {
                 str(key): _safe_number(value)
-                for key, value in getattr(
-                    macro_rate_regime, "components", {}
+                for key, value in (
+                    getattr(macro_rate_regime, "components", {}) or {}
                 ).items()
             },
             "observations": {
                 str(key): _safe_number(value)
-                for key, value in getattr(
-                    macro_rate_regime, "observations", {}
+                for key, value in (
+                    getattr(macro_rate_regime, "observations", {}) or {}
                 ).items()
             },
             "changes_buy_sell_logic": False,
         },
         "execution_summary": {
-            "trade_count": int(getattr(rebalance_result, "trade_count", 0)),
+            "trade_count": _safe_int(getattr(rebalance_result, "trade_count", 0)),
             "gross_trade_dkk": _safe_number(
                 getattr(rebalance_result, "gross_trade_dkk", 0.0)
             ),
@@ -433,7 +453,7 @@ def write_portfolio_snapshot(
             "cash_required_dkk": _safe_number(
                 getattr(rebalance_result, "cash_required_dkk", 0.0)
             ),
-            "constrained_count": int(
+            "constrained_count": _safe_int(
                 getattr(rebalance_result, "constrained_count", 0)
             ),
         },
@@ -466,7 +486,7 @@ def write_portfolio_snapshot(
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(
-        json.dumps(payload, ensure_ascii=False, indent=2),
+        json.dumps(_json_value(payload), ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
     return output_path
