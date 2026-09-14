@@ -90,6 +90,25 @@ Den deterministiske Jarvis-kommando kan eksempelvis kaldes med:
 {"command": "Vis mine investeringssignaler"}
 ```
 
+### Jarvis audit-log
+
+Alle kald til `POST /v1/jarvis/command` registreres i en append-only JSONL-log.
+Hvert event indeholder request/run ID, versioner, freshness, datakvalitet,
+maskinlæsbare årsagskoder, latency og resultat. Kommandoens tekst, den fulde
+API-payload, porteføljepositioner, fritekstbegrundelser, filstier og credentials
+gemmes ikke. Logfilen oprettes med owner-only-rettigheder, hvor operativsystemet
+understøtter det.
+
+Standardplacering:
+
+```text
+logs/jarvis_audit.jsonl
+```
+
+Placeringen kan sættes uden for repositoryet med miljøvariablen
+`JARVIS_AUDIT_LOG`. Hvis et event ikke kan gemmes, gennemføres det read-only
+kald, og svaret markeres med `AUDIT_LOG_UNAVAILABLE`.
+
 ## Vigtig databegrænsning
 
 Historisk valutakurs ved køb er endnu ikke udfyldt for alle udenlandske

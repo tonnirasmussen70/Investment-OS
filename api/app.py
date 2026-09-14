@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import time
 import uuid
 from datetime import datetime, timezone
 
@@ -10,7 +11,7 @@ from starlette.responses import JSONResponse
 from starlette.routing import Route
 from starlette.concurrency import run_in_threadpool
 
-from api.contracts import response_metadata
+from api.contracts import response_metadata, warning
 from api.service import (
     StockNotFoundError,
     build_investment_brief,
@@ -22,6 +23,12 @@ from api.service import (
     load_snapshot,
 )
 from jarvis.adapter import JarvisCommandError, execute_command
+from jarvis.audit import (
+    AuditLogError,
+    append_audit_event,
+    audit_log_path,
+    build_command_audit_event,
+)
 from research.provider import ResearchUnavailableError, unavailable_research
 
 
@@ -142,20 +149,32 @@ async def investment_brief(request: Request) -> JSONResponse:
 
 
 async def jarvis_command(request: Request) -> JSONResponse:
+    started = time.perf_counter()
     request_id = request.headers.get("x-request-id") or str(uuid.uuid4())
+    snapshot: dict = {}
+    status_code = 200
+    outcome = "completed"
     try:
-        body = await request.json()
+        try:
+            body = await request.json()
+        except ValueError as exc:
+            raise JarvisCommandError(
+                "INVALID_REQUEST",
+                "JSON-body kunne ikke læses.",
+            ) from exc
         if not isinstance(body, dict):
             raise JarvisCommandError("INVALID_REQUEST", "JSON-body skal være et objekt.")
+        snapshot = load_snapshot(_snapshot_path())
         payload = await run_in_threadpool(
             execute_command,
             str(body.get("command") or ""),
-            load_snapshot(_snapshot_path()),
+            snapshot,
             request_id=request_id,
         )
     except (JarvisCommandError, StockNotFoundError) as exc:
         code = exc.code if isinstance(exc, JarvisCommandError) else "TICKER_NOT_FOUND"
         status_code = exc.status_code if isinstance(exc, JarvisCommandError) else 404
+        outcome = "rejected"
         payload = response_metadata(
             request_id=request_id,
             run_id="unavailable",
@@ -168,10 +187,33 @@ async def jarvis_command(request: Request) -> JSONResponse:
                 "warnings": [],
             }
         )
-        return JSONResponse(payload, status_code=status_code)
-    except (RuntimeError, ValueError) as exc:
-        return JSONResponse(_unavailable_payload(request, RuntimeError(str(exc))), status_code=503)
-    return JSONResponse(payload)
+    except RuntimeError as exc:
+        status_code = 503
+        outcome = "failed"
+        payload = _unavailable_payload(request, RuntimeError(str(exc)))
+
+    duration_ms = (time.perf_counter() - started) * 1000
+    event = build_command_audit_event(
+        request_id=request_id,
+        payload=payload,
+        outcome=outcome,
+        http_status=status_code,
+        duration_ms=duration_ms,
+        snapshot=snapshot,
+    )
+    try:
+        await run_in_threadpool(append_audit_event, event, audit_log_path())
+    except AuditLogError:
+        payload.setdefault("warnings", []).append(
+            warning(
+                "AUDIT_LOG_UNAVAILABLE",
+                "Jarvis-kaldet blev behandlet, men audit-eventet kunne ikke gemmes.",
+            )
+        )
+        payload["audit"] = {"status": "unavailable"}
+    else:
+        payload["audit"] = {"status": "recorded", "event_id": event["event_id"]}
+    return JSONResponse(payload, status_code=status_code)
 
 
 app = Starlette(

@@ -21,6 +21,9 @@ history/
 # Reports
 reports/
 
+# Runtime audit trail
+logs/
+
 # Cache
 .cache/
 
