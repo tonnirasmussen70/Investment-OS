@@ -1,66 +1,62 @@
 # Investment OS – Morgenbrief
-**Mandag 14. september 2026**
+**Tirsdag 15. september 2026**
 
 ## A. Executive view
-Mandagen åbner i et klart defensivt makroregime. Brent er steget til ca. **USD 107,8/fad**, asiatisk teknologi og semiconductors er under pres, og markedet priser omkring **86-87 % sandsynlighed for en Fed-forhøjelse på 25 bp onsdag**. Oliechokket og lange renter er fortsat den vigtigste eksterne risiko for porteføljen.
-
-Investment OS-snapshotet er **friskt og verificeret**. Porteføljeværdien er **1.170.706 kr.**, samlet afkast **+8,78 %**, Portfolio Health **65,29** og AI Confidence **53,63 – Moderat**. Modellen viser fortsat kun **ét køb: Frontline ca. 23.319 kr.** Den vigtigste handling er derfor fortsat selektivitet og risikokontrol – ikke bred risikoforøgelse. **Ingen handler udføres.**
+Markedsregimet er fortsat defensivt: den amerikanske 10-årige rente brød mandag kortvarigt 5 %, Brent handler tirsdag morgen omkring USD 107, og markedet priser nu ca. 90-93 % sandsynlighed for en Fed-forhøjelse onsdag. Samtidig faldt Philadelphia Semiconductor Index 5,9 % mandag. Investment OS er også blevet mere forsigtigt: Portfolio Health er 64,39 og AI Confidence 53,12. Dagens hovedprioritet er derfor risikokontrol frem for bred ny kapitalallokering. **Ingen handler udføres.**
 
 ## B. Portfolio status
-Snapshot-status: **FRISKT / verificeret**. `generated_at`: **2026-09-13T17:08:16.879675+02:00**. `source.commit_sha`: **378d1b1eb65d268f60a68859d4f6f9d5e1680630**. `source.portfolio_file_sha256`: **1b52512a439f49073550469ff795801c70c402a3b78112a4e791e59e4d784401**. `data_quality.score`: **100/100**. Snapshotet er knap 14 timer gammelt og dermed ikke stale.
+Snapshot-status: **FRISKT / verificeret**. `generated_at`: **2026-09-14T21:54:22.664693+02:00**. `source.commit_sha`: **66d7cd71c3df19fa55ec33cf0061853453cbdb3b**. `source.portfolio_file_sha256`: **8395602330955dc0a46c0cb4419d33108c36d7377ea096456a4510eea715b7e0**. `data_quality.score`: **98,97/100**. Snapshotet er ca. 9 timer gammelt og dermed ikke stale.
 
-Porteføljeværdi: **1.170.706 kr.**; aktiv markedsværdi: **738.586 kr.**; samlet afkast: **+8,78 %**; Portfolio Health: **65,29**; AI Confidence: **53,63 – Moderat**; positionsloft: **14 %**. Største positioner er Novo Nordisk **13,56 %**, ASML **8,98 %**, Danske Bank **7,82 %**, NKT **7,76 %**, Microsoft **6,93 %**, SEC0 **6,39 %** og TSMC **5,29 %**. Novo ligger fortsat kun ca. **0,44 procentpoint** under positionsloftet.
+Porteføljeværdi: **1.161.584 kr.**; aktiv markedsværdi: **729.464 kr.**; samlet afkast: **+7,39 %**; Portfolio Health: **64,39**; AI Confidence: **53,12 – Moderat**; positionsloft: **14 %**. Største verificerede positioner er Novo Nordisk **13,73 %**, ASML **8,53 %**, Danske Bank **7,92 %**, NKT **7,86 %**, Microsoft **7,17 %**, SEC0 **6,13 %** og TSMC **5,22 %**. Novo ligger dermed kun ca. 0,27 procentpoint under positionsloftet.
 
-Datakvaliteten er 100/100, men 22 udenlandske positioner anvender valutan neutralt DKK-afkast, og 22 positioner bruger Yahoo-kurs × FX som fallback for DKK-markedsværdi. Macro/Rate Risk i snapshotet er **76,82 – Meget høj**, drevet primært af US 10Y; dette er et risiko-overlay og ændrer ikke køb/salg-logikken.
+Datakvaliteten er høj, men ikke perfekt: **23 udenlandske positioner** anvender valutan neutralt DKK-afkast, og **23 positioner** anvender Yahoo-kurs × FX som fallback for DKK-markedsværdi. Macro/Rate Risk er **76,74 – Meget høj**, primært drevet af US 10Y; overlayets egen datakvalitet er kun 45/100 og ændrer ikke køb/salg-logikken.
 
 ## C. Markedsstatus og makro
-Mandag morgen falder asiatiske aktier, især AI- og semiconductor-relaterede selskaber. Nikkei er omkring **-0,8 %**, Sydkorea omkring **-2,1 %**, TSMC ca. **-1,2 %**, SK Hynix ca. **-5,3 %** og Samsung Electronics ca. **-3,7 %**. Det er et tydeligt kortsigtet risk-off-signal i AI-komplekset.
+Mandag sluttede S&P 500 **-0,48 %**, Nasdaq **-0,56 %** og Dow **-0,29 %**. Chipaktier var klart svagest, mens software klarede sig bedre. Den amerikanske 10-årige rente steg kort over **5 %** og sluttede omkring dette niveau; tirsdag morgen handles den omkring **4,99 %**.
 
-Brent er steget ca. **3,1 % til USD 107,82**, og WTI ca. **3,2 % til USD 103,22** efter nye angreb på saudisk energiinfrastruktur og skibsfart i Hormuz. Saudi-Arabiens East-West pipeline er midlertidigt lukket; markedskilder vurderer, at op mod 4 % af global olieforsyning kan blive berørt, hvis nedlukningen varer ved. Spotguld er ca. **USD 4.334/oz**, ned 0,3 %, fordi stigende olie og renteforventninger løfter realrente-modvinden. Et aktuelt, tilstrækkeligt sikkert kobber-spot kunne ikke verificeres mandag morgen; seneste verificerede reference er rekordniveau over USD 14.700/ton i sidste uge.
+Brent handler omkring **USD 106,9-107,2/fad**, WTI omkring **USD 102,7**. Spotguld ligger omkring **USD 4.292/oz**. Dollarindekset er ca. **99,5**, EUR/USD ca. **1,154**. Et tilstrækkeligt aktuelt og sammenligneligt kobber-spot kunne ikke verificeres sikkert i denne kørsel og angives derfor **N/A**.
 
-Fed mødes **15.-16. september**, med rentebeslutning onsdag. Markedet priser ca. **86-87 % sandsynlighed for +25 bp**, og både Goldman Sachs og J.P. Morgan forventer nu en forhøjelse. Dollar er fastere, mens yen ligger nær syv måneders højeste før både Fed og Bank of Japan.
+Fed indleder sit todages møde i dag. Den officielle beslutning kommer onsdag 16. september kl. 20:00 dansk tid med pressekonference kl. 20:30. Markedet priser ca. 90-93 % sandsynlighed for +25 bp efter højere inflation, olie og lange renter.
 
 ## D. Sektor- og kapitalstrømsrotation
-**Semiconductors:** kortsigtet negativ rotation mandag morgen. TSMC falder ca. 1,2 % i Asien, mens flere asiatiske chipaktier falder 3-5 %. Investment OS viser dog fortsat TSMC = Øg; ASML og SEC0 = Afvent. Det er derfor et klassisk skel mellem stærk langsigtet fundamental case og svag kortsigtet markedsrotation.
+**Semiconductors:** klart negativ kortsigtet rotation. Philadelphia Semiconductor Index faldt **5,9 %** mandag, og Investment OS viser nu ASML, SEC0 og TSMC som **Reducer**. Det er en væsentlig ændring fra tidligere på ugen.
 
-**Defense:** fortsat strukturelt understøttet af den eskalerende Golf-/Hormuz-risiko. **Energi/shipping:** stærkeste kortsigtede kapitalstrøm; lavere trafik gennem Hormuz og højere fragtrisiko understøtter tankersegmentet og dermed Frontline, men øger eventrisikoen. **Clean energy:** højere renter og olieinflation er en modvind for værdiansættelser; Vestas er fortsat en stærk opportunity, men rebalance-outputtet siger Hold/Ingen handel. **Mining/kobber:** strukturel styrke består efter rekordkobber i sidste uge. **Uranium, rare earths og infrastructure:** ingen ny verificeret modelændring, der ændrer dagens kapitalallokering.
+**Defense:** fortsat strukturel støtte fra den geopolitiske situation i Golfen, men ingen ny verificeret Investment OS-execution kan udledes sikkert fra snapshotudtrækket. **Energi/shipping:** fortsat stærk makromæssig medvind fra Saudi-pipeline/Hormuz-forstyrrelser, men eventrisikoen er meget høj. **Uranium/infrastructure:** den langsigtede strøm- og datacentercase støttes fortsat af store AI-infrastrukturinvesteringer; Google annoncerede eksempelvis €13 mia. i finsk AI-infrastruktur med langsigtet atomkraftaftale. **Clean energy, mining og rare earths:** ingen ny modelændring kan verificeres sikkert i denne kørsel.
 
 ## E. Porteføljepåvirkning
-**ASML:** Afvent; vægt **8,98 %**, 1W **+3,86 %**, 1M **-5,65 %**, 3M **-8,75 %**, AI Confidence **54,50**, Tidlig vending. Dagens asiatiske chip-salg er en kortsigtet modvind, mens ASML's langsigtede kapacitetsudvidelse og AI-efterspørgsel fortsat støtter casen.
+**ASML:** Investment OS = **Reducer**; vægt **8,53 %**, 1W **-5,42 %**, 1M **-13,77 %**, 3M **-12,68 %**, AI Confidence **43,01**, negativ rotation. Det er en klar forværring.
 
-**Microsoft:** Afvent; vægt **6,93 %**, 1W **-3,08 %**, 1M **+0,32 %**, 3M **+24,69 %**, AI Confidence **69,12**, rotation Aftager. Kombinationen af højere lange renter og ny AI-risk-off gør positionen mere rentefølsom på kort sigt.
+**Microsoft:** **Hold**; vægt **7,17 %**, 1W **+1,42 %**, 1M **+2,10 %**, 3M **+29,24 %**, AI Confidence **79,95**. Microsoft skiller sig positivt ud fra hardware/chip-komplekset.
 
-**TSMC:** Øg; vægt **5,29 %**, 1W **+3,89 %**, 1M **+0,95 %**, 3M **+2,89 %**, AI Confidence **73,93**, Accelererer. Mandagens kursfald ændrer endnu ikke Investment OS-signalet, men taler imod at jagte positionen før Fed.
+**TSMC:** nu **Reducer**; vægt **5,22 %**, 1W **-2,09 %**, 1M **-2,45 %**, 3M **-0,94 %**, AI Confidence **46,68**, negativ rotation. **SEC0:** **Reducer**; vægt **6,13 %**, 1W **-5,07 %**, 1M **-6,44 %**, 3M **-16,61 %**, AI Confidence **55,50**. Samlet semiconductor-overlap er derfor dagens tydeligste sektor-risiko.
 
-**Novo Nordisk:** Reducer; vægt **13,56 %**, 1W **-8,32 %**, 1M **-6,52 %**, 3M **-1,97 %**, AI Confidence **20,81**, Negativ rotation. Det er fortsat porteføljens vigtigste koncentrations- og momentumrisiko.
+**Novo Nordisk:** nu **Afvent**; vægt **13,73 %**, 1W **-6,19 %**, 1M **-4,79 %**, 3M **+1,31 %**, AI Confidence **39,92**, negativ rotation. Signalet er forbedret fra gårsdagens Reducer, men den meget høje vægt betyder fortsat, at ny kapital ikke bør tilføjes uden et stærkere signal.
 
-**NKT:** Reducer; vægt **7,76 %**, 1M **-3,95 %**, 3M **-6,62 %**, AI Confidence **37,89**, Negativ rotation. **Danske Bank:** Hold; vægt **7,82 %**, 3M **+10,88 %**, AI Confidence **84,23**. De danske banker er relativt bedre positioneret i et højere-rente-regime end lange duration-aktiver, men et kraftigt vækstchok vil være modvind.
-
-**Vestas:** opportunity med Decision Score **87,02** og AI Confidence **85,78**, men rebalance-output = **Hold / Ingen handel**. **Frontline:** eneste aktuelle execution-kandidat; Øg/Køb ca. **23.319 kr.**, Decision Score **89,89**, Confidence **89,99**.
+**NKT:** **Reducer**; vægt **7,86 %**, 1W **-5,88 %**, 1M **-8,33 %**, 3M **-12,26 %**, AI Confidence **31,91**. **Danske Bank:** **Hold**; vægt **7,92 %**, 3M **+8,94 %**, AI Confidence **84,60**. Vestas og øvrige beholdninger kan ikke verificeres fuldstændigt fra det aktuelle GitHub-udtræk og angives derfor **N/A** frem for at videreføre gårsdagens tal.
 
 ## F. Ændringer siden seneste brief
-Porteføljeværdien er praktisk taget uændret fra ca. **1.170.728 kr. til 1.170.706 kr.** Portfolio Health er forbedret marginalt fra **64,79 til 65,29**, og AI Confidence fra **53,51 til 53,63**. `portfolio_file_sha256` er uændret, så sammenligningen sker på samme masterfilgrundlag.
+Porteføljeværdien er faldet fra ca. **1.170.706 kr. til 1.161.584 kr.**, omtrent **-9.122 kr.** Samlet afkast er faldet fra **+8,78 % til +7,39 %**. Masterfilens SHA er samtidig ændret, så ændringen må ikke fortolkes som rent markedsafkast. Portfolio Health er faldet fra **65,29 til 64,39**, og AI Confidence fra **53,63 til 53,12**.
 
-Decision queue er fortsat **1 køb**, Frontline ca. **23.319 kr.** `constrained_count` er faldet fra 16 til **14**. Vestas er fortsat en stærk opportunity, men uden execution-ændring. Stop-loss-summary er forbedret fra **10 Stop_Broken / 4 Alarm / 0 Tighten** til **9 Stop_Broken / 4 Alarm / 1 Tighten**. Det er en lille forbedring, men ni brud er fortsat højt og understøtter en defensiv kapitalallokering.
+Den vigtigste signalændring er semiconductor-komplekset: **ASML, SEC0 og TSMC står nu alle Reducer**. Microsoft er samtidig forbedret til Hold. Novo er forbedret fra Reducer til Afvent, mens NKT fortsat er Reducer. Execution-summary viser fortsat kun **1 køb for ca. 23.220 kr.**, 0 kr. salg, men `constrained_count` er steget til **18**. Den konkrete aktuelle decision_queue-post, opportunities, rebalance og stop-loss-summary kunne ikke udtrækkes fuldstændigt og sikkert fra GitHub-responsen; de angives derfor **N/A** frem for at gætte.
 
 ## G. Dagens vigtigste begivenheder og kommende regnskaber
-Dagens vigtigste markedsbegivenhed er olie-/Hormuz-reaktionen. Saudi-Arabiens East-West pipeline er lukket efter droneangreb, trafik gennem Hormuz ligger klart under det seneste gennemsnit, og det planlagte Oman-møde mellem Iran og Golfstaterne er udsat. Det reducerer sandsynligheden for hurtig geopolitisk deeskalering.
+**Fed-mødet starter i dag** og afsluttes onsdag. Det er ugens klart vigtigste markedsbegivenhed. Markedet priser næsten en fuld 25 bp-forhøjelse ind, så den største kursrisiko ligger sandsynligvis i Feds guidance om yderligere stramninger og i de nye økonomiske fremskrivninger.
 
-Den vigtigste planlagte begivenhed i denne uge er **Fed 15.-16. september**, med beslutning onsdag kl. 20 dansk tid og pressekonference kl. 20:30. Bank of England følger torsdag og Bank of Japan fredag. For porteføljen er Fed især vigtig for ASML, Microsoft, TSMC/SEC0, Vestas og øvrige lange duration-aktiver.
+Den anden centrale faktor er Golfen: Saudi-Arabiens East-West pipeline er fortsat ramt, og nye Houthi-angreb har fastholdt Brent omkring USD 107. En længerevarende forstyrrelse kan holde inflations- og rentepræmien høj. Der er ingen kommende porteføljeregnskaber, som i denne kørsel kan verificeres som vigtigere end Fed-/olie-regimet.
 
 ## H. Handlingsorienteret vurdering
-**Investment OS-output:** execution_summary viser **1 køb, ca. 23.319 kr., 0 kr. salg**, `constrained_count` **14**. Decision queue: **Frontline PLC – Øg/Køb ca. 23.319 kr., Decision Score 89,89, Confidence 89,99**. TSMC = Øg; Novo og NKT = Reducer; Danske Bank = Hold; ASML, Microsoft og SEC0 = Afvent. Vestas står som stærk opportunity, men rebalance = Hold/Ingen handel. **Ingen handler udføres.**
+**Investment OS-output:** execution-summary viser **1 køb for ca. 23.220 kr., 0 kr. salg**, `constrained_count` **18**. Verificerede positionssignaler: **Microsoft og Danske Bank = Hold; Novo = Afvent; ASML, TSMC, SEC0 og NKT = Reducer**. Den konkrete ene købskandidat kan ikke verificeres sikkert fra det aktuelle udtræk og navngives derfor ikke. **Ingen handler udføres.**
 
-**Egen vurdering:** Jeg ville fortsat ikke øge den brede porteføljerisiko før Fed. Macro/Rate Risk er 76,82/Meget høj, olie er tilbage omkring USD 108, asiatiske semiconductors falder kraftigt, og ni positioner har brudt stop-loss. Det er ikke et attraktivt miljø for at øge mange korrelerede risikopositioner samtidig.
+**Egen vurdering:** Jeg ville ikke øge den brede porteføljerisiko før Fed. Macro/Rate Risk er 76,74/Meget høj, US 10Y har testet 5 %, og tre af de vigtigste semiconductor-eksponeringer er samtidigt skiftet til Reducer. Det er et stærkere risikosignal end den ene aktuelle købskandidat.
 
-Frontline har det stærkeste aktuelle execution-signal og får yderligere fundamental støtte fra Hormuz/pipeline-forstyrrelserne. Men netop derfor er entry-risikoen høj: et geopolitisk skifte kan fjerne en stor del af risikopræmien hurtigt. TSMC er efter min vurdering den mere robuste langsigtede Øg-case, mens Novo er den tydeligste kandidat til risikoreduktion ved næste porteføljegennemgang på grund af kombinationen af høj vægt, negativt 1W/1M/3M momentum og meget lav Confidence.
+Microsoft og Danske Bank har relativt stærkere modelprofiler. Novo kræver fortsat disciplin: signalet er forbedret til Afvent, men positionen er 13,73 % mod 14 %-loftet. Semiconductor-blokken kræver størst opmærksomhed; ASML + SEC0 + TSMC udgør alene ca. **19,9 %** af den aktive portefølje og alle tre viser nu negativ rotation.
 
 ## I. Usikkerheder og datakvalitet
-Snapshotet er friskt og har **100/100 datakvalitet**. De vigtigste interne begrænsninger er fortsat de 22 valutaneutrale DKK-afkast og 22 fallback-værdiansættelser. Macro/Rate-regimets egen datakvalitet er kun **45/100**, fordi flere komponenter mangler; derfor bør det læses som et risiko-overlay og ikke som et præcist handelssignal.
+Snapshotet er friskt med **98,97/100** datakvalitet. De vigtigste interne begrænsninger er 23 valutaneutrale DKK-afkast, 23 fallback-værdiansættelser samt manglende fuld sikker udtrækning af decision_queue/opportunities/rebalance/stop-loss-summary i denne kørsel. Macro/Rate-overlayets egen datakvalitet er kun 45/100.
 
-Den største eksterne usikkerhed er kombinationen **Brent ~USD 108 + Fed-forhøjelsesforventning ~86-87 % + svag AI/semiconductor-åbning + fortsat Hormuz-risiko**. Det øger sandsynligheden for store intradag-bevægelser og gør kapitaldisciplin vigtigere end at reagere på enkeltstående kursudsving.
+Eksternt er kombinationen **Brent ~USD 107 + US 10Y ~5 % + Fed i morgen + svag semiconductor-rotation** den vigtigste risiko. Det taler for at prioritere kapitalbevarelse og positionskvalitet frem for at reagere på kortsigtede rebounds.
 
 ### Dagens beslutningspunkter
-1. **Ingen bred risikoforøgelse før Fed:** Macro/Rate Risk er Meget høj, og ni stop-loss er brudt.
-2. **Novo er fortsat første risikoposition at gennemgå:** 13,56 % vægt, Reducer, AI Confidence 20,81 og negativt momentum på 1W/1M/3M.
-3. **Frontline er eneste execution-køb, men TSMC er den mere robuste langsigtede Øg-case:** Frontline har høj geopolitisk eventrisiko; undgå at jagte et olie-/shipping-gap.
+1. **Ingen bred risikoforøgelse før Fed:** Macro/Rate Risk er Meget høj, og constrained_count er steget til 18.
+2. **Gennemgå semiconductor-overlap:** ASML, SEC0 og TSMC står alle Reducer og udgør samlet ca. 19,9 % af den aktive portefølje.
+3. **Novo skal ikke øges nu:** signalet er forbedret til Afvent, men vægten 13,73 % ligger meget tæt på 14 %-loftet.
