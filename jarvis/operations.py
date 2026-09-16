@@ -10,7 +10,12 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from api.contracts import response_metadata, warning
-from jarvis.audit import AUDIT_SCHEMA_VERSION, audit_log_path
+from jarvis.audit import (
+    AUDIT_SCHEMA_VERSION,
+    AuditLogError,
+    audit_log_path,
+    audit_log_paths,
+)
 
 
 DEFAULT_WINDOW_HOURS = 24
@@ -142,6 +147,7 @@ def build_operational_service_indicators(
             "indicators": _empty_indicators(),
             "audit_integrity": {
                 "status": "ok",
+                "files_checked": 0,
                 "records_checked": 0,
                 "valid_events": 0,
                 "invalid_schema_records": 0,
@@ -156,8 +162,21 @@ def build_operational_service_indicators(
 
     target = Path(path) if path is not None else audit_log_path()
     try:
-        lines = target.read_text(encoding="utf-8").splitlines()
-    except (FileNotFoundError, OSError, UnicodeError):
+        candidates = audit_log_paths(target)
+        sources = [
+            candidate
+            for candidate in reversed(candidates)
+            if candidate.exists() or candidate.is_symlink()
+        ]
+        if not sources:
+            raise FileNotFoundError
+        lines: list[str] = []
+        for source in sources:
+            if source.is_symlink() or not source.is_file():
+                raise OSError
+            lines.extend(source.read_text(encoding="utf-8").splitlines())
+        payload["audit_integrity"]["files_checked"] = len(sources)
+    except (AuditLogError, FileNotFoundError, OSError, UnicodeError):
         payload["status"] = "unavailable"
         payload["audit_integrity"]["status"] = "unavailable"
         payload["warnings"].append(

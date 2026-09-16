@@ -10,7 +10,12 @@ from pathlib import Path
 from unittest.mock import patch
 
 from api.app import app
-from jarvis.audit import AuditLogError, append_audit_event, build_command_audit_event
+from jarvis.audit import (
+    AuditLogError,
+    append_audit_event,
+    build_command_audit_event,
+    load_audit_storage_settings,
+)
 from research import provider as research_provider
 from tests.test_jarvis_adapter import fixture_research
 from tests.test_jarvis_api import fixture_snapshot
@@ -109,6 +114,77 @@ class JarvisAuditTests(unittest.TestCase):
             self.assertEqual([record["event_id"] for record in records], ["one", "two"])
             if os.name == "posix":
                 self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+
+    def test_append_rotates_a_bounded_owner_only_log_family(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "audit.jsonl"
+            environment = {
+                "JARVIS_AUDIT_MAX_BYTES": "64",
+                "JARVIS_AUDIT_BACKUP_COUNT": "2",
+            }
+            Path(f"{path}.3").write_text("stale backup", encoding="utf-8")
+            with patch.dict(os.environ, environment):
+                for index in range(1, 5):
+                    append_audit_event(
+                        {"event_id": f"event-{index}", "padding": "x" * 80},
+                        path,
+                    )
+
+            retained = [
+                json.loads(candidate.read_text(encoding="utf-8"))["event_id"]
+                for candidate in (Path(f"{path}.2"), Path(f"{path}.1"), path)
+            ]
+            self.assertEqual(retained, ["event-2", "event-3", "event-4"])
+            self.assertFalse(Path(f"{path}.3").exists())
+            if os.name == "posix":
+                for candidate in (Path(f"{path}.2"), Path(f"{path}.1"), path):
+                    self.assertEqual(candidate.stat().st_mode & 0o777, 0o600)
+
+    def test_invalid_rotation_configuration_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as directory, patch.dict(
+            os.environ,
+            {
+                "JARVIS_AUDIT_MAX_BYTES": "invalid",
+                "JARVIS_AUDIT_BACKUP_COUNT": "0",
+            },
+        ):
+            settings = load_audit_storage_settings()
+            with self.assertRaises(AuditLogError):
+                append_audit_event(
+                    {"event_id": "not-written"},
+                    Path(directory) / "audit.jsonl",
+                )
+
+        self.assertFalse(settings.valid)
+        self.assertEqual(len(settings.errors), 2)
+
+    @unittest.skipUnless(os.name == "posix", "Symlink safety test requires POSIX.")
+    def test_rotation_rejects_symlinked_backup_before_moving_active_log(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "audit.jsonl"
+            victim = Path(directory) / "victim.txt"
+            victim.write_text("unchanged", encoding="utf-8")
+            environment = {
+                "JARVIS_AUDIT_MAX_BYTES": "64",
+                "JARVIS_AUDIT_BACKUP_COUNT": "2",
+            }
+            with patch.dict(os.environ, environment):
+                append_audit_event(
+                    {"event_id": "first", "padding": "x" * 80},
+                    path,
+                )
+                Path(f"{path}.1").symlink_to(victim)
+                with self.assertRaises(AuditLogError):
+                    append_audit_event(
+                        {"event_id": "second", "padding": "x" * 80},
+                        path,
+                    )
+
+            self.assertEqual(
+                json.loads(path.read_text(encoding="utf-8"))["event_id"],
+                "first",
+            )
+            self.assertEqual(victim.read_text(encoding="utf-8"), "unchanged")
 
     def test_rejected_command_is_audited_without_command_text(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

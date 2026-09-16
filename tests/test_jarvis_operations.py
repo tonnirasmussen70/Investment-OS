@@ -107,6 +107,39 @@ class JarvisOperationalServiceIndicatorTests(unittest.TestCase):
             any(route.path == "/v1/system/operations" for route in app.routes)
         )
 
+    def test_indicators_include_active_and_rotated_audit_files(self) -> None:
+        now = datetime(2026, 9, 14, 12, 0, tzinfo=timezone.utc)
+        current = _event(
+            "current",
+            "jarvis.request.completed",
+            now - timedelta(minutes=5),
+            10,
+            outcome="completed",
+            status_code=200,
+        )
+        rotated = _event(
+            "rotated",
+            "jarvis.request.completed",
+            now - timedelta(minutes=10),
+            20,
+            outcome="completed",
+            status_code=200,
+        )
+
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "audit.jsonl"
+            path.write_text(json.dumps(current) + "\n", encoding="utf-8")
+            Path(f"{path}.1").write_text(json.dumps(rotated) + "\n", encoding="utf-8")
+            result = build_operational_service_indicators(now=now, path=path)
+
+        self.assertEqual(result["status"], "ok")
+        self.assertEqual(result["audit_integrity"]["files_checked"], 2)
+        self.assertEqual(result["audit_integrity"]["valid_events"], 2)
+        self.assertEqual(
+            result["indicators"]["events"]["completed_requests"],
+            2,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

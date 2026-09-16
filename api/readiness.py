@@ -8,7 +8,12 @@ from typing import Any
 
 from api.security import load_security_settings
 from api.service import load_snapshot
-from jarvis.audit import audit_log_path
+from jarvis.audit import (
+    AuditLogError,
+    audit_log_path,
+    audit_log_paths,
+    load_audit_storage_settings,
+)
 
 
 REQUIRED_SNAPSHOT_FIELDS = {"app_version", "generated_at", "portfolio"}
@@ -37,6 +42,10 @@ def _audit_sink_status(environment: str) -> str:
     configured = str(os.getenv("JARVIS_AUDIT_LOG") or "").strip()
     persistent = str(os.getenv("JARVIS_AUDIT_PERSISTENT") or "").strip().lower()
     target = audit_log_path()
+    storage = load_audit_storage_settings()
+
+    if not storage.valid:
+        return "invalid"
 
     if environment == "production":
         if persistent != "true":
@@ -44,10 +53,20 @@ def _audit_sink_status(environment: str) -> str:
         if not configured or not target.is_absolute():
             return "invalid"
 
-    if target.exists():
-        if target.is_symlink() or not target.is_file():
+    try:
+        family = audit_log_paths(target, settings=storage)
+    except AuditLogError:
+        return "invalid"
+    for candidate in family:
+        if not candidate.exists() and not candidate.is_symlink():
+            continue
+        if candidate.is_symlink() or not candidate.is_file():
             return "invalid"
-        return "ok" if os.access(target, os.W_OK) else "unavailable"
+        if not os.access(candidate, os.W_OK):
+            return "unavailable"
+
+    if target.exists():
+        return "ok"
 
     parent = target.parent
     if environment == "production" and not parent.exists():

@@ -7,6 +7,7 @@ import json
 import os
 import threading
 import uuid
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -18,6 +19,9 @@ from modules.version import APP_VERSION
 AUDIT_SCHEMA_VERSION = "1.0"
 JARVIS_VERSION = "0.1.0"
 DEFAULT_AUDIT_LOG = Path("logs/jarvis_audit.jsonl")
+DEFAULT_AUDIT_MAX_BYTES = 10 * 1024 * 1024
+DEFAULT_AUDIT_BACKUP_COUNT = 7
+MAX_AUDIT_BACKUP_COUNT = 100
 
 _WRITE_LOCK = threading.Lock()
 
@@ -26,10 +30,112 @@ class AuditLogError(RuntimeError):
     """Raised when an audit event cannot be persisted safely."""
 
 
+@dataclass(frozen=True)
+class AuditStorageSettings:
+    max_bytes: int
+    backup_count: int
+    errors: tuple[str, ...]
+
+    @property
+    def valid(self) -> bool:
+        return not self.errors
+
+
 def audit_log_path() -> Path:
     """Return the configured audit sink without exposing it in API responses."""
     configured = os.getenv("JARVIS_AUDIT_LOG")
     return Path(configured) if configured else DEFAULT_AUDIT_LOG
+
+
+def load_audit_storage_settings() -> AuditStorageSettings:
+    """Load bounded audit retention settings without silently accepting errors."""
+    errors: list[str] = []
+
+    def positive_integer(
+        name: str,
+        default: int,
+        *,
+        maximum: int | None = None,
+    ) -> int:
+        raw_value = str(os.getenv(name) or "").strip()
+        if not raw_value:
+            return default
+        try:
+            value = int(raw_value)
+        except ValueError:
+            errors.append(f"{name} must be a positive integer.")
+            return default
+        if value <= 0:
+            errors.append(f"{name} must be a positive integer.")
+            return default
+        if maximum is not None and value > maximum:
+            errors.append(f"{name} must not exceed {maximum}.")
+            return default
+        return value
+
+    return AuditStorageSettings(
+        max_bytes=positive_integer("JARVIS_AUDIT_MAX_BYTES", DEFAULT_AUDIT_MAX_BYTES),
+        backup_count=positive_integer(
+            "JARVIS_AUDIT_BACKUP_COUNT",
+            DEFAULT_AUDIT_BACKUP_COUNT,
+            maximum=MAX_AUDIT_BACKUP_COUNT,
+        ),
+        errors=tuple(errors),
+    )
+
+
+def audit_log_paths(
+    path: str | Path | None = None,
+    *,
+    settings: AuditStorageSettings | None = None,
+) -> tuple[Path, ...]:
+    """Return the active audit log followed by its bounded backup family."""
+    storage = settings or load_audit_storage_settings()
+    if not storage.valid:
+        raise AuditLogError("Jarvis audit storage configuration is invalid.")
+    target = Path(path) if path is not None else audit_log_path()
+    backups = tuple(
+        Path(f"{target}.{index}")
+        for index in range(1, storage.backup_count + 1)
+    )
+    return (target, *backups)
+
+
+def _require_regular_file(path: Path) -> None:
+    if path.is_symlink() or not path.is_file():
+        raise OSError("Audit storage entry is not a regular file.")
+
+
+def _prune_excess_audit_backups(target: Path, backup_count: int) -> None:
+    prefix = f"{target.name}."
+    for candidate in target.parent.iterdir():
+        if not candidate.name.startswith(prefix):
+            continue
+        suffix = candidate.name[len(prefix) :]
+        if not suffix.isdigit() or int(suffix) <= backup_count:
+            continue
+        if candidate.is_symlink():
+            candidate.unlink()
+            continue
+        _require_regular_file(candidate)
+        candidate.unlink()
+
+
+def _rotate_audit_log(target: Path, backup_count: int) -> None:
+    """Rotate existing regular files while retaining a bounded backup family."""
+    _require_regular_file(target)
+    for index in range(1, backup_count + 1):
+        candidate = Path(f"{target}.{index}")
+        if candidate.exists() or candidate.is_symlink():
+            _require_regular_file(candidate)
+
+    for index in range(backup_count - 1, 0, -1):
+        source = Path(f"{target}.{index}")
+        if not source.exists():
+            continue
+        source.replace(Path(f"{target}.{index + 1}"))
+
+    target.replace(Path(f"{target}.1"))
 
 
 def _safe_identifier(value: Any) -> str:
@@ -264,8 +370,11 @@ def build_request_audit_event(
 
 
 def append_audit_event(event: dict[str, Any], path: str | Path | None = None) -> None:
-    """Append one compact event with owner-only permissions where supported."""
+    """Append one compact event and rotate the bounded owner-only log family."""
     target = Path(path) if path is not None else audit_log_path()
+    storage = load_audit_storage_settings()
+    if not storage.valid:
+        raise AuditLogError("Jarvis audit storage configuration is invalid.")
     try:
         line = json.dumps(event, ensure_ascii=False, separators=(",", ":"), sort_keys=True)
     except (TypeError, ValueError) as exc:
@@ -279,6 +388,13 @@ def append_audit_event(event: dict[str, Any], path: str | Path | None = None) ->
                     target.parent.chmod(0o700)
                 except OSError:
                     pass
+            _prune_excess_audit_backups(target, storage.backup_count)
+            if target.exists() or target.is_symlink():
+                _require_regular_file(target)
+                event_bytes = len((line + "\n").encode("utf-8"))
+                current_bytes = target.stat().st_size
+                if current_bytes > 0 and current_bytes + event_bytes > storage.max_bytes:
+                    _rotate_audit_log(target, storage.backup_count)
             flags = os.O_APPEND | os.O_CREAT | os.O_WRONLY
             flags |= getattr(os, "O_NOFOLLOW", 0)
             descriptor = os.open(target, flags, 0o600)

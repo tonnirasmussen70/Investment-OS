@@ -93,7 +93,8 @@ Den deterministiske Jarvis-kommando kan eksempelvis kaldes med:
 
 ### Jarvis audit-log
 
-Alle kald til `POST /v1/jarvis/command` registreres i en append-only JSONL-log.
+Alle kald til `POST /v1/jarvis/command` registreres i en roterende familie af
+append-only JSONL-logfiler.
 Hvert event indeholder request/run ID, versioner, freshness, datakvalitet,
 maskinlæsbare årsagskoder, latency og resultat. Kommandoens tekst, den fulde
 API-payload, porteføljepositioner, fritekstbegrundelser, filstier og credentials
@@ -109,6 +110,19 @@ logs/jarvis_audit.jsonl
 Placeringen kan sættes uden for repositoryet med miljøvariablen
 `JARVIS_AUDIT_LOG`. Hvis et event ikke kan gemmes, gennemføres det read-only
 kald, og svaret markeres med `AUDIT_LOG_UNAVAILABLE`.
+
+Den aktive log roterer som standard ved 10 MiB og beholder syv backups. Det
+begrænser normalt logfamilien til cirka 80 MiB. Grænserne kan ændres med positive
+heltal; højst 100 backups accepteres:
+
+```text
+JARVIS_AUDIT_MAX_BYTES=10485760
+JARVIS_AUDIT_BACKUP_COUNT=7
+```
+
+Rotationen sker under samme proceslås som skrivningen. Aktive og roterede filer
+afvises, hvis de er symbolske links eller ikke er regulære filer. Ældre numeriske
+backups ud over den konfigurerede grænse fjernes ved næste skrivning.
 
 ### API-sikkerhed
 
@@ -193,8 +207,9 @@ push, når repositoryets branch protection kræver checket `test-suite`.
 ### Operationelle serviceindikatorer
 
 `GET /v1/system/operations` sammenfatter de seneste 24 timers privacy-minimerede
-audit-events. Svaret viser observeret availability, p50/p95-latency samt antal
-færdigbehandlede kommandoer, tekniske fejl, kommandoafvisninger og
+audit-events på tværs af den aktive log og dens backups. Svaret viser observeret
+availability, p50/p95-latency samt antal færdigbehandlede kommandoer, tekniske
+fejl, kommandoafvisninger og
 adgangsafvisninger. Afviste kommandoer og adgangsforsøg tæller som behandlede
 requests; kun tekniske fejl og 5xx-resultater reducerer availability.
 

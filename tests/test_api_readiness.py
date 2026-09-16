@@ -109,6 +109,24 @@ class JarvisApiReadinessTests(unittest.TestCase):
         self.assertEqual(payload["status"], "not_ready")
         self.assertEqual(payload["checks"]["audit_sink"], "unconfigured")
 
+    def test_readyz_rejects_invalid_audit_retention_configuration(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            snapshot_path = self._write_snapshot(directory)
+            audit_path = Path(directory) / "audit.jsonl"
+            environment = self._production_environment(
+                snapshot_path=snapshot_path,
+                audit_path=audit_path,
+            )
+            environment["JARVIS_AUDIT_BACKUP_COUNT"] = "0"
+            with patch.dict(os.environ, environment):
+                status, payload, _ = asyncio.run(
+                    _request("/readyz", client_host="192.0.2.10")
+                )
+
+        self.assertEqual(status, 503)
+        self.assertEqual(payload["status"], "not_ready")
+        self.assertEqual(payload["checks"]["audit_sink"], "invalid")
+
 
 if __name__ == "__main__":
     unittest.main()
