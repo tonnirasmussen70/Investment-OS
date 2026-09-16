@@ -12,6 +12,7 @@ from starlette.routing import Route
 from starlette.concurrency import run_in_threadpool
 
 from api.contracts import response_metadata, warning
+from api.readiness import build_readiness_status
 from api.security import JarvisSecurityMiddleware
 from api.service import (
     StockNotFoundError,
@@ -163,6 +164,13 @@ async def healthz(request: Request) -> JSONResponse:
     return JSONResponse({"status": "ok"})
 
 
+async def readyz(request: Request) -> JSONResponse:
+    """Public readiness probe with coarse checks and no private metadata."""
+    payload = await run_in_threadpool(build_readiness_status, _snapshot_path())
+    status_code = 200 if payload["status"] == "ready" else 503
+    return JSONResponse(payload, status_code=status_code)
+
+
 async def jarvis_command(request: Request) -> JSONResponse:
     started = time.perf_counter()
     request_id = request.headers.get("x-request-id") or str(uuid.uuid4())
@@ -235,6 +243,7 @@ app = Starlette(
     debug=False,
     routes=[
         Route("/healthz", healthz, methods=["GET"]),
+        Route("/readyz", readyz, methods=["GET"]),
         Route("/v1/system/status", system_status, methods=["GET"]),
         Route("/v1/system/operations", system_operations, methods=["GET"]),
         Route("/v1/portfolio/status", portfolio_status, methods=["GET"]),

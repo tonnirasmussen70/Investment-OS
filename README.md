@@ -121,12 +121,14 @@ Development uden token må kun bindes direkte til `127.0.0.1` og må ikke
 eksponeres via `0.0.0.0` eller en reverse proxy. Brug production-konfigurationen
 ved enhver netværkseksponering.
 
-Production er fail-closed og kræver tre miljøvariable:
+Production er fail-closed og kræver følgende miljøvariable:
 
 ```text
 JARVIS_ENV=production
 JARVIS_API_TOKEN=<tilfældigt token på mindst 32 tegn>
 JARVIS_RATE_LIMIT_PER_MINUTE=<positivt heltal valgt for deploymentet>
+JARVIS_AUDIT_LOG=/absolut/sti/på/persistent-volume/jarvis_audit.jsonl
+JARVIS_AUDIT_PERSISTENT=true
 ```
 
 Tokenet sendes som `Authorization: Bearer <token>`. Det gemmes ikke i kode,
@@ -137,6 +139,38 @@ auditeres uden credentials, rå URL eller forespørgselsindhold.
 Alle API-svar markeres `no-store` og får sikkerhedsheaders. En fejlagtig
 production-konfiguration giver `SECURITY_CONFIGURATION_INVALID` frem for at
 starte i en usikker fallback-tilstand.
+
+### Production readiness og drift
+
+`/healthz` er en offentlig liveness-probe, der alene bekræfter, at processen
+svarer. `/readyz` er en offentlig, dataminimeret readiness-probe. Den svarer
+først `200 ready`, når sikkerhedskonfigurationen er gyldig, snapshot-kontrakten
+kan læses, og audit-loggen er konfigureret til en skrivbar persistent placering.
+Ellers svarer den `503 not_ready`. Ingen af proberne viser secrets, filstier,
+versionsnumre, commit-ID'er eller porteføljedata.
+
+Auditmappen skal oprettes af deploymentet og være et persistent volume. Flaget
+`JARVIS_AUDIT_PERSISTENT=true` er en eksplicit deployment-erklæring; Jarvis kan
+kontrollere sti og skriveadgang, men kan ikke selv bevise storage-mediets
+levetid.
+
+Anbefalet production-proces for den nuværende single-user MVP:
+
+```bash
+uvicorn api.app:app --host 127.0.0.1 --port 8000 --workers 1
+```
+
+Processen eksponeres gennem en TLS-terminerende reverse proxy. Ved ændringer i
+miljøvariable eller mount genstartes den samme proces via deploymentets process
+manager. Derefter køres smoke-testen:
+
+```bash
+JARVIS_BASE_URL=https://jarvis.example \
+python scripts/smoke_test_jarvis_api.py
+```
+
+Smoke-testen bruger `JARVIS_API_TOKEN` fra miljøet og verificerer `/healthz`,
+`/readyz` og det autentificerede `/v1/system/status` uden at udskrive tokenet.
 
 ### Operationelle serviceindikatorer
 

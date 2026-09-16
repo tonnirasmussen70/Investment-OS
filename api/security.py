@@ -30,7 +30,7 @@ from jarvis.audit import (
 
 
 PROTECTED_PREFIX = "/v1/"
-PUBLIC_PATHS = {"/healthz"}
+PUBLIC_PATHS = {"/healthz", "/readyz"}
 LOCAL_CLIENTS = {"127.0.0.1", "::1", "localhost", "testclient"}
 WINDOW_SECONDS = 60
 COMMAND_PATH = "/v1/jarvis/command"
@@ -252,7 +252,7 @@ async def _rejection_response(
 
 
 class JarvisSecurityMiddleware(BaseHTTPMiddleware):
-    """Protect and observe private routes while keeping healthz data-free."""
+    """Protect private routes while keeping probes public and data-free."""
 
     async def dispatch(self, request: Request, call_next) -> Response:
         started = time.perf_counter()
