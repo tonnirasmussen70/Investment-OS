@@ -171,7 +171,7 @@ levetid.
 Anbefalet production-proces for den nuværende single-user MVP:
 
 ```bash
-uvicorn api.app:app --host 127.0.0.1 --port 8000 --workers 1
+uvicorn api.app:app --host 127.0.0.1 --port 8000 --workers 1 --no-access-log
 ```
 
 Processen eksponeres gennem en TLS-terminerende reverse proxy. Ved ændringer i
@@ -185,6 +185,22 @@ python scripts/smoke_test_jarvis_api.py
 
 Smoke-testen bruger `JARVIS_API_TOKEN` fra miljøet og verificerer `/healthz`,
 `/readyz` og det autentificerede `/v1/system/status` uden at udskrive tokenet.
+
+### Windows local-first deployment
+
+Den native Windows-pakke i `deploy/windows` installerer Jarvis som en
+production-konfigureret Scheduled Task ved brugerlogon. Den genererer og
+beskytter tokenet, bruger persistent audit-storage under `%LOCALAPPDATA%`,
+installerer Python-afhængigheder og afslutter med smoke-testen.
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass `
+  -File .\deploy\windows\Install-Jarvis.ps1
+```
+
+Pakken tillader kun binding til `127.0.0.1` og opretter ingen firewallregel.
+Se `deploy/windows/README.md` for installation, drift, fjernelse og kravene til
+en senere kontrolleret netværksudvidelse.
 
 ### Kontinuerlig kvalitetskontrol
 
