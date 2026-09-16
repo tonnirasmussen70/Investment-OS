@@ -106,6 +106,7 @@ def _empty_indicators() -> dict[str, Any]:
             "sample_count": 0,
         },
         "events": {
+            "completed_requests": 0,
             "completed_commands": 0,
             "technical_failures": 0,
             "command_rejections": 0,
@@ -207,12 +208,14 @@ def build_operational_service_indicators(
         outcome = str(result.get("outcome") or "")
         if event_type == "jarvis.command.completed":
             counts["completed_commands"] += 1
+        elif event_type == "jarvis.request.completed":
+            counts["completed_requests"] += 1
         elif event_type == "jarvis.command.rejected":
             counts["command_rejections"] += 1
         elif event_type == "jarvis.access.rejected":
             counts["access_rejections"] += 1
-        elif event_type == "jarvis.command.failed":
-            counts["technical_failures"] += 1
+        elif event_type in {"jarvis.command.failed", "jarvis.request.failed"}:
+            pass
         else:
             counts["other"] += 1
 
@@ -223,6 +226,7 @@ def build_operational_service_indicators(
             pass
         if is_failure:
             technical_failures += 1
+            counts["technical_failures"] += 1
 
         try:
             duration = float(result.get("duration_ms"))

@@ -36,6 +36,7 @@ def test_zero_master_market_value_uses_live_fallback():
     snapshot = MarketSnapshot(
         prices={"CLS": 200.0},
         fx_to_dkk={"USD": 6.5},
+        updated_at=pd.Timestamp("2026-09-15T18:00:00Z"),
         price_dates={},
         missing_prices=[],
         missing_fx=[],

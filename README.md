@@ -152,6 +152,14 @@ ikke fastsat en availability-SLA, og status vises derfor som `unconfigured`
 frem for at opfinde en tærskel. Indikatorerne er observerbarhed fra audit-loggen,
 ikke ekstern uptime-monitorering, og rå audit-events returneres aldrig.
 
+Alle autentificerede `/v1/`-kald registreres nu som privacy-minimeret
+request-telemetry med en fast endpoint-scope, HTTP-status og latency. Rå stier,
+query-parametre, request bodies og credentials gemmes ikke. Jarvis-kommandoer
+bevarer deres mere detaljerede kommando-event og dobbeltauditeres derfor ikke.
+Tekniske 5xx-svar registreres som `jarvis.request.failed`; øvrige gennemførte
+API-kald registreres som `jarvis.request.completed`. Hvis telemetry ikke kan
+gemmes, markeres svaret med headeren `X-Jarvis-Audit-Status: unavailable`.
+
 ## Vigtig databegrænsning
 
 Historisk valutakurs ved køb er endnu ikke udfyldt for alle udenlandske

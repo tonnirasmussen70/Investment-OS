@@ -25,6 +25,7 @@ from jarvis.audit import (
     append_audit_event,
     audit_log_path,
     build_access_audit_event,
+    build_request_audit_event,
 )
 
 
@@ -32,6 +33,26 @@ PROTECTED_PREFIX = "/v1/"
 PUBLIC_PATHS = {"/healthz"}
 LOCAL_CLIENTS = {"127.0.0.1", "::1", "localhost", "testclient"}
 WINDOW_SECONDS = 60
+COMMAND_PATH = "/v1/jarvis/command"
+
+
+def _endpoint_scope(path: str) -> str:
+    """Map routes to stable scopes without recording tickers or raw paths."""
+    exact_scopes = {
+        "/v1/system/status": "system_status",
+        "/v1/system/operations": "system_operations",
+        "/v1/portfolio/status": "portfolio_status",
+        "/v1/portfolio/signals": "portfolio_signals",
+        "/v1/briefs/investment": "investment_brief",
+        COMMAND_PATH: "jarvis_command",
+    }
+    if path in exact_scopes:
+        return exact_scopes[path]
+    if path.startswith("/v1/research/stocks/"):
+        return "stock_research"
+    if path.startswith("/v1/stocks/"):
+        return "stock_status"
+    return "investment_api"
 
 
 @dataclass(frozen=True)
@@ -207,8 +228,8 @@ async def _rejection_response(
         method=request.method,
         endpoint_scope=(
             "jarvis_command"
-            if request.url.path == "/v1/jarvis/command"
-            else "investment_api"
+            if request.url.path == COMMAND_PATH
+            else _endpoint_scope(request.url.path)
         ),
     )
     try:
@@ -231,7 +252,7 @@ async def _rejection_response(
 
 
 class JarvisSecurityMiddleware(BaseHTTPMiddleware):
-    """Protect private API routes while keeping a data-free health probe public."""
+    """Protect and observe private routes while keeping healthz data-free."""
 
     async def dispatch(self, request: Request, call_next) -> Response:
         started = time.perf_counter()
@@ -268,8 +289,44 @@ class JarvisSecurityMiddleware(BaseHTTPMiddleware):
                 response.headers["X-RateLimit-Remaining"] = "0"
                 return response
 
-        response = _apply_security_headers(await call_next(request))
+        request_id = request.headers.get("x-request-id") or str(uuid.uuid4())
+        try:
+            response = _apply_security_headers(await call_next(request))
+        except Exception:
+            if path != COMMAND_PATH:
+                event = build_request_audit_event(
+                    request_id=request_id,
+                    outcome="failed",
+                    http_status=500,
+                    duration_ms=(time.perf_counter() - started) * 1000,
+                    method=request.method,
+                    endpoint_scope=_endpoint_scope(path),
+                    error_code="UNHANDLED_EXCEPTION",
+                )
+                try:
+                    await run_in_threadpool(append_audit_event, event, audit_log_path())
+                except AuditLogError:
+                    pass
+            raise
+
         if decision is not None:
             response.headers["X-RateLimit-Limit"] = str(decision.limit)
             response.headers["X-RateLimit-Remaining"] = str(decision.remaining)
+        if path != COMMAND_PATH:
+            failed = response.status_code >= 500
+            event = build_request_audit_event(
+                request_id=request_id,
+                outcome="failed" if failed else "completed",
+                http_status=response.status_code,
+                duration_ms=(time.perf_counter() - started) * 1000,
+                method=request.method,
+                endpoint_scope=_endpoint_scope(path),
+                error_code=f"HTTP_{response.status_code}" if failed else None,
+            )
+            try:
+                await run_in_threadpool(append_audit_event, event, audit_log_path())
+            except AuditLogError:
+                response.headers["X-Jarvis-Audit-Status"] = "unavailable"
+            else:
+                response.headers["X-Jarvis-Audit-Status"] = "recorded"
         return response

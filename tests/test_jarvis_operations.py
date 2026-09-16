@@ -63,6 +63,7 @@ class JarvisOperationalServiceIndicatorTests(unittest.TestCase):
             _event("event-1", "jarvis.command.rejected", now - timedelta(hours=2), 20, outcome="rejected", status_code=400),
             _event("event-3", "jarvis.access.rejected", now - timedelta(hours=3), 30, outcome="rejected", status_code=401),
             _event("event-4", "jarvis.command.failed", now - timedelta(hours=4), 40, outcome="failed", status_code=503),
+            _event("event-5", "jarvis.request.completed", now - timedelta(hours=5), 50, outcome="completed", status_code=200),
         ]
         events[2]["request_body"] = "must-not-be-recorded"
 
@@ -81,14 +82,15 @@ class JarvisOperationalServiceIndicatorTests(unittest.TestCase):
         self.assertEqual(result["request_id"], "operations-test")
         self.assertEqual(result["window"]["hours"], 24)
         self.assertEqual(result["status"], "degraded")
-        self.assertEqual(result["indicators"]["availability"]["observed_pct"], 75.0)
+        self.assertEqual(result["indicators"]["availability"]["observed_pct"], 80.0)
         self.assertIsNone(result["indicators"]["availability"]["sla_target_pct"])
         self.assertEqual(result["indicators"]["availability"]["sla_status"], "unconfigured")
-        self.assertEqual(result["indicators"]["latency_ms"]["p50"], 25.0)
-        self.assertEqual(result["indicators"]["latency_ms"]["p95"], 38.5)
+        self.assertEqual(result["indicators"]["latency_ms"]["p50"], 30.0)
+        self.assertEqual(result["indicators"]["latency_ms"]["p95"], 48.0)
         self.assertEqual(
             result["indicators"]["events"],
             {
+                "completed_requests": 1,
                 "completed_commands": 1,
                 "technical_failures": 1,
                 "command_rejections": 1,

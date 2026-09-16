@@ -167,11 +167,23 @@ def calculate_portfolio(
     )
 
     # Én autoritativ markedsværdi: Saxo/master først, Yahoo-estimat kun fallback.
-    df["Market_Value_DKK"] = df["Master_Market_Value_DKK"].combine_first(
+    # En nulværdi fra depot/master er ikke gyldig for en aktiv position med
+    # positiv beholdning. Behandl derfor nul som manglende, så liveestimatet kan
+    # udfylde nye positioner, hvor depotets DKK-værdi endnu ikke er beregnet.
+    master_market_value = pd.to_numeric(
+        df["Master_Market_Value_DKK"], errors="coerce"
+    ).copy()
+    invalid_zero_master_value = (
+        pd.to_numeric(df["Quantity"], errors="coerce").fillna(0) > 0
+    ) & (master_market_value <= 0)
+    master_market_value = master_market_value.mask(invalid_zero_master_value)
+    df["Master_Market_Value_DKK"] = master_market_value
+
+    df["Market_Value_DKK"] = master_market_value.combine_first(
         df["Live_Market_Value_DKK"]
     )
     df["Market_Value_Source"] = np.where(
-        df["Master_Market_Value_DKK"].notna(),
+        master_market_value.notna(),
         "Master/Saxo",
         "Yahoo live fallback",
     )

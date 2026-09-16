@@ -211,6 +211,58 @@ def build_access_audit_event(
     }
 
 
+def build_request_audit_event(
+    *,
+    request_id: str,
+    outcome: str,
+    http_status: int,
+    duration_ms: float,
+    method: str,
+    endpoint_scope: str,
+    error_code: str | None = None,
+    occurred_at: datetime | None = None,
+) -> dict[str, Any]:
+    """Build a privacy-safe event for an authenticated non-command API call."""
+    event_time = (occurred_at or datetime.now(timezone.utc)).astimezone(timezone.utc)
+    safe_outcome = "failed" if outcome == "failed" else "completed"
+    return {
+        "audit_schema_version": AUDIT_SCHEMA_VERSION,
+        "event_id": str(uuid.uuid4()),
+        "event_type": f"jarvis.request.{safe_outcome}",
+        "occurred_at": event_time.isoformat(),
+        "trace": {
+            "request_id": _safe_identifier(request_id),
+            "run_id": "unavailable",
+        },
+        "request": {
+            "method": str(method or "unknown").upper(),
+            "endpoint_scope": str(endpoint_scope or "unknown"),
+            "path_recorded": False,
+            "query_recorded": False,
+            "credentials_recorded": False,
+            "body_recorded": False,
+        },
+        "authorization": {
+            "approval_required": False,
+            "approval_status": "not_applicable",
+            "investment_execution_allowed": False,
+        },
+        "versions": {
+            "jarvis": JARVIS_VERSION,
+            "response_mode": "deterministic",
+            "model": None,
+            "api_schema": SCHEMA_VERSION,
+            "investment_os": APP_VERSION,
+        },
+        "result": {
+            "outcome": safe_outcome,
+            "http_status": int(http_status),
+            "error_code": str(error_code) if error_code else None,
+            "duration_ms": round(max(0.0, float(duration_ms)), 3),
+        },
+    }
+
+
 def append_audit_event(event: dict[str, Any], path: str | Path | None = None) -> None:
     """Append one compact event with owner-only permissions where supported."""
     target = Path(path) if path is not None else audit_log_path()
