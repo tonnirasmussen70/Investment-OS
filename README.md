@@ -172,6 +172,24 @@ python scripts/smoke_test_jarvis_api.py
 Smoke-testen bruger `JARVIS_API_TOKEN` fra miljøet og verificerer `/healthz`,
 `/readyz` og det autentificerede `/v1/system/status` uden at udskrive tokenet.
 
+### Kontinuerlig kvalitetskontrol
+
+GitHub Actions-workflowet `Investment OS quality gate` kører ved alle pull
+requests, alle pushes til `main` og manuel start. Det installerer de fastlåste
+udviklingsafhængigheder fra `requirements-dev.txt`, validerer de installerede
+pakker, kompilerer Python-kilderne og kører hele testsuiten.
+
+Den samme testkontrakt kan køres lokalt med:
+
+```bash
+python -m pip install -r requirements-dev.txt
+python -m compileall -q api jarvis modules research scripts tests app.py
+PYTHONPATH=. python -m pytest -q
+```
+
+Workflowet rapporterer resultatet, men kan først blokere en merge eller direkte
+push, når repositoryets branch protection kræver checket `test-suite`.
+
 ### Operationelle serviceindikatorer
 
 `GET /v1/system/operations` sammenfatter de seneste 24 timers privacy-minimerede
