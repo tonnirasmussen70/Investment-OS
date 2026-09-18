@@ -171,7 +171,17 @@ def build_rebalance_plan(
         raise ValueError(f"Rebalancering mangler kolonner: {sorted(missing)}")
 
     optional = [
-        column for column in ["Sector", "Asset_Type", "Yahoo_Ticker"]
+        column for column in [
+            "Sector",
+            "Asset_Type",
+            "Yahoo_Ticker",
+            "Confidence_Zone",
+            "Confidence_Explanation",
+            "Confidence_Momentum_Score",
+            "Confidence_Trend_Score",
+            "Confidence_Volatility_Score",
+            "Confidence_RS_Score",
+        ]
         if column in portfolio.columns
     ]
     data = portfolio[
@@ -211,6 +221,43 @@ def build_rebalance_plan(
     # Manglende confidence behandles konservativt som utilstrækkelig confidence.
     execution_signal = data["Handling"].isin(["Øg", "Reducer"])
     confidence = pd.to_numeric(data["AI_Confidence"], errors="coerce")
+
+    # Tre fortolkningszoner. Kun 70-grænsen er en execution-gate; 60-grænsen
+    # gør det tydeligt, om signalstyrken er lav eller tæt på bekræftelse.
+    data["Konfidenszone"] = np.select(
+        [
+            confidence.isna(),
+            confidence.lt(60.0),
+            confidence.lt(float(minimum_execution_confidence)),
+        ],
+        [
+            "Ukendt",
+            "Lav",
+            "Afvent bekræftelse",
+        ],
+        default="Execution",
+    )
+    data["Konfidensfortolkning"] = np.select(
+        [
+            confidence.isna(),
+            confidence.lt(60.0),
+            confidence.lt(float(minimum_execution_confidence)),
+        ],
+        [
+            "Confidence mangler – ingen normal execution",
+            "Lav signalstyrke – signal observeres, ingen handel",
+            "Afvent bekræftelse – signal observeres, ingen handel",
+        ],
+        default="Execution tilladt",
+    )
+    if "Confidence_Explanation" in data.columns:
+        details = data["Confidence_Explanation"].fillna("").astype(str).str.strip()
+        data["Konfidensfortolkning"] = np.where(
+            details.ne(""),
+            data["Konfidensfortolkning"] + " · " + details,
+            data["Konfidensfortolkning"],
+        )
+
     low_confidence = execution_signal & (
         confidence.isna() | confidence.lt(float(minimum_execution_confidence))
     )
@@ -272,7 +319,7 @@ def build_rebalance_plan(
             "Øg-signal begrænset af sektorloft",
             "Øg-signal omsat til dynamisk target weight",
             "Reducer-signal omsat til dynamisk target weight",
-            f"Signal observeres – konfidens under {float(minimum_execution_confidence):.0f}%, ingen handel",
+            data["Konfidensfortolkning"],
             "Modelændring under minimumshandel",
         ],
         default="Ingen execution-ændring",

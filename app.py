@@ -95,8 +95,10 @@ TOOLTIPS = {
         "stop-loss, diversifikation og datakvalitet."
     ),
     "confidence": (
-        "Hvor sikkert modellen vurderer dagens signalbillede. Høj værdi "
-        "betyder, at flere signaler peger i samme retning."
+        "Signalstyrke 0-100 – ikke en sandsynlighed for kursstigning. "
+        "<60 = lav signalstyrke, 60-69 = afvent bekræftelse, ≥70 = "
+        "execution tilladt ved et Øg/Reducer-signal. Momentum, trend, "
+        "volatilitet og relative strength forklarer, hvad der trækker scoren."
     ),
     "data_quality": (
         "Hvor komplet og pålideligt datagrundlaget er. Lav datakvalitet "
@@ -463,6 +465,9 @@ analysis_columns_to_remove = {
     "1W", "1M", "3M", "6M", "12M", "Volatility", "Max_Drawdown",
     "Relative_Strength_3M", "RS_Signal", "Composite",
     "Momentum_Data_Quality", "AI_Confidence", "Momentum_Acceleration",
+    "Confidence_Momentum_Score", "Confidence_Trend_Score",
+    "Confidence_Volatility_Score", "Confidence_RS_Score",
+    "Confidence_Zone", "Confidence_Explanation",
     "Rotation_Signal", "Handling",
 }
 previous_source = analytics_portfolio[
@@ -1305,12 +1310,35 @@ with tab_rebalance:
                 return
             section = section.sort_values(["Foreslået vægt", "Aktiv"], ascending=[False, True], na_position="last").reset_index(drop=True)
             chart_data = section[["Aktiv", "Nuværende vægt", "Foreslået vægt"]].copy()
-            display = section[["Aktiv", "Nuværende vægt", "Modelmålvægt", "Foreslået vægt", "Ændring", "Handel DKK", "Rebalance handling", "Risiko", "Decision Score", "Status", "Handling", "Constraint"]].copy()
+            confidence_columns = [
+                column for column in [
+                    "AI", "Konfidenszone", "Confidence_Explanation",
+                ]
+                if column in section.columns
+            ]
+            display = section[[
+                "Aktiv", "Nuværende vægt", "Modelmålvægt", "Foreslået vægt",
+                "Ændring", "Handel DKK", "Rebalance handling", "Risiko",
+                "Decision Score", *confidence_columns, "Status", "Handling",
+                "Constraint",
+            ]].copy()
             for col in ["Nuværende vægt", "Modelmålvægt", "Foreslået vægt", "Ændring"]:
                 display[col] = display[col].apply(lambda x: format_pct(x, 1))
             display["Handel DKK"] = display["Handel DKK"].apply(compact_dkk)
             display["Decision Score"] = display["Decision Score"].apply(lambda x: score_text(x, 0))
-            display = display.rename(columns={"Modelmålvægt": "Model target", "Foreslået vægt": "Execution target", "Handel DKK": "Handel", "Rebalance handling": "Execution"})
+            if "AI" in display.columns:
+                display["AI"] = display["AI"].apply(
+                    lambda x: f"{float(x):.0f}" if pd.notna(x) else "N/A"
+                )
+            display = display.rename(columns={
+                "Modelmålvægt": "Model target",
+                "Foreslået vægt": "Execution target",
+                "Handel DKK": "Handel",
+                "Rebalance handling": "Execution",
+                "AI": "Confidence",
+                "Konfidenszone": "Confidence zone",
+                "Confidence_Explanation": "Confidence forklaring",
+            })
             st.dataframe(table_style(display), use_container_width=True, hide_index=True, height=no_scroll_height(display))
             st.markdown("#### Nuværende vægt vs. foreslået allokering")
             chart_long = chart_data.melt(id_vars="Aktiv", value_vars=["Nuværende vægt", "Foreslået vægt"], var_name="Allokering", value_name="Vægt")
@@ -1323,7 +1351,13 @@ with tab_rebalance:
         st.divider()
         show_rebalance_section(rebalance, "ETF", "ETF'er")
 
-    st.caption(f"Hard constraints: positionsloft {config.max_position_weight:.0%} og sektorloft {config.max_sector_weight:.0%}. Handler under {compact_dkk(MINIMUM_TRADE_DKK)} eksekveres ikke.")
+    st.caption(
+        f"Confidence-zoner: <60 Lav · 60-69 Afvent bekræftelse · ≥70 Execution. "
+        f"Kun Øg/Reducer med confidence ≥70 kan gå til normal execution. "
+        f"Hard constraints: positionsloft {config.max_position_weight:.0%} og "
+        f"sektorloft {config.max_sector_weight:.0%}. Handler under "
+        f"{compact_dkk(MINIMUM_TRADE_DKK)} eksekveres ikke."
+    )
     with st.expander("Vis stop-loss og alarmniveauer"):
         s1, s2, s3 = st.columns(3)
         s1.metric("Stop brudt", stop_loss_metrics["Stop_Broken"])
