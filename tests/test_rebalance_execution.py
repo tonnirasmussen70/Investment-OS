@@ -74,6 +74,45 @@ class RebalanceExecutionTests(unittest.TestCase):
         self.assertEqual(result["Handel DKK"], 0.0)
         self.assertEqual(result["Rebalance handling"], "Ingen handel")
         self.assertIn("Konfidensgate", result["Constraint"])
+        self.assertEqual(result["Konfidenszone"], "Lav")
+        self.assertIn("Lav signalstyrke", result["Konfidensfortolkning"])
+
+    def test_mid_confidence_waits_for_confirmation(self) -> None:
+        frame = self._base_frame().iloc[[0]].copy()
+        frame.loc[:, "Name"] = "Borderline"
+        frame.loc[:, "AI_Confidence"] = 65
+        frame.loc[:, "Decision_Score"] = 82
+        frame.loc[:, "Handling"] = "Øg"
+        result = build_rebalance_plan(
+            frame,
+            active_market_value_dkk=1_000_000,
+            max_position_weight=0.12,
+            max_sector_weight=0.20,
+            minimum_trade_dkk=1_000,
+        ).data.iloc[0]
+
+        self.assertTrue(result["Konfidensgate"])
+        self.assertEqual(result["Konfidenszone"], "Afvent bekræftelse")
+        self.assertEqual(result["Rebalance handling"], "Ingen handel")
+        self.assertIn("Afvent bekræftelse", result["Begrundelse"])
+
+    def test_execution_zone_starts_at_70(self) -> None:
+        frame = self._base_frame().iloc[[0]].copy()
+        frame.loc[:, "Name"] = "Confirmed"
+        frame.loc[:, "AI_Confidence"] = 70
+        frame.loc[:, "Decision_Score"] = 82
+        frame.loc[:, "Handling"] = "Øg"
+        result = build_rebalance_plan(
+            frame,
+            active_market_value_dkk=1_000_000,
+            max_position_weight=0.12,
+            max_sector_weight=0.20,
+            minimum_trade_dkk=1_000,
+        ).data.iloc[0]
+
+        self.assertFalse(result["Konfidensgate"])
+        self.assertEqual(result["Konfidenszone"], "Execution")
+        self.assertEqual(result["Rebalance handling"], "Køb")
 
     def test_position_cap_overrides_hold(self) -> None:
         result = self._plan().data.set_index("Aktiv")
