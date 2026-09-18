@@ -123,15 +123,61 @@ def add_momentum(
         default=0.5,
     )
 
+    # Confidence-komponenter gøres eksplicitte, så execution-gaten kan
+    # forklares i UI og snapshots i stedet for kun at være en binær gate.
+    result["Confidence_Momentum_Score"] = 100 * rank.fillna(0.5)
+    result["Confidence_Trend_Score"] = 100 * trend_score
+    result["Confidence_Volatility_Score"] = 100 * (1 - risk_penalty)
+    result["Confidence_RS_Score"] = 100 * relative_strength_score
+
     result["AI_Confidence"] = (
-        100
-        * (
-            0.50 * rank.fillna(0.5)
-            + 0.25 * trend_score
-            + 0.15 * (1 - risk_penalty)
-            + 0.10 * relative_strength_score
-        )
+        0.50 * result["Confidence_Momentum_Score"]
+        + 0.25 * result["Confidence_Trend_Score"]
+        + 0.15 * result["Confidence_Volatility_Score"]
+        + 0.10 * result["Confidence_RS_Score"]
     ).clip(0, 100)
+
+    result["Confidence_Zone"] = np.select(
+        [
+            result["AI_Confidence"] < 60,
+            result["AI_Confidence"] < 70,
+        ],
+        [
+            "Lav",
+            "Afvent bekræftelse",
+        ],
+        default="Execution",
+    )
+
+    confidence_labels = {
+        "Confidence_Momentum_Score": "Momentum",
+        "Confidence_Trend_Score": "Trend",
+        "Confidence_Volatility_Score": "Volatilitet",
+        "Confidence_RS_Score": "Relative strength",
+    }
+
+    def confidence_explanation(row: pd.Series) -> str:
+        scored = [
+            (label, float(row[column]))
+            for column, label in confidence_labels.items()
+            if pd.notna(row[column])
+        ]
+        if not scored:
+            return "Confidence-data mangler"
+        scored.sort(key=lambda item: item[1])
+        weak = [item for item in scored if item[1] < 70][:2]
+        selected = weak if weak else scored[:1]
+        drivers = ", ".join(f"{label} {score:.0f}" for label, score in selected)
+        if float(row["AI_Confidence"]) < 60:
+            return f"Lav signalstyrke · trækker ned: {drivers}"
+        if float(row["AI_Confidence"]) < 70:
+            return f"Afvent bekræftelse · trækker ned: {drivers}"
+        return f"Execution tilladt · svageste komponent: {drivers}"
+
+    result["Confidence_Explanation"] = result.apply(
+        confidence_explanation,
+        axis=1,
+    )
 
     # Momentumacceleration: nyere perioder relativt til længere perioder.
     result["Momentum_Acceleration"] = (
