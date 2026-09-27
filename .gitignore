@@ -30,6 +30,9 @@ logs/
 # Personlige data
 data/AI_portfolio.xlsx
 
+# Generated disaster-recovery archives
+backup_output/
+
 # Windows
 Thumbs.db
 
