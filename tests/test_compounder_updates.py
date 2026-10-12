@@ -148,7 +148,8 @@ def test_repository_data_provenance():
     assert len(radar.data) >= radar.agent_candidate_count
 
 
-def test_actual_compounder_tab_displays_entire_universe():
+@pytest.mark.parametrize("legacy", [False, True])
+def test_actual_compounder_tab_displays_entire_universe(legacy):
     root = Path(__file__).resolve().parents[1]
     source = (root / "app.py").read_text(encoding="utf-8")
     functions = "\n".join(ast.get_source_segment(source, node) for node in ast.parse(source).body
@@ -160,8 +161,14 @@ from modules.compounder_engine import load_compounder_radar, radar_summary, top_
 from modules.compounder_view import render_radar_status
 from modules.styling import table_style
 from modules.formatting import format_score
+from types import SimpleNamespace
 {functions}
 compounder_radar = load_compounder_radar({str(root / "data")!r})
+if {legacy!r}:
+    # Same dataset with exactly the fields available before PR #9. Simulates
+    # a running Streamlit process retaining the pre-deployment engine module.
+    compounder_radar = SimpleNamespace(**{{key: value for key, value in vars(compounder_radar).items()
+        if key not in {{'agent_candidate_count', 'agent_sha256', 'quant_generated_at'}}}})
 compounder_summary = radar_summary(compounder_radar)
 compounder_error = None
 tab_compounders = st.container()
@@ -174,5 +181,11 @@ with tab_compounders:{tab}
     assert len(app.dataframe[0].value) == len(radar.data)
     captions = "\n".join(item.value for item in app.caption)
     assert radar.agent_generated_at in captions
-    assert radar.quant_generated_at in captions
+    if legacy:
+        assert f"{radar.agent_candidate_count} agentkandidater" in captions
+        assert "SHA256: Ikke tilgængelig" in captions
+        assert "Ukendt (metadata ikke tilgængelige)" in captions
+        assert any("ældre radarindlæsning" in item.value for item in app.warning)
+    else:
+        assert radar.quant_generated_at in captions
     assert str(radar.agent_source_path) in captions
