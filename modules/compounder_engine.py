@@ -2,10 +2,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import json
+import hashlib
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from modules.compounder_updates import validate_agent_payload
 
 
 REQUIRED_COLUMNS = {
@@ -49,6 +51,9 @@ class CompounderRadar:
     agent_source_path: Path | None = None
     agent_generated_at: str | None = None
     methodology_version: str | None = None
+    agent_candidate_count: int = 0
+    agent_sha256: str | None = None
+    quant_generated_at: str | None = None
 
 
 def _normalise_ticker(value: object) -> str:
@@ -71,8 +76,8 @@ def _load_agent_intelligence(path: Path) -> tuple[pd.DataFrame, dict[str, object
     if not path.exists():
         return pd.DataFrame(), {}
 
-    with path.open("r", encoding="utf-8") as handle:
-        payload = json.load(handle)
+    raw = path.read_bytes()
+    payload = validate_agent_payload(json.loads(raw))
 
     candidates = payload.get("candidates", [])
     if not isinstance(candidates, list):
@@ -124,6 +129,8 @@ def _load_agent_intelligence(path: Path) -> tuple[pd.DataFrame, dict[str, object
     metadata = {
         "generated_at": payload.get("generated_at"),
         "methodology_version": payload.get("methodology_version"),
+        "candidate_count": len(candidates),
+        "sha256": hashlib.sha256(raw).hexdigest(),
     }
     return data, metadata
 
@@ -375,8 +382,15 @@ def load_compounder_radar(
     notes: list[str] = []
 
     quant_data = pd.DataFrame()
+    quant_generated_at = None
     if source is not None:
         quant_data = _read_source(source).copy()
+        if "Generated_UTC" in quant_data.columns:
+            times = pd.to_datetime(quant_data["Generated_UTC"], errors="coerce", utc=True)
+            if times.notna().all() and times.nunique() == 1:
+                quant_generated_at = times.iloc[0].isoformat()
+            else:
+                notes.append("Kvant-radarens opdateringsdato er ugyldig eller inkonsistent.")
         missing = REQUIRED_COLUMNS.difference(quant_data.columns)
         if missing:
             raise ValueError(
@@ -449,16 +463,19 @@ def load_compounder_radar(
     if source is None and not agent_data.empty:
         notes.append("Kvant-radaren mangler; viser agent-intelligence alene.")
     if source is not None and agent_data.empty:
-        notes.append("Mandags-agentens JSON mangler; viser kvant-radaren alene.")
+        notes.append("Ingen gyldige agentdata; viser kvant-radaren alene.")
 
     return CompounderRadar(
         exists=exists,
         data=pipeline,
         source_path=source,
         notes=notes,
-        agent_source_path=agent_path if agent_path.exists() else None,
+        agent_source_path=agent_path if not agent_data.empty else None,
         agent_generated_at=str(metadata.get("generated_at") or "") or None,
         methodology_version=str(metadata.get("methodology_version") or "") or None,
+        agent_candidate_count=int(metadata.get("candidate_count", 0)),
+        agent_sha256=metadata.get("sha256"),
+        quant_generated_at=quant_generated_at,
     )
 
 

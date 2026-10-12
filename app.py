@@ -24,6 +24,7 @@ from modules.attribution_engine import (
     top_detractors,
 )
 from modules.change_engine import build_change_engine
+from modules.compounder_view import render_radar_status
 from modules.compounder_engine import (
     load_compounder_radar,
     radar_summary,
@@ -1442,11 +1443,10 @@ with tab_compounders:
         c5.metric("Decision Review", compounder_summary.get("Decision_Review_Count", 0))
         c6.metric("Topkandidat", compounder_summary["Top_Candidate"] or "N/A")
         st.caption("Promotion Gate kræver stigende evidens for hvert trin. Decision Review kræver bl.a. valuation, momentum og risiko – og er stadig ikke en købsordre.")
-        if compounder_summary.get("Agent_Generated_At"):
-            st.caption(f"Mandags-agent sidst opdateret: {compounder_summary['Agent_Generated_At']}")
+        render_radar_status(st, compounder_radar)
         for note in compounder_radar.notes:
             st.warning(note)
-        radar = top_candidates(compounder_radar, limit=20)
+        radar = top_candidates(compounder_radar, limit=len(compounder_radar.data))
         if radar.empty:
             st.info("Ingen kandidater.")
         else:
