@@ -26,6 +26,8 @@ logs/
 
 # Cache
 .cache/
+.test-deps/
+.pytest_cache/
 
 # Personlige data
 data/AI_portfolio.xlsx

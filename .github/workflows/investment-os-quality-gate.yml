@@ -43,6 +43,9 @@ jobs:
           python -m compileall -q
           api jarvis modules research scripts tests app.py
 
+      - name: Validate published agent intelligence
+        run: python scripts/import_compounder_agent.py data/compounder_agent.json --check-only
+
       - name: Run full test suite
         env:
           PYTHONPATH: .
