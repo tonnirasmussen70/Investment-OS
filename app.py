@@ -810,37 +810,30 @@ with tab_overview:
             )
 
             if asset_class == "ETF":
-                st.markdown("#### ETF Holdings Momentum Attribution")
-                st.caption("Diagnostisk analyse af de største underliggende aktier. Påvirker ikke IOS' beslutningsscore eller handelssignal.")
+                st.markdown("#### ETF Momentum Breadth")
+                st.caption("Nice to have: hvor mange af ETF'ens 10 største aktier har positivt 1M-momentum? Ingen indflydelse på handelssignal.")
                 etf_rows = analytics_portfolio.loc[analytics_portfolio["Name"].astype(str).eq(asset)]
                 etf_ticker = str(etf_rows.iloc[0].get("Yahoo_Ticker", "")).strip() if not etf_rows.empty else ""
                 safe_ticker = "".join(char for char in etf_ticker if char.isalnum() or char in ".-_")
                 holdings_path = Path("data/etf_holdings") / f"{safe_ticker}.csv"
                 if not safe_ticker or not holdings_path.is_file():
-                    st.info(f"Mangler officielle holdingsdata for {asset}. Tilføj data/etf_holdings/{safe_ticker or 'TICKER'}.csv med Ticker,Weight,Name og vægte som decimaltal. Ingen breddeklassifikation uden verificerede data.")
+                    st.caption("Ikke tilgængelig · Top-10-listen er endnu ikke registreret.")
                 else:
                     try:
                         holdings = pd.read_csv(holdings_path)
-                        holdings = holdings.head(20)
-                        holding_tickers = holdings["Ticker"].dropna().astype(str).str.strip().unique().tolist()
-                        prices = load_history(tuple(holding_tickers), "6mo")
-                        if isinstance(prices, pd.DataFrame) and isinstance(prices.columns, pd.MultiIndex):
-                            prices = prices["Close"] if "Close" in prices.columns.get_level_values(0) else prices
-                        analysis = holdings_breadth(holdings, prices, top_n=20)
-                        display = analysis["table"]
-                        if analysis["status"] == "Utilstrækkelige data":
-                            st.warning("Utilstrækkelig kursdækning til at vurdere bidragets bredde.")
+                        tickers = holdings["Ticker"].dropna().astype(str).str.strip().tolist()
+                        if len(tickers) != 10:
+                            raise ValueError("Der skal være præcis 10 aktier i top-10-listen.")
+                        prices = load_history(tuple(tickers), "3mo")
+                        breadth = holdings_breadth(holdings, prices)
+                        if breadth["status"] == "Ikke tilgængelig":
+                            st.caption(f"Ikke tilgængelig · Kun {breadth['covered']}/10 aktier har valide 1M-kurser.")
                         else:
-                            st.markdown(f"**Bidragsbredde: {analysis['status']}**")
-                        b1, b2, b3 = st.columns(3)
-                        b1.metric("Dækning", f"{analysis['weight_coverage']:.0%}")
-                        b2.metric("Positiv vægtbredde", f"{analysis['positive_weight_breadth']:.0%}" if pd.notna(analysis["positive_weight_breadth"]) else "N/A")
-                        b3.metric("Top-3 andel af positive bidrag", f"{analysis['top3_positive_contribution_share']:.0%}" if pd.notna(analysis["top3_positive_contribution_share"]) else "N/A")
-                        st.caption(f"Kurser for {analysis['priced_count']}/{analysis['holdings_count']} aktier. Effektive positive bidragydere: {analysis['effective_positive_contributors']:.1f}" if pd.notna(analysis["effective_positive_contributors"]) else "Ingen positive bidragydere.")
-                        st.dataframe(display, use_container_width=True, hide_index=True)
-                        st.caption("Proxy: selskabsvægt × lokalt kursafkast, ikke officielt valuta- og rebalanceringskorrigeret ETF-bidrag. Vægtene skal tidsstemples i datakilden.")
+                            st.markdown(f"**{breadth['status']} · {breadth['positive']}/10 aktier i positiv 1M-trend**")
+                            st.progress(breadth["positive"] / 10)
+                        st.caption("Baseret på manuelt registreret top 10 og Yahoo-justerede lukkekurser. Indikatoren måler antal, ikke vægtede afkastbidrag.")
                     except Exception as exc:
-                        st.warning(f"Attribution kan ikke beregnes: {exc}")
+                        st.caption(f"Ikke tilgængelig · {exc}")
 
     stock_col, etf_col = st.columns(2, gap="large")
     with stock_col:
