@@ -1,22 +1,26 @@
-# ETF Holdings Momentum Attribution
+# ETF Momentum Breadth – Light
 
-In Overview > Next recommended action > Decision details, the ETF panel
-shows an explanatory constituent breadth assessment when approved holdings
-are available.
+This is an **optional, diagnostic-only** indicator for the ETF recommended in
+Investment OS > Overblik > Vis beslutningsdetaljer. It does not change the
+Decision Engine score or KØB/HOLD/AFVENT actions.
 
-Input: data/etf_holdings/<Yahoo_Ticker>.csv with Ticker,Weight,Name;
-Weight in decimal fractions, e.g. 0.065 means 6.5%. Yahoo-compatible symbols.
-Preserve holdings source and as-of date in an adjacent note.
+For a covered ETF, manually save its *latest top 10 holdings* in
+`data/etf_holdings/<Yahoo_Ticker>.csv` (e.g. `IS3Q.DE.csv`).
+CSV schema: `Ticker` (required; 10 unique Yahoo Finance-compatible equity
+symbols, ranked by holding size). Optional `Name` column is ignored.
+Record the issuer/justETF source and holdings as-of date when updating the file.
+Refresh approximately quarterly, or after a known index reconstitution.
 
-Shows top 20 constituents, 1W/1M/3M adjusted returns, contribution proxies,
-price coverage, positive-weight breadth, top 3 share of positive contributions
-and effective number of positive contributors.
+The app loads adjusted Yahoo closing prices for the 10 stocks, compares the
+most recent close with the close 21 trading days earlier, and counts strictly
+positive returns. No weights, currencies, official attribution or new scheduled
+downloader are required.
 
-Bredt: breadth >=70% and top3 <=50%.
-Smalt: breadth <40% or top3 >=75%.
-Blandet: remaining.
-Utilstrækkelige data: fewer than ten valid constituents or <80% weight coverage.
+* Bredt: 7–10 positive stocks.
+* Blandet: 4–6 positive stocks.
+* Smalt: 0–3 positive stocks.
+* Ikke tilgængelig: missing top-ten list, any missing/insufficient/stale prices,
+  or invalid input. The app does **not** label incomplete top-ten data as Smalt.
 
-Returns are in constituent quotation currencies. Results do not reflect
-historical index weight drift, FX moves or rebalancing; they are diagnostic,
-not official fund performance attribution. No impact on trading signals.
+This measures breadth of rising constituents, **not** breadth of weighted
+contributions to the ETF's total return.
