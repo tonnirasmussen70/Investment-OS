@@ -25,6 +25,7 @@ from modules.attribution_engine import (
     top_detractors,
 )
 from modules.change_engine import build_change_engine
+from modules.early_sell_warning import build_early_sell_warnings
 from modules.compounder_view import render_radar_status
 from modules.compounder_engine import (
     load_compounder_radar,
@@ -840,6 +841,25 @@ with tab_overview:
         render_recommended_action(overview_queue, "Aktie", "Aktie")
     with etf_col:
         render_recommended_action(overview_queue, "ETF", "ETF")
+
+    st.markdown("### Tidlige salgsadvarsler")
+    st.caption(
+        "Kun observation – ingen salgsordre. Vises for eksisterende positioner med "
+        "negativt 1W- og 1M-momentum og faldende Decision Score siden forrige handelsdag. "
+        "Eksisterende køb/salg og rebalancering påvirkes ikke."
+    )
+    early_warnings = build_early_sell_warnings(analytics_portfolio, previous_analytics)
+    if early_warnings.empty:
+        st.caption("Ingen tidlige salgsadvarsler på det tilgængelige datagrundlag.")
+    else:
+        warning_table = early_warnings[["Name", "1W", "1M", "Decision_Score", "Score_Change"]].copy()
+        warning_table.columns = ["Position", "1W", "1M", "Decision Score", "Scoreændring"]
+        for metric in ("1W", "1M"):
+            warning_table[metric] = warning_table[metric].apply(format_pct)
+        warning_table["Decision Score"] = warning_table["Decision Score"].apply(lambda value: score_text(value, 0))
+        warning_table["Scoreændring"] = warning_table["Scoreændring"].map(lambda value: f"{value:+.1f}")
+        st.warning("Overvåg – risiko for reduktion. Afvent bekræftet Reducer/Sælg-signal før normal execution.")
+        st.dataframe(warning_table, use_container_width=True, hide_index=True, height=no_scroll_height(warning_table))
 
     queue = decision_queue.data.copy()
     st.markdown("### Øvrige prioriterede handlinger")
