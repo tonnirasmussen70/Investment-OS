@@ -46,6 +46,7 @@ from modules.macro_rate_engine import (
     COMPONENT_WEIGHTS,
     apply_macro_rate_overlay,
     calculate_macro_rate_regime,
+    calculate_yield_curve_risk,
     fetch_fred_macro_history,
 )
 from modules.opportunity_engine import build_opportunity_scores
@@ -977,12 +978,7 @@ with tab_overview:
             treasury_10y = pd.Series(dtype=float)
 
         if not treasury_10y.empty:
-            treasury_df = treasury_10y.rename("Rente").reset_index()
-            treasury_df = treasury_df.rename(
-                columns={treasury_df.columns[0]: "Dato"}
-            )
             current_10y = float(treasury_10y.iloc[-1])
-
             if current_10y < 4.75:
                 rate_zone = "Grøn"
             elif current_10y < 5.00:
@@ -992,61 +988,43 @@ with tab_overview:
             else:
                 rate_zone = "Rød"
 
-            fig = px.line(
-                treasury_df,
-                x="Dato",
-                y="Rente",
-                title="USA 10Y Treasury – udvikling og risikozoner",
-            )
-            fig.add_hrect(
-                y0=0,
-                y1=4.75,
-                fillcolor="rgba(0, 170, 0, 0.22)",
-                line_width=0,
-                layer="below",
-            )
-            fig.add_hrect(
-                y0=4.75,
-                y1=5.00,
-                fillcolor="rgba(255, 215, 0, 0.30)",
-                line_width=0,
-                layer="below",
-            )
-            fig.add_hrect(
-                y0=5.00,
-                y1=5.25,
-                fillcolor="rgba(255, 140, 0, 0.32)",
-                line_width=0,
-                layer="below",
-            )
-            fig.add_hrect(
-                y0=5.25,
-                y1=5.50,
-                fillcolor="rgba(220, 20, 60, 0.28)",
-                line_width=0,
-                layer="below",
-            )
-            fig.add_hline(y=4.75, line_dash="dot", line_width=1)
-            fig.add_hline(y=5.00, line_dash="dot", line_width=1)
-            fig.add_hline(y=5.25, line_dash="dot", line_width=1)
-            fig.update_layout(
-                height=420,
-                xaxis_title=None,
-                yaxis_title="Rente (%)",
-                hovermode="x unified",
-                showlegend=False,
-            )
-            fig.update_yaxes(ticksuffix=" %")
-            st.plotly_chart(fig, use_container_width=True)
+            curve = calculate_yield_curve_risk(macro_rate_history)
+            rate_frame = macro_rate_history.reindex(
+                columns=["US2Y", "US10Y"]
+            ).apply(pd.to_numeric, errors="coerce").dropna()
+            if not rate_frame.empty:
+                last_date = pd.Timestamp(rate_frame.index.max())
+                chart_frame = rate_frame.loc[
+                    rate_frame.index >= last_date - pd.DateOffset(months=12)
+                ].rename(columns={"US2Y": "USA 2Y", "US10Y": "USA 10Y"})
+                chart_frame.index.name = "Dato"
+                fig = px.line(
+                    chart_frame.reset_index(),
+                    x="Dato",
+                    y=["USA 2Y", "USA 10Y"],
+                    labels={"value": "Rente (%)", "variable": "Løbetid"},
+                )
+                fig.update_layout(
+                    height=270, margin=dict(l=8, r=8, t=12, b=8),
+                    xaxis_title=None, yaxis_title="Rente (%)",
+                    legend=dict(orientation="h", y=1.14, x=0),
+                    hovermode="x unified",
+                )
+                fig.update_yaxes(ticksuffix=" %")
+                st.plotly_chart(fig, use_container_width=True)
+                st.caption(f"Seneste fælles renteobservation: {last_date:%d-%m-%Y} · FRED/Yahoo")
+            else:
+                st.info("Datagrundlag utilstrækkeligt til 2Y/10Y-grafen.")
 
-            r1, r2, r3 = st.columns(3)
-            r1.metric("USA 10Y", f"{current_10y:.2f} %")
-            r2.metric("Risikozone", rate_zone)
-            r3.metric(
-                "Afstand til rød zone",
-                f"{max(0.0, 5.25 - current_10y):.2f} %-point"
-                if current_10y <= 5.25
-                else f"{current_10y - 5.25:.2f} %-point over",
+            r1, r2, r3, r4 = st.columns(4)
+            r1.metric("USA 2Y", f'{curve["us2y"]:.2f} %' if pd.notna(curve["us2y"]) else "N/A")
+            r2.metric("USA 10Y", f"{current_10y:.2f} %")
+            r3.metric("10Y–2Y spread", f'{curve["spread"]:.2f} %-point' if pd.notna(curve["spread"]) else "N/A")
+            r4.metric("Spreadændring 30 handelsdage", f'{curve["change_bp"]:+.0f} bp' if pd.notna(curve["change_bp"]) else "N/A")
+            st.caption(
+                f'Langrentezone: {rate_zone} · Yield Curve Risk: {curve["level"]}. '
+                "Stejlere rentekurve alene dokumenterer ikke gældsstress; "
+                "signalets grænser er foreløbige og ændrer ikke handelssignaler."
             )
 
             st.markdown("##### Macro/Rate Regime – komponenter")
@@ -1606,56 +1584,56 @@ with tab_settings:
                     st.session_state[f"draft_{key}"] = value
                 st.rerun()
     
-def reset_momentum_weights():
-    """Nulstil Momentum-vægte før widgets oprettes."""
-    for period, default in base_config.momentum_weights.items():
-        st.session_state[f"momentum_weight_{period}"] = float(default)
+    def reset_momentum_weights():
+        """Nulstil Momentum-vægte før widgets oprettes."""
+        for period, default in base_config.momentum_weights.items():
+            st.session_state[f"momentum_weight_{period}"] = float(default)
 
 
-with st.expander("Momentum-vægte"):
-    st.caption(
-        "Indtast rå vægte. De normaliseres automatisk, "
-        "så den aktive sum er 100 %."
-    )
+    with st.expander("Momentum-vægte"):
+        st.caption(
+            "Indtast rå vægte. De normaliseres automatisk, "
+            "så den aktive sum er 100 %."
+        )
 
-    periods = list(base_config.momentum_weights.keys())
-    columns = st.columns(len(periods))
+        periods = list(base_config.momentum_weights.keys())
+        columns = st.columns(len(periods))
 
-    for index, period in enumerate(periods):
-        with columns[index]:
-            st.number_input(
-                period,
-                min_value=0.0,
-                max_value=1.0,
-                step=0.05,
-                format="%.2f",
-                key=f"momentum_weight_{period}",
-            )
+        for index, period in enumerate(periods):
+            with columns[index]:
+                st.number_input(
+                    period,
+                    min_value=0.0,
+                    max_value=1.0,
+                    step=0.05,
+                    format="%.2f",
+                    key=f"momentum_weight_{period}",
+                )
 
-    active_momentum = pd.DataFrame({
-        "Periode": periods,
-        "Indtastet vægt": [
-            format_pct(st.session_state[f"momentum_weight_{period}"], 0)
-            for period in periods
-        ],
-        "Aktiv normaliseret vægt": [
-            format_pct(momentum_weights[period], 0)
-            for period in periods
-        ],
-    })
+        active_momentum = pd.DataFrame({
+            "Periode": periods,
+            "Indtastet vægt": [
+                format_pct(st.session_state[f"momentum_weight_{period}"], 0)
+                for period in periods
+            ],
+            "Aktiv normaliseret vægt": [
+                format_pct(momentum_weights[period], 0)
+                for period in periods
+            ],
+        })
 
-    st.dataframe(
-        active_momentum,
-        use_container_width=True,
-        hide_index=True,
-    )
+        st.dataframe(
+            active_momentum,
+            use_container_width=True,
+            hide_index=True,
+        )
 
-    st.caption(
-        f"Indtastet vægtsum: {sum(raw_momentum_weights.values()):.2f}. "
-        "Aktiv vægtsum: 1,00."
-    )
+        st.caption(
+            f"Indtastet vægtsum: {sum(raw_momentum_weights.values()):.2f}. "
+            "Aktiv vægtsum: 1,00."
+        )
 
-    st.button(
-        "Nulstil Momentum-vægte",
-        on_click=reset_momentum_weights,
-    )
+        st.button(
+            "Nulstil Momentum-vægte",
+            on_click=reset_momentum_weights,
+        )
