@@ -1585,21 +1585,57 @@ with tab_settings:
                     st.session_state[key] = value
                     st.session_state[f"draft_{key}"] = value
                 st.rerun()
-    with st.expander("Momentum-vægte"):
-        st.caption("Indtast rå vægte. De normaliseres automatisk, så den aktive sum er 100 %.")
-        periods = list(base_config.momentum_weights.keys())
-        columns = st.columns(len(periods))
-        for index, period in enumerate(periods):
-            with columns[index]:
-                st.number_input(period, min_value=0.0, max_value=1.0, step=0.05, format="%.2f", key=f"momentum_weight_{period}")
-        active_momentum = pd.DataFrame({
-            "Periode": periods,
-            "Indtastet vægt": [format_pct(st.session_state[f"momentum_weight_{period}"], 0) for period in periods],
-            "Aktiv normaliseret vægt": [format_pct(momentum_weights[period], 0) for period in periods],
-        })
-        st.dataframe(active_momentum, use_container_width=True, hide_index=True)
-        st.caption(f"Indtastet vægtsum: {sum(raw_momentum_weights.values()):.2f}. Aktiv vægtsum: 1,00.")
-        if st.button("Nulstil Momentum-vægte"):
-            for period, default in base_config.momentum_weights.items():
-                st.session_state[f"momentum_weight_{period}"] = float(default)
-            st.rerun()
+    
+def reset_momentum_weights():
+    """Nulstil Momentum-vægte før widgets oprettes."""
+    for period, default in base_config.momentum_weights.items():
+        st.session_state[f"momentum_weight_{period}"] = float(default)
+
+
+with st.expander("Momentum-vægte"):
+    st.caption(
+        "Indtast rå vægte. De normaliseres automatisk, "
+        "så den aktive sum er 100 %."
+    )
+
+    periods = list(base_config.momentum_weights.keys())
+    columns = st.columns(len(periods))
+
+    for index, period in enumerate(periods):
+        with columns[index]:
+            st.number_input(
+                period,
+                min_value=0.0,
+                max_value=1.0,
+                step=0.05,
+                format="%.2f",
+                key=f"momentum_weight_{period}",
+            )
+
+    active_momentum = pd.DataFrame({
+        "Periode": periods,
+        "Indtastet vægt": [
+            format_pct(st.session_state[f"momentum_weight_{period}"], 0)
+            for period in periods
+        ],
+        "Aktiv normaliseret vægt": [
+            format_pct(momentum_weights[period], 0)
+            for period in periods
+        ],
+    })
+
+    st.dataframe(
+        active_momentum,
+        use_container_width=True,
+        hide_index=True,
+    )
+
+    st.caption(
+        f"Indtastet vægtsum: {sum(raw_momentum_weights.values()):.2f}. "
+        "Aktiv vægtsum: 1,00."
+    )
+
+    st.button(
+        "Nulstil Momentum-vægte",
+        on_click=reset_momentum_weights,
+    )
