@@ -114,6 +114,40 @@ def _curve_score(us10y: pd.Series, us2y: pd.Series) -> tuple[float, float]:
     return score, spread
 
 
+def calculate_yield_curve_risk(history: pd.DataFrame, periods: int = 30) -> dict:
+    """Observational 10Y–2Y steepening monitor; does not change trading signals."""
+    frame = history if history is not None else pd.DataFrame()
+    if not {"US10Y", "US2Y"}.issubset(frame.columns):
+        return {"level": "Datagrundlag utilstrækkeligt", "spread": np.nan,
+                "change_bp": np.nan, "us10y": np.nan, "us2y": np.nan, "as_of": None}
+    aligned = pd.concat([
+        _clean_series(frame["US10Y"]).rename("US10Y"),
+        _clean_series(frame["US2Y"]).rename("US2Y"),
+    ], axis=1).dropna().sort_index()
+    if aligned.empty:
+        return {"level": "Datagrundlag utilstrækkeligt", "spread": np.nan,
+                "change_bp": np.nan, "us10y": np.nan, "us2y": np.nan, "as_of": None}
+    latest = aligned.iloc[-1]
+    stamp = pd.Timestamp(aligned.index[-1])
+    spread = float(latest["US10Y"] - latest["US2Y"])
+    result = {"level": "Datagrundlag utilstrækkeligt", "spread": spread,
+              "change_bp": np.nan, "us10y": float(latest["US10Y"]),
+              "us2y": float(latest["US2Y"]), "as_of": stamp}
+    if len(aligned) <= periods or pd.Timestamp.now().normalize() - stamp.normalize() > pd.Timedelta(days=10):
+        return result
+    previous = aligned.iloc[-(periods + 1)]
+    change_bp = float((spread - (previous["US10Y"] - previous["US2Y"])) * 100)
+    ten_year_rising = latest["US10Y"] > previous["US10Y"]
+    if change_bp > 30 and ten_year_rising:
+        level = "Høj"
+    elif change_bp >= 15:
+        level = "Forhøjet"
+    else:
+        level = "Normal"
+    result.update(level=level, change_bp=change_bp)
+    return result
+
+
 def _inflation_score(inflation: pd.Series) -> float:
     clean = _clean_series(inflation)
     if clean.empty:
