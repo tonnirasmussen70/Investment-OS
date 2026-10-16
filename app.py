@@ -813,7 +813,7 @@ with tab_overview:
 
             if asset_class == "ETF":
                 st.markdown("#### ETF Momentum Breadth")
-                st.caption("Nice to have: hvor mange af ETF'ens 10 største aktier har positivt 1M-momentum? Ingen indflydelse på handelssignal.")
+                st.caption("Spredning: hvor mange af ETF'ens 10 største aktier har positivt 1M-momentum? Ingen indflydelse på handelssignal.")
                 etf_rows = analytics_portfolio.loc[analytics_portfolio["Name"].astype(str).eq(asset)]
                 etf_ticker = str(etf_rows.iloc[0].get("Yahoo_Ticker", "")).strip() if not etf_rows.empty else ""
                 safe_ticker = "".join(char for char in etf_ticker if char.isalnum() or char in ".-_")
