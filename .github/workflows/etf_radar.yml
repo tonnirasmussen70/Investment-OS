@@ -2,6 +2,12 @@ name: ETF momentum and risk radar
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - data/etf_universe.json
+      - modules/etf_radar.py
+      - scripts/generate_etf_radar.py
+      - .github/workflows/etf_radar.yml
   schedule:
     - cron: "15 7 * * 0"
 

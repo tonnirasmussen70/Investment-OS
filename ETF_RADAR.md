@@ -63,7 +63,9 @@ or precomputed fabricated candidates are bundled.
 manual dispatch. The workflow becomes operational only after it is pushed to
 GitHub; scheduled execution requires the default branch. Main-branch runs
 commit only a successfully validated snapshot. Branch-dispatch runs calculate
-without committing. The app itself can also initialize the snapshot when
+without committing. Relevant pull requests run the same live-source check
+without committing, allowing Yahoo connectivity and mappings to be verified
+on GitHub's runner. The app itself can also initialize the snapshot when
 Yahoo is reachable.
 
 ## Source and validation references
