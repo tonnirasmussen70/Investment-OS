@@ -149,7 +149,7 @@ def test_repository_data_provenance():
 
 
 @pytest.mark.parametrize("legacy", [False, True])
-def test_actual_compounder_tab_displays_entire_universe(legacy):
+def test_actual_compounder_tab_displays_top_ten_without_truncating_source(legacy):
     root = Path(__file__).resolve().parents[1]
     source = (root / "app.py").read_text(encoding="utf-8")
     functions = "\n".join(ast.get_source_segment(source, node) for node in ast.parse(source).body
@@ -162,6 +162,9 @@ from modules.compounder_view import render_radar_status
 from modules.styling import table_style
 from modules.formatting import format_score
 from types import SimpleNamespace
+from modules.etf_candidates import CANDIDATE_LIMIT
+def render_etf_candidates(st):
+    pass  # ETF rendering is tested separately without a live Yahoo dependency.
 {functions}
 compounder_radar = load_compounder_radar({str(root / "data")!r})
 if {legacy!r}:
@@ -177,8 +180,10 @@ with tab_compounders:{tab}
     app = AppTest.from_string(code, default_timeout=20).run()
     assert not app.exception
     radar = load_compounder_radar(root / "data")
-    assert app.metric[0].value == str(len(radar.data))
-    assert len(app.dataframe[0].value) == len(radar.data)
+    assert app.metric[0].value == str(min(10, len(radar.data)))
+    assert len(app.dataframe[0].value) == min(10, len(radar.data))
+    assert app.dataframe[0].value["Ticker"].tolist() == radar.data.head(10)["Ticker"].tolist()
+    assert len(radar.data) > 10
     captions = "\n".join(item.value for item in app.caption)
     assert radar.agent_generated_at in captions
     if legacy:

@@ -1,0 +1,22 @@
+{
+  "verified_on": "2026-10-19",
+  "scope": "Curated UCITS equity ETF research universe; EUR exchange listings, not the whole ETF market",
+  "funds": [
+    {"Name": "Vanguard FTSE All-World UCITS ETF (Acc)", "Ticker": "VWCE.DE", "ISIN": "IE00BK5BQT80", "Currency": "EUR", "Exposure": "Global inkl. emerging markets", "Issuer_Source": "https://global.vanguard.com/private-anleger/anlageprodukte/etf/aktien/9679/ftse-all-world-ucits-etf-usd-accumulating"},
+    {"Name": "iShares Core MSCI World UCITS ETF (Acc)", "Ticker": "EUNL.DE", "ISIN": "IE00B4L5Y983", "Currency": "EUR", "Exposure": "Udviklede markeder", "Issuer_Source": "https://www.ishares.com/de/privatanleger/de/produkte/251882/"},
+    {"Name": "iShares Core S&P 500 UCITS ETF (Acc)", "Ticker": "SXR8.DE", "ISIN": "IE00B5BMR087", "Currency": "EUR", "Exposure": "USA large cap", "Issuer_Source": "https://www.ishares.com/de/privatanleger/de/produkte/253743/"},
+    {"Name": "iShares Core MSCI EM IMI UCITS ETF (Acc)", "Ticker": "IS3N.DE", "ISIN": "IE00BKM4GZ66", "Currency": "EUR", "Exposure": "Emerging markets", "Issuer_Source": "https://www.ishares.com/de/professionelle-anleger/de/produkte/264659/"},
+    {"Name": "iShares MSCI World Small Cap UCITS ETF (Acc)", "Ticker": "IUSN.DE", "ISIN": "IE00BF4RFH31", "Currency": "EUR", "Exposure": "Global small cap", "Issuer_Source": "https://www.ishares.com/de/privatanleger/de/produkte/296576/"},
+    {"Name": "iShares STOXX Europe 600 UCITS ETF (DE)", "Ticker": "EXSA.DE", "ISIN": "DE0002635307", "Currency": "EUR", "Exposure": "Europa", "Issuer_Source": "https://www.ishares.com/de/privatanleger/de/produkte/251931/"},
+    {"Name": "iShares NASDAQ-100 UCITS ETF (DE)", "Ticker": "EXXT.DE", "ISIN": "DE000A0F5UF5", "Currency": "EUR", "Exposure": "Nasdaq-100", "Issuer_Source": "https://www.ishares.com/de/privatanleger/de/produkte/251896/"},
+    {"Name": "iShares S&P 500 Information Technology Sector UCITS ETF", "Ticker": "QDVE.DE", "ISIN": "IE00B3WJKG14", "Currency": "EUR", "Exposure": "USA teknologi", "Issuer_Source": "https://www.ishares.com/de/privatanleger/de/produkte/280510/"},
+    {"Name": "iShares S&P 500 Health Care Sector UCITS ETF", "Ticker": "QDVG.DE", "ISIN": "IE00B43HR379", "Currency": "EUR", "Exposure": "USA sundhed", "Issuer_Source": "https://www.ishares.com/de/privatanleger/de/produkte/280507/"},
+    {"Name": "iShares STOXX Europe 600 Banks UCITS ETF (DE)", "Ticker": "EXV1.DE", "ISIN": "DE000A0F5UJ7", "Currency": "EUR", "Exposure": "Europæiske banker", "Issuer_Source": "https://www.ishares.com/uk/professionals/en/products/251934/"},
+    {"Name": "iShares STOXX Global Select Dividend 100 UCITS ETF (DE)", "Ticker": "ISPA.DE", "ISIN": "DE000A0F5UH1", "Currency": "EUR", "Exposure": "Globalt udbytte", "Issuer_Source": "https://www.ishares.com/de/privatanleger/de/produkte/251973/"},
+    {"Name": "iShares Edge MSCI World Quality Factor UCITS ETF", "Ticker": "IS3Q.DE", "ISIN": "IE00BP3QZ601", "Currency": "EUR", "Exposure": "Global kvalitet", "Issuer_Source": "https://www.ishares.com/de/privatanleger/de/produkte/270054/"},
+    {"Name": "iShares Edge MSCI World Momentum Factor UCITS ETF", "Ticker": "IS3R.DE", "ISIN": "IE00BP3QZ825", "Currency": "EUR", "Exposure": "Global momentum", "Issuer_Source": "https://www.ishares.com/de/privatanleger/de/produkte/270051/"},
+    {"Name": "iShares Edge MSCI World Minimum Volatility UCITS ETF", "Ticker": "IQQ0.DE", "ISIN": "IE00B8FHGS14", "Currency": "EUR", "Exposure": "Global minimum volatilitet", "Issuer_Source": "https://www.ishares.com/de/privatanleger/de/produkte/251382/"},
+    {"Name": "VanEck Semiconductor UCITS ETF", "Ticker": "VVSM.DE", "ISIN": "IE00BMC38736", "Currency": "EUR", "Exposure": "Halvledere", "Issuer_Source": "https://www.vaneck.com/ucits/library/fact-sheets/smh-fact-sheet.pdf"},
+    {"Name": "iShares Automation & Robotics UCITS ETF", "Ticker": "2B76.DE", "ISIN": "IE00BYZK4552", "Currency": "EUR", "Exposure": "Automation og robotteknologi", "Issuer_Source": "https://www.ishares.com/de/privatanleger/de/produkte/284219/"}
+  ]
+}
