@@ -4,6 +4,7 @@ from dataclasses import replace
 from datetime import datetime
 import os
 from pathlib import Path
+from types import SimpleNamespace
 from zoneinfo import ZoneInfo
 
 import numpy as np
@@ -27,6 +28,7 @@ from modules.attribution_engine import (
 from modules.change_engine import build_change_engine
 from modules.early_sell_warning import build_early_sell_warnings
 from modules.compounder_view import render_radar_status
+from modules.etf_candidates import CANDIDATE_LIMIT, render_etf_candidates
 from modules.compounder_engine import (
     load_compounder_radar,
     radar_summary,
@@ -1453,6 +1455,10 @@ with tab_opportunity:
             st.dataframe(table_style(details), use_container_width=True, hide_index=True, height=no_scroll_height(details))
 
 with tab_compounders:
+    if compounder_radar is not None and compounder_radar.exists:
+        compounder_display = SimpleNamespace(**vars(compounder_radar))
+        compounder_display.data = compounder_radar.data.head(CANDIDATE_LIMIT).copy()
+        compounder_summary = radar_summary(compounder_display)
     st.subheader("Emerging Compounders")
     st.caption("7.2 kombinerer kvant-radar og agent-intelligence med en Promotion Gate: Monitor → Deep Research → Fair Value Review → Decision Review. Discovery Score er stadig research-prioritering – ikke et købssignal.")
     if compounder_error:
@@ -1471,7 +1477,8 @@ with tab_compounders:
         render_radar_status(st, compounder_radar)
         for note in compounder_radar.notes:
             st.warning(note)
-        radar = top_candidates(compounder_radar, limit=len(compounder_radar.data))
+        st.caption(f"Viser top {CANDIDATE_LIMIT} efter Discovery Score. Det fulde research-univers bevares i datagrundlaget.")
+        radar = top_candidates(compounder_radar, limit=CANDIDATE_LIMIT)
         if radar.empty:
             st.info("Ingen kandidater.")
         else:
@@ -1484,7 +1491,7 @@ with tab_compounders:
             st.dataframe(table_style(radar), use_container_width=True, hide_index=True, height=no_scroll_height(radar))
             st.markdown("### Promotion Queue")
             st.caption("Kun kandidater, der består mindst Deep Research-gaten, vises her. Decision Review-kandidater er klar til separat Investment OS-vurdering.")
-            promotion_source = compounder_radar.data.copy()
+            promotion_source = compounder_display.data.copy()
             promotion_queue = promotion_source.loc[promotion_source.get("Deep_Research_Ready", pd.Series(False, index=promotion_source.index)).fillna(False)].copy()
             if promotion_queue.empty:
                 st.info("Ingen kandidater består aktuelt Promotion Gate til Deep Research.")
@@ -1497,6 +1504,8 @@ with tab_compounders:
                 for col in ["Discovery", "Confidence"]:
                     promotion_display[col] = promotion_display[col].apply(lambda value: score_text(value, 0) if pd.notna(value) else "N/A")
                 st.dataframe(table_style(promotion_display), use_container_width=True, hide_index=True, height=no_scroll_height(promotion_display))
+
+    render_etf_candidates(st)
 
 with tab_watchlist:
     st.subheader("Watchlist")
@@ -1583,7 +1592,6 @@ with tab_settings:
                     st.session_state[key] = value
                     st.session_state[f"draft_{key}"] = value
                 st.rerun()
-    
     def reset_momentum_weights():
         """Nulstil Momentum-vægte før widgets oprettes."""
         for period, default in base_config.momentum_weights.items():

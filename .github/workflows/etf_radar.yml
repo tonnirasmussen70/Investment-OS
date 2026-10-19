@@ -1,0 +1,49 @@
+name: ETF momentum and risk radar
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - data/etf_universe.json
+      - modules/etf_radar.py
+      - scripts/generate_etf_radar.py
+      - .github/workflows/etf_radar.yml
+  schedule:
+    - cron: "15 7 * * 0"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: etf-radar-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  generate-etf-radar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Generate ETF radar
+        run: python scripts/generate_etf_radar.py
+      - name: Commit verified ETF snapshot
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/etf_radar.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Update Yahoo ETF momentum and risk radar"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
