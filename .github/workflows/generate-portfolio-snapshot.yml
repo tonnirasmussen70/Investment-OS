@@ -3,7 +3,9 @@ name: Generate integrated portfolio snapshot
 on:
   workflow_dispatch:
   schedule:
-    - cron: "25 4 * * *"
+    # 22:25 UTC: after the US regular session in both EST and EDT.
+    # Denmark: 23:25 CET / 00:25 CEST (the following calendar day).
+    - cron: "25 22 * * *"
   push:
     branches:
       - main
