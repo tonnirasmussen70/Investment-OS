@@ -87,7 +87,7 @@ def test_browser_speech_controller():
     if not node:
         pytest.skip("Node.js required for speech-controller execution")
     html = speech_html("En dansk sætning. " * 45, "answer-1", autoplay=True)
-    script = re.search(r"<script>([\\s\\S]*)</script>", html).group(1)
+    script = re.search(r"<script>([\s\S]*)</script>", html).group(1)
     subprocess.run([node, "-e", HARNESS], input=json.dumps(script), text=True,
                    capture_output=True, check=True, timeout=15)
 
