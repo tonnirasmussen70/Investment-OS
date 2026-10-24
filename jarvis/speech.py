@@ -28,7 +28,7 @@ button{font:inherit;padding:7px 12px;margin:0 8px 8px 0;cursor:pointer}
   const play = document.getElementById("play");
   const stop = document.getElementById("stop");
   const synth = window.speechSynthesis;
-  let generation = 0, timer, utterance;
+  let generation = 0, timer, utterance, readyHandler;
   const say = message => { status.textContent = message; };
   if (!synth || !window.SpeechSynthesisUtterance) {
     play.disabled = stop.disabled = true;
@@ -38,6 +38,8 @@ button{font:inherit;padding:7px 12px;margin:0 8px 8px 0;cursor:pointer}
   function cancel() {
     generation++;
     clearTimeout(timer);
+    if (readyHandler) synth.removeEventListener("voiceschanged", readyHandler);
+    readyHandler = null;
     synth.cancel();
     utterance = null;
   }
@@ -99,13 +101,10 @@ button{font:inherit;padding:7px 12px;margin:0 8px 8px 0;cursor:pointer}
           synth.removeEventListener("voiceschanged", ready);
           speak();
         };
+        readyHandler = ready;
         synth.addEventListener("voiceschanged", ready, {once:true});
         timer = setTimeout(ready, 800);
-        const originalCancel = cancel;
-        window.addEventListener("pagehide", () => {
-          synth.removeEventListener("voiceschanged", ready);
-          originalCancel();
-        });
+
       }
     }
   }
