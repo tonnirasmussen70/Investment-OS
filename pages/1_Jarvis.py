@@ -66,7 +66,7 @@ if speech_result:
 with speech_slot:
     components.html(
         speech_html(
-            "\\n".join(spoken_parts),
+            "\n".join(spoken_parts),
             str((speech_result or {}).get("request_id") or ""),
             autoplay=bool(question and speech_result and auto_speech),
         ),
