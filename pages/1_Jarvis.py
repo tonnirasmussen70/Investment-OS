@@ -1,13 +1,17 @@
 """Jarvis text interface in the existing IOS Streamlit application."""
 import streamlit as st
+import streamlit.components.v1 as components
 
 from api.service import StockNotFoundError
 from jarvis.adapter import JarvisCommandError
 from jarvis.text_client import answer_question
+from jarvis.speech import speech_html
 
 st.set_page_config(page_title="Jarvis · IOS", page_icon="💬", layout="centered")
 st.title("Jarvis")
 st.caption("Spørg til dine IOS-data")
+auto_speech = st.toggle("Læs nye svar op automatisk", value=True, key="jarvis_auto_speech")
+speech_slot = st.empty()
 st.write("Start med et af disse spørgsmål, eller skriv en tilsvarende kommando:")
 examples = (
     "Hvordan er status på min portefølje?",
@@ -49,3 +53,22 @@ if result := st.session_state.get("jarvis_answer"):
         st.text(result["message"])
         with st.expander("Datagrundlag"):
             st.json(data)
+
+# A stable slot replaces the preceding speech frame, including on rejected questions.
+speech_result = st.session_state.get("jarvis_answer")
+speech_data = (speech_result or {}).get("data") or {}
+spoken_parts = [
+    str(item.get("message") or item.get("code") or "Dataadvarsel")
+    for item in speech_data.get("warnings") or []
+]
+if speech_result:
+    spoken_parts.append(speech_result["message"])
+with speech_slot:
+    components.html(
+        speech_html(
+            "\n".join(spoken_parts),
+            str((speech_result or {}).get("request_id") or ""),
+            autoplay=bool(question and speech_result and auto_speech),
+        ),
+        height=100,
+    )
