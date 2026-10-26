@@ -16,8 +16,12 @@ _TEMPLATE = r"""<!doctype html>
 <html lang="da"><meta charset="utf-8">
 <style>
 body{font:14px system-ui;color:#aaa;margin:0}
-button{font:inherit;padding:7px 12px;margin:0 8px 8px 0;cursor:pointer}
+button,select{font:inherit;padding:7px 12px;margin:0 8px 8px 0}
+button{cursor:pointer}
 </style>
+<label for="voice">Dansk stemme</label>
+<select id="voice" aria-label="Dansk stemme"></select>
+<br>
 <button id="play" type="button">Læs svaret op</button>
 <button id="stop" type="button">Stop</button>
 <div id="status" role="status" aria-live="polite"></div>
@@ -27,14 +31,41 @@ button{font:inherit;padding:7px 12px;margin:0 8px 8px 0;cursor:pointer}
   const status = document.getElementById("status");
   const play = document.getElementById("play");
   const stop = document.getElementById("stop");
+  const selector = document.getElementById("voice");
   const synth = window.speechSynthesis;
   let generation = 0, timer, utterance, readyHandler;
   const say = message => { status.textContent = message; };
   if (!synth || !window.SpeechSynthesisUtterance) {
-    play.disabled = stop.disabled = true;
+    play.disabled = stop.disabled = selector.disabled = true;
     say("Browseren understøtter ikke oplæsning. Tekstsvaret kan stadig læses.");
     return;
   }
+  const storageKey = "jarvis-preferred-voice";
+  function savedVoice() {
+    try { return localStorage.getItem(storageKey) || ""; } catch (_) { return ""; }
+  }
+  function refreshVoices() {
+    const voices = synth.getVoices().filter(v => /^da(-|$)/i.test(v.lang));
+    const selected = savedVoice();
+    selector.replaceChildren();
+    const automatic = document.createElement("option");
+    automatic.value = "";
+    automatic.textContent = "Automatisk (foretrækker lokal)";
+    selector.appendChild(automatic);
+    for (const voice of voices) {
+      const option = document.createElement("option");
+      option.value = voice.voiceURI || voice.name;
+      option.textContent = voice.name + (voice.localService ? " (lokal)" : " (online)");
+      selector.appendChild(option);
+    }
+    selector.value = voices.some(v => (v.voiceURI || v.name) === selected) ? selected : "";
+    selector.disabled = !voices.length;
+  }
+  selector.onchange = () => {
+    try { localStorage.setItem(storageKey, selector.value); } catch (_) { /* Storage may be blocked. */ }
+  };
+  refreshVoices();
+  synth.addEventListener("voiceschanged", refreshVoices);
   function cancel() {
     generation++;
     clearTimeout(timer);
@@ -49,7 +80,8 @@ button{font:inherit;padding:7px 12px;margin:0 8px 8px 0;cursor:pointer}
     const current = generation;
     const voices = synth.getVoices();
     const danish = voices.filter(v => /^da(-|$)/i.test(v.lang));
-    const voice = danish.find(v => v.localService) || danish[0];
+    const voice = danish.find(v => (v.voiceURI || v.name) === selector.value)
+      || danish.find(v => v.localService) || danish[0];
     const chunks = config.text.match(/[\s\S]{1,220}(?:\s|$)|[\s\S]{1,220}/g) || [];
     let index = 0;
     function next() {
@@ -78,7 +110,7 @@ button{font:inherit;padding:7px 12px;margin:0 8px 8px 0;cursor:pointer}
   }
   play.onclick = speak;
   stop.onclick = () => { cancel(); say("Oplæsning stoppet."); };
-  window.addEventListener("pagehide", cancel);
+  window.addEventListener("pagehide", () => { cancel(); synth.removeEventListener("voiceschanged", refreshVoices); });
   // Cancel the preceding answer when this component is replaced.
   cancel();
   if (!config.text) {

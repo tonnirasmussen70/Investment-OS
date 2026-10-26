@@ -77,5 +77,5 @@ with speech_slot:
             str((speech_result or {}).get("request_id") or ""),
             autoplay=bool(question and speech_result and auto_speech),
         ),
-        height=100,
+        height=150,
     )
