@@ -24,18 +24,23 @@ def test_answer_is_inert_json_not_executable_markup():
 HARNESS = r"""
 const vm = require("node:vm"), assert = require("node:assert/strict");
 const script = JSON.parse(require("node:fs").readFileSync(0,"utf8"));
-function setup({enabled=true, voices=true, seen=null}={}) {
-  const elements = {status:{},play:{},stop:{}}, events={}, timers=new Map();
+function setup({enabled=true, voices=true, seen=null, preferred=""}={}) {
+  const elements = {status:{},play:{},stop:{},voice:{value:"",options:[],
+    replaceChildren(){this.options=[];},appendChild(o){this.options.push(o);}}}, events={}, timers=new Map();
   const spoken=[], stored=new Map([["jarvis-spoken-answer",seen]]);
+  const preferences = new Map([["jarvis-preferred-voice",preferred]]);
   let cancellations=0, id=0;
   const synth={
-    getVoices:()=>voices?[{lang:"da-DK",localService:true,name:"Danish"}]:[],
+    getVoices:()=>voices?[{lang:"da-DK",localService:true,name:"Danish",voiceURI:"local"},
+      {lang:"da-DK",localService:false,name:"Natural",voiceURI:"online"},
+      {lang:"en-US",localService:true,name:"English",voiceURI:"english"}]:[],
     speak:u=>spoken.push(u), cancel:()=>cancellations++,
-    addEventListener:(e,f)=>events[e]=f,
-    removeEventListener:(e,f)=>{if(events[e]===f) delete events[e];}
+    addEventListener:(e,f)=>{(events[e] ||= new Set()).add(f);},
+    removeEventListener:(e,f)=>events[e]?.delete(f)
   };
-  const context={document:{getElementById:id=>elements[id]},
+  const context={document:{getElementById:id=>elements[id],createElement:()=>({})},
     sessionStorage:{getItem:k=>stored.get(k),setItem:(k,v)=>stored.set(k,v)},
+    localStorage:{getItem:k=>preferences.get(k),setItem:(k,v)=>preferences.set(k,v)},
     setTimeout:f=>{timers.set(++id,f);return id;},clearTimeout:i=>timers.delete(i),
     window:{speechSynthesis:enabled?synth:null,
       SpeechSynthesisUtterance:function(t){this.text=t;},
@@ -43,7 +48,7 @@ function setup({enabled=true, voices=true, seen=null}={}) {
   };
   context.SpeechSynthesisUtterance=context.window.SpeechSynthesisUtterance;
   vm.runInNewContext(script,context);
-  return {elements,events,timers,spoken,get cancellations(){return cancellations;}};
+  return {elements,events,timers,spoken,preferences,get cancellations(){return cancellations;}};
 }
 let s=setup();
 assert.equal(s.spoken.length,1);
@@ -61,9 +66,9 @@ s=setup({voices:false});
 assert.equal(s.spoken.length,0);
 s.elements.stop.onclick();
 assert.equal(s.timers.size,0);
-assert.equal(s.events.voiceschanged,undefined);
+assert.equal(s.events.voiceschanged.size,1);
 s=setup({voices:false});
-s.events.voiceschanged();
+for(const handler of [...s.events.voiceschanged]) handler();
 assert.equal(s.spoken.length,1);
 s=setup({enabled:false});
 assert.equal(s.elements.play.disabled,true);
@@ -79,6 +84,16 @@ while(guard++<20 && s.spoken.at(-1).onend) {
 }
 assert.equal(s.spoken.map(u=>u.text).join(""),"En dansk sætning. ".repeat(45));
 assert.match(s.elements.status.textContent,/færdig/);
+s=setup({preferred:"online"});
+assert.equal(s.spoken[0].voice.name,"Natural");
+assert.equal(s.elements.voice.options.length,3,"only Danish voices plus automatic");
+s.elements.voice.value="local";
+s.elements.voice.onchange();
+assert.equal(s.preferences.get("jarvis-preferred-voice"),"local");
+s.elements.play.onclick();
+assert.equal(s.spoken.at(-1).voice.name,"Danish");
+s=setup({preferred:"missing"});
+assert.equal(s.spoken[0].voice.name,"Danish");
 """
 
 
