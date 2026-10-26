@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="da"><meta charset="utf-8">
+<style>body{font:14px system-ui;color:#aaa;margin:0}button{font:inherit;padding:7px 12px;cursor:pointer}</style>
+<button id="mic" type="button">🎙️ Stil et spørgsmål med stemmen</button>
+<div id="status" role="status" aria-live="polite"></div>
+<script>
+(() => {
+  const button = document.getElementById('mic');
+  const status = document.getElementById('status');
+  const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const send = (type, extra={}) => window.parent.postMessage({isStreamlitMessage:true,type,...extra}, '*');
+  send('streamlit:componentReady', {apiVersion:1});
+  send('streamlit:setFrameHeight', {height:80});
+  if (!Recognition) {
+    button.disabled = true;
+    status.textContent = 'Talegenkendelse understøttes ikke her. Skriv dit spørgsmål i stedet.';
+    return;
+  }
+  let listening = false, recognition;
+  button.onclick = () => {
+    if (listening) { recognition.stop(); return; }
+    recognition = new Recognition();
+    recognition.lang = 'da-DK';
+    recognition.interimResults = false;
+    recognition.continuous = false;
+    recognition.onstart = () => { listening = true; button.textContent = 'Stop mikrofon'; status.textContent = 'Lytter…'; };
+    recognition.onresult = event => {
+      const text = (event.results[0]?.[0]?.transcript || '').trim().slice(0,500);
+      if (!text) { status.textContent = 'Ingen tale blev genkendt. Prøv igen.'; return; }
+      status.textContent = 'Spørgsmål genkendt.';
+      send('streamlit:setComponentValue', {value:{text, id: `${Date.now()}-${Math.random()}`}, dataType:'json'});
+    };
+    recognition.onerror = event => {
+      status.textContent = event.error === 'not-allowed' || event.error === 'service-not-allowed'
+        ? 'Mikrofon eller talegenkendelse er blokeret. Kontrollér browserens tilladelser.'
+        : 'Talegenkendelse mislykkedes. Prøv igen, eller skriv spørgsmålet.';
+    };
+    recognition.onend = () => { listening = false; button.textContent = '🎙️ Stil et spørgsmål med stemmen'; };
+    try { recognition.start(); } catch (_) { status.textContent = 'Mikrofonen kunne ikke startes. Prøv igen.'; }
+  };
+  window.addEventListener('pagehide', () => { if (recognition && listening) recognition.abort(); });
+})();
+</script></html>

@@ -18,7 +18,11 @@ Ingen nye API-nøgler, abonnementer eller HA-installation kræves. Kør den eksi
 
 Test: `python -m pytest -q tests/test_jarvis_text_client.py tests/test_jarvis_mcp.py`.
 
-Stemmeinput, fri samtale, Home Assistant og agentorkestrering er ikke implementeret her. Funktionen `jarvis.text_client.answer_question` kan senere genbruges som indgang til transskriberet tale. Det tilføjer ikke i sig selv stemmestyring.
+Fri samtale, Home Assistant og agentorkestrering er ikke implementeret her.
+
+## Stil spørgsmål med stemmen
+
+Tryk på **Stil et spørgsmål med stemmen**, tillad mikrofonadgang, og sig et af de understøttede spørgsmål på dansk. Den genkendte tekst sendes til den eksisterende Jarvis-funktion og vises sammen med svaret. Knappen **Stop mikrofon** afslutter optagelsen. Tekstinput kan fortsat bruges. Genkendelsen afhænger af browseren og kan kræve HTTPS eller localhost; nogle browsere sender lyd til en ekstern talegenkendelsestjeneste. Ingen lyd gemmes af denne funktion i IOS. Test på brugerens Windows-pc er nødvendig for at bekræfte mikrofon, dansk genkendelse og oplæsning i den konkrete browser.
 
 ## Automatisk oplæsning
 
