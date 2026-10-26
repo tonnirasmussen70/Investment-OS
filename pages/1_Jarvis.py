@@ -6,6 +6,7 @@ from api.service import StockNotFoundError
 from jarvis.adapter import JarvisCommandError
 from jarvis.text_client import answer_question
 from jarvis.speech import speech_html
+from jarvis.voice_input import voice_input
 
 st.set_page_config(page_title="Jarvis · IOS", page_icon="💬", layout="centered")
 st.title("Jarvis")
@@ -23,6 +24,12 @@ for example in examples:
     if st.button(example, use_container_width=True):
         question = example
 st.caption("Enkelt værdipapir: skriv fx Analyser FRO med en ticker fra IOS.")
+st.caption("Talegenkendelse kan sende lyd til browserens udbyder. Mikrofonen starter kun, når du trykker på knappen.")
+voice = voice_input()
+if isinstance(voice, dict) and isinstance(voice.get("id"), str) and isinstance(voice.get("text"), str):
+    if voice["id"] != st.session_state.get("jarvis_last_voice_id"):
+        st.session_state["jarvis_last_voice_id"] = voice["id"]
+        question = voice["text"].strip()[:500] or question
 typed = st.chat_input("Spørg Jarvis", max_chars=500)
 question = typed or question
 
