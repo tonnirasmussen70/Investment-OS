@@ -1,7 +1,29 @@
 {
-  "generated_at": "2026-10-19T08:22:16+02:00",
+  "generated_at": "2026-10-26T09:00:30+01:00",
   "methodology_version": "7.1",
   "candidates": [
+    {
+      "ticker": "ALAB",
+      "name": "Astera Labs",
+      "agent_score": 96,
+      "agent_confidence": 95,
+      "growth_score": 99,
+      "earnings_score": 96,
+      "momentum_score": 93,
+      "capital_flow_score": 89,
+      "moat_score": 95,
+      "guidance_score": 98,
+      "news_score": 90,
+      "prior_score": 96,
+      "score_change": 0,
+      "is_new": false,
+      "thesis": "Rack-scale connectivity and memory-fabric expansion remain intact with no new thesis-changing primary datapoint this week.",
+      "risk": "Premium valuation, hyperscaler concentration and simultaneous product-ramp execution.",
+      "news_classification": "Relevant",
+      "sources": [
+        "https://ir.asteralabs.com/news-releases/news-release-details/astera-labs-reports-second-quarter-2026-financial-results"
+      ]
+    },
     {
       "ticker": "CRDO",
       "name": "Credo Technology",
@@ -23,28 +45,6 @@
       "sources": [
         "https://investors.credosemi.com/news-events/news/news-details/2026/Credo-Technology-Group-Holding-Ltd-Reports-First-Quarter-of-Fiscal-Year-2027-Financial-Results/default.aspx",
         "https://investors.credosemi.com/news-events/news/news-details/2026/Credo-Expands-ZeroFlap-Portfolio-with-224G-Based-1-6T-Optical-Transceivers-Addressing-the-Growing-Demand-for-AI-Network-Infrastructure/"
-      ]
-    },
-    {
-      "ticker": "ALAB",
-      "name": "Astera Labs",
-      "agent_score": 96,
-      "agent_confidence": 95,
-      "growth_score": 99,
-      "earnings_score": 96,
-      "momentum_score": 93,
-      "capital_flow_score": 89,
-      "moat_score": 95,
-      "guidance_score": 98,
-      "news_score": 90,
-      "prior_score": 96,
-      "score_change": 0,
-      "is_new": false,
-      "thesis": "Rack-scale connectivity and memory-fabric expansion remain intact with no new thesis-changing primary datapoint this week.",
-      "risk": "Premium valuation, hyperscaler concentration and simultaneous product-ramp execution.",
-      "news_classification": "Støj",
-      "sources": [
-        "https://ir.asteralabs.com/news-releases/news-release-details/astera-labs-reports-second-quarter-2026-financial-results"
       ]
     },
     {
@@ -105,38 +105,38 @@
       "moat_score": 100,
       "guidance_score": 98,
       "news_score": 99,
-      "thesis": "EUV lithography monopoly and installed-base upgrades underpin a high-quality AI equipment compounder; Q3 2026 €11.7bn sales and €5.0bn net income with 2027-28 demand exceeding planned supply.",
-      "risk": "Not an early-stage company; premium valuation, export controls and capacity expansion execution.",
-      "news_classification": "Teseændrende",
-      "sources": [
-        "https://www.investor.asml.com/news-releases/news-release-details/asml-reports-eu11.7-billion-total-net-sales-and-eu5.0-billion-net-income-q3-2026"
-      ],
-      "prior_score": null,
-      "score_change": null,
-      "is_new": true
-    },
-    {
-      "ticker": "SNPS",
-      "name": "Synopsys",
-      "agent_score": 94,
-      "agent_confidence": 97,
-      "growth_score": 88,
-      "earnings_score": 91,
-      "momentum_score": 75,
-      "capital_flow_score": 78,
-      "moat_score": 99,
-      "guidance_score": 95,
-      "news_score": 90,
-      "thesis": "EDA and design IP toll-road with new GPT-Synopsys agentic workflows and application-optimized custom silicon IP; FY2027 guidance indicates roughly 15% growth.",
-      "risk": "Premium valuation, Ansys integration and uncertain incremental AI monetization.",
-      "news_classification": "Relevant",
-      "sources": [
-        "https://news.synopsys.com/2026-09-30-OpenAI-and-Synopsys-Announce-GPT-Synopsys-Frontier-Intelligence-to-Revolutionize-Chip-Design",
-        "https://investor.synopsys.com/news/news-details/2026/Synopsys-Details-Growth-Strategy-and-Long-term-Financial-Model-at-2026-Investor-Day/"
-      ],
       "prior_score": 94,
       "score_change": 0,
-      "is_new": false
+      "is_new": false,
+      "thesis": "EUV lithography monopoly and installed-base upgrades underpin a high-quality AI equipment compounder; Q3 2026 €11.7bn sales and €5.0bn net income with 2027-28 demand exceeding planned supply.",
+      "risk": "Not an early-stage company; premium valuation, export controls and capacity expansion execution.",
+      "news_classification": "Relevant",
+      "sources": [
+        "https://www.investor.asml.com/news-releases/news-release-details/asml-reports-eu11.7-billion-total-net-sales-and-eu5.0-billion-net-income-q3-2026"
+      ]
+    },
+    {
+      "ticker": "BESI.AS",
+      "name": "BE Semiconductor Industries",
+      "agent_score": 94,
+      "agent_confidence": 96,
+      "growth_score": 99,
+      "earnings_score": 100,
+      "momentum_score": 73,
+      "capital_flow_score": 78,
+      "moat_score": 95,
+      "guidance_score": 87,
+      "news_score": 100,
+      "prior_score": 91,
+      "score_change": 3,
+      "is_new": false,
+      "thesis": "Q3-omsætning +113,6 % YoY, nettoresultat +323,7 % og ordreindgang +96,1 %. Hybrid-bonding-ordrer YTD over det dobbelte af hele 2025 understøtter en flerårig AI/HBM/packaging-flaskehals.",
+      "risk": "Q4-omsætning ventes flad ±5 % QoQ; udrulning af hybrid bonding kan forsinkes, og halvlederudstyr er cyklisk.",
+      "news_classification": "Teseændrende",
+      "sources": [
+        "https://www.besi.com/investor-relations/press-releases/2025/details-1/be-semiconductor-industries-nv-announces-q3-2026-results/",
+        "https://www.reuters.com/business/besis-quarterly-orders-beat-expectations-ai-data-centre-demand-stays-strong-2026-10-22/"
+      ]
     },
     {
       "ticker": "LITE",
@@ -161,27 +161,26 @@
       ]
     },
     {
-      "ticker": "COHR",
-      "name": "Coherent Corp.",
-      "agent_score": 93,
-      "agent_confidence": 94,
-      "growth_score": 92,
-      "earnings_score": 94,
-      "momentum_score": 91,
-      "capital_flow_score": 89,
-      "moat_score": 97,
-      "guidance_score": 93,
-      "news_score": 100,
-      "prior_score": 93,
+      "ticker": "SNPS",
+      "name": "Synopsys",
+      "agent_score": 94,
+      "agent_confidence": 97,
+      "growth_score": 88,
+      "earnings_score": 91,
+      "momentum_score": 75,
+      "capital_flow_score": 78,
+      "moat_score": 99,
+      "guidance_score": 95,
+      "news_score": 90,
+      "prior_score": 94,
       "score_change": 0,
       "is_new": false,
-      "thesis": "PhotonLink materially strengthens the platform thesis by integrating lasers, silicon photonics, optics, fiber, detectors, precision assembly and test into end-to-end CPO/NPO solutions for AI datacenters.",
-      "risk": "High capex and optical-cycle risk; platform breadth must convert into sustained revenue and margin gains.",
-      "news_classification": "Teseændrende",
+      "thesis": "EDA and design IP toll-road with new GPT-Synopsys agentic workflows and application-optimized custom silicon IP; FY2027 guidance indicates roughly 15% growth.",
+      "risk": "Premium valuation, Ansys integration and uncertain incremental AI monetization.",
+      "news_classification": "Relevant",
       "sources": [
-        "https://www.coherent.com/news/press-releases/launches-photonlink-integrated-optics-platform-ai-infrastructure",
-        "https://www.coherent.com/networking/photonlink",
-        "https://ir.coherent.com/"
+        "https://news.synopsys.com/2026-09-30-OpenAI-and-Synopsys-Announce-GPT-Synopsys-Frontier-Intelligence-to-Revolutionize-Chip-Design",
+        "https://investor.synopsys.com/news/news-details/2026/Synopsys-Details-Growth-Strategy-and-Long-term-Financial-Model-at-2026-Investor-Day/"
       ]
     },
     {
@@ -199,33 +198,36 @@
       "prior_score": 93,
       "score_change": 0,
       "is_new": false,
-      "thesis": "AI data-center hardware growth remains exceptional, with no new thesis-changing fundamental datapoint this week.",
+      "thesis": "AI-datacenter hardware og switching er stærke strukturelle vækstdrivere; Q3-regnskab og Investor Day 26.-27. oktober er nært forestående, men endnu ikke offentliggjort ved denne kørsel.",
       "risk": "Customer concentration, dilution, lower structural margins than IP businesses and execution risk.",
-      "news_classification": "Støj",
+      "news_classification": "Relevant",
       "sources": [
+        "https://celestica.gcs-web.com/news-releases/news-release-details/celestica-hold-q3-2026-financial-results-and-2026-investor-and",
         "https://www.celestica.com/"
       ]
     },
     {
-      "ticker": "AVGO",
-      "name": "Broadcom",
-      "agent_score": 92,
-      "agent_confidence": 98,
-      "growth_score": 98,
-      "earnings_score": 99,
-      "momentum_score": 83,
-      "capital_flow_score": 86,
-      "moat_score": 99,
-      "guidance_score": 98,
-      "news_score": 88,
-      "prior_score": 92,
+      "ticker": "COHR",
+      "name": "Coherent Corp.",
+      "agent_score": 93,
+      "agent_confidence": 94,
+      "growth_score": 92,
+      "earnings_score": 94,
+      "momentum_score": 91,
+      "capital_flow_score": 89,
+      "moat_score": 97,
+      "guidance_score": 93,
+      "news_score": 100,
+      "prior_score": 93,
       "score_change": 0,
       "is_new": false,
-      "thesis": "AI custom silicon and networking remain an exceptional earnings engine and moat benchmark, though scale limits early-stage asymmetry.",
-      "risk": "Mega-cap scale, premium expectations and customer concentration.",
+      "thesis": "PhotonLink materially strengthens the platform thesis by integrating lasers, silicon photonics, optics, fiber, detectors, precision assembly and test into end-to-end CPO/NPO solutions for AI datacenters.",
+      "risk": "High capex and optical-cycle risk; platform breadth must convert into sustained revenue and margin gains.",
       "news_classification": "Relevant",
       "sources": [
-        "https://investors.broadcom.com/news-releases"
+        "https://www.coherent.com/news/press-releases/launches-photonlink-integrated-optics-platform-ai-infrastructure",
+        "https://www.coherent.com/networking/photonlink",
+        "https://ir.coherent.com/"
       ]
     },
     {
@@ -248,6 +250,28 @@
       "news_classification": "Relevant",
       "sources": [
         "https://investors.arista.com/"
+      ]
+    },
+    {
+      "ticker": "AVGO",
+      "name": "Broadcom",
+      "agent_score": 92,
+      "agent_confidence": 98,
+      "growth_score": 98,
+      "earnings_score": 99,
+      "momentum_score": 83,
+      "capital_flow_score": 86,
+      "moat_score": 99,
+      "guidance_score": 98,
+      "news_score": 88,
+      "prior_score": 92,
+      "score_change": 0,
+      "is_new": false,
+      "thesis": "AI custom silicon and networking remain an exceptional earnings engine and moat benchmark, though scale limits early-stage asymmetry.",
+      "risk": "Mega-cap scale, premium expectations and customer concentration.",
+      "news_classification": "Relevant",
+      "sources": [
+        "https://investors.broadcom.com/news-releases"
       ]
     },
     {
@@ -274,29 +298,6 @@
       ]
     },
     {
-      "ticker": "BESI.AS",
-      "name": "BE Semiconductor Industries",
-      "agent_score": 91,
-      "agent_confidence": 92,
-      "growth_score": 94,
-      "earnings_score": 96,
-      "momentum_score": 73,
-      "capital_flow_score": 77,
-      "moat_score": 92,
-      "guidance_score": 90,
-      "news_score": 86,
-      "thesis": "Hybrid bonding and photonics assembly equipment are benefiting from AI chiplet/HBM packaging complexity; Q2 2026 revenue +68.7% and orders +128.8% YoY, with Q3 results due October 22.",
-      "risk": "Highly cyclical order intake, elevated valuation and risk of a weaker Q3 than guidance.",
-      "news_classification": "Relevant",
-      "sources": [
-        "https://www.besi.com/investor-relations/press-releases/details/be-semiconductor-industries-nv-announces-q2-26-and-h1-26-results/",
-        "https://www.besi.com/investor-relations/press-releases/2026/"
-      ],
-      "prior_score": null,
-      "score_change": null,
-      "is_new": true
-    },
-    {
       "ticker": "FN",
       "name": "Fabrinet",
       "agent_score": 91,
@@ -316,6 +317,29 @@
       "news_classification": "Relevant",
       "sources": [
         "https://investor.fabrinet.com/node/13666"
+      ]
+    },
+    {
+      "ticker": "ASX",
+      "name": "ASE Technology Holding",
+      "agent_score": 90,
+      "agent_confidence": 91,
+      "growth_score": 93,
+      "earnings_score": 87,
+      "momentum_score": 79,
+      "capital_flow_score": 82,
+      "moat_score": 91,
+      "guidance_score": 83,
+      "news_score": 95,
+      "prior_score": 90,
+      "score_change": 0,
+      "is_new": false,
+      "thesis": "Advanced packaging and AI power delivery: unaudited Q3 2026 revenue +44.8% YoY in TWD; expanded 3D PowerSiP can cut routing losses by 50% or more under stated conditions.",
+      "risk": "Capital intensity, packaging cycles and unaudited Q3 revenue ahead of full October 29 earnings.",
+      "news_classification": "Relevant",
+      "sources": [
+        "https://www.prnewswire.com/news-releases/ase-technology-holding-co-ltd-announces-monthly-net-revenues-302905327.html",
+        "https://www.aseglobal.com/press-room/ase-expands-powersip-platform-for-next-generation-ai-power-delivery"
       ]
     },
     {
@@ -339,29 +363,6 @@
       "sources": [
         "https://investors.ontoinnovation.com/news/news-details/2026/Onto-Innovation-Reports-2026-Second-Quarter-Results/default.aspx"
       ]
-    },
-    {
-      "ticker": "ASX",
-      "name": "ASE Technology Holding",
-      "agent_score": 90,
-      "agent_confidence": 91,
-      "growth_score": 93,
-      "earnings_score": 87,
-      "momentum_score": 79,
-      "capital_flow_score": 82,
-      "moat_score": 91,
-      "guidance_score": 83,
-      "news_score": 95,
-      "thesis": "Advanced packaging and AI power delivery: unaudited Q3 2026 revenue +44.8% YoY in TWD; expanded 3D PowerSiP can cut routing losses by 50% or more under stated conditions.",
-      "risk": "Capital intensity, packaging cycles and unaudited Q3 revenue ahead of full October 29 earnings.",
-      "news_classification": "Teseændrende",
-      "sources": [
-        "https://www.prnewswire.com/news-releases/ase-technology-holding-co-ltd-announces-monthly-net-revenues-302905327.html",
-        "https://www.aseglobal.com/press-room/ase-expands-powersip-platform-for-next-generation-ai-power-delivery"
-      ],
-      "prior_score": null,
-      "score_change": null,
-      "is_new": true
     },
     {
       "ticker": "SOI.PA",
@@ -408,227 +409,49 @@
       ]
     },
     {
-      "ticker": "NVT",
-      "name": "nVent Electric",
-      "agent_score": 89,
-      "agent_confidence": 91,
-      "growth_score": 90,
-      "earnings_score": 91,
-      "momentum_score": 90,
-      "capital_flow_score": 89,
-      "moat_score": 92,
-      "guidance_score": 91,
-      "news_score": 93,
-      "prior_score": 89,
-      "score_change": 0,
-      "is_new": false,
-      "thesis": "nVent is becoming a broader AI-datacenter infrastructure platform: more than 2 GW of deployed liquid cooling, a third cooling-capacity expansion in three years, and the planned Maverick Power acquisition add power distribution to thermal management.",
-      "risk": "Acquisition integration and valuation risk; reported growth can be acquisition-assisted and the business is less pure-play than optical semiconductor candidates.",
-      "news_classification": "Teseændrende",
-      "sources": [
-        "https://investors.nvent.com/press-releases/press-release-details/2026/nVent-Expands-Data-Center-Liquid-Cooling-Capacity/default.aspx",
-        "https://investors.nvent.com/press-releases/press-release-details/2026/nVent-to-Acquire-Maverick-Power/default.aspx",
-        "https://investors.nvent.com/press-releases/press-release-details/2026/Siemens-and-partners-develop-reference--architecture-purpose-built-for-NVIDIA-AI-data-centers-/default.aspx"
-      ]
-    },
-    {
-      "ticker": "CAMT",
-      "name": "Camtek",
+      "ticker": "LSCC",
+      "name": "Lattice Semiconductor",
       "agent_score": 88,
-      "agent_confidence": 91,
-      "growth_score": 89,
-      "earnings_score": 82,
-      "momentum_score": 91,
-      "capital_flow_score": 90,
+      "agent_confidence": 86,
+      "growth_score": 91,
+      "earnings_score": 88,
+      "momentum_score": 74,
+      "capital_flow_score": 73,
       "moat_score": 92,
-      "guidance_score": 98,
-      "news_score": 84,
-      "prior_score": 88,
-      "score_change": 0,
-      "is_new": false,
-      "thesis": "Advanced-packaging inspection remains at an inflection as the order book is expected to convert into accelerating H2 revenue and further 2027 growth.",
-      "risk": "Trailing growth remains below the forward order signal; capex timing and customer concentration create volatility.",
+      "guidance_score": 89,
+      "news_score": 85,
+      "prior_score": null,
+      "score_change": null,
+      "is_new": true,
+      "thesis": "Q2-omsætning +62 % YoY, stærke AI-server design wins og købet af AMI udvider Lattice fra low-power FPGA til firmware og sikker server management; mulig platform-compounder.",
+      "risk": "Q2-tallene er fra august og ikke en ny regnskabsbekræftelse i denne uge; AMI-integration, aktieudvanding og værdiansættelse skal undersøges.",
       "news_classification": "Relevant",
       "sources": [
-        "https://www.camtek.com/news-and-events/camtek-announces-results-for-the-second-quarter-of-2026/"
+        "https://latticesemi.gcs-web.com/news-releases/news-release-details/lattice-semiconductor-reports-record-2q26-revenue-62-yoy"
       ]
     },
     {
-      "ticker": "KLIC",
-      "name": "Kulicke & Soffa Industries",
-      "agent_score": 88,
+      "ticker": "MXL",
+      "name": "MaxLinear, Inc.",
+      "agent_score": 86,
       "agent_confidence": 87,
       "growth_score": 96,
-      "earnings_score": 94,
-      "momentum_score": 82,
-      "capital_flow_score": 80,
-      "moat_score": 88,
-      "guidance_score": 86,
-      "news_score": 84,
-      "prior_score": 88,
-      "score_change": 0,
-      "is_new": false,
-      "thesis": "FY26 rebound plus CPO, HBM and advanced-packaging tooling exposure keep K&S on the agent-only watchlist.",
-      "risk": "Historically cyclical demand and uncertainty over how quickly CPO revenue becomes material.",
-      "news_classification": "Relevant",
-      "sources": [
-        "https://investor.kns.com/2026-08-05-Kulicke-Soffa-Reports-Third-Quarter-2026-Results"
-      ]
-    },
-    {
-      "ticker": "VRT",
-      "name": "Vertiv Holdings",
-      "agent_score": 87,
-      "agent_confidence": 93,
-      "growth_score": 91,
-      "earnings_score": 94,
-      "momentum_score": 89,
-      "capital_flow_score": 90,
-      "moat_score": 92,
+      "earnings_score": 91,
+      "momentum_score": 42,
+      "capital_flow_score": 38,
+      "moat_score": 83,
       "guidance_score": 94,
-      "news_score": 83,
-      "prior_score": 87,
-      "score_change": 0,
-      "is_new": false,
-      "thesis": "Power and liquid-cooling infrastructure remain critical bottlenecks as AI rack density rises.",
-      "risk": "Premium valuation and sensitivity to hyperscaler capex expectations.",
-      "news_classification": "Relevant",
-      "sources": [
-        "https://www.vertiv.com/en-us/about/news-and-insights/"
-      ]
-    },
-    {
-      "ticker": "RMBS",
-      "name": "Rambus",
-      "agent_score": 87,
-      "agent_confidence": 88,
-      "growth_score": 83,
-      "earnings_score": 89,
-      "momentum_score": 73,
-      "capital_flow_score": 75,
-      "moat_score": 92,
-      "guidance_score": 83,
-      "news_score": 79,
-      "thesis": "Memory-interface and PCIe IP monetizes higher bandwidth requirements of AI/HBM systems, with profitable product and royalty revenue growth.",
-      "risk": "Slower growth than hypergrowth peers and sensitivity to memory/customer cycles.",
-      "news_classification": "Relevant",
-      "sources": [
-        "https://www.rambus.com/second-quarter-2026-financial-results/"
-      ],
-      "prior_score": 87,
-      "score_change": 0,
-      "is_new": false
-    },
-    {
-      "ticker": "APH",
-      "name": "Amphenol",
-      "agent_score": 86,
-      "agent_confidence": 94,
-      "growth_score": 93,
-      "earnings_score": 95,
-      "momentum_score": 88,
-      "capital_flow_score": 91,
-      "moat_score": 94,
-      "guidance_score": 91,
-      "news_score": 78,
-      "prior_score": 86,
-      "score_change": 0,
-      "is_new": false,
-      "thesis": "High-speed interconnect exposure compounds with diversification and strong organic growth, orders and cash generation.",
-      "risk": "Acquisition-driven reported growth and large-cap scale reduce asymmetry.",
-      "news_classification": "Relevant",
-      "sources": [
-        "https://investors.amphenol.com/news-and-events/news-details/2026/Amphenol-Reports-Record-Second-Quarter-2026-Results/default.aspx"
-      ]
-    },
-    {
-      "ticker": "NBIS",
-      "name": "Nebius Group",
-      "agent_score": 85,
-      "agent_confidence": 80,
-      "growth_score": 100,
-      "earnings_score": 67,
-      "momentum_score": 53,
-      "capital_flow_score": 43,
-      "moat_score": 84,
-      "guidance_score": 98,
-      "news_score": 87,
-      "prior_score": 85,
-      "score_change": 0,
-      "is_new": false,
-      "thesis": "AI-cloud demand and Palantir distribution remain promising, but the October 2026 neocloud credit sell-off raises funding and dilution risk materially.",
-      "risk": "Capital intensity, financing costs, debt-market contagion and power availability; not proof of company-specific default.",
+      "news_score": 98,
+      "prior_score": null,
+      "score_change": null,
+      "is_new": true,
+      "thesis": "Q3-omsætning +72 % YoY, infrastructure +210 % og non-GAAP operating margin 29,5 % viser AI-optics DSP-rampe (Keystone) og 1.6T produktpotentiale; Q4-guidance $240-260 mio.",
+      "risk": "Kursfald på ca. 18 % i ugen til 23. oktober, koncentrerede hyperscaler-programmer, konkurrence og kredit-/likviditetsrisiko. Discovery, ikke køb.",
       "news_classification": "Teseændrende",
       "sources": [
-        "https://www.reuters.com/business/coreweave-shares-bonds-headed-steep-weekly-losses-ai-borrowing-concerns-mount-2026-10-16/",
-        "https://www.reuters.com/business/media-telecom/microsoft-pulls-out-uk-data-center-deal-with-nscale-telegraph-reports-2026-10-18/"
+        "https://www.sec.gov/Archives/edgar/data/1288469/000128846926000060/a09302026exhibit991.htm",
+        "https://stockanalysis.com/stocks/mxl/history/"
       ]
-    },
-    {
-      "ticker": "GEV",
-      "name": "GE Vernova",
-      "agent_score": 84,
-      "agent_confidence": 94,
-      "growth_score": 84,
-      "earnings_score": 91,
-      "momentum_score": 81,
-      "capital_flow_score": 88,
-      "moat_score": 94,
-      "guidance_score": 93,
-      "news_score": 80,
-      "prior_score": 84,
-      "score_change": 0,
-      "is_new": false,
-      "thesis": "AI/datacenter electricity demand reinforces a multi-year power and grid bottleneck, supported by strong orders and backlog.",
-      "risk": "Strong rerating, long-cycle execution and project timing; not a pure-play AI growth company.",
-      "news_classification": "Relevant",
-      "sources": [
-        "https://www.gevernova.com/news/taxonomy/term/286"
-      ]
-    },
-    {
-      "ticker": "AIP",
-      "name": "Arteris",
-      "agent_score": 84,
-      "agent_confidence": 82,
-      "growth_score": 94,
-      "earnings_score": 68,
-      "momentum_score": 82,
-      "capital_flow_score": 75,
-      "moat_score": 90,
-      "guidance_score": 92,
-      "news_score": 76,
-      "prior_score": 84,
-      "score_change": 0,
-      "is_new": false,
-      "thesis": "Network-on-chip IP remains a small-cap picks-and-shovels exposure to increasingly complex AI chips and chiplets.",
-      "risk": "Still loss-making, small revenue base and volatile licensing timing.",
-      "news_classification": "Relevant",
-      "sources": [
-        "https://ir.arteris.com/news-releases"
-      ]
-    },
-    {
-      "ticker": "AAOI",
-      "name": "Applied Optoelectronics",
-      "agent_score": 83,
-      "agent_confidence": 73,
-      "growth_score": 94,
-      "earnings_score": 66,
-      "momentum_score": 65,
-      "capital_flow_score": 50,
-      "moat_score": 75,
-      "guidance_score": 87,
-      "news_score": 77,
-      "thesis": "800G optical transceiver ramp provides high growth optionality, but the capital needs and shareholder dilution prevent a quality-compounder classification.",
-      "risk": "Repeated equity issuance, high capex, customer concentration and uncertain sustainable free cash flow.",
-      "news_classification": "Relevant",
-      "sources": [
-        "https://investors.ao-inc.com/news-releases/news-release-details/applied-optoelectronics-reports-second-quarter-2026-results"
-      ],
-      "prior_score": 83,
-      "score_change": 0,
-      "is_new": false
     }
   ]
 }
