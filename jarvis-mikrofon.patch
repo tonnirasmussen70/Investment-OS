@@ -1,0 +1,192 @@
+From e535482cdde2823c088dc6c38366a1d59296fcdf Mon Sep 17 00:00:00 2001
+From: Codex <codex@openai.com>
+Date: Mon, 26 Oct 2026 20:41:51 +0000
+Subject: [PATCH] Add opt-in Jarvis microphone input
+
+---
+ JARVIS_IOS_TEXT.md               |  6 +++-
+ jarvis/voice_input.py            | 12 +++++++
+ jarvis/voice_input/index.html    | 43 +++++++++++++++++++++++
+ pages/1_Jarvis.py                |  7 ++++
+ tests/test_jarvis_voice_input.py | 58 ++++++++++++++++++++++++++++++++
+ 5 files changed, 125 insertions(+), 1 deletion(-)
+ create mode 100644 jarvis/voice_input.py
+ create mode 100644 jarvis/voice_input/index.html
+ create mode 100644 tests/test_jarvis_voice_input.py
+
+diff --git a/JARVIS_IOS_TEXT.md b/JARVIS_IOS_TEXT.md
+index 5b016c9..52fb5a7 100644
+--- a/JARVIS_IOS_TEXT.md
++++ b/JARVIS_IOS_TEXT.md
+@@ -18,7 +18,11 @@ Ingen nye API-nøgler, abonnementer eller HA-installation kræves. Kør den eksi
+ 
+ Test: `python -m pytest -q tests/test_jarvis_text_client.py tests/test_jarvis_mcp.py`.
+ 
+-Stemmeinput, fri samtale, Home Assistant og agentorkestrering er ikke implementeret her. Funktionen `jarvis.text_client.answer_question` kan senere genbruges som indgang til transskriberet tale. Det tilføjer ikke i sig selv stemmestyring.
++Fri samtale, Home Assistant og agentorkestrering er ikke implementeret her.
++
++## Stil spørgsmål med stemmen
++
++Tryk på **Stil et spørgsmål med stemmen**, tillad mikrofonadgang, og sig et af de understøttede spørgsmål på dansk. Den genkendte tekst sendes til den eksisterende Jarvis-funktion og vises sammen med svaret. Knappen **Stop mikrofon** afslutter optagelsen. Tekstinput kan fortsat bruges. Genkendelsen afhænger af browseren og kan kræve HTTPS eller localhost; nogle browsere sender lyd til en ekstern talegenkendelsestjeneste. Ingen lyd gemmes af denne funktion i IOS. Test på brugerens Windows-pc er nødvendig for at bekræfte mikrofon, dansk genkendelse og oplæsning i den konkrete browser.
+ 
+ ## Automatisk oplæsning
+ 
+diff --git a/jarvis/voice_input.py b/jarvis/voice_input.py
+new file mode 100644
+index 0000000..7bf2128
+--- /dev/null
++++ b/jarvis/voice_input.py
+@@ -0,0 +1,12 @@
++"""Streamlit component for user-initiated browser speech recognition."""
++from pathlib import Path
++
++import streamlit.components.v1 as components
++
++_component = components.declare_component(
++    "jarvis_voice_input", path=str(Path(__file__).with_name("voice_input"))
++)
++
++
++def voice_input():
++    return _component(key="jarvis_voice_input", default=None)
+diff --git a/jarvis/voice_input/index.html b/jarvis/voice_input/index.html
+new file mode 100644
+index 0000000..c694943
+--- /dev/null
++++ b/jarvis/voice_input/index.html
+@@ -0,0 +1,43 @@
++<!doctype html>
++<html lang="da"><meta charset="utf-8">
++<style>body{font:14px system-ui;color:#aaa;margin:0}button{font:inherit;padding:7px 12px;cursor:pointer}</style>
++<button id="mic" type="button">🎙️ Stil et spørgsmål med stemmen</button>
++<div id="status" role="status" aria-live="polite"></div>
++<script>
++(() => {
++  const button = document.getElementById('mic');
++  const status = document.getElementById('status');
++  const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
++  const send = (type, extra={}) => window.parent.postMessage({isStreamlitMessage:true,type,...extra}, '*');
++  send('streamlit:componentReady', {apiVersion:1});
++  send('streamlit:setFrameHeight', {height:80});
++  if (!Recognition) {
++    button.disabled = true;
++    status.textContent = 'Talegenkendelse understøttes ikke her. Skriv dit spørgsmål i stedet.';
++    return;
++  }
++  let listening = false, recognition;
++  button.onclick = () => {
++    if (listening) { recognition.stop(); return; }
++    recognition = new Recognition();
++    recognition.lang = 'da-DK';
++    recognition.interimResults = false;
++    recognition.continuous = false;
++    recognition.onstart = () => { listening = true; button.textContent = 'Stop mikrofon'; status.textContent = 'Lytter…'; };
++    recognition.onresult = event => {
++      const text = (event.results[0]?.[0]?.transcript || '').trim().slice(0,500);
++      if (!text) { status.textContent = 'Ingen tale blev genkendt. Prøv igen.'; return; }
++      status.textContent = 'Spørgsmål genkendt.';
++      send('streamlit:setComponentValue', {value:{text, id: `${Date.now()}-${Math.random()}`}, dataType:'json'});
++    };
++    recognition.onerror = event => {
++      status.textContent = event.error === 'not-allowed' || event.error === 'service-not-allowed'
++        ? 'Mikrofon eller talegenkendelse er blokeret. Kontrollér browserens tilladelser.'
++        : 'Talegenkendelse mislykkedes. Prøv igen, eller skriv spørgsmålet.';
++    };
++    recognition.onend = () => { listening = false; button.textContent = '🎙️ Stil et spørgsmål med stemmen'; };
++    try { recognition.start(); } catch (_) { status.textContent = 'Mikrofonen kunne ikke startes. Prøv igen.'; }
++  };
++  window.addEventListener('pagehide', () => { if (recognition && listening) recognition.abort(); });
++})();
++</script></html>
+diff --git a/pages/1_Jarvis.py b/pages/1_Jarvis.py
+index af69767..416dcc4 100644
+--- a/pages/1_Jarvis.py
++++ b/pages/1_Jarvis.py
+@@ -6,6 +6,7 @@ from api.service import StockNotFoundError
+ from jarvis.adapter import JarvisCommandError
+ from jarvis.text_client import answer_question
+ from jarvis.speech import speech_html
++from jarvis.voice_input import voice_input
+ 
+ st.set_page_config(page_title="Jarvis · IOS", page_icon="💬", layout="centered")
+ st.title("Jarvis")
+@@ -23,6 +24,12 @@ for example in examples:
+     if st.button(example, use_container_width=True):
+         question = example
+ st.caption("Enkelt værdipapir: skriv fx Analyser FRO med en ticker fra IOS.")
++st.caption("Talegenkendelse kan sende lyd til browserens udbyder. Mikrofonen starter kun, når du trykker på knappen.")
++voice = voice_input()
++if isinstance(voice, dict) and isinstance(voice.get("id"), str) and isinstance(voice.get("text"), str):
++    if voice["id"] != st.session_state.get("jarvis_last_voice_id"):
++        st.session_state["jarvis_last_voice_id"] = voice["id"]
++        question = voice["text"].strip()[:500] or question
+ typed = st.chat_input("Spørg Jarvis", max_chars=500)
+ question = typed or question
+ 
+diff --git a/tests/test_jarvis_voice_input.py b/tests/test_jarvis_voice_input.py
+new file mode 100644
+index 0000000..f08d0f6
+--- /dev/null
++++ b/tests/test_jarvis_voice_input.py
+@@ -0,0 +1,58 @@
++"""Exercise microphone controller without recording or network access."""
++import json
++from pathlib import Path
++import re
++import shutil
++import subprocess
++from unittest.mock import patch
++
++import pytest
++
++
++HARNESS = r"""
++const vm = require('node:vm'), assert = require('node:assert/strict');
++const script = JSON.parse(require('node:fs').readFileSync(0, 'utf8'));
++let instance, starts=0, sent=[], elements={mic:{},status:{}};
++function Recognition() { instance=this; this.start=()=>{starts++; this.onstart()}; this.stop=()=>this.onend(); this.abort=()=>{}; }
++const ctx={window:{SpeechRecognition:Recognition,parent:{postMessage:m=>sent.push(m)},addEventListener:()=>{}},
++ document:{getElementById:id=>elements[id]}, Date, Math};
++vm.runInNewContext(script,ctx);
++assert.equal(starts,0,'microphone must require a click');
++elements.mic.onclick();
++assert.equal(starts,1);
++assert.equal(instance.lang,'da-DK');
++instance.onresult({results:[[{transcript:'  Vis porteføljens signaler  '}]]});
++const result=sent.find(m=>m.type==='streamlit:setComponentValue');
++assert.equal(result.value.text,'Vis porteføljens signaler');
++assert.ok(result.value.id);
++instance.onerror({error:'not-allowed'});
++assert.match(elements.status.textContent,/blokeret/);
++instance.onend();
++assert.match(elements.mic.textContent,/stemmen/);
++"""
++
++
++def test_microphone_requires_click_and_submits_danish_text():
++    node = shutil.which("node")
++    if not node:
++        pytest.skip("Node.js required for browser-controller test")
++    html = Path("jarvis/voice_input/index.html").read_text(encoding="utf-8")
++    script = re.search(r"<script>([\s\S]*)</script>", html).group(1)
++    subprocess.run([node, "-e", HARNESS], input=json.dumps(script), text=True,
++                   capture_output=True, check=True, timeout=15)
++
++
++def test_voice_question_is_answered_only_once_per_event():
++    from streamlit.testing.v1 import AppTest
++    from tests.test_jarvis_api import fixture_snapshot
++
++    event = {"id": "voice-1", "text": "Vis porteføljens signaler"}
++    with patch("jarvis.voice_input.voice_input", return_value=event), \
++         patch("jarvis.text_client.load_snapshot", return_value=fixture_snapshot()):
++        app = AppTest.from_file("pages/1_Jarvis.py").run()
++        assert not app.exception
++        assert app.session_state["jarvis_question"] == event["text"]
++        original = app.session_state["jarvis_answer"]
++        app.run()
++        assert not app.exception
++        assert app.session_state["jarvis_answer"] == original
+-- 
+2.51.1
+
