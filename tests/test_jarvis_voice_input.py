@@ -42,16 +42,21 @@ def test_microphone_requires_click_and_submits_danish_text():
                    capture_output=True, check=True, timeout=15)
 
 
-def test_voice_question_is_answered_only_once_per_event():
+def test_voice_question_requires_confirmation_and_can_be_corrected():
     from streamlit.testing.v1 import AppTest
     from tests.test_jarvis_api import fixture_snapshot
 
-    event = {"id": "voice-1", "text": "Vis porteføljens signaler"}
+    event = {"id": "voice-1", "text": "misforstået tekst"}
     with patch("jarvis.voice_input.voice_input", return_value=event), \
          patch("jarvis.text_client.load_snapshot", return_value=fixture_snapshot()):
         app = AppTest.from_file("pages/1_Jarvis.py").run()
         assert not app.exception
-        assert app.session_state["jarvis_question"] == event["text"]
+        assert app.text_input[0].value == event["text"]
+        assert "jarvis_answer" not in app.session_state
+        app.text_input[0].set_value("Vis porteføljens signaler")
+        app.button[-1].click().run()
+        assert not app.exception
+        assert app.session_state["jarvis_question"] == "Vis porteføljens signaler"
         original = app.session_state["jarvis_answer"]
         app.run()
         assert not app.exception

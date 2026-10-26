@@ -29,7 +29,21 @@ voice = voice_input()
 if isinstance(voice, dict) and isinstance(voice.get("id"), str) and isinstance(voice.get("text"), str):
     if voice["id"] != st.session_state.get("jarvis_last_voice_id"):
         st.session_state["jarvis_last_voice_id"] = voice["id"]
-        question = voice["text"].strip()[:500] or question
+        transcript = voice["text"].strip()[:500]
+        if transcript:
+            st.session_state["jarvis_voice_draft"] = transcript
+            st.session_state["jarvis_voice_pending"] = True
+            st.session_state.pop("jarvis_answer", None)
+if st.session_state.get("jarvis_voice_pending"):
+    with st.form("jarvis_voice_confirm"):
+        draft = st.text_input("Genkendt spørgsmål – ret teksten, hvis nødvendigt", key="jarvis_voice_draft", max_chars=500)
+        submit_voice = st.form_submit_button("Send spørgsmål")
+    if submit_voice:
+        if draft.strip():
+            question = draft.strip()
+            st.session_state["jarvis_voice_pending"] = False
+        else:
+            st.info("Skriv et spørgsmål, før du sender.")
 typed = st.chat_input("Spørg Jarvis", max_chars=500)
 question = typed or question
 
@@ -77,5 +91,5 @@ with speech_slot:
             str((speech_result or {}).get("request_id") or ""),
             autoplay=bool(question and speech_result and auto_speech),
         ),
-        height=100,
+        height=150,
     )
