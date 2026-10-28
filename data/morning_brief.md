@@ -90,7 +90,7 @@ Kilder: urlReuters – Wall Street 27/10https://www.reuters.com/busines
 
 **entity["company","NKT","Danish power cable manufacturer"]:** **7,69 % · Reducer · score 33,41 · 1M -10,57 %**; ingen modelhandel pga. konfidensgate. **entity["company","Vestas","Danish wind turbine manufacturer"]:** **2,46 % · Hold · score 66,30 · 1M -5,92 %**. urlNKT kalenderhttps://investors.nkt.com/calendar/ · urlVestas kalenderhttps://www.vestas.com/en/investor/Calendar-Events
 
-**Danske banker:** entity["company","Danske Bank","Danish banking group"] **6,33 % · Reducer · score 51,28**; entity["company","AL Sydbank","Danish banking group"] **5,47 % · Hold · score 69,90**. Samlet finansvægt **11,80 %**. 
+**Danske banker:** entity["company","Danske Bank","Danish banking group"] **6,33 % · Reducer · score 51,28**; entity["company","AL Sydbank","Danish banking group"] **5,47 % · Hold · score 69,90**. Samlet finansvægt **11,80 %**. urlDanske Bankhttps://danskebank.com/ · urlAL Sydbankhttps://www.al-sydbank.dk/
 
 **Andre væsentlige:** Frontline **3,68 % · Hold · score 91,40**, 2B70 **2,40 % · Hold · score 90,24**, ServiceNow **2,37 % · Hold · score 86,40** og Pandora **3,75 % · Hold · score 74,87**. Opportunities-rangering er **ikke i sig selv et købssignal**.
 
