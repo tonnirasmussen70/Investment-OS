@@ -34,7 +34,11 @@ from modules.compounder_engine import (
     radar_summary,
     top_candidates,
 )
-from modules.config_engine import load_investment_config
+from modules.config_engine import (
+    DEFAULT_MOMENTUM_WEIGHTS,
+    load_investment_config,
+    load_raw_momentum_weights,
+)
 from modules.decision_engine import DECISION_WEIGHTS, apply_decision_engine, decision_summary
 from modules.decision_queue_engine import build_decision_queue
 from modules.formatting import format_dkk, format_pct, format_score
@@ -368,7 +372,7 @@ st.session_state.setdefault(
     float(st.session_state["model_risk_free_rate"]),
 )
 
-for period, default_value in base_config.momentum_weights.items():
+for period, default_value in load_raw_momentum_weights(model.settings).items():
     st.session_state.setdefault(f"momentum_weight_{period}", float(default_value))
 
 raw_momentum_weights = {
@@ -1594,7 +1598,7 @@ with tab_settings:
                 st.rerun()
     def reset_momentum_weights():
         """Nulstil Momentum-vægte før widgets oprettes."""
-        for period, default in base_config.momentum_weights.items():
+        for period, default in DEFAULT_MOMENTUM_WEIGHTS.items():
             st.session_state[f"momentum_weight_{period}"] = float(default)
 
 
@@ -1604,7 +1608,7 @@ with tab_settings:
             "så den aktive sum er 100 %."
         )
 
-        periods = list(base_config.momentum_weights.keys())
+        periods = list(DEFAULT_MOMENTUM_WEIGHTS)
         columns = st.columns(len(periods))
 
         for index, period in enumerate(periods):
