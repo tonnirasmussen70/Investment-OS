@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from math import isfinite
 
 import pandas as pd
 
@@ -16,12 +17,13 @@ DEFAULT_HEALTH_WEIGHTS = {
 }
 
 
+# Relative input weights sum to 1.05 by design; calculations normalize to 1.00.
 DEFAULT_MOMENTUM_WEIGHTS = {
-    "1W": 0.20,
-    "1M": 0.25,
-    "3M": 0.25,
-    "6M": 0.20,
-    "12M": 0.10,
+    "1W": 0.40,
+    "1M": 0.35,
+    "3M": 0.15,
+    "6M": 0.10,
+    "12M": 0.05,
 }
 
 
@@ -58,52 +60,34 @@ def _as_float(
     return number
 
 
+def load_raw_momentum_weights(
+    settings: dict | None,
+) -> dict[str, float]:
+    """Return the editable, unnormalized momentum inputs.
+
+    Explicit Settings-sheet values take precedence over code defaults. Missing,
+    non-finite or invalid values fall back to the default for that period.
+    """
+    source = settings or {}
+    raw = {
+        period: _as_float(source, f"Momentum_{period}", default)
+        for period, default in DEFAULT_MOMENTUM_WEIGHTS.items()
+    }
+    weights = {
+        period: max(0.0, value) if isfinite(value) else DEFAULT_MOMENTUM_WEIGHTS[period]
+        for period, value in raw.items()
+    }
+    if sum(weights.values()) <= 0:
+        return DEFAULT_MOMENTUM_WEIGHTS.copy()
+    return weights
+
+
 def _normalized_momentum_weights(
     settings: dict,
 ) -> dict[str, float]:
-    weights = {
-        "1W": _as_float(
-            settings,
-            "Momentum_1W",
-            DEFAULT_MOMENTUM_WEIGHTS["1W"],
-        ),
-        "1M": _as_float(
-            settings,
-            "Momentum_1M",
-            DEFAULT_MOMENTUM_WEIGHTS["1M"],
-        ),
-        "3M": _as_float(
-            settings,
-            "Momentum_3M",
-            DEFAULT_MOMENTUM_WEIGHTS["3M"],
-        ),
-        "6M": _as_float(
-            settings,
-            "Momentum_6M",
-            DEFAULT_MOMENTUM_WEIGHTS["6M"],
-        ),
-        "12M": _as_float(
-            settings,
-            "Momentum_12M",
-            DEFAULT_MOMENTUM_WEIGHTS["12M"],
-        ),
-    }
-
-    positive_weights = {
-        key: max(0.0, value)
-        for key, value in weights.items()
-    }
-
-    total = sum(positive_weights.values())
-
-    if total <= 0:
-        return DEFAULT_MOMENTUM_WEIGHTS.copy()
-
-    return {
-        key: value / total
-        for key, value in positive_weights.items()
-    }
-
+    weights = load_raw_momentum_weights(settings)
+    total = sum(weights.values())
+    return {period: value / total for period, value in weights.items()}
 
 
 def _normalized_health_weights(

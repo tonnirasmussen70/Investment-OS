@@ -21,6 +21,29 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
+## Standardvægte for momentum
+
+Standardinput under **Settings → Momentum-vægte** er 1W: **0,40**,
+1M: **0,35**, 3M: **0,15**, 6M: **0,10** og 12M: **0,05**.
+Den rå sum er bevidst **1,05**. IOS normaliserer automatisk alle fem
+perioder til samlet **100 %** før momentum-score beregnes:
+
+| Periode | Rå standardvægt | Aktiv normaliseret vægt |
+| --- | ---: | ---: |
+| 1W | 0,40 | 38,10 % |
+| 1M | 0,35 | 33,33 % |
+| 3M | 0,15 | 14,29 % |
+| 6M | 0,10 | 9,52 % |
+| 12M | 0,05 | 4,76 % |
+
+Eksisterende værdier for `Momentum_1W` … `Momentum_12M` i
+`data/AI_portfolio.xlsx` → **Settings** overstyrer kode-standarderne.
+UI viser de rå indtastningsvægte, mens beregningen benytter de normaliserede.
+Knappen **Nulstil Momentum-vægte** anvender de fem nye standardinput i den
+aktuelle Streamlit-session. Planlagte snapshots læser fortsat
+`AI_portfolio.xlsx`; for ens vægtning i app og snapshots skal eventuelle
+tidligere vægte også justeres i masterfilens Settings-fane.
+
 ## Jarvis API
 
 API'et er et read-only lag oven på `data/portfolio_snapshot.json`. Det
