@@ -1,27 +1,28 @@
 {
-  "generated_at": "2026-10-26T09:00:30+01:00",
+  "generated_at": "2026-11-02T09:09:59+01:00",
   "methodology_version": "7.1",
   "candidates": [
     {
-      "ticker": "ALAB",
-      "name": "Astera Labs",
-      "agent_score": 96,
-      "agent_confidence": 95,
-      "growth_score": 99,
-      "earnings_score": 96,
-      "momentum_score": 93,
-      "capital_flow_score": 89,
-      "moat_score": 95,
-      "guidance_score": 98,
-      "news_score": 90,
-      "prior_score": 96,
-      "score_change": 0,
+      "ticker": "CLS",
+      "name": "Celestica",
+      "agent_score": 97,
+      "agent_confidence": 97,
+      "growth_score": 100,
+      "earnings_score": 100,
+      "momentum_score": 92,
+      "capital_flow_score": 87,
+      "moat_score": 86,
+      "guidance_score": 100,
+      "news_score": 100,
+      "prior_score": 93,
+      "score_change": 4,
       "is_new": false,
-      "thesis": "Rack-scale connectivity and memory-fabric expansion remain intact with no new thesis-changing primary datapoint this week.",
-      "risk": "Premium valuation, hyperscaler concentration and simultaneous product-ramp execution.",
-      "news_classification": "Relevant",
+      "thesis": "Q3 2026 revenue $5.83bn (+83% YoY), adjusted EPS $3.30 (+109%) and 2027 revenue guidance $40bn (+90% on FY2026 outlook) establish a major AI compute/networking hardware ramp; 2027 adjusted operating margin targeted at 9%.",
+      "risk": "$3.45bn equity raise, 2027 capex guidance $1.5-2.0bn, customer concentration and low-margin hardware execution; 2027 projections are management guidance, not realized revenue.",
+      "news_classification": "Teseændrende",
       "sources": [
-        "https://ir.asteralabs.com/news-releases/news-release-details/astera-labs-reports-second-quarter-2026-financial-results"
+        "https://celestica.gcs-web.com/node/17881",
+        "https://corporate.celestica.com/events/event-details/q3-2026-financial-results-2026-investor-and-analyst-day"
       ]
     },
     {
@@ -48,6 +49,28 @@
       ]
     },
     {
+      "ticker": "ALAB",
+      "name": "Astera Labs",
+      "agent_score": 96,
+      "agent_confidence": 95,
+      "growth_score": 99,
+      "earnings_score": 96,
+      "momentum_score": 93,
+      "capital_flow_score": 89,
+      "moat_score": 95,
+      "guidance_score": 98,
+      "news_score": 90,
+      "prior_score": 96,
+      "score_change": 0,
+      "is_new": false,
+      "thesis": "Rack-scale connectivity and memory-fabric expansion remain intact with no new thesis-changing primary datapoint this week.",
+      "risk": "Premium valuation, hyperscaler concentration and simultaneous product-ramp execution.",
+      "news_classification": "Relevant",
+      "sources": [
+        "https://ir.asteralabs.com/news-releases/news-release-details/astera-labs-reports-second-quarter-2026-financial-results"
+      ]
+    },
+    {
       "ticker": "MRVL",
       "name": "Marvell Technology",
       "agent_score": 96,
@@ -68,6 +91,29 @@
       "sources": [
         "https://investor.marvell.com/news-events/press-releases/detail/1034/marvell-to-showcase-industry-first-2nm-optical-technology-demos-for-ai-data-center-infrastructure-at-ecoc-2026",
         "https://investor.marvell.com/news-events/press-releases"
+      ]
+    },
+    {
+      "ticker": "BESI.AS",
+      "name": "BE Semiconductor Industries",
+      "agent_score": 95,
+      "agent_confidence": 96,
+      "growth_score": 99,
+      "earnings_score": 100,
+      "momentum_score": 81,
+      "capital_flow_score": 88,
+      "moat_score": 97,
+      "guidance_score": 87,
+      "news_score": 98,
+      "prior_score": 94,
+      "score_change": 1,
+      "is_new": false,
+      "thesis": "Hybrid-bonding orders remain strong; Applied Materials announced intention to increase strategic ownership from 9% to about 20%, validating collaboration on advanced chip packaging and AI photonics.",
+      "risk": "Planned stake increase is subject to approvals and not itself a purchase of Besi products; Q4 sales guided flat +/-5%, hybrid-bonding adoption and equipment cyclicality.",
+      "news_classification": "Teseændrende",
+      "sources": [
+        "https://www.besi.com/investor-relations/press-releases/details/be-semiconductor-industries-nv-announces-q3-2026-results/",
+        "https://www.besi.com/events/events-shows/details/applied-materials-to-increase-its-strategic-investment-in-be-semiconductor-industries/"
       ]
     },
     {
@@ -94,70 +140,25 @@
       ]
     },
     {
-      "ticker": "ASML",
-      "name": "ASML Holding",
-      "agent_score": 94,
-      "agent_confidence": 98,
-      "growth_score": 93,
-      "earnings_score": 96,
-      "momentum_score": 76,
-      "capital_flow_score": 85,
-      "moat_score": 100,
-      "guidance_score": 98,
-      "news_score": 99,
-      "prior_score": 94,
-      "score_change": 0,
-      "is_new": false,
-      "thesis": "EUV lithography monopoly and installed-base upgrades underpin a high-quality AI equipment compounder; Q3 2026 €11.7bn sales and €5.0bn net income with 2027-28 demand exceeding planned supply.",
-      "risk": "Not an early-stage company; premium valuation, export controls and capacity expansion execution.",
-      "news_classification": "Relevant",
-      "sources": [
-        "https://www.investor.asml.com/news-releases/news-release-details/asml-reports-eu11.7-billion-total-net-sales-and-eu5.0-billion-net-income-q3-2026"
-      ]
-    },
-    {
-      "ticker": "BESI.AS",
-      "name": "BE Semiconductor Industries",
-      "agent_score": 94,
+      "ticker": "VRT",
+      "name": "Vertiv Holdings Co.",
+      "agent_score": 95,
       "agent_confidence": 96,
-      "growth_score": 99,
-      "earnings_score": 100,
-      "momentum_score": 73,
-      "capital_flow_score": 78,
-      "moat_score": 95,
-      "guidance_score": 87,
+      "growth_score": 98,
+      "earnings_score": 98,
+      "momentum_score": 93,
+      "capital_flow_score": 92,
+      "moat_score": 93,
+      "guidance_score": 99,
       "news_score": 100,
-      "prior_score": 91,
-      "score_change": 3,
-      "is_new": false,
-      "thesis": "Q3-omsætning +113,6 % YoY, nettoresultat +323,7 % og ordreindgang +96,1 %. Hybrid-bonding-ordrer YTD over det dobbelte af hele 2025 understøtter en flerårig AI/HBM/packaging-flaskehals.",
-      "risk": "Q4-omsætning ventes flad ±5 % QoQ; udrulning af hybrid bonding kan forsinkes, og halvlederudstyr er cyklisk.",
+      "prior_score": null,
+      "score_change": null,
+      "is_new": true,
+      "thesis": "Re-entry after Q3 2026 sales +61%, organic orders +100% YoY, adjusted EPS +78% and raised FY2026 guidance; power distribution and liquid cooling remain critical AI datacenter bottlenecks.",
+      "risk": "High expectations and valuation, hyperscaler spending concentration, capacity expansion and integration of acquisitions; order growth can outpace revenue recognition.",
       "news_classification": "Teseændrende",
       "sources": [
-        "https://www.besi.com/investor-relations/press-releases/2025/details-1/be-semiconductor-industries-nv-announces-q3-2026-results/",
-        "https://www.reuters.com/business/besis-quarterly-orders-beat-expectations-ai-data-centre-demand-stays-strong-2026-10-22/"
-      ]
-    },
-    {
-      "ticker": "LITE",
-      "name": "Lumentum Holdings",
-      "agent_score": 94,
-      "agent_confidence": 89,
-      "growth_score": 99,
-      "earnings_score": 98,
-      "momentum_score": 95,
-      "capital_flow_score": 91,
-      "moat_score": 88,
-      "guidance_score": 99,
-      "news_score": 87,
-      "prior_score": 94,
-      "score_change": 0,
-      "is_new": false,
-      "thesis": "Optical connectivity remains a core AI-rack bottleneck with exceptional growth, margin expansion and strong forward guidance.",
-      "risk": "Extreme rerating increases valuation and drawdown risk; optical cycles can reverse sharply.",
-      "news_classification": "Relevant",
-      "sources": [
-        "https://investor.lumentum.com/financial-news-releases/news-details/2026/Lumentum-Announces-Fourth-Quarter-and-Full-Fiscal-Year-2026-Results/default.aspx"
+        "https://investors.vertiv.com/news/news-details/2026/Vertiv-Reports-Strong-Third-Quarter-2026-with-Net-Sales-Growth-of-61-Organic-Orders-Growth-over-100-and-Diluted-EPS-Growth-of-91-Adjusted-Diluted-EPS-Growth-of-78-Raises-Full-Year-2026-Guidance-Across-All-Key-Metrics/default.aspx"
       ]
     },
     {
@@ -184,26 +185,70 @@
       ]
     },
     {
-      "ticker": "CLS",
-      "name": "Celestica",
-      "agent_score": 93,
-      "agent_confidence": 92,
-      "growth_score": 98,
-      "earnings_score": 96,
-      "momentum_score": 94,
-      "capital_flow_score": 88,
-      "moat_score": 84,
-      "guidance_score": 97,
-      "news_score": 84,
-      "prior_score": 93,
+      "ticker": "LITE",
+      "name": "Lumentum Holdings",
+      "agent_score": 94,
+      "agent_confidence": 89,
+      "growth_score": 99,
+      "earnings_score": 98,
+      "momentum_score": 95,
+      "capital_flow_score": 91,
+      "moat_score": 88,
+      "guidance_score": 99,
+      "news_score": 87,
+      "prior_score": 94,
       "score_change": 0,
       "is_new": false,
-      "thesis": "AI-datacenter hardware og switching er stærke strukturelle vækstdrivere; Q3-regnskab og Investor Day 26.-27. oktober er nært forestående, men endnu ikke offentliggjort ved denne kørsel.",
-      "risk": "Customer concentration, dilution, lower structural margins than IP businesses and execution risk.",
+      "thesis": "Optical connectivity remains a core AI-rack bottleneck with exceptional growth, margin expansion and strong forward guidance.",
+      "risk": "Extreme rerating increases valuation and drawdown risk; optical cycles can reverse sharply.",
       "news_classification": "Relevant",
       "sources": [
-        "https://celestica.gcs-web.com/news-releases/news-release-details/celestica-hold-q3-2026-financial-results-and-2026-investor-and",
-        "https://www.celestica.com/"
+        "https://investor.lumentum.com/financial-news-releases/news-details/2026/Lumentum-Announces-Fourth-Quarter-and-Full-Fiscal-Year-2026-Results/default.aspx"
+      ]
+    },
+    {
+      "ticker": "ASM.AS",
+      "name": "ASM International N.V.",
+      "agent_score": 93,
+      "agent_confidence": 95,
+      "growth_score": 95,
+      "earnings_score": 94,
+      "momentum_score": 88,
+      "capital_flow_score": 83,
+      "moat_score": 97,
+      "guidance_score": 99,
+      "news_score": 100,
+      "prior_score": null,
+      "score_change": null,
+      "is_new": true,
+      "thesis": "Q3 2026 revenue €1.159bn (+45% reported YoY), 52% gross margin and 33.4% adjusted operating margin; management expects >€5.7bn revenue in 2027, achieving former 2030 target three years early. ALD and advanced-node equipment leverage AI logic and HBM investment.",
+      "risk": "Semiconductor equipment cycle, premium valuation, China/export restrictions and advanced-node capex timing; 2027 target is forward guidance.",
+      "news_classification": "Teseændrende",
+      "sources": [
+        "https://rss.globenewswire.com/news-release/2026/10/27/3389491/0/en/asm-reports-third-quarter-2026-results.html"
+      ]
+    },
+    {
+      "ticker": "ASX",
+      "name": "ASE Technology Holding",
+      "agent_score": 93,
+      "agent_confidence": 94,
+      "growth_score": 95,
+      "earnings_score": 97,
+      "momentum_score": 81,
+      "capital_flow_score": 82,
+      "moat_score": 93,
+      "guidance_score": 91,
+      "news_score": 98,
+      "prior_score": 90,
+      "score_change": 3,
+      "is_new": false,
+      "thesis": "Unaudited Q3 revenue NT$244.2bn (+44.8% YoY), parent net profit NT$27.0bn vs NT$10.9bn and advanced packaging/testing ATM margin expansion confirm AI packaging operating leverage.",
+      "risk": "Capital intensity (Q3 equipment capex $2.1bn), customer concentration, net debt and potential negative free cash flow as capacity expands.",
+      "news_classification": "Teseændrende",
+      "sources": [
+        "https://www.nasdaq.com/press-release/ase-technology-holding-co-ltd-reports-its-unaudited-consolidated-financial-results-3",
+        "https://www.aseglobal.com/press-room/ase-expands-powersip-platform-for-next-generation-ai-power-delivery"
       ]
     },
     {
@@ -253,28 +298,6 @@
       ]
     },
     {
-      "ticker": "AVGO",
-      "name": "Broadcom",
-      "agent_score": 92,
-      "agent_confidence": 98,
-      "growth_score": 98,
-      "earnings_score": 99,
-      "momentum_score": 83,
-      "capital_flow_score": 86,
-      "moat_score": 99,
-      "guidance_score": 98,
-      "news_score": 88,
-      "prior_score": 92,
-      "score_change": 0,
-      "is_new": false,
-      "thesis": "AI custom silicon and networking remain an exceptional earnings engine and moat benchmark, though scale limits early-stage asymmetry.",
-      "risk": "Mega-cap scale, premium expectations and customer concentration.",
-      "news_classification": "Relevant",
-      "sources": [
-        "https://investors.broadcom.com/news-releases"
-      ]
-    },
-    {
       "ticker": "TSEM",
       "name": "Tower Semiconductor",
       "agent_score": 92,
@@ -317,29 +340,6 @@
       "news_classification": "Relevant",
       "sources": [
         "https://investor.fabrinet.com/node/13666"
-      ]
-    },
-    {
-      "ticker": "ASX",
-      "name": "ASE Technology Holding",
-      "agent_score": 90,
-      "agent_confidence": 91,
-      "growth_score": 93,
-      "earnings_score": 87,
-      "momentum_score": 79,
-      "capital_flow_score": 82,
-      "moat_score": 91,
-      "guidance_score": 83,
-      "news_score": 95,
-      "prior_score": 90,
-      "score_change": 0,
-      "is_new": false,
-      "thesis": "Advanced packaging and AI power delivery: unaudited Q3 2026 revenue +44.8% YoY in TWD; expanded 3D PowerSiP can cut routing losses by 50% or more under stated conditions.",
-      "risk": "Capital intensity, packaging cycles and unaudited Q3 revenue ahead of full October 29 earnings.",
-      "news_classification": "Relevant",
-      "sources": [
-        "https://www.prnewswire.com/news-releases/ase-technology-holding-co-ltd-announces-monthly-net-revenues-302905327.html",
-        "https://www.aseglobal.com/press-room/ase-expands-powersip-platform-for-next-generation-ai-power-delivery"
       ]
     },
     {
@@ -420,9 +420,9 @@
       "moat_score": 92,
       "guidance_score": 89,
       "news_score": 85,
-      "prior_score": null,
-      "score_change": null,
-      "is_new": true,
+      "prior_score": 88,
+      "score_change": 0,
+      "is_new": false,
       "thesis": "Q2-omsætning +62 % YoY, stærke AI-server design wins og købet af AMI udvider Lattice fra low-power FPGA til firmware og sikker server management; mulig platform-compounder.",
       "risk": "Q2-tallene er fra august og ikke en ny regnskabsbekræftelse i denne uge; AMI-integration, aktieudvanding og værdiansættelse skal undersøges.",
       "news_classification": "Relevant",
@@ -442,12 +442,12 @@
       "moat_score": 83,
       "guidance_score": 94,
       "news_score": 98,
-      "prior_score": null,
-      "score_change": null,
-      "is_new": true,
+      "prior_score": 86,
+      "score_change": 0,
+      "is_new": false,
       "thesis": "Q3-omsætning +72 % YoY, infrastructure +210 % og non-GAAP operating margin 29,5 % viser AI-optics DSP-rampe (Keystone) og 1.6T produktpotentiale; Q4-guidance $240-260 mio.",
       "risk": "Kursfald på ca. 11 % fra 16. til 23. oktober (og ca. 18 % fra 19. til 23. oktober), koncentrerede hyperscaler-programmer, konkurrence og kredit-/likviditetsrisiko. Discovery, ikke køb.",
-      "news_classification": "Teseændrende",
+      "news_classification": "Relevant",
       "sources": [
         "https://www.sec.gov/Archives/edgar/data/1288469/000128846926000060/a09302026exhibit991.htm",
         "https://stockanalysis.com/stocks/mxl/history/"
