@@ -1,146 +1,141 @@
 # Investment OS – Morgenbrief
-**Fredag 30. oktober 2026 · ca. kl. 07.00 CET · ingen handler udført**
+**Mandag 2. november 2026 · morgen, dansk tid (CET) · ingen handler udført**
 
 ## A. Executive view
-**Markedsregime: risk-off i AI, men ikke et generelt kollaps.** Torsdag faldt Nasdaq **1,37 %** og S&P 500 **0,30 %**; fredag morgen er asiatiske chipaktier og Nasdaq-futures under yderligere pres. citeturn2view1turn2view0
+**Markedsregime: defensivt efter et markant AI-salg, med et forsigtigt rebound mandag morgen.** Fredag faldt Nasdaq 2,86 %, S&P 500 1,82 % og halvlederindekset SOX 7,2 %. Asiatiske aktier og amerikanske futures forsøger at stabilisere sig, mens olie falder på diplomatiske signaler. citeturn528838view0turn528838view1
 
-Markedet skelner nu skarpere mellem AI-omsætningsvækst og **frit cashflow efter investeringer**. Alphabet faldt **12,6 %** torsdag, mens Amazons og Intels efterbørsreaktioner forstærkede uroen. citeturn1view2turn2view0
+**Investment OS-model:** Portfolio Health **59,58**, AI Confidence **53,53 (moderat)** og Macro/Rate Risk **49,15 (moderat)**. **Den væsentligste ændring er et nyt Øg-forslag i AL Sydbank** sammenlignet med fredagens brief. Modellen viser nu to køb og én reduktion, men Novo Nordisk ligger stadig over positionsloftet.
 
-**Investment OS:** Portfolio Health **64,43**, AI Confidence **56,11 (moderat)**, Macro/Rate Risk **49,56 (moderat)**. Modellen foreslår **VGWD-køb 17.897 kr.** og **NOVO-B-reduktion 12.007 kr.**; **12 Stop_Broken og 4 Alarm**.
-
-**Dagens prioritet:** Kontroller databrud, Alphabet-kurs og Novo-koncentration, før der disponeres kapital. **Ingen handler udføres.**
+**Egen prioritet:** Afstem porteføljefil, kontanter og bankkoncentration før ny kapitalallokering. **Ingen handler.**
 
 ## B. Portfolio status
-**Kilde:** urlAutoritativt snapshot på GitHub/mainhttps://github.com/tonnirasmussen70/Investment-OS/blob/main/data/portfolio_snapshot.json. Læst direkte; ingen genberegning fra Excel eller app.py.
+**Autoritativ kilde:** urlInvestment OS – portfolio_snapshot.json på mainhttps://github.com/tonnirasmussen70/Investment-OS/blob/main/data/portfolio_snapshot.json. Læst direkte; ingen genberegning fra Excel eller app.py.
 
-| Snapshotkontrol | Verificeret værdi |
+| Snapshotkontrol | Værdi |
 |---|---:|
-| `generated_at` | `2026-10-30T03:01:06.103654+01:00` |
-| `source.commit_sha` | `9fb87b077d0f4381f0bb78dc42229af5a12c63b6` |
-| `source.portfolio_file_sha256` | `5036cd54a3dc3f6dfeda0300b116e4cf849b4c5add5e8e46879a1da045db3a22` |
-| `data_quality.score` | **100/100** |
-| Porteføljeværdi | **1.189.269 kr.** |
-| Aktiv markedsværdi | **757.149 kr.** |
-| Modelafkast | **+4,60 %** |
-| Portfolio Health | **64,43** |
-| AI Confidence | **56,11 – moderat** |
-| Macro/Rate Risk | **49,56 – moderat** |
-| Registrerede / analyserede positioner | **29 / 28** |
+| generated_at | 2026-11-02T02:35:09.313973+01:00 |
+| source.commit_sha | 49e64e93c88accadc9cfff6742e679b3ac2ebff6 |
+| source.portfolio_file_sha256 | 3041beaaeb9a7a0698d5974b3fa1914c4ce4adaac141522d33a8375ef10c184a |
+| data_quality.score | **100/100** |
+| Samlet porteføljeværdi | **1.173.963 kr.** |
+| Aktiv markedsværdi | **741.843 kr.** |
+| Modelafkast | **+1,78 %** |
+| Portfolio Health | **59,58** |
+| AI Confidence | **53,53 – moderat** |
+| Macro/Rate Risk | **49,15 – moderat** |
+| Positioner registreret / analyseret | **29 / 28** |
 | Positionsloft | **14,00 %** |
 
-**Friskhed:** cirka **4 timer**; snapshotet er **ikke stale**. Markedspriser og porteføljeopgørelse er dog ikke en depotafstemning.
+**Friskhed:** Snapshotet er cirka 4½ time gammelt ved morgenbriefen og dermed **ikke stale**. Makrodata i modellen er dog dateret **30/10**, og markederne har ikke haft ordinær amerikansk handel siden fredag.
 
 | Største positioner | Andel af aktiv markedsværdi |
 |---|---:|
-| NOVO-B | **15,59 %** |
-| NKT | **7,57 %** |
-| Microsoft (MSF) | **7,48 %** |
-| VWCE | **6,45 %** |
-| Danske Bank | **6,23 %** |
-| ASML | **5,88 %** |
-| AL Sydbank | **5,39 %** |
-| SEC0 | **5,37 %** |
-| IS3Q | **3,99 %** |
-| Frontline | **3,79 %** |
+| NOVO-B | **15,91 %** |
+| NKT | 7,73 % |
+| Microsoft (MSF) | 7,55 % |
+| AL Sydbank | 6,70 % |
+| VWCE | 6,47 % |
+| ASML | 5,69 % |
+| SEC0 | 5,02 % |
+| Danske Bank | 4,83 % |
+| IS3Q | 4,06 % |
+| Frontline | 3,90 % |
 
-**Koncentration:** Novo overskrider 14 %-loftet med **1,59 procentpoint**. Direkte teknologiklassificerede positioner udgør **26,23 %**, før indirekte teknologi i verdens-ETF'er. Danske banker udgør samlet **11,62 %**. Forskellen mellem samlet og aktiv værdi er **432.120 kr.**, men **ikke dokumenteret som frie kontanter**.
-
-**Vigtig datamangel:** Alphabet-positionen `GOOG:MIL` har vægt **1,50 %**, men **Data Score 0 og ingen verificeret markedskurs**. Den interne totalscore 100/100 må derfor ikke tolkes som komplet kursdækning.
+**Koncentration:** Novo Nordisk ligger **1,91 procentpoint over loftet**. De to danske bankpositioner udgør tilsammen **11,54 %**, før eventuelt nyt køb. ASML, Microsoft, TSMC og SEC0 giver væsentligt direkte og indirekte AI-/teknologioverlap. Forskellen mellem samlet og aktiv værdi er **432.120 kr.**, men er **ikke dokumenteret som disponible kontanter**.
 
 ## C. Markedsstatus og makro
-| Aktiv/indikator | Seneste daterede observation |
+| Marked | Seneste verificerede observation |
 |---|---:|
-| S&P 500, torsdag 29/10 | **7.720,39 (-0,30 %)** |
-| Nasdaq Composite, torsdag | **26.184,72 (-1,37 %)** |
-| Dow Jones, torsdag | **52.342,56 (-0,25 %)** |
-| Nasdaq-100 futures, tidlig fredag | **ca. -1,9 %** |
-| USA 10-årig rente, tidlig fredag | **ca. 4,91 %** |
-| USA 10-årig / 2-årig, IOS pr. 29/10 | **4,989 % / 4,67 %** |
-| EUR/USD / EUR/DKK, ECB 29/10 | **1,1130 / 7,4736** |
-| Brent / WTI, tidlig fredag | **ca. 116,08 / 103,37 USD/fad** |
-| Spotguld, fredag morgen | **ca. 4.000,54 USD/oz** |
-| LME 3M-kobber, officiel handel 29/10 | **14.345 USD/ton (-0,9 %)** |
+| S&P 500, fredag 30/10 | **7.580,07 (-1,82 %)** |
+| Nasdaq Composite, fredag | **25.437,00 (-2,86 %)** |
+| Dow Jones, fredag | **51.770,31 (-1,09 %)** |
+| SOX-halvlederindeks, fredag | **-7,2 %** |
+| S&P 500-futures, mandag morgen | **ca. +0,5 %** |
+| Nasdaq-futures, mandag morgen | **ca. +0,9 %** |
+| USA 10-årig / 2-årig rente, mandag morgen | **4,931 % / 4,612 %** |
+| EUR/USD, mandag morgen | **ca. 1,1169** |
+| EUR/USD / EUR/DKK, ECB-reference 30/10 | **1,1172 / 7,4735** |
+| Brent / WTI, mandag morgen | **109,70 / 100,58 USD/fad** |
+| Spotguld, mandag morgen | **ca. 3.911 USD/oz (+0,9 %)** |
+| LME 3M-kobber, fredag 30/10 kl. 17.20 GMT | **14.140 USD/ton (-1,5 %)**; mandagskurs **N/A** |
 
-Markedspriserne er **ikke samtidige**. Kilder: urlReuters – amerikansk lukningturn1view0, urlReuters – Asien og renterturn2view0, urlReuters – olieturn3news72, urlECB-valutaturn1search0, urlReuters – guldturn4news32 og urlReuters – kobberturn4view0.
+Kilder: urlReuters – amerikansk lukning 30/10turn528838view0, urlReuters – global morgenhandel 2/11turn528838view1, urlECB-referencekurser 30/10turn528838search0 og urlReuters – kobber 30/10turn754013search0. Tallene er fra forskellige tidspunkter, ikke samtidige livekurser. citeturn528838view0turn528838view1turn528838search0turn754013search0
 
-**Nye makrofakta fra 29/10:** Amerikansk BNP voksede **3,4 % annualiseret i 3. kvartal** mod **2,2 %** i 2. kvartal. September-PCE steg **3,6 % år/år**, kerne-PCE **3,1 %**. urlBEA BNPturn2search1 urlBEA PCEturn3search0. entity["organization","European Central Bank","euro area central bank"] fastholdt renterne og fremhævede risikoen for højere inflation og lavere vækst fra energi. urlECB-beslutning 29/10turn3search6
-
-**Egen analyse:** Den lavere markedsrente fredag er et *flight-to-quality*-signal, ikke i sig selv tegn på, at inflationsrisikoen er væk. IOS-makrorisikoen faldt til moderat, men modellen bygger på observationer fra 29/10 og indfanger ikke hele fredagens kursreaktion. Dyr olie og høj PCE begrænser pladsen til rentenedsættelser.
+**IOS-makro (30/10):** US10Y **4,929 %**, US2Y **4,61 %**, rentekurve **+0,379 procentpoint**, inflationskomponent **2,34 %**, HY-spread **3,26 procentpoint**, intern makrodatakvalitet **100/100**. **Egen analyse:** Lavere olie og renter letter presset på vækstaktier, men er ikke i sig selv et nyt risk-on-regime. AI-investeringernes afkast, inflation og kreditspænd er fortsat de afgørende risici.
 
 ## D. Sektor- og kapitalstrømsrotation
-**Investment OS-modelmomentum, ikke dokumenterede ETF-nettoflows:**
+**Investment OS-modelmomentum – ikke dokumenterede ETF-nettoflows:**
 
-| Tema | IOS-aktiv | Signal | 1M | 3M |
+| Tema | IOS-ticker | Signal | 1M | 3M |
 |---|---|---|---:|---:|
-| Semiconductors | SEC0 | Hold | **-7,74 %** | **+6,57 %** |
-| Defense | DFEN | Hold | +1,93 % | +1,44 % |
-| Uranium | URNU | **Reducer** | -11,10 % | **-36,68 %** |
-| Clean energy | IQQH | **Reducer** | -6,22 % | -8,66 % |
-| Mining | WMIN | Hold | -5,37 % | +5,12 % |
-| Copper miners | 4COP | Hold | -8,47 % | +0,71 % |
-| Rare earths | VVMX | **Reducer** | -14,54 % | -14,87 % |
-| Infrastructure | 94VE | Hold | +3,23 % | -1,91 % |
+| Semiconductors | SEC0 | **Reducer** | **-16,37 %** | -8,37 % |
+| Defense | DFEN | **Hold** | +2,07 % | -5,33 % |
+| Uranium | URNU | **Reducer** | -15,58 % | -36,56 % |
+| Clean energy | IQQH | **Reducer** | -8,21 % | -14,59 % |
+| Mining | WMIN | **Reducer** | -8,80 % | -4,42 % |
+| Copper miners | 4COP | **Reducer** | -12,40 % | -10,33 % |
+| Rare earths | VVMX | **Reducer** | -18,41 % | -26,19 % |
+| Infrastructure | 94VE | **Hold** | +3,41 % | -4,33 % |
 
-**Kapitalstrømme – verificerbart:** Seneste sammenlignelige brede LSEG-opgørelse, ugen til **21/10**, viste **28,16 mia. USD ind i globale aktiefonde**, heraf **5,05 mia. USD i teknologifonde**. Det er **historiske brede fondstal**, ikke bevis for fredagens flow eller flow til IOS-ETF'erne. **Specifikke nettoflows for SEC0, DFEN, URNU, IQQH, WMIN, 4COP, VVMX og 94VE: N/A.** citeturn5news57
+**Fakta:** Fredagens brede halvledersalg og et olieprisfald mandag er dokumenteret markedsrotation, **ikke bevis for nettokapitalstrømme** til de konkrete ETF'er. Sammenlignelige aktuelle nettoflows for de otte temaer: **N/A**. citeturn528838view0turn528838view1
 
-**Egen analyse:** AI-salget kan smitte af på halvlederudstyr, datacentre og kobberforventninger. SEC0 har fortsat positivt 3M-momentum, men negativt 1M. Uranium og rare earths har de svageste mellemfristede modeltrends. Defense og infrastruktur er relativt mere robuste, men det er ikke en købsordre.
+**Egen analyse:** Svagheden er nu bredere end blot de mest spekulative AI-aktier. SEC0 er gået fra Hold til Reducer siden fredagens brief, og mining, kobber og rare earths har fortsat svage trends. Undgå at øge disse temaer alene på grund af store kursfald. Defense og infrastruktur ser relativt mindre pressede ud i IOS, men er ikke købssignaler.
 
 ## E. Porteføljepåvirkning
-**entity["company","Microsoft","US software and cloud company"]:** **7,48 % · Hold · Decision Score 86,89 · 3M +19,52 %**. Selskabet rapporterede **18,6 mia. USD i frit cashflow** trods store AI-investeringer og **48 % Azure-vækst**. Relativt stærk finansieringsevne, men risikoen for sektorens samlede værdiansættelse består. citeturn1view2 urlMicrosoft Investor Relationshttps://www.microsoft.com/en-us/Investor/
+**entity["company","ASML","Dutch semiconductor equipment manufacturer"]:** **5,69 % · Hold · Decision Score 58,56 · 1M -11,42 %**. Følsom over for udsving i chipindustriens investeringsforventninger. urlASML Investor Relationshttps://www.asml.com/en/investors
 
-**entity["company","ASML","Dutch semiconductor equipment manufacturer"]:** **5,88 % · Hold · score 68,61 · 1M -6,85 %**. Negativ rotationsmarkering og risiko for multipelpres, hvis hyperscalere nedjusterer investeringer. Vægten er markant lavere end i gårsdagens brief; **årsagen kan ikke tilskrives et salg uden depotafstemning**. urlASML IRhttps://www.asml.com/en/investors
+**entity["company","Microsoft","US software and cloud company"]:** **7,55 % · Hold · score 83,07 · 3M +8,68 %**. Fortsat relativ modelstyrke, men momentum aftager; fokus på fri pengestrøm efter AI-capex. urlMicrosoft Investor Relationshttps://www.microsoft.com/en-us/Investor/
 
-**entity["company","TSMC","Taiwan semiconductor foundry"]:** **3,05 % · Hold · score 69,90 · 3M +7,10 %**. AI-efterspørgsel støtter den langsigtede case, men den aktuelle chipkorrektion kan ramme kursen. urlTSMC IRhttps://investor.tsmc.com/
+**entity["company","TSMC","Taiwan semiconductor foundry"]:** **2,93 % · Hold · score 60,73 · 1M -11,56 %**. Positiv langsigtet AI-efterspørgsel er ikke et kortsigtet teknisk købssignal. urlTSMC Investor Relationshttps://investor.tsmc.com/
 
-**entity["company","Alphabet","Google parent company"]:** **1,50 % · Hold · Data Score 0**. Aktien faldt **12,6 % torsdag** efter bekymringer om AI-capex og negativt cashflow. **IOS kan ikke levere et pålideligt teknisk signal for `GOOG:MIL`**, før ticker-/kursmapping er rettet. citeturn1view2 urlAlphabet IRhttps://abc.xyz/investor/
+**entity["company","Novo Nordisk","Danish pharmaceutical company"]:** **15,91 % · Reducer · score 33,73 · 3M -12,39 %**. IOS foreslår **reduktion for 14.150 kr.** til **14,00 %** med markeringen *Konfidensgate, Positionsloft*. Regnskab **4/11**. urlNovo Nordisk – finansielle resultaterturn352414search0
 
-**entity["company","Novo Nordisk","Danish pharmaceutical company"]:** **15,59 % · Reducer · score 30,22 · 3M -15,74 %**. Rebalance foreslår **-12.007 kr. til 14,00 %**. Konkurrenten entity["company","Eli Lilly","US pharmaceutical company"] rapporterede **39 % omsætningsvækst til 24,4 mia. USD** og hævede 2026-omsætningsprognosen til **91–92 mia. USD**. Det øger presset for at dokumentere Novo's konkurrencestyrke ved regnskabet **4/11**. urlLillys officielle regnskabturn3search1 urlNovo finanskalenderturn5search8
+**entity["company","NKT","Danish power cable manufacturer"]:** **7,73 % · Hold · score 40,08 · 1M -3,34 %**; modellen markerer *tidlig vending*, ikke køb. **entity["company","Vestas","Danish wind turbine manufacturer"]:** **2,48 % · Hold · score 69,90 · 3M +8,02 %**. Regnskaber **19/11** og **11/11**. urlNKT kalenderturn352414search1 · urlVestas rapportkalenderturn352414search2
 
-**entity["company","NKT","Danish power cable manufacturer"]:** **7,57 % · Hold · score 40,53 · 1M -2,28 %**. IOS markerer *tidlig vending*, men endnu ikke et Øg-signal. **entity["company","Vestas","Danish wind turbine manufacturer"]:** **2,43 % · Hold · score 69,90 · 3M +10,37 %**. Begge påvirkes af finansieringsrenter og investeringer i elnet/energi. urlNKT kalenderturn5search4 urlVestas kalenderturn5search7
+**Danske banker:** entity["company","AL Sydbank","Danish banking group"] **6,70 % · Øg · score 92,84** mod entity["company","Danske Bank","Danish banking group"] **4,83 % · Hold · score 58,30**. Et køb af AL Sydbank vil øge den samlede vægt i de to banker til cirka **14,94 %**, hvis øvrige vægte holdes uændrede. Det er under IOS' kendte sektorloft på 20 %, men koncentrerer rente- og kreditrisikoen. urlAL Sydbankhttps://www.al-sydbank.dk/ · urlDanske Bankhttps://danskebank.com/
 
-**Danske banker:** entity["company","Danske Bank","Danish banking group"] **6,23 % · Hold · score 55,64**; entity["company","AL Sydbank","Danish banking group"] **5,39 % · Hold · score 69,90**. Samlet **11,62 %** i finans; fælles risiko ved kreditforværring og ændret rentekurve. urlDanske Bankhttps://danskebank.com/ urlAL Sydbankhttps://www.al-sydbank.dk/
-
-**Andre væsentlige:** entity["company","Celestica","Canadian electronics manufacturing company"] **2,24 % · Reducer · score 21,95 · 1M -21,77 %**; entity["company","Frontline","oil tanker shipping company"] **3,79 % · Hold · score 90,65**. Biotek-ETF'en **2B70** er nr. 1 på opportunities med **score 96,60**, men signalet er **Hold**. urlCelesticahttps://www.celestica.com/ urlFrontlinehttps://www.frontlineplc.cy/
+**Andre:** entity["company","Celestica","Canadian electronics manufacturer"] **2,16 % · Reducer · score 19,98 · 1M -28,83 %**; Frontline **3,90 % · Hold · score 91,32**. Biotek-ETF'en 2B70 topper opportunities med **96,57**, men har **Hold**, ikke Øg. Alphabet-tickeren **GOOG:XMIL** har fortsat **Data Score 0** og manglende markedskurs. urlCelesticahttps://www.celestica.com/
 
 ## F. Ændringer siden seneste brief
-**Sammenlignet med torsdagens morgenbrief** (snapshotforskelle, **ikke depotafstemt afkast**):
+**Sammenlignet med fredagens morgenbrief 30/10** – ikke et depotafstemt handelsafkast:
 
-| Måling | Torsdag | Fredag | Ændring |
+| Måling | Fredag | Mandag | Ændring |
 |---|---:|---:|---:|
-| Samlet værdi | 1.185.846 kr. | **1.189.269 kr.** | **+3.423 kr.** |
-| Aktiv værdi | 753.726 kr. | **757.149 kr.** | **+3.423 kr.** |
-| Modelafkast | +5,38 % | **+4,60 %** | **-0,78 procentpoint** |
-| Portfolio Health | 63,35 | **64,43** | **+1,08** |
-| AI Confidence | 55,94 | **56,11** | **+0,17** |
-| Macro/Rate Risk | 53,43 | **49,56** | **-3,87** |
-| Stop_Broken / Alarm / Tighten | 12 / 4 / 0 | **12 / 4 / 0** | Uændret |
+| Samlet værdi | 1.189.269 kr. | **1.173.963 kr.** | **-15.306 kr.** |
+| Aktiv værdi | 757.149 kr. | **741.843 kr.** | **-15.306 kr.** |
+| Modelafkast | +4,60 % | **+1,78 %** | -2,82 procentpoint |
+| Portfolio Health | 64,43 | **59,58** | -4,85 |
+| AI Confidence | 56,11 | **53,53** | -2,58 |
+| Macro/Rate Risk | 49,56 | **49,15** | -0,41 |
+| Stop_Broken / Alarm / Tighten | 12 / 4 / 0 | **15 / 2 / 1** | +3 / -2 / +1 |
 
-**Databrud:** Masterfilens SHA er ændret fra `e132f81e…` til `5036cd54…`. Samtidig er ASML-vægten **7,29 → 5,88 %**, og det samlede modelafkast falder trods stigende porteføljeværdi. **Forklaring på ændringerne: N/A uden masterfil-/depotafstemning.** ServiceNow fremgik af gårsdagens brief, men **ikke af dagens 28 analyserede positioner**; det dokumenterer ikke i sig selv et salg.
+**Datakontrol:** Masterfilens SHA er ændret fra **5036cd54…** fredag til **3041beaa…** i dag. Værdifaldet kan derfor **ikke entydigt tilskrives markedskurser** uden depot-/masterfilafstemning. Antallet af analyserede positioner er fortsat 28.
 
-**Modelkø:** Fortsat **ét køb og én reduktion**. VGWD **17.779 → 17.897 kr.**; Novo **12.486 → 12.007 kr.**; netto **5.293 → 5.890 kr.**. **Opportunities:** 2B70 nr. 1, Frontline nr. 2, Microsoft nr. 3 og VGWD nr. 4. Det interne `changes`-felt sammenligner med **29/10 kl. 20.57**, ikke med torsdag morgen: Microsoft **Stærk → Meget stærk**, Pandora **Reducer → Hold**, Novo-score **+5,99**, NKT-score **-4,01**. Pandora kom ind i top-10, ASML udgik. Individuelle stopkursændringer: **N/A**.
+**Modelforskelle:** Fredag viste køen **ét køb (VGWD) og én reduktion (Novo)**. Nu er **AL Sydbank tilføjet som Øg/køb**; VGWD-købet stiger fra 17.897 til **21.546 kr.**, og Novo-reduktionen fra 12.007 til **14.150 kr.**. SEC0 er nu **Reducer**. Opportunities har 2B70, AL Sydbank, Frontline og VGWD i top-4. Det aktuelle snapshots interne sammenligning med **1/11 kl. 02.16 CET** viser derimod **ingen væsentlige nye signal- eller rangændringer**; scoreforskellene er marginale. Individuelle ændringer i stopkurser: **N/A**.
 
 ## G. Dagens begivenheder og kommende regnskaber
-**Fredag 30/10:** Amerikansk **Employment Cost Index for 3. kvartal kl. 13.30 dansk tid**; endnu ikke offentliggjort ved briefen. urlBLS' officielle kalenderturn6search10. Følg dagens europæiske/amerikanske åbning efter AI-salget, samt eventuelle nye forsyningshændelser omkring Hormuz. Japans centralbank har fastholdt renten og signaleret fortsat inflationsopmærksomhed. citeturn2view0
+**I dag 2/11:** Amerikansk ISM Manufacturing PMI for oktober offentliggøres normalt **kl. 16.00 dansk tid**; resultatet er endnu ikke kendt. urlISM's officielle udgivelsesplanturn352414search9. **Apple-regnskab ventes efter amerikansk børslukning**, mens markedet vurderer AI-capex, chips og forbrugerefterspørgsel. citeturn528838view1
 
-**Kommende selskabsbegivenheder:** **4/11** Novo Nordisk (ni måneder), **11/11** Vestas (Q3), **19/11** NKT (Q1–Q3). urlNovoturn5search8 urlVestasturn5search7 urlNKTturn5search4. For Microsoft, ASML, TSMC og SEC0 er de næste ugers **capex-guidance og cashflow** vigtigere end én dags kursudsving.
+**3/11:** Amerikansk midtvejsvalg. **4/11:** Novo Nordisk, ni-månedersregnskab (investorcall kl. 13.00 CET). **6/11:** Amerikansk arbejdsmarkedsrapport ventes. **11/11:** Vestas Q3. **19/11:** NKT Q1–Q3. Datoerne for de danske regnskaber er bekræftet af selskaberne. citeturn754013news25turn352414search0turn352414search2turn352414search1
 
-## H. Køb / hold / reducer
-**Investment OS-modeloutput direkte fra `decision_queue` og `rebalance` – ingen handler udført:**
+## H. Handlingsorienteret køb / hold / reducer
+**Investment OS-modeloutput direkte fra decision_queue og rebalance – ingen handler udført:**
 
-| Aktiv | IOS-signal | Rebalance-output | Beløb |
+| Aktiv | Modelsignal | Rebalance-output | Beløb |
 |---|---|---|---:|
-| NOVO-B | **Reducer** | **Sælg** til 14,00 %; `Konfidensgate, Positionsloft` | **-12.007 kr.** |
-| VGWD | **Øg** | **Køb**; vægt **1,39 → 3,76 %** | **+17.897 kr.** |
-| CLS, ABB, ENR, URNU, IQQH, VVMX m.fl. | **Reducer** | Ingen handel pga. konfidensgate | **0 kr.** |
-| MSF, ASML, TSM, NKT, VWS, DANSKE, SEC0 | **Hold** | Ingen handel | **0 kr.** |
-| **Execution summary** | **1 køb / 1 reduktion** | Brutto **29.904 kr.**, netto **+5.890 kr.** | **13 constraint-markerede rækker** |
+| NOVO-B | **Reducer** | **Sælg** til 14,00 %; konfidensgate + positionsloft | **-14.150 kr.** |
+| AL Sydbank | **Øg** | **Køb**; vægt 6,70 → 10,11 % | **+25.246 kr.** |
+| VGWD | **Øg** | **Køb**; vægt 1,42 → 4,33 % | **+21.546 kr.** |
+| SEC0, CLS, ABB, URNU, IQQH, WMIN, 4COP, VVMX m.fl. | **Reducer** | Ingen handel; primært konfidensgate | **0 kr.** |
+| Microsoft, ASML, TSMC, NKT, Vestas, Danske Bank | **Hold** | Ingen handel | **0 kr.** |
+| **Execution summary** | **2 køb / 1 reduktion** | **Brutto 60.942 kr. · netto +32.642 kr. · 12 constraint-markerede rækker** | |
 
-**Egen vurdering – adskilt fra modellen:** **Afvent eksekvering.** Novo-overskridelsen er fortsat en reel koncentrationsadvarsel. VGWD kan øge udbytte-/value-eksponeringen, men overlapper med VWCE og IS3Q. Der er **ikke verificeret fri likviditet, minimumshandel, handelsomkostninger eller fuldt ETF-look-through**. Den aktuelle AI-korrektion er ikke i sig selv et signal om at købe mere teknologi eller sælge kvalitetsaktier ukritisk. **Netto +5.890 kr. er modeloutput, ikke bekræftet kontantbehov.**
+**Egen vurdering:** **Afvent eksekvering af begge køb.** AL Sydbank har et stærkt modeloutput, men det samlede bankoverlap og udsigten til kredit-/rentefølsomhed bør veje tungere end en enkelt høj score. VGWD kan styrke value-/udbyttestilen, men overlapper med VWCE og IS3Q. Novo-overskridelsen bør behandles som den mest konkrete risikoprioritet. **Netto +32.642 kr. er modelberegnet kontantbehov, ikke dokumenteret fri likviditet**; minimumshandel, handelsomkostninger og fuldt ETF-look-through er ikke verificeret.
 
 ## I. Usikkerheder og datakvalitet
-Snapshotet er **friskt**; intern porteføljedatakvalitet og makrodatakvalitet er **100/100**, men dette er **ikke garanti for depotafstemning**. **22 udenlandske positioner** bruger valutaneutralt DKK-afkast, og **22** bruger Yahoo-kurs × FX som markedsværdifallback. **`GOOG:MIL` mangler markedskurs og har Data Score 0.** URNU har Data Score **80/100**. Faktiske kontanter, ETF-look-through, individuelle stopkurser, præcise tematiske nettoflows og forklaringen på masterfilens ændring: **N/A**. Fredagens amerikanske marked er endnu ikke åbnet.
+**Snapshotet er friskt**, men intern datakvalitet **100/100** er ikke depotafstemning. **22 udenlandske positioner** bruger valutaneutralt DKK-afkast, og **22** bruger Yahoo-kurs × FX som fallback for markedsværdi. **GOOG:XMIL mangler markedskurs (Data Score 0)**; URNU har Data Score **80/100**. Faktiske kontanter, præcise stopkurser, sektorernes ETF-nettoflows, minimumshandel og forklaringen på masterfilens SHA-ændring: **N/A**. Markedskurser er daterede observationer og ikke samtidige livepriser.
 
 ### Dagens tre beslutningspunkter
-1. **Ingen handler.** Afstem ændret masterfil-SHA, ASML-vægt og manglende ServiceNow-position; ret **GOOG:MIL**-kursmapping.
-2. **Gennemgå 12 Stop_Broken og 4 Alarm** på positionsniveau, og verificér Novo-vægten **15,59 %** mod loftet **14 %**.
-3. **Afvent VGWD-køb 17.897 kr.**, indtil likviditet, minimumshandel og ETF-overlap er kontrolleret.
+1. **Ingen handler.** Afstem masterfilens nye SHA, værdifaldet på **15.306 kr.** og Novo-vægten **15,91 %** mod loftet på **14 %**.
+2. **Gennemgå 15 Stop_Broken, 2 Alarm og 1 Tighten** på positionsniveau; ret fortsat kursmapping for **GOOG:XMIL**.
+3. **Sæt AL Sydbank-køb 25.246 kr. og VGWD-køb 21.546 kr. på afvent**, indtil likviditet, bank-/ETF-overlap, minimumshandel og omkostninger er kontrolleret.
