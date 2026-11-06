@@ -5,7 +5,7 @@ import math
 
 import plotly.graph_objects as go
 
-from modules.fear_greed import ZONES, sentiment_zone
+from modules.vix import ZONES, vix_zone
 
 
 def _is_number(value: float) -> bool:
@@ -152,21 +152,27 @@ def build_kpi_gauge_figure(
     return figure
 
 
-def build_fear_greed_gauge(value: float | None, label: str) -> go.Figure:
-    """Sentiment scale, not a good/bad investment recommendation."""
-    figure = build_kpi_gauge_figure("CNN Fear & Greed", value, label)
+def build_vix_gauge(value: float | None, label: str) -> go.Figure:
+    """Display raw VIX points; expand the axis for extreme values, never clamp."""
+    figure = build_kpi_gauge_figure("Markedsuro – VIX", value, label)
     indicator = figure.data[0]
-    indicator.number.suffix = "/100"
-    indicator.number.valueformat = ".1f"
+    indicator.number.suffix = ""
+    indicator.number.valueformat = ".2f"
+    axis_max = max(50, math.ceil(value / 10) * 10) if value is not None else 50
+    indicator.gauge.axis.update(range=[0, axis_max], visible=True,
+                                tickvals=[0, 20, 40, axis_max], tickfont={"size": 9})
     if value is None:
-        indicator.gauge.steps = [{"range": [0, 100], "color": "#64748b"}]
+        indicator.gauge.steps = [{"range": [0, axis_max], "color": "#64748b"}]
         indicator.gauge.threshold = None
     else:
+        indicator.value = value
+        indicator.gauge.threshold.value = value
         lower = 0
         steps = []
         for upper, _, color in ZONES:
+            upper = min(upper, axis_max)
             steps.append({"range": [lower, upper], "color": color})
             lower = upper
         indicator.gauge.steps = steps
-        figure.layout.annotations[-1].font.color = sentiment_zone(value)[1]
+        figure.layout.annotations[-1].font.color = vix_zone(value)[1]
     return figure

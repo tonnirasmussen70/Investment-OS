@@ -43,11 +43,11 @@ from modules.decision_engine import DECISION_WEIGHTS, apply_decision_engine, dec
 from modules.decision_queue_engine import build_decision_queue
 from modules.formatting import format_dkk, format_pct, format_score
 from modules.gauge_components import (
-    build_fear_greed_gauge,
+    build_vix_gauge,
     build_kpi_gauge_figure,
     build_kpi_gauge_label_html,
 )
-from modules.fear_greed import SOURCE_URL as CNN_FEAR_GREED_URL, fetch_fear_greed
+from modules.vix import fetch_vix
 from modules.health_engine import calculate_portfolio_health
 from modules.market_engine import fetch_market_snapshot, fetch_price_history
 from modules.macro_rate_engine import (
@@ -302,8 +302,8 @@ def load_macro_rate_history():
 
 
 @st.cache_data(ttl=900, show_spinner=False)
-def load_fear_greed():
-    return fetch_fear_greed()
+def load_vix():
+    return fetch_vix()
 
 
 st.title(f"📈 Investment OS {APP_VERSION}")
@@ -725,24 +725,26 @@ with tab_overview:
             key="overview-confidence-gauge",
         )
     with k7:
-        sentiment = load_fear_greed()
+        vix = load_vix()
         st.html(build_kpi_gauge_label_html(
-            "CNN Fear & Greed", "CNN's amerikanske markedssentiment på en 0–100-skala. "
-            "Extreme Fear (0–25), Fear (>25–45), Neutral (>45–55), "
-            "Greed (>55–75), Extreme Greed (>75–100). Ikke et købssignal. "
-            "Hentes højst hvert 15. minut; data ældre end 5 dage afvises."
+            "Markedsuro – VIX", "Forventet 30-dages volatilitet i S&P 500, annualiseret. "
+            "Daglig lukkekurs fra Cboe via FRED; Cboe bruges ved fejl. Ikke realtid. "
+            "IOS-zoner: lav <15, moderat 15–<20, forhøjet 20–<30, "
+            "høj 30–<40, meget høj ≥40. Ikke et købssignal. "
+            "Cache 15 minutter; data ældre end 5 dage afvises."
         ))
         st.plotly_chart(
-            build_fear_greed_gauge(sentiment.score, sentiment.label),
+            build_vix_gauge(vix.value, vix.label),
             use_container_width=True,
             config={"displayModeBar": False},
-            key="overview-fear-greed-gauge",
+            key="overview-vix-gauge",
         )
-        st.caption(f"[Kilde: CNN]({CNN_FEAR_GREED_URL})")
-        if sentiment.updated_at is not None:
-            st.caption("CNN: " + sentiment.updated_at.strftime("%Y-%m-%d %H:%M UTC"))
-        if sentiment.error:
-            st.caption(sentiment.error)
+        if vix.source_url:
+            st.caption(f"[Kilde: Cboe{' via FRED' if vix.source == 'FRED' else ''}]({vix.source_url})")
+        if vix.observed_on is not None:
+            st.caption("Lukkekurs: " + vix.observed_on.isoformat())
+        if vix.error:
+            st.caption(vix.error)
     with k8:
         st.html(build_kpi_gauge_label_html(
             "Macro/Rate Risk", macro_help
