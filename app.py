@@ -43,9 +43,11 @@ from modules.decision_engine import DECISION_WEIGHTS, apply_decision_engine, dec
 from modules.decision_queue_engine import build_decision_queue
 from modules.formatting import format_dkk, format_pct, format_score
 from modules.gauge_components import (
+    build_fear_greed_gauge,
     build_kpi_gauge_figure,
     build_kpi_gauge_label_html,
 )
+from modules.fear_greed import SOURCE_URL as CNN_FEAR_GREED_URL, fetch_fear_greed
 from modules.health_engine import calculate_portfolio_health
 from modules.market_engine import fetch_market_snapshot, fetch_price_history
 from modules.macro_rate_engine import (
@@ -297,6 +299,11 @@ def load_history(tickers, period):
 @st.cache_data(ttl=3600, show_spinner=False)
 def load_macro_rate_history():
     return fetch_fred_macro_history(years=3)
+
+
+@st.cache_data(ttl=900, show_spinner=False)
+def load_fear_greed():
+    return fetch_fear_greed()
 
 
 st.title(f"📈 Investment OS {APP_VERSION}")
@@ -672,7 +679,6 @@ tabs = st.tabs([
 ) = tabs
 
 with tab_overview:
-    _, quality_text = quality_label(quality_score)
     macro_score_text = (
         f"{macro_rate_regime.score:.0f}/100"
         if pd.notna(macro_rate_regime.score)
@@ -719,17 +725,24 @@ with tab_overview:
             key="overview-confidence-gauge",
         )
     with k7:
+        sentiment = load_fear_greed()
         st.html(build_kpi_gauge_label_html(
-            "Datakvalitet", TOOLTIPS["data_quality"]
+            "CNN Fear & Greed", "CNN's amerikanske markedssentiment på en 0–100-skala. "
+            "Extreme Fear (0–25), Fear (>25–45), Neutral (>45–55), "
+            "Greed (>55–75), Extreme Greed (>75–100). Ikke et købssignal. "
+            "Hentes højst hvert 15. minut; data ældre end 5 dage afvises."
         ))
         st.plotly_chart(
-            build_kpi_gauge_figure(
-                "Datakvalitet", quality_score, quality_text
-            ),
+            build_fear_greed_gauge(sentiment.score, sentiment.label),
             use_container_width=True,
             config={"displayModeBar": False},
-            key="overview-data-quality-gauge",
+            key="overview-fear-greed-gauge",
         )
+        st.caption(f"[Kilde: CNN]({CNN_FEAR_GREED_URL})")
+        if sentiment.updated_at is not None:
+            st.caption("CNN: " + sentiment.updated_at.strftime("%Y-%m-%d %H:%M UTC"))
+        if sentiment.error:
+            st.caption(sentiment.error)
     with k8:
         st.html(build_kpi_gauge_label_html(
             "Macro/Rate Risk", macro_help

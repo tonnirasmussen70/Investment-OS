@@ -5,6 +5,8 @@ import math
 
 import plotly.graph_objects as go
 
+from modules.fear_greed import ZONES, sentiment_zone
+
 
 def _is_number(value: float) -> bool:
     try:
@@ -147,4 +149,24 @@ def build_kpi_gauge_figure(
         plot_bgcolor="rgba(0,0,0,0)",
         font={"color": "#f8fafc"},
     )
+    return figure
+
+
+def build_fear_greed_gauge(value: float | None, label: str) -> go.Figure:
+    """Sentiment scale, not a good/bad investment recommendation."""
+    figure = build_kpi_gauge_figure("CNN Fear & Greed", value, label)
+    indicator = figure.data[0]
+    indicator.number.suffix = "/100"
+    indicator.number.valueformat = ".1f"
+    if value is None:
+        indicator.gauge.steps = [{"range": [0, 100], "color": "#64748b"}]
+        indicator.gauge.threshold = None
+    else:
+        lower = 0
+        steps = []
+        for upper, _, color in ZONES:
+            steps.append({"range": [lower, upper], "color": color})
+            lower = upper
+        indicator.gauge.steps = steps
+        figure.layout.annotations[-1].font.color = sentiment_zone(value)[1]
     return figure
