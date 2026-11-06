@@ -43,9 +43,11 @@ from modules.decision_engine import DECISION_WEIGHTS, apply_decision_engine, dec
 from modules.decision_queue_engine import build_decision_queue
 from modules.formatting import format_dkk, format_pct, format_score
 from modules.gauge_components import (
+    build_vix_gauge,
     build_kpi_gauge_figure,
     build_kpi_gauge_label_html,
 )
+from modules.vix import fetch_vix
 from modules.health_engine import calculate_portfolio_health
 from modules.market_engine import fetch_market_snapshot, fetch_price_history
 from modules.macro_rate_engine import (
@@ -297,6 +299,11 @@ def load_history(tickers, period):
 @st.cache_data(ttl=3600, show_spinner=False)
 def load_macro_rate_history():
     return fetch_fred_macro_history(years=3)
+
+
+@st.cache_data(ttl=900, show_spinner=False)
+def load_vix():
+    return fetch_vix()
 
 
 st.title(f"📈 Investment OS {APP_VERSION}")
@@ -672,7 +679,6 @@ tabs = st.tabs([
 ) = tabs
 
 with tab_overview:
-    _, quality_text = quality_label(quality_score)
     macro_score_text = (
         f"{macro_rate_regime.score:.0f}/100"
         if pd.notna(macro_rate_regime.score)
@@ -719,17 +725,26 @@ with tab_overview:
             key="overview-confidence-gauge",
         )
     with k7:
+        vix = load_vix()
         st.html(build_kpi_gauge_label_html(
-            "Datakvalitet", TOOLTIPS["data_quality"]
+            "Markedsuro – VIX", "Forventet 30-dages volatilitet i S&P 500, annualiseret. "
+            "Daglig lukkekurs fra Cboe via FRED; Cboe bruges ved fejl. Ikke realtid. "
+            "IOS-zoner: lav <15, moderat 15–<20, forhøjet 20–<30, "
+            "høj 30–<40, meget høj ≥40. Ikke et købssignal. "
+            "Cache 15 minutter; data ældre end 5 dage afvises."
         ))
         st.plotly_chart(
-            build_kpi_gauge_figure(
-                "Datakvalitet", quality_score, quality_text
-            ),
+            build_vix_gauge(vix.value, vix.label),
             use_container_width=True,
             config={"displayModeBar": False},
-            key="overview-data-quality-gauge",
+            key="overview-vix-gauge",
         )
+        if vix.source_url:
+            st.caption(f"[Kilde: Cboe{' via FRED' if vix.source == 'FRED' else ''}]({vix.source_url})")
+        if vix.observed_on is not None:
+            st.caption("Lukkekurs: " + vix.observed_on.isoformat())
+        if vix.error:
+            st.caption(vix.error)
     with k8:
         st.html(build_kpi_gauge_label_html(
             "Macro/Rate Risk", macro_help
