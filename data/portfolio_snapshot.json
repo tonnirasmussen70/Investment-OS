@@ -1,13 +1,13 @@
 {
   "schema_version": "2.0",
-  "run_id": "ios-fe98e1dcbfc18553",
+  "run_id": "ios-c595664ccb1608b9",
   "app_version": "7.3.3",
-  "generated_at": "2026-11-08T02:30:26.607183+01:00",
-  "generated_at_local": "2026-11-08 02:30:26 CET",
+  "generated_at": "2026-11-08T08:50:43.846087+01:00",
+  "generated_at_local": "2026-11-08 08:50:43 CET",
   "source": {
     "repository": "tonnirasmussen70/Investment-OS",
     "branch": "main",
-    "commit_sha": "843128f474a1c3d974c75ebc84fe046b855b730e",
+    "commit_sha": "3c0a34662ab5f1d3f9e45da23aa5ae34d48c3717",
     "portfolio_file": "data/AI_portfolio.xlsx",
     "portfolio_file_sha256": "fc8e497db9a7d37536a33da1191598153603543bf7967affd4bf2ab29f1d9da6"
   },
@@ -26,8 +26,8 @@
     "value_dkk": 1136311.225474413,
     "active_market_value_dkk": 704191.2254744129,
     "total_return_pct": -0.03156619631357005,
-    "health_score": 55.93057275577508,
-    "ai_confidence": 54.167269143655425,
+    "health_score": 55.93057272609387,
+    "ai_confidence": 54.16726909881442,
     "ai_confidence_label": "Moderat",
     "benchmark": "URTH",
     "max_position_weight": 0.16
@@ -81,21 +81,21 @@
       "6M": -0.060003225825340234,
       "12M": -0.10652706125646283,
       "Composite": -0.009076193983138695,
-      "AI_Confidence": 44.939597093903686,
+      "AI_Confidence": 44.93959724044434,
       "Momentum Score": 60.71428571428571,
-      "AI Score": 44.939597093903686,
+      "AI Score": 44.93959724044434,
       "RS Score": 18.986459537812596,
       "Trend Score": 40.0,
-      "Risk Score": 10.353707737649538,
+      "Risk Score": 10.353708846605862,
       "Data Score": 100.0,
       "Position Score": 0.0,
-      "Decision_Score": 44.04983055178901,
+      "Decision_Score": 44.049830691992774,
       "Decision_Status": "Neutral",
       "Relative_Strength_3M": -0.06202708092437481,
       "Momentum_Acceleration": 0.04952151164517505,
       "Rotation_Signal": "Accelererer",
-      "Volatility": 0.4861521356178279,
-      "Max_Drawdown": -0.5494295062478738,
+      "Volatility": 0.4861521287792639,
+      "Max_Drawdown": -0.5494294782099295,
       "Momentum_Data_Quality": 1.0,
       "Handling": "Hold"
     },
@@ -143,23 +143,23 @@
       "1M": 0.016677208555847978,
       "3M": 0.11172713780227705,
       "6M": 0.37506231145909585,
-      "12M": 0.1380375619261791,
-      "Composite": 0.08237093253165413,
-      "AI_Confidence": 88.5275429677052,
+      "12M": 0.13803747985763226,
+      "Composite": 0.08237092842822678,
+      "AI_Confidence": 88.52754217333907,
       "Momentum Score": 89.28571428571429,
-      "AI Score": 88.5275429677052,
+      "AI Score": 88.52754217333907,
       "RS Score": 100.0,
       "Trend Score": 100.0,
-      "Risk Score": 56.739249490992314,
+      "Risk Score": 56.739238431593705,
       "Data Score": 100.0,
       "Position Score": 55.26892854447515,
-      "Decision_Score": 88.4643085412926,
+      "Decision_Score": 88.46430727647952,
       "Decision_Status": "Meget stærk",
       "Relative_Strength_3M": 0.16141540780884,
       "Momentum_Acceleration": -0.016198906689019247,
       "Rotation_Signal": "Neutral",
-      "Volatility": 0.285381328173757,
-      "Max_Drawdown": -0.32900400670727015,
+      "Volatility": 0.28538136524417623,
+      "Max_Drawdown": -0.32900405087708884,
       "Momentum_Data_Quality": 1.0,
       "Handling": "Hold"
     },
@@ -241,20 +241,20 @@
       "6M": -0.058621039420500454,
       "12M": 0.456129452426693,
       "Composite": -0.10715302181753616,
-      "AI_Confidence": 18.7018370311432,
+      "AI_Confidence": 18.70183678570386,
       "Momentum Score": 25.0,
-      "AI Score": 18.7018370311432,
+      "AI Score": 18.70183678570386,
       "RS Score": 0.0,
       "Trend Score": 0.0,
-      "Risk Score": 42.951377644758594,
+      "Risk Score": 42.95137578737979,
       "Data Score": 100.0,
       "Position Score": 65.9368761861784,
-      "Decision_Score": 27.58234898001342,
+      "Decision_Score": 27.582348745187673,
       "Decision_Status": "Lav conviction",
       "Relative_Strength_3M": -0.12320936107620106,
       "Momentum_Acceleration": -0.08038473354898712,
       "Rotation_Signal": "Negativ rotation",
-      "Volatility": 0.4105809385466506,
+      "Volatility": 0.41058095000048656,
       "Max_Drawdown": -0.2719997895624392,
       "Momentum_Data_Quality": 1.0,
       "Handling": "Reducer"
@@ -303,22 +303,22 @@
       "1M": 0.026689939904007476,
       "3M": 0.013849817114497398,
       "6M": 0.08834127880804066,
-      "12M": 0.24916580242617137,
-      "Composite": 0.026551658221907096,
-      "AI_Confidence": 82.38710735511472,
+      "12M": 0.24916609166392667,
+      "Composite": 0.02655167268379486,
+      "AI_Confidence": 82.38710733487576,
       "Momentum Score": 78.57142857142857,
-      "AI Score": 82.38710735511472,
+      "AI Score": 82.38710733487576,
       "RS Score": 81.76904356053018,
       "Trend Score": 85.0,
       "Risk Score": 100.0,
       "Data Score": 100.0,
       "Position Score": 70.50870104671012,
-      "Decision_Score": 84.66107020029513,
+      "Decision_Score": 84.66107019624734,
       "Decision_Status": "Stærk",
       "Relative_Strength_3M": 0.06353808712106035,
       "Momentum_Acceleration": -0.003716564760258013,
       "Rotation_Signal": "Aftager",
-      "Volatility": 0.08860165676131307,
+      "Volatility": 0.08860165770579778,
       "Max_Drawdown": -0.058175496201956056,
       "Momentum_Data_Quality": 1.0,
       "Handling": "Hold"
@@ -499,20 +499,20 @@
       "6M": -0.058621039420500454,
       "12M": 0.456129452426693,
       "Composite": -0.10715302181753616,
-      "AI_Confidence": 18.7018370311432,
+      "AI_Confidence": 18.70183678570386,
       "Momentum Score": 25.0,
-      "AI Score": 18.7018370311432,
+      "AI Score": 18.70183678570386,
       "RS Score": 0.0,
       "Trend Score": 0.0,
-      "Risk Score": 42.951377644758594,
+      "Risk Score": 42.95137578737979,
       "Data Score": 100.0,
       "Position Score": 65.9368761861784,
-      "Decision_Score": 27.58234898001342,
+      "Decision_Score": 27.582348745187673,
       "Decision_Status": "Lav conviction",
       "Relative_Strength_3M": -0.12320936107620106,
       "Momentum_Acceleration": -0.08038473354898712,
       "Rotation_Signal": "Negativ rotation",
-      "Volatility": 0.4105809385466506,
+      "Volatility": 0.41058095000048656,
       "Max_Drawdown": -0.2719997895624392,
       "Momentum_Data_Quality": 1.0,
       "Handling": "Reducer"
@@ -593,14 +593,14 @@
       "1M": -0.1926768659080983,
       "3M": 0.26085042579955964,
       "6M": 0.2804774767498621,
-      "12M": 1.237312709820058,
-      "Composite": 0.013211242716531651,
-      "AI_Confidence": 66.10634152990616,
+      "12M": 1.2373129200218385,
+      "Composite": 0.013211253226620673,
+      "AI_Confidence": 66.10634313347617,
       "Momentum Score": 71.42857142857143,
-      "AI Score": 66.10634152990616,
+      "AI Score": 66.10634313347617,
       "RS Score": 100.0,
       "Trend Score": 60.0,
-      "Risk Score": 36.480422388478985,
+      "Risk Score": 36.4804345236035,
       "Data Score": 100.0,
       "Position Score": 99.18875722687575,
       "Decision_Score": 69.9,
@@ -608,7 +608,7 @@
       "Relative_Strength_3M": 0.3105386958061226,
       "Momentum_Acceleration": -0.21183325889528754,
       "Rotation_Signal": "Negativ rotation",
-      "Volatility": 0.4483707286043796,
+      "Volatility": 0.4483706537711118,
       "Max_Drawdown": null,
       "Momentum_Data_Quality": 1.0,
       "Handling": "Hold"
@@ -625,23 +625,23 @@
       "1M": 0.016677208555847978,
       "3M": 0.11172713780227705,
       "6M": 0.37506231145909585,
-      "12M": 0.1380375619261791,
-      "Composite": 0.08237093253165413,
-      "AI_Confidence": 88.5275429677052,
+      "12M": 0.13803747985763226,
+      "Composite": 0.08237092842822678,
+      "AI_Confidence": 88.52754217333907,
       "Momentum Score": 89.28571428571429,
-      "AI Score": 88.5275429677052,
+      "AI Score": 88.52754217333907,
       "RS Score": 100.0,
       "Trend Score": 100.0,
-      "Risk Score": 56.739249490992314,
+      "Risk Score": 56.739238431593705,
       "Data Score": 100.0,
       "Position Score": 55.26892854447515,
-      "Decision_Score": 88.4643085412926,
+      "Decision_Score": 88.46430727647952,
       "Decision_Status": "Meget stærk",
       "Relative_Strength_3M": 0.16141540780884,
       "Momentum_Acceleration": -0.016198906689019247,
       "Rotation_Signal": "Neutral",
-      "Volatility": 0.285381328173757,
-      "Max_Drawdown": -0.32900400670727015,
+      "Volatility": 0.28538136524417623,
+      "Max_Drawdown": -0.32900405087708884,
       "Momentum_Data_Quality": 1.0,
       "Handling": "Hold"
     },
@@ -691,21 +691,21 @@
       "6M": -0.060003225825340234,
       "12M": -0.10652706125646283,
       "Composite": -0.009076193983138695,
-      "AI_Confidence": 44.939597093903686,
+      "AI_Confidence": 44.93959724044434,
       "Momentum Score": 60.71428571428571,
-      "AI Score": 44.939597093903686,
+      "AI Score": 44.93959724044434,
       "RS Score": 18.986459537812596,
       "Trend Score": 40.0,
-      "Risk Score": 10.353707737649538,
+      "Risk Score": 10.353708846605862,
       "Data Score": 100.0,
       "Position Score": 0.0,
-      "Decision_Score": 44.04983055178901,
+      "Decision_Score": 44.049830691992774,
       "Decision_Status": "Neutral",
       "Relative_Strength_3M": -0.06202708092437481,
       "Momentum_Acceleration": 0.04952151164517505,
       "Rotation_Signal": "Accelererer",
-      "Volatility": 0.4861521356178279,
-      "Max_Drawdown": -0.5494295062478738,
+      "Volatility": 0.4861521287792639,
+      "Max_Drawdown": -0.5494294782099295,
       "Momentum_Data_Quality": 1.0,
       "Handling": "Hold"
     },
@@ -787,20 +787,20 @@
       "6M": -0.08344153551033029,
       "12M": 0.29210439916036024,
       "Composite": -0.08911075394017046,
-      "AI_Confidence": 26.309595023007528,
+      "AI_Confidence": 26.30959500235913,
       "Momentum Score": 39.285714285714285,
-      "AI Score": 26.309595023007528,
+      "AI Score": 26.30959500235913,
       "RS Score": 24.634080510423054,
       "Trend Score": 0.0,
-      "Risk Score": 46.12666503897591,
+      "Risk Score": 46.126664882717755,
       "Data Score": 100.0,
       "Position Score": 91.05906352558785,
-      "Decision_Score": 37.94407933277052,
+      "Decision_Score": 37.944079313015024,
       "Decision_Status": "Lav conviction",
       "Relative_Strength_3M": -0.0507318389791539,
       "Momentum_Acceleration": -0.0726216039726007,
       "Rotation_Signal": "Negativ rotation",
-      "Volatility": 0.38888556559298193,
+      "Volatility": 0.38888556655657386,
       "Max_Drawdown": null,
       "Momentum_Data_Quality": 1.0,
       "Handling": "Reducer"
@@ -1265,22 +1265,22 @@
       "1M": 0.026689939904007476,
       "3M": 0.013849817114497398,
       "6M": 0.08834127880804066,
-      "12M": 0.24916580242617137,
-      "Composite": 0.026551658221907096,
-      "AI_Confidence": 82.38710735511472,
+      "12M": 0.24916609166392667,
+      "Composite": 0.02655167268379486,
+      "AI_Confidence": 82.38710733487576,
       "Momentum Score": 78.57142857142857,
-      "AI Score": 82.38710735511472,
+      "AI Score": 82.38710733487576,
       "RS Score": 81.76904356053018,
       "Trend Score": 85.0,
       "Risk Score": 100.0,
       "Data Score": 100.0,
       "Position Score": 70.50870104671012,
-      "Decision_Score": 84.66107020029513,
+      "Decision_Score": 84.66107019624734,
       "Decision_Status": "Stærk",
       "Relative_Strength_3M": 0.06353808712106035,
       "Momentum_Acceleration": -0.003716564760258013,
       "Rotation_Signal": "Aftager",
-      "Volatility": 0.08860165676131307,
+      "Volatility": 0.08860165770579778,
       "Max_Drawdown": -0.058175496201956056,
       "Momentum_Data_Quality": 1.0,
       "Handling": "Hold"
@@ -1292,9 +1292,9 @@
       "Handling": "Hold",
       "Aktiv": "Novo Nordisk A/S",
       "Beløb DKK": 5337.403924093941,
-      "Decision Score": 44.04983055178901,
+      "Decision Score": 44.049830691992774,
       "Status": "Neutral",
-      "Confidence": 44.939597093903686,
+      "Confidence": 44.93959724044434,
       "Begrundelse": "Positionsloft kræver lavere vægt"
     },
     {
@@ -1404,17 +1404,17 @@
     {
       "Name": "MICROSOFT CORPORATION",
       "Yahoo_Ticker": "MSF.DE",
-      "Decision_Score": 88.4643085412926,
+      "Decision_Score": 88.46430727647952,
       "Decision_Status": "Meget stærk",
-      "AI_Confidence": 88.5275429677052,
+      "AI_Confidence": 88.52754217333907,
       "Momentum Score": 89.28571428571429,
-      "AI Score": 88.5275429677052,
+      "AI Score": 88.52754217333907,
       "RS Score": 100.0,
       "Trend Score": 100.0,
-      "Risk Score": 56.739249490992314,
+      "Risk Score": 56.739238431593705,
       "Data Score": 100.0,
       "Position Score": 55.26892854447515,
-      "Composite": 0.08237093253165413,
+      "Composite": 0.08237092842822678,
       "Relative_Strength_3M": 0.16141540780884,
       "Portfolio_Weight": 0.07156971432883977,
       "Handling": "Hold"
@@ -1422,17 +1422,17 @@
     {
       "Name": "Vanguard FTSE All-World High Dvd Yield UCITS ETF",
       "Yahoo_Ticker": "VGWD.DE",
-      "Decision_Score": 84.66107020029513,
+      "Decision_Score": 84.66107019624734,
       "Decision_Status": "Stærk",
-      "AI_Confidence": 82.38710735511472,
+      "AI_Confidence": 82.38710733487576,
       "Momentum Score": 78.57142857142857,
-      "AI Score": 82.38710735511472,
+      "AI Score": 82.38710733487576,
       "RS Score": 81.76904356053018,
       "Trend Score": 85.0,
       "Risk Score": 100.0,
       "Data Score": 100.0,
       "Position Score": 70.50870104671012,
-      "Composite": 0.026551658221907096,
+      "Composite": 0.02655167268379486,
       "Relative_Strength_3M": 0.06353808712106035,
       "Portfolio_Weight": 0.04718607832526382,
       "Handling": "Hold"
@@ -1478,15 +1478,15 @@
       "Yahoo_Ticker": "FRO",
       "Decision_Score": 69.9,
       "Decision_Status": "Interessant",
-      "AI_Confidence": 66.10634152990616,
+      "AI_Confidence": 66.10634313347617,
       "Momentum Score": 71.42857142857143,
-      "AI Score": 66.10634152990616,
+      "AI Score": 66.10634313347617,
       "RS Score": 100.0,
       "Trend Score": 60.0,
-      "Risk Score": 36.480422388478985,
+      "Risk Score": 36.4804345236035,
       "Data Score": 100.0,
       "Position Score": 99.18875722687575,
-      "Composite": 0.013211242716531651,
+      "Composite": 0.013211253226620673,
       "Relative_Strength_3M": 0.3105386958061226,
       "Portfolio_Weight": 0.001297988436998804,
       "Handling": "Hold"
@@ -1523,7 +1523,7 @@
       "Foreslået vægt": 0.16,
       "Ændring": -0.0075794808725401785,
       "Handel DKK": -5337.403924093941,
-      "Decision Score": 44.04983055178901,
+      "Decision Score": 44.049830691992774,
       "Status": "Neutral",
       "Constraint": "Positionsloft",
       "Begrundelse": "Positionsloft kræver lavere vægt"
@@ -1625,7 +1625,7 @@
       "Foreslået vægt": 0.07156971432883977,
       "Ændring": 0.0,
       "Handel DKK": 0.0,
-      "Decision Score": 88.4643085412926,
+      "Decision Score": 88.46430727647952,
       "Status": "Meget stærk",
       "Constraint": "",
       "Begrundelse": "Ingen execution-ændring"
@@ -1642,7 +1642,7 @@
       "Foreslået vægt": 0.04718607832526382,
       "Ændring": 0.0,
       "Handel DKK": 0.0,
-      "Decision Score": 84.66107020029513,
+      "Decision Score": 84.66107019624734,
       "Status": "Stærk",
       "Constraint": "",
       "Begrundelse": "Ingen execution-ændring"
@@ -1795,7 +1795,7 @@
       "Foreslået vægt": 0.014305498359059459,
       "Ændring": 0.0,
       "Handel DKK": 0.0,
-      "Decision Score": 37.94407933277052,
+      "Decision Score": 37.944079313015024,
       "Status": "Lav conviction",
       "Constraint": "Konfidensgate",
       "Begrundelse": "Lav signalstyrke – signal observeres, ingen handel · Lav signalstyrke · trækker ned: Trend 0, Relative strength 0"
@@ -1880,7 +1880,7 @@
       "Foreslået vægt": 0.05450099810211457,
       "Ændring": 0.0,
       "Handel DKK": 0.0,
-      "Decision Score": 27.58234898001342,
+      "Decision Score": 27.582348745187673,
       "Status": "Lav conviction",
       "Constraint": "Konfidensgate",
       "Begrundelse": "Lav signalstyrke – signal observeres, ingen handel · Lav signalstyrke · trækker ned: Trend 0, Relative strength 0"
@@ -2022,140 +2022,25 @@
   "changes": {
     "available": true,
     "reason": null,
-    "previous_run_id": "ios-db658d7a3c77c0b9",
-    "previous_generated_at": "2026-11-07T03:00:56.299304+01:00",
+    "previous_run_id": "ios-fe98e1dcbfc18553",
+    "previous_generated_at": "2026-11-08T02:30:26.607183+01:00",
     "kpi_deltas": {
-      "portfolio_health": -4.978993,
-      "confidence": 0.609845,
+      "portfolio_health": -0.0,
+      "confidence": -0.0,
       "data_quality": 0.0,
       "macro_rate_risk": 0.0
     },
     "decision_changes": {
-      "count": 25,
+      "count": 1,
       "items": [
-        {
-          "asset": "ABB Ltd",
-          "ticker": "ABB.ST",
-          "changes": {
-            "Decision_Score": {
-              "from": 34.57580270492345,
-              "to": 34.55466500660867,
-              "delta": -0.021138
-            }
-          }
-        },
-        {
-          "asset": "AL Sydbank A/S",
-          "ticker": "ALSYDB.CO",
-          "changes": {
-            "Decision_Score": {
-              "from": 93.06491005889464,
-              "to": 93.07095940916074,
-              "delta": 0.006049
-            }
-          }
-        },
-        {
-          "asset": "Alphabet Inc. Class C",
-          "ticker": "ABEA:XETR",
-          "changes": {
-            "Decision_Score": {
-              "from": 49.494566233824706,
-              "to": 50.74456623225406,
-              "delta": 1.25
-            }
-          }
-        },
-        {
-          "asset": "ASML Holding NV",
-          "ticker": "ASML.AS",
-          "changes": {
-            "Decision_Score": {
-              "from": 28.83114824845066,
-              "to": 27.58234898001342,
-              "delta": -1.248799
-            }
-          }
-        },
-        {
-          "asset": "Danske Bank A/S",
-          "ticker": "DANSKE.CO",
-          "changes": {
-            "Handling": {
-              "from": "Reducer",
-              "to": "Øg"
-            },
-            "Decision_Status": {
-              "from": "Interessant",
-              "to": "Stærk"
-            },
-            "Decision_Score": {
-              "from": 67.56177365595497,
-              "to": 77.3665607646894,
-              "delta": 9.804787
-            }
-          }
-        },
         {
           "asset": "MICROSOFT CORPORATION",
           "ticker": "MSF.DE",
           "changes": {
             "Decision_Score": {
-              "from": 88.45805390987861,
-              "to": 88.4643085412926,
-              "delta": 0.006255
-            }
-          }
-        },
-        {
-          "asset": "Nkt A/S",
-          "ticker": "NKT.CO",
-          "changes": {
-            "Handling": {
-              "from": "Reducer",
-              "to": "Hold"
-            },
-            "Decision_Status": {
-              "from": "Lav conviction",
-              "to": "Neutral"
-            },
-            "Decision_Score": {
-              "from": 39.14566458757386,
-              "to": 44.482680134279526,
-              "delta": 5.337016
-            }
-          }
-        },
-        {
-          "asset": "Novo Nordisk A/S",
-          "ticker": "NOVO-B.CO",
-          "changes": {
-            "Decision_Score": {
-              "from": 47.2117112450981,
-              "to": 44.04983055178901,
-              "delta": -3.161881
-            }
-          }
-        },
-        {
-          "asset": "Pandora A/S",
-          "ticker": "PNDORA.CO",
-          "changes": {
-            "Decision_Score": {
-              "from": 89.01274491246679,
-              "to": 89.02345900003411,
-              "delta": 0.010714
-            }
-          }
-        },
-        {
-          "asset": "Siemens Energy AG",
-          "ticker": "ENR.DE",
-          "changes": {
-            "Decision_Score": {
-              "from": 21.837345259869444,
-              "to": 20.582469144567984,
-              "delta": -1.254876
+              "from": 88.4643085412926,
+              "to": 88.46430727647952,
+              "delta": -1e-06
             }
           }
         }
@@ -2164,26 +2049,7 @@
     "opportunity_changes": {
       "entered": [],
       "exited": [],
-      "rank_changes": [
-        {
-          "ticker": "DANSKE.CO",
-          "from": 9,
-          "to": 7,
-          "delta": 2
-        },
-        {
-          "ticker": "IS3Q.DE",
-          "from": 7,
-          "to": 8,
-          "delta": -1
-        },
-        {
-          "ticker": "FRO",
-          "from": 8,
-          "to": 9,
-          "delta": -1
-        }
-      ]
+      "rank_changes": []
     }
   }
 }
