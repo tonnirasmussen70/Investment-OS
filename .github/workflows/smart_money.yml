@@ -1,0 +1,40 @@
+name: Smart Money SEC Form 4
+
+on:
+  schedule:
+    - cron: "37 4 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: smart-money-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Collect and validate EDGAR data
+        env:
+          SEC_USER_AGENT: ${{ vars.SEC_USER_AGENT }}
+        run: python scripts/update_smart_money.py
+      - name: Publish verified snapshot
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/smart_money/latest.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Update Smart Money SEC snapshot"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
