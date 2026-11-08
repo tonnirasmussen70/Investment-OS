@@ -68,6 +68,7 @@ from modules.portfolio_engine import (
 from modules.rebalance_engine import build_rebalance_plan
 from modules.risk_engine import build_stop_loss_table, stop_loss_summary
 from modules.snapshot_engine import write_portfolio_snapshot
+from modules.smart_money_view import render_smart_money
 from modules.styling import table_style
 from modules.watchlist_engine import (
     format_watchlist_table,
@@ -672,11 +673,16 @@ tabs = st.tabs([
     "🚀 Emerging Compounders",
     "👀 Watchlist",
     "⚙️ Settings",
+    "💼 Smart Money",
 ])
 (
     tab_overview, tab_momentum, tab_positions, tab_rebalance, tab_capital_flow,
     tab_doctor, tab_opportunity, tab_compounders, tab_watchlist, tab_settings,
+    tab_smart_money,
 ) = tabs
+
+with tab_smart_money:
+    render_smart_money()
 
 with tab_overview:
     macro_score_text = (
