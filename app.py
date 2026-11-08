@@ -69,6 +69,7 @@ from modules.rebalance_engine import build_rebalance_plan
 from modules.risk_engine import build_stop_loss_table, stop_loss_summary
 from modules.snapshot_engine import write_portfolio_snapshot
 from modules.smart_money_view import render_smart_money
+from modules.settings_state import reset_model_settings_state, reset_weight_settings
 from modules.styling import table_style
 from modules.watchlist_engine import (
     format_watchlist_table,
@@ -1551,6 +1552,24 @@ with tab_watchlist:
 with tab_settings:
     st.subheader("Settings")
     st.caption("Kontrolcenter for modellen. Sessionens ændringer nulstilles ved genstart.")
+
+    # Callback-funktioner køres før widgets oprettes på næste Streamlit-rerun.
+    # Skriveadgang til widget-keys efter oprettelse udløser StreamlitAPIException.
+    def reset_health_weights() -> None:
+        reset_weight_settings(st.session_state, config.health_weights, "health_weight")
+
+    def reset_decision_weights() -> None:
+        reset_weight_settings(st.session_state, DECISION_WEIGHTS, "decision_weight")
+
+    def reset_model_overview() -> None:
+        defaults = {
+            "model_benchmark": base_config.benchmark,
+            "model_max_position_weight": float(base_config.max_position_weight),
+            "model_max_sector_weight": float(base_config.max_sector_weight),
+            "model_minimum_trade_dkk": 5_000.0,
+            "model_risk_free_rate": float(base_config.risk_free_rate),
+        }
+        reset_model_settings_state(st.session_state, defaults)
     with st.expander("Portfolio Health", expanded=True):
         factors = list(config.health_weights.keys())
         columns = st.columns(2)
@@ -1559,10 +1578,7 @@ with tab_settings:
                 st.number_input(factor, min_value=0.0, max_value=1.0, step=0.05, format="%.2f", key=f"health_weight_{factor}")
         total = sum(float(st.session_state[f"health_weight_{f}"]) for f in factors)
         st.caption(f"Indtastet vægtsum: {total:.2f}. Normaliseres automatisk.")
-        if st.button("Nulstil Portfolio Health"):
-            for factor, default in config.health_weights.items():
-                st.session_state[f"health_weight_{factor}"] = float(default)
-            st.rerun()
+        st.button("Nulstil Portfolio Health", on_click=reset_health_weights)
     with st.expander("Decision Engine"):
         factors = list(DECISION_WEIGHTS.keys())
         columns = st.columns(2)
@@ -1571,10 +1587,7 @@ with tab_settings:
                 st.number_input(factor, min_value=0.0, max_value=1.0, step=0.05, format="%.2f", key=f"decision_weight_{factor}")
         total = sum(float(st.session_state[f"decision_weight_{f}"]) for f in factors)
         st.caption(f"Indtastet vægtsum: {total:.2f}. Normaliseres automatisk.")
-        if st.button("Nulstil Decision Engine"):
-            for factor, default in DECISION_WEIGHTS.items():
-                st.session_state[f"decision_weight_{factor}"] = float(default)
-            st.rerun()
+        st.button("Nulstil Decision Engine", on_click=reset_decision_weights)
     with st.expander("Modeloversigt"):
         st.caption("Redigér værdierne og vælg Anvend modelændringer. Derefter genberegnes hele modellen med de nye parametre.")
         m1, m2 = st.columns(2)
@@ -1605,18 +1618,7 @@ with tab_settings:
                 st.session_state["model_risk_free_rate"] = float(st.session_state["draft_model_risk_free_rate"])
                 st.rerun()
         with reset_col:
-            if st.button("Nulstil Modeloversigt"):
-                defaults = {
-                    "model_benchmark": base_config.benchmark,
-                    "model_max_position_weight": float(base_config.max_position_weight),
-                    "model_max_sector_weight": float(base_config.max_sector_weight),
-                    "model_minimum_trade_dkk": 5_000.0,
-                    "model_risk_free_rate": float(base_config.risk_free_rate),
-                }
-                for key, value in defaults.items():
-                    st.session_state[key] = value
-                    st.session_state[f"draft_{key}"] = value
-                st.rerun()
+            st.button("Nulstil Modeloversigt", on_click=reset_model_overview)
     def reset_momentum_weights():
         """Nulstil Momentum-vægte før widgets oprettes."""
         for period, default in DEFAULT_MOMENTUM_WEIGHTS.items():
