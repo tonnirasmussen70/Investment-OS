@@ -1,0 +1,5303 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-11-09T16:46:11.743686+00:00",
+  "as_of": "2026-11-09",
+  "cutoff": "2026-08-12",
+  "universe": {
+    "1736297": "ALAB",
+    "1596532": "ANET",
+    "1122411": "ASX",
+    "936395": "CIEN",
+    "1030894": "CLS",
+    "820318": "COHR",
+    "1807794": "CRDO",
+    "1408710": "FN",
+    "913290": "FRO",
+    "1633978": "LITE",
+    "855658": "LSCC",
+    "1835632": "MRVL",
+    "1288469": "MXL",
+    "704532": "ONTO",
+    "1640147": "SNOW",
+    "883241": "SNPS",
+    "928876": "TSEM",
+    "1046179": "TSM",
+    "1674101": "VRT"
+  },
+  "unmapped": [],
+  "filings": [
+    {
+      "cik": 1030894,
+      "accession": "0001193125-26-347019",
+      "filed": "2026-08-12",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2046784": "Ahuja Kulvinder"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1030894,
+      "accession": "0001193125-26-347020",
+      "filed": "2026-08-12",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1218713": "CASCELLA ROBERT"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1030894,
+      "accession": "0001193125-26-347029",
+      "filed": "2026-08-12",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1772742": "Colpron Francoise"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1030894,
+      "accession": "0001193125-26-347038",
+      "filed": "2026-08-12",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2046767": "Kale Jill"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1030894,
+      "accession": "0001193125-26-347039",
+      "filed": "2026-08-12",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1182054": "KOELLNER LAURETTE T"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1030894,
+      "accession": "0001193125-26-347040",
+      "filed": "2026-08-12",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1652379": "Maletira Amar"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1030894,
+      "accession": "0001193125-26-347042",
+      "filed": "2026-08-12",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1457591": "Colpitts Christopher W."
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1030894,
+      "accession": "0001193125-26-347044",
+      "filed": "2026-08-12",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1597133": "Reeder David"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1030894,
+      "accession": "0001193125-26-347045",
+      "filed": "2026-08-12",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1195655": "MIONIS ROBERT"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 928876,
+      "accession": "0001976408-26-000719",
+      "filed": "2026-08-12",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2129121": "Ellwanger Russell Craig"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1408710,
+      "accession": "0001494794-26-000002",
+      "filed": "2026-08-13",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1494794": "Gill Harpal"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1408710,
+      "accession": "0001717718-26-000002",
+      "filed": "2026-08-13",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1717718": "Grady Seamus"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1408710,
+      "accession": "0001785907-26-000002",
+      "filed": "2026-08-13",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1785907": "Archer Edward T."
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1408710,
+      "accession": "0001802482-26-000002",
+      "filed": "2026-08-13",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1802482": "Sverha Csaba"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1030894,
+      "accession": "0001193125-26-352263",
+      "filed": "2026-08-14",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1195655": "MIONIS ROBERT"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000190",
+      "filed": "2026-08-14",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1605809": "Ullal Jayshree"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001821737-26-000011",
+      "filed": "2026-08-14",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1821737": "Dageville Benoit"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 855658,
+      "accession": "0001437749-26-028158",
+      "filed": "2026-08-17",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2055582": "Shaikh Erhaan"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 855658,
+      "accession": "0001437749-26-028160",
+      "filed": "2026-08-17",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1992449": "Desale Pravin"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1835632,
+      "accession": "0001628280-26-057399",
+      "filed": "2026-08-17",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1540963": "Scarpulla Justin"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1835632,
+      "accession": "0001628280-26-057525",
+      "filed": "2026-08-17",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1381430": "MURPHY MATTHEW J"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 883241,
+      "accession": "0001711671-26-000020",
+      "filed": "2026-08-17",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1711671": "LEE JANET"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0001032553-26-000035",
+      "filed": "2026-08-18",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1032553": "SMITH GARY B"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 855658,
+      "accession": "0001437749-26-028430",
+      "filed": "2026-08-18",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1756011": "Elashmawi Esam"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 855658,
+      "accession": "0001437749-26-028432",
+      "filed": "2026-08-18",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1891117": "Feanny Tracy Ann"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0001444157-26-000022",
+      "filed": "2026-08-18",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1444157": "Rothenstein David M"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1288469,
+      "accession": "0001478340-26-000008",
+      "filed": "2026-08-18",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1478340": "SEENDRIPU KISHORE"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001489550-26-000003",
+      "filed": "2026-08-18",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1489550": "Wupen Yuen"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001561100-26-000004",
+      "filed": "2026-08-18",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1561100": "Ali Wajid"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001570465-26-000004",
+      "filed": "2026-08-18",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1570465": "Kim Jae"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001573338-26-000014",
+      "filed": "2026-08-18",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1573338": "HURLSTON MICHAEL E."
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001648256-26-000005",
+      "filed": "2026-08-18",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1648256": "Retort Vincent"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0001998826-26-000016",
+      "filed": "2026-08-18",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1998826": "Gage Brodie"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0002080157-26-000010",
+      "filed": "2026-08-18",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2080157": "Graff Marc D."
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1122411,
+      "accession": "0000950103-26-012615",
+      "filed": "2026-08-19",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2116851": "Chung Chih-Hsiao"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 855658,
+      "accession": "0001437749-26-028487",
+      "filed": "2026-08-19",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1891117": "Feanny Tracy Ann"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1736297,
+      "accession": "0001998053-26-000023",
+      "filed": "2026-08-19",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1998053": "Mohan Jitendra"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1736297,
+      "accession": "0001998163-26-000022",
+      "filed": "2026-08-19",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1998163": "Mazzara Philip"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1736297,
+      "accession": "0001998179-26-000024",
+      "filed": "2026-08-19",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1998179": "Gajendra Sanjay"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-000912",
+      "filed": "2026-08-20",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1764515": "Luther Sherri R"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000543",
+      "filed": "2026-08-20",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114024": "Yuan Lipen"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-08-18",
+          "security": "Common Shares (2330.TW)",
+          "shares": "1000",
+          "price": "74.50",
+          "ownership": "D"
+        },
+        {
+          "line": 1,
+          "date": "2026-08-19",
+          "security": "Common Shares (2330.TW)",
+          "shares": "1000",
+          "price": "73.77",
+          "ownership": "D"
+        },
+        {
+          "line": 2,
+          "date": "2026-08-18",
+          "security": "Common Shares (2330.TW)",
+          "shares": "350",
+          "price": "73.58",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001402348-26-000017",
+      "filed": "2026-08-20",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1402348": "Slootman Frank"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001489550-26-000004",
+      "filed": "2026-08-21",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1489550": "Wupen Yuen"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001561100-26-000005",
+      "filed": "2026-08-21",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1561100": "Ali Wajid"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001570465-26-000005",
+      "filed": "2026-08-21",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1570465": "Kim Jae"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001573338-26-000015",
+      "filed": "2026-08-21",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1573338": "HURLSTON MICHAEL E."
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1807794,
+      "accession": "0001628280-26-058382",
+      "filed": "2026-08-21",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1622943": "Laufman James"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001648256-26-000006",
+      "filed": "2026-08-21",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1648256": "Retort Vincent"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1408710,
+      "accession": "0001494794-26-000004",
+      "filed": "2026-08-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1494794": "Gill Harpal"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000202",
+      "filed": "2026-08-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1817763": "Battles Kelly Bodnar"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000203",
+      "filed": "2026-08-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1224994": "CHEW LEWIS"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000204",
+      "filed": "2026-08-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1299634": "Giancarlo Charles H"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000205",
+      "filed": "2026-08-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2058736": "Lavender Robert G"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000206",
+      "filed": "2026-08-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1605698": "Scheinman Daniel"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000207",
+      "filed": "2026-08-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1201938": "TEMPLETON MARK B"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000208",
+      "filed": "2026-08-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1707744": "Wassenaar Yvonne"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000209",
+      "filed": "2026-08-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1850596": "Breithaupt Chantelle Yvette"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000210",
+      "filed": "2026-08-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1605808": "Duda Kenneth"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000211",
+      "filed": "2026-08-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1944844": "Nightingale Todd"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000212",
+      "filed": "2026-08-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1605809": "Ullal Jayshree"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1408710,
+      "accession": "0001717718-26-000004",
+      "filed": "2026-08-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1717718": "Grady Seamus"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1408710,
+      "accession": "0001785907-26-000004",
+      "filed": "2026-08-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1785907": "Archer Edward T."
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1408710,
+      "accession": "0001802482-26-000004",
+      "filed": "2026-08-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1802482": "Sverha Csaba"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1408710,
+      "accession": "0001494794-26-000006",
+      "filed": "2026-08-25",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1494794": "Gill Harpal"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000214",
+      "filed": "2026-08-25",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1817763": "Battles Kelly Bodnar"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1408710,
+      "accession": "0001717718-26-000006",
+      "filed": "2026-08-25",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1717718": "Grady Seamus"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 704532,
+      "accession": "0001784973-26-000007",
+      "filed": "2026-08-25",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1784973": "Lynch Susan D"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1408710,
+      "accession": "0001785907-26-000006",
+      "filed": "2026-08-25",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1785907": "Archer Edward T."
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1408710,
+      "accession": "0001802482-26-000006",
+      "filed": "2026-08-25",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1802482": "Sverha Csaba"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001489550-26-000005",
+      "filed": "2026-08-26",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1489550": "Wupen Yuen"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1408710,
+      "accession": "0001494794-26-000008",
+      "filed": "2026-08-26",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1494794": "Gill Harpal"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1408710,
+      "accession": "0001717718-26-000008",
+      "filed": "2026-08-26",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1717718": "Grady Seamus"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1408710,
+      "accession": "0001785907-26-000008",
+      "filed": "2026-08-26",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1785907": "Archer Edward T."
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1408710,
+      "accession": "0001802482-26-000008",
+      "filed": "2026-08-26",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1802482": "Sverha Csaba"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001489550-26-000006",
+      "filed": "2026-08-27",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1489550": "Wupen Yuen"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001489550-26-000007",
+      "filed": "2026-08-27",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1489550": "Wupen Yuen"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001561100-26-000006",
+      "filed": "2026-08-27",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1561100": "Ali Wajid"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001561100-26-000007",
+      "filed": "2026-08-27",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1561100": "Ali Wajid"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001570465-26-000006",
+      "filed": "2026-08-27",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1570465": "Kim Jae"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001570465-26-000007",
+      "filed": "2026-08-27",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1570465": "Kim Jae"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001573338-26-000016",
+      "filed": "2026-08-27",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1573338": "HURLSTON MICHAEL E."
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001573338-26-000017",
+      "filed": "2026-08-27",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1573338": "HURLSTON MICHAEL E."
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000216",
+      "filed": "2026-08-27",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1605809": "Ullal Jayshree"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001648256-26-000007",
+      "filed": "2026-08-27",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1648256": "Retort Vincent"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001648256-26-000008",
+      "filed": "2026-08-27",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1648256": "Retort Vincent"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001664898-26-000005",
+      "filed": "2026-08-27",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1664898": "Chang Eric"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001821737-26-000012",
+      "filed": "2026-08-28",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1821737": "Dageville Benoit"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 883241,
+      "accession": "0001249802-26-000008",
+      "filed": "2026-08-31",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1249802": "DE GEUS AART"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000218",
+      "filed": "2026-08-31",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1133206": "BECHTOLSHEIM ANDREAS"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001035",
+      "filed": "2026-09-01",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1644651": "ANDERSON JAMES ROBERT"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001036",
+      "filed": "2026-09-01",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1902257": "Beard Robert P"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001037",
+      "filed": "2026-09-01",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1661122": "Eng Julie Sheridan"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001038",
+      "filed": "2026-09-01",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1764515": "Luther Sherri R"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001039",
+      "filed": "2026-09-01",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1691463": "Mocciaro Ilaria"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001040",
+      "filed": "2026-09-01",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2138361": "Place Jeffrey B."
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1288469,
+      "accession": "0001288469-26-000052",
+      "filed": "2026-09-01",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1666994": "Kwong Connie H."
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 855658,
+      "accession": "0001437749-26-029439",
+      "filed": "2026-09-01",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1756011": "Elashmawi Esam"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 855658,
+      "accession": "0001437749-26-029442",
+      "filed": "2026-09-01",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1992449": "Desale Pravin"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 855658,
+      "accession": "0001437749-26-029444",
+      "filed": "2026-09-01",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1891117": "Feanny Tracy Ann"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001489550-26-000008",
+      "filed": "2026-09-01",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1489550": "Wupen Yuen"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000220",
+      "filed": "2026-09-01",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1605808": "Duda Kenneth"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001046",
+      "filed": "2026-09-02",
+      "form": "4/A",
+      "original_filed": "2026-03-09",
+      "owners": {
+        "1741413": "Digirolomo Enrico"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001047",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1224172": "SKAGGS STEPHEN A"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001048",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1741413": "Digirolomo Enrico"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1674101,
+      "accession": "0000950142-26-002483",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1183480": "MONSER EDWARD L"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0001032553-26-000037",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1032553": "SMITH GARY B"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000574",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114029": "Chuang Juiping"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000575",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113031": "Cao Min"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000576",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113698": "Fang Shu-Hua"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000577",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113710": "Chang Tzonz-Sheng"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000578",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2117998": "Chin Yung-Pei"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000579",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114030": "Chuang Tzu-Sou"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000580",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113680": "Hou Yung-Chin"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000581",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113771": "He Jun"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000582",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113688": "Jang Syun-Ming"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000583",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113699": "Huang Jen-Chau"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000584",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114031": "Hsu Kuo-Chin"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000585",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113739": "Lee Chun-Hsien"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000586",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113756": "Lin Chris Horng-Dar"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000587",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114032": "Lu Lee-Chung"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000588",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2118010": "Wang Ying-Lang"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000589",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113729": "Mii Yuh-Jier"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000590",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113717": "Wei Che-Chia"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000591",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2115263": "Zhang Kevin Xiaoqiang"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000592",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113784": "Wu Shien-Yang"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000593",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113775": "Yoo Chue-San"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000594",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113762": "Yeap Choh Fei"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 883241,
+      "accession": "0001249802-26-000010",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1249802": "DE GEUS AART"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 883241,
+      "accession": "0001615442-26-000005",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1615442": "Ellow Michael"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1835632,
+      "accession": "0001628280-26-060112",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1676204": "Koopmans Chris"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 883241,
+      "accession": "0001652437-26-000008",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1652437": "Kankanwadi Sudhindra"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 883241,
+      "accession": "0001711671-26-000022",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1711671": "LEE JANET"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 883241,
+      "accession": "0001822289-26-000008",
+      "filed": "2026-09-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1822289": "Ghazi Sassine"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1736297,
+      "accession": "0001134727-26-000013",
+      "filed": "2026-09-03",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1134727": "ALBA MANUEL"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1736297,
+      "accession": "0001484394-26-000011",
+      "filed": "2026-09-03",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1484394": "Dyckerhoff Stefan A"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000222",
+      "filed": "2026-09-03",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1850596": "Breithaupt Chantelle Yvette"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1408710,
+      "accession": "0001785907-26-000010",
+      "filed": "2026-09-03",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1785907": "Archer Edward T."
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001979088-26-000018",
+      "filed": "2026-09-03",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1979088": "Kleinerman Christian"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001054",
+      "filed": "2026-09-04",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1896118": "Neal-Graves Lisa"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000596",
+      "filed": "2026-09-04",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113698": "Fang Shu-Hua"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-07-02",
+          "security": "Common Shares (2330.TW)",
+          "shares": "1000",
+          "price": "77.09",
+          "ownership": "I"
+        },
+        {
+          "line": 1,
+          "date": "2026-07-02",
+          "security": "Common Shares (2330.TW)",
+          "shares": "1000",
+          "price": "77.09",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 704532,
+      "accession": "0001259094-26-000005",
+      "filed": "2026-09-04",
+      "form": "4/A",
+      "original_filed": "2026-09-03",
+      "owners": {
+        "1259094": "ROBERTS BRIAN K"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 704532,
+      "accession": "0001259094-26-000007",
+      "filed": "2026-09-04",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1259094": "ROBERTS BRIAN K"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001489550-26-000009",
+      "filed": "2026-09-04",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1489550": "Wupen Yuen"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 704532,
+      "accession": "0002074793-26-000008",
+      "filed": "2026-09-04",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2074793": "Chen Shirley"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1674101,
+      "accession": "0000950142-26-002513",
+      "filed": "2026-09-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1802544": "Albertazzi Giordano"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1122411,
+      "accession": "0000950103-26-013683",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2111679": "Chen Jeffrey"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1122411,
+      "accession": "0000950103-26-013684",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2116433": "Wu Tien-Yue"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1122411,
+      "accession": "0000950103-26-013685",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2116549": "Chen Tien-Szu"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1122411,
+      "accession": "0000950103-26-013686",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2111682": "Tang Andrew R"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1122411,
+      "accession": "0000950103-26-013687",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2116806": "Tung Hung-Szu"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1122411,
+      "accession": "0000950103-26-013688",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2118034": "Uang Du-Tsuen"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1122411,
+      "accession": "0000950103-26-013689",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2111683": "Kuo Hung-Ming"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1122411,
+      "accession": "0000950103-26-013690",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2116972": "Lo Raymond"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1122411,
+      "accession": "0000950103-26-013691",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2116818": "Lin Chung"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1122411,
+      "accession": "0000950103-26-013692",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2116657": "Hsiang Kenneth"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1122411,
+      "accession": "0000950103-26-013693",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2116851": "Chung Chih-Hsiao"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1122411,
+      "accession": "0000950103-26-013694",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2116721": "Tsai Chi-Wen"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000602",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113710": "Chang Tzonz-Sheng"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "53",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000603",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114027": "Chen Pei-Hung"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "46",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000604",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2117998": "Chin Yung-Pei"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "71",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000605",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113031": "Cao Min"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "56",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000606",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114026": "Chen Chih-Ho"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "32",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000612",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114030": "Chuang Tzu-Sou"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "47",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000613",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113771": "He Jun"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "46",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000614",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113698": "Fang Shu-Hua"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "56",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000615",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114029": "Chuang Juiping"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "50",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000616",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113680": "Hou Yung-Chin"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "61",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000622",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2135989": "Ku Yao-Ching"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "47",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000623",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113699": "Huang Jen-Chau"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "30",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000624",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114031": "Hsu Kuo-Chin"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "55",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000626",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114064": "Hwang Yuan-Ko"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "40",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000628",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113688": "Jang Syun-Ming"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "49",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000632",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114032": "Lu Lee-Chung"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "51",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000633",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113739": "Lee Chun-Hsien"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "52",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000635",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114025": "Lin Shyue-Shyh"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "44",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000637",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113756": "Lin Chris Horng-Dar"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "47",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000640",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2135942": "Lu Chin-Sheng"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "38",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000642",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2118010": "Wang Ying-Lang"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "54",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000643",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114023": "Tien Bor-Zen"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "43",
+          "price": "76.20",
+          "ownership": "I"
+        },
+        {
+          "line": 1,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "5",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000644",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113717": "Wei Che-Chia"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "149",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000646",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113784": "Wu Shien-Yang"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "57",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000648",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113729": "Mii Yuh-Jier"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "71",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000652",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114024": "Yuan Lipen"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "41",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000653",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2115263": "Zhang Kevin Xiaoqiang"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "61",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000654",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113762": "Yeap Choh Fei"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "54",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000655",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113775": "Yoo Chue-San"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "53",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000656",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2136731": "Wu Yi-Huang"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-09-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "40",
+          "price": "76.20",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001231919-26-001154",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1433644": "Speiser Michael L"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001246215-26-000003",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1246215": "GARRETT MARK"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1807794,
+      "accession": "0001628280-26-061180",
+      "filed": "2026-09-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1896170": "Cheng Chi Fung"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001431768-26-000005",
+      "filed": "2026-09-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1431768": "ROBINS BRIAN G"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001489550-26-000010",
+      "filed": "2026-09-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1489550": "Wupen Yuen"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000225",
+      "filed": "2026-09-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1605808": "Duda Kenneth"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000226",
+      "filed": "2026-09-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1201938": "TEMPLETON MARK B"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001640147-26-000038",
+      "filed": "2026-09-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1979088": "Kleinerman Christian"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001715472-26-000009",
+      "filed": "2026-09-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1715472": "Ramaswamy Sridhar"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001821737-26-000013",
+      "filed": "2026-09-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1821737": "Dageville Benoit"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0002012024-26-000008",
+      "filed": "2026-09-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2012024": "Ho Emily"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0002038740-26-000010",
+      "filed": "2026-09-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2038740": "Raghunathan Vivek"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0002127025-26-000006",
+      "filed": "2026-09-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2127025": "Beaulier Jonathan Mead"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001056",
+      "filed": "2026-09-11",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1902257": "Beard Robert P"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000228",
+      "filed": "2026-09-14",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1605808": "Duda Kenneth"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 883241,
+      "accession": "0001711671-26-000024",
+      "filed": "2026-09-14",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1711671": "LEE JANET"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 928876,
+      "accession": "0001976408-26-000839",
+      "filed": "2026-09-14",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1978611": "Chelouche Yoav"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001979088-26-000019",
+      "filed": "2026-09-14",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1979088": "Kleinerman Christian"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001064",
+      "filed": "2026-09-15",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1741413": "Digirolomo Enrico"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 855658,
+      "accession": "0001437749-26-030427",
+      "filed": "2026-09-15",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1992449": "Desale Pravin"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001489550-26-000011",
+      "filed": "2026-09-15",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1489550": "Wupen Yuen"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1807794,
+      "accession": "0001628280-26-062039",
+      "filed": "2026-09-15",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1896170": "Cheng Chi Fung"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1835632,
+      "accession": "0001628280-26-062124",
+      "filed": "2026-09-15",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1381430": "MURPHY MATTHEW J"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001402348-26-000018",
+      "filed": "2026-09-16",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1402348": "Slootman Frank"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001431768-26-000006",
+      "filed": "2026-09-16",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1431768": "ROBINS BRIAN G"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 855658,
+      "accession": "0001437749-26-030535",
+      "filed": "2026-09-16",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1992449": "Desale Pravin"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1807794,
+      "accession": "0001628280-26-062295",
+      "filed": "2026-09-16",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1896237": "Brennan William Joseph"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1674101,
+      "accession": "0001628280-26-062305",
+      "filed": "2026-09-16",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2035408": "Poncheri Frank"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1835632,
+      "accession": "0001628280-26-062334",
+      "filed": "2026-09-16",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1610062": "Durn Daniel"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001715472-26-000010",
+      "filed": "2026-09-16",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1715472": "Ramaswamy Sridhar"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001821737-26-000014",
+      "filed": "2026-09-16",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1821737": "Dageville Benoit"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 883241,
+      "accession": "0001822289-26-000010",
+      "filed": "2026-09-16",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1822289": "Ghazi Sassine"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001979088-26-000020",
+      "filed": "2026-09-16",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1979088": "Kleinerman Christian"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0002012024-26-000009",
+      "filed": "2026-09-16",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2012024": "Ho Emily"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0002038740-26-000011",
+      "filed": "2026-09-16",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2038740": "Raghunathan Vivek"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0002127025-26-000007",
+      "filed": "2026-09-16",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2127025": "Beaulier Jonathan Mead"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0001032553-26-000039",
+      "filed": "2026-09-17",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1032553": "SMITH GARY B"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0001444157-26-000024",
+      "filed": "2026-09-17",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1444157": "Rothenstein David M"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0001998460-26-000011",
+      "filed": "2026-09-17",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1998460": "DiPerna Dino"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0001998826-26-000018",
+      "filed": "2026-09-17",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1998826": "Gage Brodie"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001489550-26-000012",
+      "filed": "2026-09-18",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1489550": "Wupen Yuen"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000230",
+      "filed": "2026-09-21",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1133206": "BECHTOLSHEIM ANDREAS"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1807794,
+      "accession": "0001628280-26-062896",
+      "filed": "2026-09-21",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1896170": "Cheng Chi Fung"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0001032553-26-000041",
+      "filed": "2026-09-22",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1032553": "SMITH GARY B"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0001444157-26-000026",
+      "filed": "2026-09-22",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1444157": "Rothenstein David M"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001628280-26-063102",
+      "filed": "2026-09-22",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2012024": "Ho Emily"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001628280-26-063104",
+      "filed": "2026-09-22",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1979088": "Kleinerman Christian"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001628280-26-063106",
+      "filed": "2026-09-22",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2127025": "Beaulier Jonathan Mead"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001628280-26-063108",
+      "filed": "2026-09-22",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1821737": "Dageville Benoit"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001628280-26-063110",
+      "filed": "2026-09-22",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2038740": "Raghunathan Vivek"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001628280-26-063112",
+      "filed": "2026-09-22",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1715472": "Ramaswamy Sridhar"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001628280-26-063114",
+      "filed": "2026-09-22",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1402348": "Slootman Frank"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0001699193-26-000008",
+      "filed": "2026-09-22",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1699193": "Phipps Jason"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0001963638-26-000011",
+      "filed": "2026-09-22",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1963638": "Cumello Joseph"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0001963781-26-000012",
+      "filed": "2026-09-22",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1963781": "Kosaraju Sheela"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0001998460-26-000013",
+      "filed": "2026-09-22",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1998460": "DiPerna Dino"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0001998826-26-000020",
+      "filed": "2026-09-22",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1998826": "Gage Brodie"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0002080157-26-000013",
+      "filed": "2026-09-22",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2080157": "Graff Marc D."
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0002141720-26-000002",
+      "filed": "2026-09-22",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2141720": "Hoffman Grant"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001489550-26-000013",
+      "filed": "2026-09-23",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1489550": "Wupen Yuen"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000232",
+      "filed": "2026-09-23",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1605808": "Duda Kenneth"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1807794,
+      "accession": "0001628280-26-063214",
+      "filed": "2026-09-23",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1622943": "Laufman James"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1122411,
+      "accession": "0000950103-26-014420",
+      "filed": "2026-09-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2118107": "Chang Hung Pen"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1030894,
+      "accession": "0001193125-26-401230",
+      "filed": "2026-09-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1195655": "MIONIS ROBERT"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1030894,
+      "accession": "0001193125-26-401231",
+      "filed": "2026-09-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1972963": "Cooper Todd C"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001628280-26-063476",
+      "filed": "2026-09-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2127025": "Beaulier Jonathan Mead"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001628280-26-063478",
+      "filed": "2026-09-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1821737": "Dageville Benoit"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0001251445-26-000004",
+      "filed": "2026-09-25",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1251445": "NEVENS THOMAS MICHAEL"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001489550-26-000014",
+      "filed": "2026-09-25",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1489550": "Wupen Yuen"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1807794,
+      "accession": "0001628280-26-063555",
+      "filed": "2026-09-25",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1896170": "Cheng Chi Fung"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1674101,
+      "accession": "0001628280-26-063561",
+      "filed": "2026-09-25",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1984161": "Karlborg Anders"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1674101,
+      "accession": "0001628280-26-063562",
+      "filed": "2026-09-25",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1976667": "Ryan Paul"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1674101,
+      "accession": "0001628280-26-063564",
+      "filed": "2026-09-25",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1843242": "Sanghi Anand"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1674101,
+      "accession": "0001628280-26-063565",
+      "filed": "2026-09-25",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2091386": "Chamberlin Craig"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1674101,
+      "accession": "0001628280-26-063566",
+      "filed": "2026-09-25",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2043251": "Armul Scott"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1674101,
+      "accession": "0001628280-26-063567",
+      "filed": "2026-09-25",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2035408": "Poncheri Frank"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1674101,
+      "accession": "0001628280-26-063568",
+      "filed": "2026-09-25",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2075382": "Shen Wei"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1674101,
+      "accession": "0001628280-26-063569",
+      "filed": "2026-09-25",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1802544": "Albertazzi Giordano"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1674101,
+      "accession": "0001628280-26-063570",
+      "filed": "2026-09-25",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2017986": "Johnson Eric M."
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1674101,
+      "accession": "0001628280-26-063571",
+      "filed": "2026-09-25",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1812000": "Gill Stephanie L"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0001123292-26-001329",
+      "filed": "2026-09-28",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1403694": "Claflin Bruce L."
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000234",
+      "filed": "2026-09-29",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1605809": "Ullal Jayshree"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1807794,
+      "accession": "0001628280-26-063815",
+      "filed": "2026-09-29",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1896205": "Lam Yat Tung"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0001963638-26-000013",
+      "filed": "2026-09-29",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1963638": "Cumello Joseph"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001489550-26-000015",
+      "filed": "2026-09-30",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1489550": "Wupen Yuen"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1030894,
+      "accession": "0001193125-26-410705",
+      "filed": "2026-10-01",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2046767": "Kale Jill"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1030894,
+      "accession": "0001193125-26-410716",
+      "filed": "2026-10-01",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1218713": "CASCELLA ROBERT"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 704532,
+      "accession": "0001233488-26-000007",
+      "filed": "2026-10-01",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1233488": "MILLER DAVID BRIAN"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1807794,
+      "accession": "0001628280-26-064300",
+      "filed": "2026-10-01",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1896170": "Cheng Chi Fung"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1835632,
+      "accession": "0001628280-26-064351",
+      "filed": "2026-10-01",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1676204": "Koopmans Chris"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001433644-26-000017",
+      "filed": "2026-10-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1433644": "Speiser Michael L"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001561100-26-000008",
+      "filed": "2026-10-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1561100": "Ali Wajid"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1807794,
+      "accession": "0001628280-26-064627",
+      "filed": "2026-10-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1896205": "Lam Yat Tung"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001979088-26-000022",
+      "filed": "2026-10-02",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1979088": "Kleinerman Christian"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001089",
+      "filed": "2026-10-05",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2138361": "Place Jeffrey B."
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000236",
+      "filed": "2026-10-05",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1201938": "TEMPLETON MARK B"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1807794,
+      "accession": "0001628280-26-064939",
+      "filed": "2026-10-05",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1622943": "Laufman James"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1674101,
+      "accession": "0001628280-26-065239",
+      "filed": "2026-10-06",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2157281": "Resha Michael"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1807794,
+      "accession": "0001628280-26-065265",
+      "filed": "2026-10-06",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1896217": "Fleming Daniel W."
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1807794,
+      "accession": "0001628280-26-065266",
+      "filed": "2026-10-06",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1896237": "Brennan William Joseph"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 883241,
+      "accession": "0001652437-26-000010",
+      "filed": "2026-10-06",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1652437": "Kankanwadi Sudhindra"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0001699193-26-000010",
+      "filed": "2026-10-06",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1699193": "Phipps Jason"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0001963781-26-000014",
+      "filed": "2026-10-06",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1963781": "Kosaraju Sheela"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0002080157-26-000015",
+      "filed": "2026-10-06",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2080157": "Graff Marc D."
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001100",
+      "filed": "2026-10-07",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1691463": "Mocciaro Ilaria"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0001193125-26-417073",
+      "filed": "2026-10-07",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1240386": "PAGLIUCA STEPHEN G"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1807794,
+      "accession": "0001628280-26-065346",
+      "filed": "2026-10-07",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1896170": "Cheng Chi Fung"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1807794,
+      "accession": "0001628280-26-065347",
+      "filed": "2026-10-07",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1896205": "Lam Yat Tung"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 883241,
+      "accession": "0001711671-26-000026",
+      "filed": "2026-10-07",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1711671": "LEE JANET"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000672",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114026": "Chen Chih-Ho"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "31",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000673",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114027": "Chen Pei-Hung"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "43",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000674",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114029": "Chuang Juiping"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "46",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000675",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113698": "Fang Shu-Hua"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "53",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000676",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113710": "Chang Tzonz-Sheng"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "51",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000677",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2117998": "Chin Yung-Pei"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "67",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000678",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113031": "Cao Min"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "51",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000679",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114030": "Chuang Tzu-Sou"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "46",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000684",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113771": "He Jun"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "43",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000685",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114031": "Hsu Kuo-Chin"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "52",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000686",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113680": "Hou Yung-Chin"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "60",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000690",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113688": "Jang Syun-Ming"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "46",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000691",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113699": "Huang Jen-Chau"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "28",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000692",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114064": "Hwang Yuan-Ko"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "39",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000696",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2135989": "Ku Yao-Ching"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "46",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000697",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113739": "Lee Chun-Hsien"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "51",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000698",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113756": "Lin Chris Horng-Dar"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "44",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000702",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114025": "Lin Shyue-Shyh"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "44",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000703",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114032": "Lu Lee-Chung"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "49",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000704",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2135942": "Lu Chin-Sheng"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "36",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000708",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114023": "Tien Bor-Zen"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "40",
+          "price": "79.39",
+          "ownership": "I"
+        },
+        {
+          "line": 1,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "7",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000709",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113729": "Mii Yuh-Jier"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "68",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000710",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2118010": "Wang Ying-Lang"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "52",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000714",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2136731": "Wu Yi-Huang"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "39",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000715",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113717": "Wei Che-Chia"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "144",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000716",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113784": "Wu Shien-Yang"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "53",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000721",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113775": "Yoo Chue-San"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "50",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000722",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2115263": "Zhang Kevin Xiaoqiang"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "59",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000723",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113762": "Yeap Choh Fei"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "52",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000724",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114024": "Yuan Lipen"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-10-07",
+          "security": "Common Shares (2330.TW)",
+          "shares": "40",
+          "price": "79.39",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000239",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1850596": "Breithaupt Chantelle Yvette"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000240",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1605809": "Ullal Jayshree"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001821737-26-000016",
+      "filed": "2026-10-08",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1821737": "Dageville Benoit"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1736297,
+      "accession": "0001277620-26-000007",
+      "filed": "2026-10-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1277620": "BARRATT CRAIG H"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1736297,
+      "accession": "0001484394-26-000014",
+      "filed": "2026-10-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1484394": "Dyckerhoff Stefan A"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1736297,
+      "accession": "0001573338-26-000019",
+      "filed": "2026-10-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1573338": "HURLSTON MICHAEL E."
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000242",
+      "filed": "2026-10-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1605809": "Ullal Jayshree"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1807794,
+      "accession": "0001628280-26-065523",
+      "filed": "2026-10-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1896205": "Lam Yat Tung"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1835632,
+      "accession": "0001628280-26-065570",
+      "filed": "2026-10-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1540963": "Scarpulla Justin"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0001032553-26-000043",
+      "filed": "2026-10-13",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1032553": "SMITH GARY B"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 855658,
+      "accession": "0001437749-26-032528",
+      "filed": "2026-10-13",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1992449": "Desale Pravin"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 855658,
+      "accession": "0001437749-26-032530",
+      "filed": "2026-10-13",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1756011": "Elashmawi Esam"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 855658,
+      "accession": "0001437749-26-032532",
+      "filed": "2026-10-13",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1891117": "Feanny Tracy Ann"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 855658,
+      "accession": "0001437749-26-032534",
+      "filed": "2026-10-13",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1674210": "Flores Lorenzo"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 855658,
+      "accession": "0001437749-26-032537",
+      "filed": "2026-10-13",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2055582": "Shaikh Erhaan"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 855658,
+      "accession": "0001437749-26-032540",
+      "filed": "2026-10-13",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1541375": "Tamer Ford"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000244",
+      "filed": "2026-10-13",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1605809": "Ullal Jayshree"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1807794,
+      "accession": "0001628280-26-065684",
+      "filed": "2026-10-13",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1896217": "Fleming Daniel W."
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001104",
+      "filed": "2026-10-14",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1764515": "Luther Sherri R"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1122411,
+      "accession": "0000950103-26-015546",
+      "filed": "2026-10-14",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2118034": "Uang Du-Tsuen"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1807794,
+      "accession": "0001628280-26-065881",
+      "filed": "2026-10-14",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1896170": "Cheng Chi Fung"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1807794,
+      "accession": "0001628280-26-065882",
+      "filed": "2026-10-14",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1134282": "Sutardja, Pantas"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1807794,
+      "accession": "0001628280-26-065883",
+      "filed": "2026-10-14",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2094656": "Kelleher Brian"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1807794,
+      "accession": "0001628280-26-065884",
+      "filed": "2026-10-14",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1230185": "HOSEIN CLYDE"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1807794,
+      "accession": "0001628280-26-065885",
+      "filed": "2026-10-14",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1228855": "DANESH FARIBA"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1807794,
+      "accession": "0001628280-26-065886",
+      "filed": "2026-10-14",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1896158": "Khaira Manpreet"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1807794,
+      "accession": "0001628280-26-065887",
+      "filed": "2026-10-14",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1829225": "ACEVEDO SYLVIA"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 855658,
+      "accession": "0001437749-26-032791",
+      "filed": "2026-10-16",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2055582": "Shaikh Erhaan"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1835632,
+      "accession": "0001628280-26-066130",
+      "filed": "2026-10-16",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1381430": "MURPHY MATTHEW J"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1835632,
+      "accession": "0001628280-26-066132",
+      "filed": "2026-10-16",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2007961": "Casper Mark"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1835632,
+      "accession": "0001628280-26-066137",
+      "filed": "2026-10-16",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1975808": "Bharathi Sandeep"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1835632,
+      "accession": "0001628280-26-066141",
+      "filed": "2026-10-16",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1676204": "Koopmans Chris"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1835632,
+      "accession": "0001628280-26-066169",
+      "filed": "2026-10-16",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1540963": "Scarpulla Justin"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 883241,
+      "accession": "0001822289-26-000012",
+      "filed": "2026-10-16",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1822289": "Ghazi Sassine"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0001032553-26-000045",
+      "filed": "2026-10-19",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1032553": "SMITH GARY B"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0001444157-26-000028",
+      "filed": "2026-10-19",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1444157": "Rothenstein David M"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0001998460-26-000016",
+      "filed": "2026-10-19",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1998460": "DiPerna Dino"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0001998826-26-000023",
+      "filed": "2026-10-19",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1998826": "Gage Brodie"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001402348-26-000020",
+      "filed": "2026-10-21",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1402348": "Slootman Frank"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1807794,
+      "accession": "0001628280-26-066716",
+      "filed": "2026-10-21",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1896237": "Brennan William Joseph"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001124",
+      "filed": "2026-10-22",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1902257": "Beard Robert P"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000248",
+      "filed": "2026-10-22",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1605808": "Duda Kenneth"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1807794,
+      "accession": "0001628280-26-066888",
+      "filed": "2026-10-22",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1896170": "Cheng Chi Fung"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001821737-26-000017",
+      "filed": "2026-10-23",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1821737": "Dageville Benoit"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1807794,
+      "accession": "0001628280-26-068203",
+      "filed": "2026-10-29",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1896170": "Cheng Chi Fung"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1122411,
+      "accession": "0000950103-26-016896",
+      "filed": "2026-11-03",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2116851": "Chung Chih-Hsiao"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000732",
+      "filed": "2026-11-03",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114024": "Yuan Lipen"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-01",
+          "security": "Common Shares (2330.TW)",
+          "shares": "1000",
+          "price": "71.49",
+          "ownership": "D"
+        }
+      ]
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000256",
+      "filed": "2026-11-03",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1133206": "BECHTOLSHEIM ANDREAS"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1835632,
+      "accession": "0001628280-26-069600",
+      "filed": "2026-11-03",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1676204": "Koopmans Chris"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0002080157-26-000018",
+      "filed": "2026-11-03",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2080157": "Graff Marc D."
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0001032553-26-000048",
+      "filed": "2026-11-04",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1032553": "SMITH GARY B"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 855658,
+      "accession": "0001437749-26-034881",
+      "filed": "2026-11-04",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1541375": "Tamer Ford"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-04",
+          "security": "Common Stock",
+          "shares": "2894",
+          "price": "101.7849",
+          "ownership": "I"
+        },
+        {
+          "line": 1,
+          "date": "2026-11-04",
+          "security": "Common Stock",
+          "shares": "5696",
+          "price": "102.7116",
+          "ownership": "I"
+        },
+        {
+          "line": 2,
+          "date": "2026-11-04",
+          "security": "Common Stock",
+          "shares": "1200",
+          "price": "103.39880",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000258",
+      "filed": "2026-11-04",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1201938": "TEMPLETON MARK B"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001979088-26-000023",
+      "filed": "2026-11-04",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1979088": "Kleinerman Christian"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1030894,
+      "accession": "0001193125-26-449851",
+      "filed": "2026-11-05",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1972990": "Chawla Mandeep"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1030894,
+      "accession": "0001193125-26-449854",
+      "filed": "2026-11-05",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2144869": "Dorwart Steven Gregg"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1030894,
+      "accession": "0001193125-26-449857",
+      "filed": "2026-11-05",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2157259": "Ankenmann Todd"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 855658,
+      "accession": "0001437749-26-035328",
+      "filed": "2026-11-05",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2055582": "Shaikh Erhaan"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001821737-26-000018",
+      "filed": "2026-11-05",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1821737": "Dageville Benoit"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000734",
+      "filed": "2026-11-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1188935": "SPLINTER MICHAEL R"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-05",
+          "security": "American Depositary Shares (TSM)",
+          "shares": "840",
+          "price": "357",
+          "ownership": "D"
+        }
+      ]
+    }
+  ]
+}
