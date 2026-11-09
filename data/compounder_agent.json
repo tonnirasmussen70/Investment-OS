@@ -1,7 +1,53 @@
 {
-  "generated_at": "2026-11-02T09:09:59+01:00",
+  "generated_at": "2026-11-09T09:02:25+01:00",
   "methodology_version": "7.1",
   "candidates": [
+    {
+      "ticker": "ALAB",
+      "name": "Astera Labs",
+      "agent_score": 98,
+      "agent_confidence": 97,
+      "growth_score": 100,
+      "earnings_score": 99,
+      "momentum_score": 93,
+      "capital_flow_score": 89,
+      "moat_score": 95,
+      "guidance_score": 100,
+      "news_score": 100,
+      "prior_score": 96,
+      "score_change": 2,
+      "is_new": false,
+      "thesis": "Q3 2026 revenue $584.9m (+154% YoY, +49% QoQ), GAAP operating margin 30.6%; Scorpio switches now largest product family. Q4 guidance $730-750m strengthens rack-scale connectivity platform thesis.",
+      "risk": "Hyperscaler concentration, demanding valuation, and execution risk in Scorpio and multiple new product ramps.",
+      "news_classification": "Teseændrende",
+      "sources": [
+        "https://www.sec.gov/Archives/edgar/data/1736297/000173629726000044/q326exhibit991.htm",
+        "https://ir.asteralabs.com/news-releases/news-release-details/astera-labs-reports-second-quarter-2026-financial-results"
+      ]
+    },
+    {
+      "ticker": "LITE",
+      "name": "Lumentum Holdings",
+      "agent_score": 98,
+      "agent_confidence": 96,
+      "growth_score": 100,
+      "earnings_score": 100,
+      "momentum_score": 95,
+      "capital_flow_score": 91,
+      "moat_score": 88,
+      "guidance_score": 100,
+      "news_score": 100,
+      "prior_score": 94,
+      "score_change": 4,
+      "is_new": false,
+      "thesis": "FY27 Q1 revenue $1.263bn (+136.5% YoY), non-GAAP operating margin 42.3%; Q2 guidance $1.575-1.625bn and second major NPO/CPO win backed by >$5bn purchase commitments create major optical growth visibility.",
+      "risk": "Exceptional growth expectations, optical-capacity expansion, customer concentration, and uncertainty around timing/realization of commitments.",
+      "news_classification": "Teseændrende",
+      "sources": [
+        "https://www.investor.lumentum.com/financial-news-releases/news-details/2026/Lumentum-Announces-First-Quarter-of-Fiscal-Year-2027-Financial-Results/default.aspx",
+        "https://investor.lumentum.com/financial-news-releases/news-details/2026/Lumentum-Announces-Fourth-Quarter-and-Full-Fiscal-Year-2026-Results/default.aspx"
+      ]
+    },
     {
       "ticker": "CLS",
       "name": "Celestica",
@@ -14,15 +60,38 @@
       "moat_score": 86,
       "guidance_score": 100,
       "news_score": 100,
-      "prior_score": 93,
-      "score_change": 4,
+      "prior_score": 97,
+      "score_change": 0,
       "is_new": false,
       "thesis": "Q3 2026 revenue $5.83bn (+83% YoY), adjusted EPS $3.30 (+109%) and 2027 revenue guidance $40bn (+90% on FY2026 outlook) establish a major AI compute/networking hardware ramp; 2027 adjusted operating margin targeted at 9%.",
       "risk": "$3.45bn equity raise, 2027 capex guidance $1.5-2.0bn, customer concentration and low-margin hardware execution; 2027 projections are management guidance, not realized revenue.",
-      "news_classification": "Teseændrende",
+      "news_classification": "Relevant",
       "sources": [
         "https://celestica.gcs-web.com/node/17881",
         "https://corporate.celestica.com/events/event-details/q3-2026-financial-results-2026-investor-and-analyst-day"
+      ]
+    },
+    {
+      "ticker": "ANET",
+      "name": "Arista Networks",
+      "agent_score": 96,
+      "agent_confidence": 98,
+      "growth_score": 99,
+      "earnings_score": 99,
+      "momentum_score": 92,
+      "capital_flow_score": 94,
+      "moat_score": 97,
+      "guidance_score": 99,
+      "news_score": 99,
+      "prior_score": 92,
+      "score_change": 4,
+      "is_new": false,
+      "thesis": "Q3 revenue $3.66bn (+58.5% YoY), non-GAAP operating margin 49.1%, EPS $1.20; Ethernet AI networking and rack-scale architectures support a strong platform moat.",
+      "risk": "High valuation and concentration in large cloud customers; capex normalization may affect growth.",
+      "news_classification": "Teseændrende",
+      "sources": [
+        "https://www.arista.com/en/company/news/press-release/25025-pr-20261103",
+        "https://investors.arista.com/"
       ]
     },
     {
@@ -49,25 +118,27 @@
       ]
     },
     {
-      "ticker": "ALAB",
-      "name": "Astera Labs",
+      "ticker": "TSEM",
+      "name": "Tower Semiconductor",
       "agent_score": 96,
-      "agent_confidence": 95,
-      "growth_score": 99,
-      "earnings_score": 96,
-      "momentum_score": 93,
-      "capital_flow_score": 89,
-      "moat_score": 95,
-      "guidance_score": 98,
-      "news_score": 90,
-      "prior_score": 96,
-      "score_change": 0,
+      "agent_confidence": 96,
+      "growth_score": 98,
+      "earnings_score": 99,
+      "momentum_score": 92,
+      "capital_flow_score": 91,
+      "moat_score": 96,
+      "guidance_score": 99,
+      "news_score": 100,
+      "prior_score": 92,
+      "score_change": 4,
       "is_new": false,
-      "thesis": "Rack-scale connectivity and memory-fabric expansion remain intact with no new thesis-changing primary datapoint this week.",
-      "risk": "Premium valuation, hyperscaler concentration and simultaneous product-ramp execution.",
-      "news_classification": "Relevant",
+      "thesis": "Q3 revenue $526m (+33% YoY), gross profit +92%, Q4 guide $600m; management targets $1.1bn annualized silicon-photonics revenue run rate in Q4 and cites customer agreements extended through 2029.",
+      "risk": "Q3 operating cash flow $185m vs net PP&E spending $191m; foundry expansion is capital intensive, and annualized SiPho run rate is not booked full-year revenue.",
+      "news_classification": "Teseændrende",
       "sources": [
-        "https://ir.asteralabs.com/news-releases/news-release-details/astera-labs-reports-second-quarter-2026-financial-results"
+        "https://ir.towersemi.com/news-releases/news-release-details/tower-semiconductor-reports-third-quarter-record-results/",
+        "https://ir.towersemi.com/news-releases/news-release-details/tower-semiconductor-announces-record-results-revenue-and",
+        "https://www.globenewswire.com/news-release/2026/09/17/3363790/0/en/newphotonics-and-tower-semiconductor-begin-high-volume-shipments-of-laser-integrated-serviceable-optical-engine-pics-for-scale-out-and-scale-up-ai-interconnect.html"
       ]
     },
     {
@@ -105,12 +176,12 @@
       "moat_score": 97,
       "guidance_score": 87,
       "news_score": 98,
-      "prior_score": 94,
-      "score_change": 1,
+      "prior_score": 95,
+      "score_change": 0,
       "is_new": false,
       "thesis": "Hybrid-bonding orders remain strong; Applied Materials announced intention to increase strategic ownership from 9% to about 20%, validating collaboration on advanced chip packaging and AI photonics.",
       "risk": "Planned stake increase is subject to approvals and not itself a purchase of Besi products; Q4 sales guided flat +/-5%, hybrid-bonding adoption and equipment cyclicality.",
-      "news_classification": "Teseændrende",
+      "news_classification": "Relevant",
       "sources": [
         "https://www.besi.com/investor-relations/press-releases/details/be-semiconductor-industries-nv-announces-q3-2026-results/",
         "https://www.besi.com/events/events-shows/details/applied-materials-to-increase-its-strategic-investment-in-be-semiconductor-industries/"
@@ -151,12 +222,12 @@
       "moat_score": 93,
       "guidance_score": 99,
       "news_score": 100,
-      "prior_score": null,
-      "score_change": null,
-      "is_new": true,
+      "prior_score": 95,
+      "score_change": 0,
+      "is_new": false,
       "thesis": "Re-entry after Q3 2026 sales +61%, organic orders +100% YoY, adjusted EPS +78% and raised FY2026 guidance; power distribution and liquid cooling remain critical AI datacenter bottlenecks.",
       "risk": "High expectations and valuation, hyperscaler spending concentration, capacity expansion and integration of acquisitions; order growth can outpace revenue recognition.",
-      "news_classification": "Teseændrende",
+      "news_classification": "Relevant",
       "sources": [
         "https://investors.vertiv.com/news/news-details/2026/Vertiv-Reports-Strong-Third-Quarter-2026-with-Net-Sales-Growth-of-61-Organic-Orders-Growth-over-100-and-Diluted-EPS-Growth-of-91-Adjusted-Diluted-EPS-Growth-of-78-Raises-Full-Year-2026-Guidance-Across-All-Key-Metrics/default.aspx"
       ]
@@ -185,25 +256,26 @@
       ]
     },
     {
-      "ticker": "LITE",
-      "name": "Lumentum Holdings",
+      "ticker": "FN",
+      "name": "Fabrinet",
       "agent_score": 94,
-      "agent_confidence": 89,
-      "growth_score": 99,
-      "earnings_score": 98,
-      "momentum_score": 95,
-      "capital_flow_score": 91,
-      "moat_score": 88,
+      "agent_confidence": 94,
+      "growth_score": 98,
+      "earnings_score": 96,
+      "momentum_score": 87,
+      "capital_flow_score": 82,
+      "moat_score": 86,
       "guidance_score": 99,
-      "news_score": 87,
-      "prior_score": 94,
-      "score_change": 0,
+      "news_score": 97,
+      "prior_score": 91,
+      "score_change": 3,
       "is_new": false,
-      "thesis": "Optical connectivity remains a core AI-rack bottleneck with exceptional growth, margin expansion and strong forward guidance.",
-      "risk": "Extreme rerating increases valuation and drawdown risk; optical cycles can reverse sharply.",
-      "news_classification": "Relevant",
+      "thesis": "FY27 Q1 revenue $1.4745bn (+51% YoY), non-GAAP EPS $4.34 vs $2.92; Q2 revenue outlook $1.6-1.65bn confirms acceleration in advanced optical manufacturing.",
+      "risk": "GAAP net income rose much slower than sales; outsourced-manufacturing margins and customer concentration limit moat.",
+      "news_classification": "Teseændrende",
       "sources": [
-        "https://investor.lumentum.com/financial-news-releases/news-details/2026/Lumentum-Announces-Fourth-Quarter-and-Full-Fiscal-Year-2026-Results/default.aspx"
+        "https://investor.fabrinet.com/news-releases/news-release-details/fabrinet-announces-first-quarter-fiscal-year-2027-financial",
+        "https://investor.fabrinet.com/node/13666"
       ]
     },
     {
@@ -218,12 +290,12 @@
       "moat_score": 97,
       "guidance_score": 99,
       "news_score": 100,
-      "prior_score": null,
-      "score_change": null,
-      "is_new": true,
+      "prior_score": 93,
+      "score_change": 0,
+      "is_new": false,
       "thesis": "Q3 2026 revenue €1.159bn (+45% reported YoY), 52% gross margin and 33.4% adjusted operating margin; management expects >€5.7bn revenue in 2027, achieving former 2030 target three years early. ALD and advanced-node equipment leverage AI logic and HBM investment.",
       "risk": "Semiconductor equipment cycle, premium valuation, China/export restrictions and advanced-node capex timing; 2027 target is forward guidance.",
-      "news_classification": "Teseændrende",
+      "news_classification": "Relevant",
       "sources": [
         "https://rss.globenewswire.com/news-release/2026/10/27/3389491/0/en/asm-reports-third-quarter-2026-results.html"
       ]
@@ -240,12 +312,12 @@
       "moat_score": 93,
       "guidance_score": 91,
       "news_score": 98,
-      "prior_score": 90,
-      "score_change": 3,
+      "prior_score": 93,
+      "score_change": 0,
       "is_new": false,
       "thesis": "Unaudited Q3 revenue NT$244.2bn (+44.8% YoY), parent net profit NT$27.0bn vs NT$10.9bn and advanced packaging/testing ATM margin expansion confirm AI packaging operating leverage.",
       "risk": "Capital intensity (Q3 equipment capex $2.1bn), customer concentration, net debt and potential negative free cash flow as capacity expands.",
-      "news_classification": "Teseændrende",
+      "news_classification": "Relevant",
       "sources": [
         "https://www.nasdaq.com/press-release/ase-technology-holding-co-ltd-reports-its-unaudited-consolidated-financial-results-3",
         "https://www.aseglobal.com/press-room/ase-expands-powersip-platform-for-next-generation-ai-power-delivery"
@@ -276,70 +348,26 @@
       ]
     },
     {
-      "ticker": "ANET",
-      "name": "Arista Networks",
+      "ticker": "LSCC",
+      "name": "Lattice Semiconductor",
       "agent_score": 92,
-      "agent_confidence": 97,
-      "growth_score": 94,
-      "earnings_score": 95,
-      "momentum_score": 92,
-      "capital_flow_score": 94,
-      "moat_score": 97,
-      "guidance_score": 96,
-      "news_score": 86,
-      "prior_score": 92,
-      "score_change": 0,
-      "is_new": false,
-      "thesis": "AI-network demand and strong growth expectations remain intact without a thesis-changing company datapoint this week.",
-      "risk": "Large-cap maturity, premium valuation and hyperscaler concentration.",
-      "news_classification": "Relevant",
-      "sources": [
-        "https://investors.arista.com/"
-      ]
-    },
-    {
-      "ticker": "TSEM",
-      "name": "Tower Semiconductor",
-      "agent_score": 92,
-      "agent_confidence": 94,
-      "growth_score": 95,
-      "earnings_score": 96,
-      "momentum_score": 92,
-      "capital_flow_score": 91,
-      "moat_score": 96,
+      "agent_confidence": 89,
+      "growth_score": 99,
+      "earnings_score": 93,
+      "momentum_score": 74,
+      "capital_flow_score": 73,
+      "moat_score": 92,
       "guidance_score": 98,
-      "news_score": 94,
-      "prior_score": 92,
-      "score_change": 0,
+      "news_score": 99,
+      "prior_score": 88,
+      "score_change": 4,
       "is_new": false,
-      "thesis": "High-volume 800G/1.6T laser-integrated PIC shipments and a fast-growing silicon-photonics run-rate keep Tower positioned as an upstream AI-optics bottleneck.",
-      "risk": "Foundry capital intensity, SiPho capacity execution, customer concentration and non-AI cyclicality.",
-      "news_classification": "Relevant",
+      "thesis": "Q3 revenue $291m (+118% YoY) and Q4 outlook ~$335m; FPGA revenue grew ~90%, but consolidated growth also includes acquired AMI, making organic growth reconciliation essential.",
+      "risk": "Acquisition-driven comparability, integration, dilution, and low GAAP net margin (3.9%) despite high non-GAAP profitability.",
+      "news_classification": "Teseændrende",
       "sources": [
-        "https://ir.towersemi.com/news-releases/news-release-details/tower-semiconductor-announces-record-results-revenue-and",
-        "https://www.globenewswire.com/news-release/2026/09/17/3363790/0/en/newphotonics-and-tower-semiconductor-begin-high-volume-shipments-of-laser-integrated-serviceable-optical-engine-pics-for-scale-out-and-scale-up-ai-interconnect.html"
-      ]
-    },
-    {
-      "ticker": "FN",
-      "name": "Fabrinet",
-      "agent_score": 91,
-      "agent_confidence": 91,
-      "growth_score": 94,
-      "earnings_score": 95,
-      "momentum_score": 87,
-      "capital_flow_score": 82,
-      "moat_score": 86,
-      "guidance_score": 96,
-      "news_score": 82,
-      "prior_score": 91,
-      "score_change": 0,
-      "is_new": false,
-      "thesis": "Advanced optical manufacturing continues benefiting directly from AI datacenter optical demand and next-generation transceiver scaling.",
-      "risk": "Customer concentration and outsourced-manufacturing economics; expectations have risen substantially.",
-      "news_classification": "Relevant",
-      "sources": [
-        "https://investor.fabrinet.com/node/13666"
+        "https://latticesemi.gcs-web.com/news-releases/news-release-details/lattice-semiconductor-reports-record-3q26-revenue-118-yoy",
+        "https://latticesemi.gcs-web.com/news-releases/news-release-details/lattice-semiconductor-reports-record-2q26-revenue-62-yoy"
       ]
     },
     {
@@ -406,28 +434,6 @@
       "news_classification": "Relevant",
       "sources": [
         "https://www.sec.gov/Archives/edgar/data/1640147/000164014726000033/fy2027q2earnings.htm"
-      ]
-    },
-    {
-      "ticker": "LSCC",
-      "name": "Lattice Semiconductor",
-      "agent_score": 88,
-      "agent_confidence": 86,
-      "growth_score": 91,
-      "earnings_score": 88,
-      "momentum_score": 74,
-      "capital_flow_score": 73,
-      "moat_score": 92,
-      "guidance_score": 89,
-      "news_score": 85,
-      "prior_score": 88,
-      "score_change": 0,
-      "is_new": false,
-      "thesis": "Q2-omsætning +62 % YoY, stærke AI-server design wins og købet af AMI udvider Lattice fra low-power FPGA til firmware og sikker server management; mulig platform-compounder.",
-      "risk": "Q2-tallene er fra august og ikke en ny regnskabsbekræftelse i denne uge; AMI-integration, aktieudvanding og værdiansættelse skal undersøges.",
-      "news_classification": "Relevant",
-      "sources": [
-        "https://latticesemi.gcs-web.com/news-releases/news-release-details/lattice-semiconductor-reports-record-2q26-revenue-62-yoy"
       ]
     },
     {
