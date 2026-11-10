@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-09T16:46:11.743686+00:00",
-  "as_of": "2026-11-09",
-  "cutoff": "2026-08-12",
+  "generated_at": "2026-11-10T12:56:10.852313+00:00",
+  "as_of": "2026-11-10",
+  "cutoff": "2026-08-13",
   "universe": {
     "1736297": "ALAB",
     "1596532": "ANET",
@@ -26,126 +26,6 @@
   },
   "unmapped": [],
   "filings": [
-    {
-      "cik": 1030894,
-      "accession": "0001193125-26-347019",
-      "filed": "2026-08-12",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "2046784": "Ahuja Kulvinder"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1030894,
-      "accession": "0001193125-26-347020",
-      "filed": "2026-08-12",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1218713": "CASCELLA ROBERT"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1030894,
-      "accession": "0001193125-26-347029",
-      "filed": "2026-08-12",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1772742": "Colpron Francoise"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1030894,
-      "accession": "0001193125-26-347038",
-      "filed": "2026-08-12",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "2046767": "Kale Jill"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1030894,
-      "accession": "0001193125-26-347039",
-      "filed": "2026-08-12",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1182054": "KOELLNER LAURETTE T"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1030894,
-      "accession": "0001193125-26-347040",
-      "filed": "2026-08-12",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1652379": "Maletira Amar"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1030894,
-      "accession": "0001193125-26-347042",
-      "filed": "2026-08-12",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1457591": "Colpitts Christopher W."
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1030894,
-      "accession": "0001193125-26-347044",
-      "filed": "2026-08-12",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1597133": "Reeder David"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1030894,
-      "accession": "0001193125-26-347045",
-      "filed": "2026-08-12",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1195655": "MIONIS ROBERT"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 928876,
-      "accession": "0001976408-26-000719",
-      "filed": "2026-08-12",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "2129121": "Ellwanger Russell Craig"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
     {
       "cik": 1408710,
       "accession": "0001494794-26-000002",
@@ -5296,6 +5176,668 @@
           "shares": "840",
           "price": "357",
           "ownership": "D"
+        }
+      ]
+    },
+    {
+      "cik": 1736297,
+      "accession": "0001484394-26-000017",
+      "filed": "2026-11-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1484394": "Dyckerhoff Stefan A"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000260",
+      "filed": "2026-11-09",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1133206": "BECHTOLSHEIM ANDREAS"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000741",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113031": "Cao Min"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "57",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000742",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2117998": "Chin Yung-Pei"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "73",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000743",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113710": "Chang Tzonz-Sheng"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "55",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000744",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114026": "Chen Chih-Ho"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "33",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000745",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114027": "Chen Pei-Hung"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "48",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000746",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114029": "Chuang Juiping"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "50",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000753",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113771": "He Jun"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "47",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000754",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113680": "Hou Yung-Chin"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "64",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000755",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113698": "Fang Shu-Hua"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "58",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000756",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114031": "Hsu Kuo-Chin"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "56",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000757",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114030": "Chuang Tzu-Sou"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "48",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000758",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113699": "Huang Jen-Chau"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "30",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000771",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113729": "Mii Yuh-Jier"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "73",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000772",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113739": "Lee Chun-Hsien"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "54",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000773",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114032": "Lu Lee-Chung"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "53",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000774",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114025": "Lin Shyue-Shyh"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "47",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000775",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2118010": "Wang Ying-Lang"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "56",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000776",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2135942": "Lu Chin-Sheng"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "40",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000777",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2135989": "Ku Yao-Ching"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "48",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000778",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113688": "Jang Syun-Ming"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "51",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000779",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113717": "Wei Che-Chia"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "155",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000780",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114064": "Hwang Yuan-Ko"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "41",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000781",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113756": "Lin Chris Horng-Dar"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "50",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000782",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114023": "Tien Bor-Zen"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "43",
+          "price": "70.50",
+          "ownership": "I"
+        },
+        {
+          "line": 1,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "6",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000789",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114024": "Yuan Lipen"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "43",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000790",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2136731": "Wu Yi-Huang"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "41",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000791",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2115263": "Zhang Kevin Xiaoqiang"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "65",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000792",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113762": "Yeap Choh Fei"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "57",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000793",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113775": "Yoo Chue-San"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "54",
+          "price": "70.50",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000794",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2113784": "Wu Shien-Yang"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-06",
+          "security": "Common Shares (2330.TW)",
+          "shares": "59",
+          "price": "70.50",
+          "ownership": "I"
         }
       ]
     }
