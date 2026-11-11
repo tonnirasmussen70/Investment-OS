@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-10T12:56:10.852313+00:00",
-  "as_of": "2026-11-10",
-  "cutoff": "2026-08-13",
+  "generated_at": "2026-11-11T12:06:33.581079+00:00",
+  "as_of": "2026-11-11",
+  "cutoff": "2026-08-14",
   "universe": {
     "1736297": "ALAB",
     "1596532": "ANET",
@@ -26,54 +26,6 @@
   },
   "unmapped": [],
   "filings": [
-    {
-      "cik": 1408710,
-      "accession": "0001494794-26-000002",
-      "filed": "2026-08-13",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1494794": "Gill Harpal"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1408710,
-      "accession": "0001717718-26-000002",
-      "filed": "2026-08-13",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1717718": "Grady Seamus"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1408710,
-      "accession": "0001785907-26-000002",
-      "filed": "2026-08-13",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1785907": "Archer Edward T."
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1408710,
-      "accession": "0001802482-26-000002",
-      "filed": "2026-08-13",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1802482": "Sverha Csaba"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
     {
       "cik": 1030894,
       "accession": "0001193125-26-352263",
@@ -5840,6 +5792,54 @@
           "ownership": "I"
         }
       ]
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001433644-26-000018",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1433644": "Speiser Michael L"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001433644-26-000019",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1433644": "Speiser Michael L"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 855658,
+      "accession": "0001437749-26-036068",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1814048": "Schwarting Elizabeth M"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000262",
+      "filed": "2026-11-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1133206": "BECHTOLSHEIM ANDREAS"
+      },
+      "plan_10b5_1": true,
+      "rows": []
     }
   ]
 }
