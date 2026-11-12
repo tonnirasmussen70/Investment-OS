@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-11T12:06:33.581079+00:00",
-  "as_of": "2026-11-11",
-  "cutoff": "2026-08-14",
+  "generated_at": "2026-11-12T13:12:16.034845+00:00",
+  "as_of": "2026-11-12",
+  "cutoff": "2026-08-15",
   "universe": {
     "1736297": "ALAB",
     "1596532": "ANET",
@@ -26,42 +26,6 @@
   },
   "unmapped": [],
   "filings": [
-    {
-      "cik": 1030894,
-      "accession": "0001193125-26-352263",
-      "filed": "2026-08-14",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1195655": "MIONIS ROBERT"
-      },
-      "plan_10b5_1": true,
-      "rows": []
-    },
-    {
-      "cik": 1596532,
-      "accession": "0001596532-26-000190",
-      "filed": "2026-08-14",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1605809": "Ullal Jayshree"
-      },
-      "plan_10b5_1": true,
-      "rows": []
-    },
-    {
-      "cik": 1640147,
-      "accession": "0001821737-26-000011",
-      "filed": "2026-08-14",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1821737": "Dageville Benoit"
-      },
-      "plan_10b5_1": true,
-      "rows": []
-    },
     {
       "cik": 855658,
       "accession": "0001437749-26-028158",
@@ -5840,6 +5804,48 @@
       },
       "plan_10b5_1": true,
       "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001275",
+      "filed": "2026-11-12",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1741413": "Digirolomo Enrico"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-10",
+          "security": "Common Stock",
+          "shares": "1000",
+          "price": "222.885",
+          "ownership": "D"
+        }
+      ]
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001276",
+      "filed": "2026-11-12",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1644651": "ANDERSON JAMES ROBERT"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-09",
+          "security": "Common Stock",
+          "shares": "5000",
+          "price": "199.48",
+          "ownership": "D"
+        }
+      ]
     }
   ]
 }
