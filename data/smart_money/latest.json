@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-12T13:12:16.034845+00:00",
-  "as_of": "2026-11-12",
-  "cutoff": "2026-08-15",
+  "generated_at": "2026-11-13T12:34:26.963090+00:00",
+  "as_of": "2026-11-13",
+  "cutoff": "2026-08-16",
   "universe": {
     "1736297": "ALAB",
     "1596532": "ANET",
@@ -12,7 +12,6 @@
     "820318": "COHR",
     "1807794": "CRDO",
     "1408710": "FN",
-    "913290": "FRO",
     "1633978": "LITE",
     "855658": "LSCC",
     "1835632": "MRVL",
@@ -5846,6 +5845,30 @@
           "ownership": "D"
         }
       ]
+    },
+    {
+      "cik": 855658,
+      "accession": "0001437749-26-036404",
+      "filed": "2026-11-12",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1674210": "Flores Lorenzo"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1122411,
+      "accession": "0000950103-26-017425",
+      "filed": "2026-11-13",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2116549": "Chen Tien-Szu"
+      },
+      "plan_10b5_1": false,
+      "rows": []
     }
   ]
 }
