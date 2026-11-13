@@ -65,6 +65,7 @@ from modules.portfolio_engine import (
     load_master_file,
     portfolio_summary,
 )
+from modules.capital_rotation_engine import build_rotation_scenario, review_rotation_sources
 from modules.rebalance_engine import build_rebalance_plan
 from modules.risk_engine import build_stop_loss_table, stop_loss_summary
 from modules.snapshot_engine import write_portfolio_snapshot
@@ -1337,7 +1338,7 @@ with tab_positions:
 
 with tab_rebalance:
     st.subheader("Rebalancering")
-    st.caption("7.0 omsætter Decision Engine til dynamiske target weights og konkrete handler. Aktier og ETF'er vises separat, mens positions- og sektorloft håndhæves som hard constraints.")
+    st.caption("Decision Engine beregner dynamiske targets. Positionsloft er et hard constraint; sektorloft begrænser nye køb og viser en note ved eksisterende overvægt.")
     r1, r2, r3, r4, r5 = st.columns(5)
     r1.metric("Handler", rebalance_result.trade_count)
     r2.metric("Køb", compact_dkk(rebalance_result.buy_dkk))
@@ -1404,6 +1405,86 @@ with tab_rebalance:
         show_rebalance_section(rebalance, "Aktie", "Aktier")
         st.divider()
         show_rebalance_section(rebalance, "ETF", "ETF'er")
+
+    with st.expander("🔁 Kapitalrotation – finansier køb fra en eksisterende position (scenarie)", expanded=False):
+        st.caption(
+            "Kun simulering: sælg en manuelt valgt Hold-/Reducer-position, og fordel "
+            "provenuet på bekræftede køb inden for samme Saxo-konto og aktivklasse. "
+            "Intet salg udløses automatisk af lav momentum eller lav confidence."
+        )
+        rotation_candidates = review_rotation_sources(rebalance_result.data)
+        if rotation_candidates.empty:
+            st.info("Ingen svagere Hold-/Reducer-positioner med verificeret konto og vægt over 2% til manuel vurdering.")
+        else:
+            source_names = rotation_candidates["Aktiv"].tolist()
+            source_index = next(
+                (i for i, name in enumerate(source_names) if str(name).casefold().startswith("nkt")),
+                0,
+            )
+            source_name = st.selectbox(
+                "Position der kan finansiere køb (manuel vurdering)",
+                options=source_names,
+                index=source_index,
+                key="rotation_source_asset",
+            )
+            source = rebalance_result.data.loc[rebalance_result.data["Aktiv"].eq(source_name)].iloc[0]
+            source_account = str(source.get("Account", "")).strip()
+            source_class = str(source.get("Asset_Type", "")).strip().casefold()
+            same_universe = rebalance_result.data.loc[
+                rebalance_result.data["Account"].fillna("").astype(str).str.strip().eq(source_account)
+                & rebalance_result.data["Asset_Type"].fillna("").astype(str).str.strip().str.casefold().eq(source_class)
+                & rebalance_result.data["Rebalance handling"].eq("Køb")
+                & rebalance_result.data["Aktiv"].ne(source_name)
+            ].sort_values("Decision Score", ascending=False)
+            buy_names = same_universe["Aktiv"].tolist()
+            chosen_buys = st.multiselect(
+                "Bekræftede købskandidater i samme konto",
+                options=buy_names,
+                default=buy_names[:2],
+                key="rotation_buy_assets",
+            )
+            rotation_sale_pct = st.slider(
+                "Ønsket reduktion af finansieringsposition (%-point)",
+                min_value=0.5,
+                max_value=4.0,
+                value=2.0,
+                step=0.5,
+                key="rotation_sale_weight_pct",
+            )
+            scenario = build_rotation_scenario(
+                rebalance_result.data,
+                source_asset=source_name,
+                buy_assets=chosen_buys,
+                active_market_value_dkk=return_market_value,
+                sale_weight=rotation_sale_pct / 100,
+                minimum_position_weight=0.02,
+                maximum_position_weight=config.max_position_weight,
+                maximum_sector_weight=config.max_sector_weight,
+                minimum_trade_dkk=MINIMUM_TRADE_DKK,
+            )
+            if scenario.trades.empty:
+                st.warning(scenario.status)
+            else:
+                rot1, rot2 = st.columns(2)
+                rot1.metric("Frigivet ved salg (scenarie)", compact_dkk(scenario.sell_dkk))
+                rot2.metric("Finansierede køb (scenarie)", compact_dkk(scenario.buy_dkk))
+                rotation_display = scenario.trades.copy()
+                for field in ["Nuværende vægt", "Scenarievægt"]:
+                    rotation_display[field] = rotation_display[field].apply(lambda v: format_pct(v, 1))
+                rotation_display["Handel DKK"] = rotation_display["Handel DKK"].apply(compact_dkk)
+                st.dataframe(
+                    table_style(rotation_display),
+                    use_container_width=True,
+                    hide_index=True,
+                    height=no_scroll_height(rotation_display),
+                )
+                st.info(scenario.status)
+            st.caption(
+                "Scenariet erstatter ikke standard-rebalanceringen. Registreret cash er ikke "
+                "medregnet, da kontospecifik disponibel cash ikke er valideret. "
+                "Beløbene er omtrentlige DKK-notionaler; kontrollér hele aktier, "
+                "kurs/FX, kurtage, spread, skat, selskabsnyheder og stop-loss før evt. manuel handel."
+            )
 
     st.caption(
         f"Confidence-zoner: <60 Lav · 60-69 Afvent bekræftelse · ≥70 Execution. "
