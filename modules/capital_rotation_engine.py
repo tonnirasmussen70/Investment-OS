@@ -181,10 +181,13 @@ def build_rotation_scenario(
     while eligible:
         total = sum(eligible.values())
         allocated = {key: min(demand, sale_budget * demand / total) for key, demand in eligible.items()}
-        too_small = {key for key, amount in allocated.items() if amount < minimum_trade_dkk - 1e-7}
+        too_small = [key for key, amount in allocated.items() if amount < minimum_trade_dkk - 1e-7]
         if not too_small:
             break
-        eligible = {key: val for key, val in eligible.items() if key not in too_small}
+        # Drop only the smallest allocation; the next round may make a
+        # remaining buy large enough to clear minimum commission thresholds.
+        smallest = min(too_small, key=lambda key: (allocated[key], key))
+        eligible.pop(smallest)
     else:
         return blocked("Ingen købskandidater kan finansieres inden for minimumshandel og risikoloft.")
 
