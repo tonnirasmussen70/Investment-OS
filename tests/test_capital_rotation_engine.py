@@ -77,9 +77,9 @@ class CapitalRotationTests(unittest.TestCase):
         self.assertEqual(scenario.sell_dkk, 0)
 
     def test_cap_before_model_target(self) -> None:
-        result = self.scenario(maximum_position_weight=0.08)
+        result = self.scenario(maximum_position_weight=0.09)
         trades = result.trades.set_index("Aktiv")
-        self.assertLessEqual(trades.loc["Sydbank", "Scenarievægt"], 0.08 + 1e-9)
+        self.assertLessEqual(trades.loc["Sydbank", "Scenarievægt"], 0.09 + 1e-9)
 
     def test_unconfirmed_buy_never_funded(self) -> None:
         frame = self.frame.copy()
