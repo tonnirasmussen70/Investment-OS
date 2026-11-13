@@ -174,6 +174,7 @@ def build_rebalance_plan(
         column for column in [
             "Sector",
             "Asset_Type",
+            "Account",
             "Yahoo_Ticker",
             "Confidence_Zone",
             "Confidence_Explanation",
