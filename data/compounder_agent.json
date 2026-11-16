@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-09T09:02:25+01:00",
+  "generated_at": "2026-11-16T08:46:35+01:00",
   "methodology_version": "7.1",
   "candidates": [
     {
@@ -14,12 +14,12 @@
       "moat_score": 95,
       "guidance_score": 100,
       "news_score": 100,
-      "prior_score": 96,
-      "score_change": 2,
+      "prior_score": 98,
+      "score_change": 0,
       "is_new": false,
       "thesis": "Q3 2026 revenue $584.9m (+154% YoY, +49% QoQ), GAAP operating margin 30.6%; Scorpio switches now largest product family. Q4 guidance $730-750m strengthens rack-scale connectivity platform thesis.",
       "risk": "Hyperscaler concentration, demanding valuation, and execution risk in Scorpio and multiple new product ramps.",
-      "news_classification": "Teseændrende",
+      "news_classification": "Relevant",
       "sources": [
         "https://www.sec.gov/Archives/edgar/data/1736297/000173629726000044/q326exhibit991.htm",
         "https://ir.asteralabs.com/news-releases/news-release-details/astera-labs-reports-second-quarter-2026-financial-results"
@@ -37,12 +37,12 @@
       "moat_score": 88,
       "guidance_score": 100,
       "news_score": 100,
-      "prior_score": 94,
-      "score_change": 4,
+      "prior_score": 98,
+      "score_change": 0,
       "is_new": false,
       "thesis": "FY27 Q1 revenue $1.263bn (+136.5% YoY), non-GAAP operating margin 42.3%; Q2 guidance $1.575-1.625bn and second major NPO/CPO win backed by >$5bn purchase commitments create major optical growth visibility.",
       "risk": "Exceptional growth expectations, optical-capacity expansion, customer concentration, and uncertainty around timing/realization of commitments.",
-      "news_classification": "Teseændrende",
+      "news_classification": "Relevant",
       "sources": [
         "https://www.investor.lumentum.com/financial-news-releases/news-details/2026/Lumentum-Announces-First-Quarter-of-Fiscal-Year-2027-Financial-Results/default.aspx",
         "https://investor.lumentum.com/financial-news-releases/news-details/2026/Lumentum-Announces-Fourth-Quarter-and-Full-Fiscal-Year-2026-Results/default.aspx"
@@ -72,6 +72,30 @@
       ]
     },
     {
+      "ticker": "CRDO",
+      "name": "Credo Technology",
+      "agent_score": 97,
+      "agent_confidence": 96,
+      "growth_score": 100,
+      "earnings_score": 99,
+      "momentum_score": 88,
+      "capital_flow_score": 86,
+      "moat_score": 96,
+      "guidance_score": 99,
+      "news_score": 98,
+      "prior_score": 96,
+      "score_change": 1,
+      "is_new": false,
+      "thesis": "High-growth electrical/optical interconnect platform; November 13 ams OSRAM disclosure confirms participation in Credo-led micro-emitter optics standardization and Active Light Cable demonstration, a technical ecosystem signal not yet monetized.",
+      "risk": "Customer concentration, premium valuation, technology adoption risk; demonstration is not commercial revenue.",
+      "news_classification": "Teseændrende",
+      "sources": [
+        "https://investors.credosemi.com/news-events/news/news-details/2026/Credo-Technology-Group-Holding-Ltd-Reports-First-Quarter-of-Fiscal-Year-2027-Financial-Results/default.aspx",
+        "https://investors.credosemi.com/news-events/news/news-details/2026/Credo-Expands-ZeroFlap-Portfolio-with-224G-Based-1-6T-Optical-Transceivers-Addressing-the-Growing-Demand-for-AI-Network-Infrastructure/",
+        "https://ams-osram.com/news/press-releases/q3-2026-results"
+      ]
+    },
+    {
       "ticker": "ANET",
       "name": "Arista Networks",
       "agent_score": 96,
@@ -83,38 +107,15 @@
       "moat_score": 97,
       "guidance_score": 99,
       "news_score": 99,
-      "prior_score": 92,
-      "score_change": 4,
-      "is_new": false,
-      "thesis": "Q3 revenue $3.66bn (+58.5% YoY), non-GAAP operating margin 49.1%, EPS $1.20; Ethernet AI networking and rack-scale architectures support a strong platform moat.",
-      "risk": "High valuation and concentration in large cloud customers; capex normalization may affect growth.",
-      "news_classification": "Teseændrende",
-      "sources": [
-        "https://www.arista.com/en/company/news/press-release/25025-pr-20261103",
-        "https://investors.arista.com/"
-      ]
-    },
-    {
-      "ticker": "CRDO",
-      "name": "Credo Technology",
-      "agent_score": 96,
-      "agent_confidence": 96,
-      "growth_score": 100,
-      "earnings_score": 99,
-      "momentum_score": 88,
-      "capital_flow_score": 86,
-      "moat_score": 95,
-      "guidance_score": 99,
-      "news_score": 95,
       "prior_score": 96,
       "score_change": 0,
       "is_new": false,
-      "thesis": "Hypergrowth, high margins and an expanding 1.6T electrical/optical connectivity stack keep Credo at the top of the discovery radar; ECOC reinforced rather than changed the thesis.",
-      "risk": "Premium valuation, customer concentration and exceptionally high expectations.",
+      "thesis": "Q3 revenue $3.66bn (+58.5% YoY), non-GAAP operating margin 49.1%, EPS $1.20; Ethernet AI networking and rack-scale architectures support a strong platform moat.",
+      "risk": "High valuation and concentration in large cloud customers; capex normalization may affect growth.",
       "news_classification": "Relevant",
       "sources": [
-        "https://investors.credosemi.com/news-events/news/news-details/2026/Credo-Technology-Group-Holding-Ltd-Reports-First-Quarter-of-Fiscal-Year-2027-Financial-Results/default.aspx",
-        "https://investors.credosemi.com/news-events/news/news-details/2026/Credo-Expands-ZeroFlap-Portfolio-with-224G-Based-1-6T-Optical-Transceivers-Addressing-the-Growing-Demand-for-AI-Network-Infrastructure/"
+        "https://www.arista.com/en/company/news/press-release/25025-pr-20261103",
+        "https://investors.arista.com/"
       ]
     },
     {
@@ -129,16 +130,61 @@
       "moat_score": 96,
       "guidance_score": 99,
       "news_score": 100,
-      "prior_score": 92,
-      "score_change": 4,
+      "prior_score": 96,
+      "score_change": 0,
       "is_new": false,
       "thesis": "Q3 revenue $526m (+33% YoY), gross profit +92%, Q4 guide $600m; management targets $1.1bn annualized silicon-photonics revenue run rate in Q4 and cites customer agreements extended through 2029.",
       "risk": "Q3 operating cash flow $185m vs net PP&E spending $191m; foundry expansion is capital intensive, and annualized SiPho run rate is not booked full-year revenue.",
-      "news_classification": "Teseændrende",
+      "news_classification": "Relevant",
       "sources": [
         "https://ir.towersemi.com/news-releases/news-release-details/tower-semiconductor-reports-third-quarter-record-results/",
         "https://ir.towersemi.com/news-releases/news-release-details/tower-semiconductor-announces-record-results-revenue-and",
         "https://www.globenewswire.com/news-release/2026/09/17/3363790/0/en/newphotonics-and-tower-semiconductor-begin-high-volume-shipments-of-laser-integrated-serviceable-optical-engine-pics-for-scale-out-and-scale-up-ai-interconnect.html"
+      ]
+    },
+    {
+      "ticker": "VRT",
+      "name": "Vertiv Holdings Co.",
+      "agent_score": 96,
+      "agent_confidence": 96,
+      "growth_score": 98,
+      "earnings_score": 98,
+      "momentum_score": 93,
+      "capital_flow_score": 92,
+      "moat_score": 94,
+      "guidance_score": 99,
+      "news_score": 98,
+      "prior_score": 95,
+      "score_change": 1,
+      "is_new": false,
+      "thesis": "Q3 power/cooling order momentum remains strong; November 12-13 introductions of medium-voltage power system and high-density remote power panel broaden grid-to-rack solution portfolio.",
+      "risk": "High valuation and hyperscaler capex sensitivity; product launches are not booked orders.",
+      "news_classification": "Teseændrende",
+      "sources": [
+        "https://investors.vertiv.com/news/news-details/2026/Vertiv-Reports-Strong-Third-Quarter-2026-with-Net-Sales-Growth-of-61-Organic-Orders-Growth-over-100-and-Diluted-EPS-Growth-of-91-Adjusted-Diluted-EPS-Growth-of-78-Raises-Full-Year-2026-Guidance-Across-All-Key-Metrics/default.aspx",
+        "https://www.stocktitan.net/stocks/themes/data-center-stocks"
+      ]
+    },
+    {
+      "ticker": "COHR",
+      "name": "Coherent Corp.",
+      "agent_score": 96,
+      "agent_confidence": 96,
+      "growth_score": 98,
+      "earnings_score": 97,
+      "momentum_score": 91,
+      "capital_flow_score": 89,
+      "moat_score": 97,
+      "guidance_score": 99,
+      "news_score": 100,
+      "prior_score": 93,
+      "score_change": 3,
+      "is_new": false,
+      "thesis": "FY27 Q1 revenue $2.37bn (+50% YoY), non-GAAP EPS $2.09, management expects FY27 pro forma revenue growth >60% and first $4bn quarterly revenue in FY28; optical platform earnings acceleration.",
+      "risk": "Pro forma versus reported growth comparability, ambitious guidance, optical cycle, capex and valuation.",
+      "news_classification": "Teseændrende",
+      "sources": [
+        "https://ir.coherent.com/news-releases/news-release-details/coherent-corp-reports-first-quarter-fiscal-2027-results"
       ]
     },
     {
@@ -211,28 +257,6 @@
       ]
     },
     {
-      "ticker": "VRT",
-      "name": "Vertiv Holdings Co.",
-      "agent_score": 95,
-      "agent_confidence": 96,
-      "growth_score": 98,
-      "earnings_score": 98,
-      "momentum_score": 93,
-      "capital_flow_score": 92,
-      "moat_score": 93,
-      "guidance_score": 99,
-      "news_score": 100,
-      "prior_score": 95,
-      "score_change": 0,
-      "is_new": false,
-      "thesis": "Re-entry after Q3 2026 sales +61%, organic orders +100% YoY, adjusted EPS +78% and raised FY2026 guidance; power distribution and liquid cooling remain critical AI datacenter bottlenecks.",
-      "risk": "High expectations and valuation, hyperscaler spending concentration, capacity expansion and integration of acquisitions; order growth can outpace revenue recognition.",
-      "news_classification": "Relevant",
-      "sources": [
-        "https://investors.vertiv.com/news/news-details/2026/Vertiv-Reports-Strong-Third-Quarter-2026-with-Net-Sales-Growth-of-61-Organic-Orders-Growth-over-100-and-Diluted-EPS-Growth-of-91-Adjusted-Diluted-EPS-Growth-of-78-Raises-Full-Year-2026-Guidance-Across-All-Key-Metrics/default.aspx"
-      ]
-    },
-    {
       "ticker": "SNPS",
       "name": "Synopsys",
       "agent_score": 94,
@@ -256,6 +280,29 @@
       ]
     },
     {
+      "ticker": "AMAT",
+      "name": "Applied Materials",
+      "agent_score": 94,
+      "agent_confidence": 97,
+      "growth_score": 97,
+      "earnings_score": 98,
+      "momentum_score": 85,
+      "capital_flow_score": 85,
+      "moat_score": 97,
+      "guidance_score": 98,
+      "news_score": 99,
+      "prior_score": null,
+      "score_change": null,
+      "is_new": true,
+      "thesis": "FY26 Q4 revenue $10.41bn (+53% YoY), non-GAAP EPS $4.16 (+92%), semiconductor systems +64%; FY27 Q1 revenue guide $11.10bn +/- $0.5bn. Broad process-equipment moat provides AI semiconductor picks-and-shovels exposure; mature quality benchmark rather than early-stage hypergrowth.",
+      "risk": "Semiconductor equipment cycle, export controls and China exposure, high expectations and wafer-fab capex concentration.",
+      "news_classification": "Teseændrende",
+      "sources": [
+        "https://ir.appliedmaterials.com/news-releases/news-release-details/applied-materials-announces-fourth-quarter-and-fiscal-year-2026",
+        "https://www.sec.gov/Archives/edgar/data/6951/000162828026073360/exhibit991q42026earningsre.htm"
+      ]
+    },
+    {
       "ticker": "FN",
       "name": "Fabrinet",
       "agent_score": 94,
@@ -267,12 +314,12 @@
       "moat_score": 86,
       "guidance_score": 99,
       "news_score": 97,
-      "prior_score": 91,
-      "score_change": 3,
+      "prior_score": 94,
+      "score_change": 0,
       "is_new": false,
       "thesis": "FY27 Q1 revenue $1.4745bn (+51% YoY), non-GAAP EPS $4.34 vs $2.92; Q2 revenue outlook $1.6-1.65bn confirms acceleration in advanced optical manufacturing.",
       "risk": "GAAP net income rose much slower than sales; outsourced-manufacturing margins and customer concentration limit moat.",
-      "news_classification": "Teseændrende",
+      "news_classification": "Relevant",
       "sources": [
         "https://investor.fabrinet.com/news-releases/news-release-details/fabrinet-announces-first-quarter-fiscal-year-2027-financial",
         "https://investor.fabrinet.com/node/13666"
@@ -324,30 +371,6 @@
       ]
     },
     {
-      "ticker": "COHR",
-      "name": "Coherent Corp.",
-      "agent_score": 93,
-      "agent_confidence": 94,
-      "growth_score": 92,
-      "earnings_score": 94,
-      "momentum_score": 91,
-      "capital_flow_score": 89,
-      "moat_score": 97,
-      "guidance_score": 93,
-      "news_score": 100,
-      "prior_score": 93,
-      "score_change": 0,
-      "is_new": false,
-      "thesis": "PhotonLink materially strengthens the platform thesis by integrating lasers, silicon photonics, optics, fiber, detectors, precision assembly and test into end-to-end CPO/NPO solutions for AI datacenters.",
-      "risk": "High capex and optical-cycle risk; platform breadth must convert into sustained revenue and margin gains.",
-      "news_classification": "Relevant",
-      "sources": [
-        "https://www.coherent.com/news/press-releases/launches-photonlink-integrated-optics-platform-ai-infrastructure",
-        "https://www.coherent.com/networking/photonlink",
-        "https://ir.coherent.com/"
-      ]
-    },
-    {
       "ticker": "LSCC",
       "name": "Lattice Semiconductor",
       "agent_score": 92,
@@ -359,12 +382,12 @@
       "moat_score": 92,
       "guidance_score": 98,
       "news_score": 99,
-      "prior_score": 88,
-      "score_change": 4,
+      "prior_score": 92,
+      "score_change": 0,
       "is_new": false,
       "thesis": "Q3 revenue $291m (+118% YoY) and Q4 outlook ~$335m; FPGA revenue grew ~90%, but consolidated growth also includes acquired AMI, making organic growth reconciliation essential.",
       "risk": "Acquisition-driven comparability, integration, dilution, and low GAAP net margin (3.9%) despite high non-GAAP profitability.",
-      "news_classification": "Teseændrende",
+      "news_classification": "Relevant",
       "sources": [
         "https://latticesemi.gcs-web.com/news-releases/news-release-details/lattice-semiconductor-reports-record-3q26-revenue-118-yoy",
         "https://latticesemi.gcs-web.com/news-releases/news-release-details/lattice-semiconductor-reports-record-2q26-revenue-62-yoy"
@@ -434,29 +457,6 @@
       "news_classification": "Relevant",
       "sources": [
         "https://www.sec.gov/Archives/edgar/data/1640147/000164014726000033/fy2027q2earnings.htm"
-      ]
-    },
-    {
-      "ticker": "MXL",
-      "name": "MaxLinear, Inc.",
-      "agent_score": 86,
-      "agent_confidence": 87,
-      "growth_score": 96,
-      "earnings_score": 91,
-      "momentum_score": 42,
-      "capital_flow_score": 38,
-      "moat_score": 83,
-      "guidance_score": 94,
-      "news_score": 98,
-      "prior_score": 86,
-      "score_change": 0,
-      "is_new": false,
-      "thesis": "Q3-omsætning +72 % YoY, infrastructure +210 % og non-GAAP operating margin 29,5 % viser AI-optics DSP-rampe (Keystone) og 1.6T produktpotentiale; Q4-guidance $240-260 mio.",
-      "risk": "Kursfald på ca. 11 % fra 16. til 23. oktober (og ca. 18 % fra 19. til 23. oktober), koncentrerede hyperscaler-programmer, konkurrence og kredit-/likviditetsrisiko. Discovery, ikke køb.",
-      "news_classification": "Relevant",
-      "sources": [
-        "https://www.sec.gov/Archives/edgar/data/1288469/000128846926000060/a09302026exhibit991.htm",
-        "https://stockanalysis.com/stocks/mxl/history/"
       ]
     }
   ]
