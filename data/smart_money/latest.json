@@ -1,10 +1,11 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-13T12:34:26.963090+00:00",
-  "as_of": "2026-11-13",
-  "cutoff": "2026-08-16",
+  "generated_at": "2026-11-16T13:05:40.110927+00:00",
+  "as_of": "2026-11-16",
+  "cutoff": "2026-08-19",
   "universe": {
     "1736297": "ALAB",
+    "6951": "AMAT",
     "1596532": "ANET",
     "1122411": "ASX",
     "936395": "CIEN",
@@ -15,7 +16,6 @@
     "1633978": "LITE",
     "855658": "LSCC",
     "1835632": "MRVL",
-    "1288469": "MXL",
     "704532": "ONTO",
     "1640147": "SNOW",
     "883241": "SNPS",
@@ -25,210 +25,6 @@
   },
   "unmapped": [],
   "filings": [
-    {
-      "cik": 855658,
-      "accession": "0001437749-26-028158",
-      "filed": "2026-08-17",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "2055582": "Shaikh Erhaan"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 855658,
-      "accession": "0001437749-26-028160",
-      "filed": "2026-08-17",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1992449": "Desale Pravin"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1835632,
-      "accession": "0001628280-26-057399",
-      "filed": "2026-08-17",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1540963": "Scarpulla Justin"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1835632,
-      "accession": "0001628280-26-057525",
-      "filed": "2026-08-17",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1381430": "MURPHY MATTHEW J"
-      },
-      "plan_10b5_1": true,
-      "rows": []
-    },
-    {
-      "cik": 883241,
-      "accession": "0001711671-26-000020",
-      "filed": "2026-08-17",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1711671": "LEE JANET"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 936395,
-      "accession": "0001032553-26-000035",
-      "filed": "2026-08-18",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1032553": "SMITH GARY B"
-      },
-      "plan_10b5_1": true,
-      "rows": []
-    },
-    {
-      "cik": 855658,
-      "accession": "0001437749-26-028430",
-      "filed": "2026-08-18",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1756011": "Elashmawi Esam"
-      },
-      "plan_10b5_1": true,
-      "rows": []
-    },
-    {
-      "cik": 855658,
-      "accession": "0001437749-26-028432",
-      "filed": "2026-08-18",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1891117": "Feanny Tracy Ann"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 936395,
-      "accession": "0001444157-26-000022",
-      "filed": "2026-08-18",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1444157": "Rothenstein David M"
-      },
-      "plan_10b5_1": true,
-      "rows": []
-    },
-    {
-      "cik": 1288469,
-      "accession": "0001478340-26-000008",
-      "filed": "2026-08-18",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1478340": "SEENDRIPU KISHORE"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1633978,
-      "accession": "0001489550-26-000003",
-      "filed": "2026-08-18",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1489550": "Wupen Yuen"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1633978,
-      "accession": "0001561100-26-000004",
-      "filed": "2026-08-18",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1561100": "Ali Wajid"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1633978,
-      "accession": "0001570465-26-000004",
-      "filed": "2026-08-18",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1570465": "Kim Jae"
-      },
-      "plan_10b5_1": true,
-      "rows": []
-    },
-    {
-      "cik": 1633978,
-      "accession": "0001573338-26-000014",
-      "filed": "2026-08-18",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1573338": "HURLSTON MICHAEL E."
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1633978,
-      "accession": "0001648256-26-000005",
-      "filed": "2026-08-18",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1648256": "Retort Vincent"
-      },
-      "plan_10b5_1": true,
-      "rows": []
-    },
-    {
-      "cik": 936395,
-      "accession": "0001998826-26-000016",
-      "filed": "2026-08-18",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1998826": "Gage Brodie"
-      },
-      "plan_10b5_1": true,
-      "rows": []
-    },
-    {
-      "cik": 936395,
-      "accession": "0002080157-26-000010",
-      "filed": "2026-08-18",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "2080157": "Graff Marc D."
-      },
-      "plan_10b5_1": true,
-      "rows": []
-    },
     {
       "cik": 1122411,
       "accession": "0000950103-26-012615",
@@ -843,6 +639,18 @@
       "rows": []
     },
     {
+      "cik": 6951,
+      "accession": "0001628280-26-059277",
+      "filed": "2026-08-27",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1809022": "Hill Brice"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
       "cik": 1633978,
       "accession": "0001648256-26-000007",
       "filed": "2026-08-27",
@@ -915,6 +723,18 @@
       "rows": []
     },
     {
+      "cik": 6951,
+      "accession": "0001628280-26-059643",
+      "filed": "2026-08-31",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1786420": "Palkhiwala Akash J."
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
       "cik": 820318,
       "accession": "0000899140-26-001035",
       "filed": "2026-09-01",
@@ -982,18 +802,6 @@
       "original_filed": null,
       "owners": {
         "2138361": "Place Jeffrey B."
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1288469,
-      "accession": "0001288469-26-000052",
-      "filed": "2026-09-01",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1666994": "Kwong Connie H."
       },
       "plan_10b5_1": false,
       "rows": []
@@ -2470,6 +2278,18 @@
       "rows": []
     },
     {
+      "cik": 6951,
+      "accession": "0001628280-26-061408",
+      "filed": "2026-09-10",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1112668": "BRUNER JUDY"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
       "cik": 1640147,
       "accession": "0001640147-26-000038",
       "filed": "2026-09-10",
@@ -3545,6 +3365,30 @@
       "original_filed": null,
       "owners": {
         "1622943": "Laufman James"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 6951,
+      "accession": "0001628280-26-065093",
+      "filed": "2026-10-05",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1945425": "Deane Timothy M"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 6951,
+      "accession": "0001628280-26-065097",
+      "filed": "2026-10-05",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2014019": "Sanders Adam"
       },
       "plan_10b5_1": false,
       "rows": []
@@ -5866,6 +5710,18 @@
       "original_filed": null,
       "owners": {
         "2116549": "Chen Tien-Szu"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1122411,
+      "accession": "0000950103-26-017523",
+      "filed": "2026-11-16",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2111682": "Tang Andrew R"
       },
       "plan_10b5_1": false,
       "rows": []
