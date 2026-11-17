@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-16T13:05:40.110927+00:00",
-  "as_of": "2026-11-16",
-  "cutoff": "2026-08-19",
+  "generated_at": "2026-11-17T13:48:28.482425+00:00",
+  "as_of": "2026-11-17",
+  "cutoff": "2026-08-20",
   "universe": {
     "1736297": "ALAB",
     "6951": "AMAT",
@@ -25,66 +25,6 @@
   },
   "unmapped": [],
   "filings": [
-    {
-      "cik": 1122411,
-      "accession": "0000950103-26-012615",
-      "filed": "2026-08-19",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "2116851": "Chung Chih-Hsiao"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 855658,
-      "accession": "0001437749-26-028487",
-      "filed": "2026-08-19",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1891117": "Feanny Tracy Ann"
-      },
-      "plan_10b5_1": true,
-      "rows": []
-    },
-    {
-      "cik": 1736297,
-      "accession": "0001998053-26-000023",
-      "filed": "2026-08-19",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1998053": "Mohan Jitendra"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1736297,
-      "accession": "0001998163-26-000022",
-      "filed": "2026-08-19",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1998163": "Mazzara Philip"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1736297,
-      "accession": "0001998179-26-000024",
-      "filed": "2026-08-19",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1998179": "Gajendra Sanjay"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
     {
       "cik": 820318,
       "accession": "0000899140-26-000912",
@@ -5722,6 +5662,54 @@
       "original_filed": null,
       "owners": {
         "2111682": "Tang Andrew R"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 855658,
+      "accession": "0001437749-26-037103",
+      "filed": "2026-11-16",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2055582": "Shaikh Erhaan"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1835632,
+      "accession": "0001628280-26-074222",
+      "filed": "2026-11-16",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1412321": "Goodarzi Sasan K"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1835632,
+      "accession": "0001628280-26-074226",
+      "filed": "2026-11-16",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1598108": "Morris Donna"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1835632,
+      "accession": "0001628280-26-074228",
+      "filed": "2026-11-16",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1469469": "Bettinger Douglas R"
       },
       "plan_10b5_1": false,
       "rows": []
