@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-17T13:48:28.482425+00:00",
-  "as_of": "2026-11-17",
-  "cutoff": "2026-08-20",
+  "generated_at": "2026-11-18T13:23:25.302051+00:00",
+  "as_of": "2026-11-18",
+  "cutoff": "2026-08-21",
   "universe": {
     "1736297": "ALAB",
     "6951": "AMAT",
@@ -25,67 +25,6 @@
   },
   "unmapped": [],
   "filings": [
-    {
-      "cik": 820318,
-      "accession": "0000899140-26-000912",
-      "filed": "2026-08-20",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1764515": "Luther Sherri R"
-      },
-      "plan_10b5_1": true,
-      "rows": []
-    },
-    {
-      "cik": 1046179,
-      "accession": "0001046179-26-000543",
-      "filed": "2026-08-20",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "2114024": "Yuan Lipen"
-      },
-      "plan_10b5_1": false,
-      "rows": [
-        {
-          "line": 0,
-          "date": "2026-08-18",
-          "security": "Common Shares (2330.TW)",
-          "shares": "1000",
-          "price": "74.50",
-          "ownership": "D"
-        },
-        {
-          "line": 1,
-          "date": "2026-08-19",
-          "security": "Common Shares (2330.TW)",
-          "shares": "1000",
-          "price": "73.77",
-          "ownership": "D"
-        },
-        {
-          "line": 2,
-          "date": "2026-08-18",
-          "security": "Common Shares (2330.TW)",
-          "shares": "350",
-          "price": "73.58",
-          "ownership": "I"
-        }
-      ]
-    },
-    {
-      "cik": 1640147,
-      "accession": "0001402348-26-000017",
-      "filed": "2026-08-20",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1402348": "Slootman Frank"
-      },
-      "plan_10b5_1": true,
-      "rows": []
-    },
     {
       "cik": 1633978,
       "accession": "0001489550-26-000004",
@@ -5713,6 +5652,159 @@
       },
       "plan_10b5_1": false,
       "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0001032553-26-000050",
+      "filed": "2026-11-17",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1032553": "SMITH GARY B"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 855658,
+      "accession": "0001437749-26-037439",
+      "filed": "2026-11-17",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1992449": "Desale Pravin"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0001444157-26-000031",
+      "filed": "2026-11-17",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1444157": "Rothenstein David M"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001489550-26-000016",
+      "filed": "2026-11-17",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1489550": "Wupen Yuen"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001561100-26-000010",
+      "filed": "2026-11-17",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1561100": "Ali Wajid"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001570465-26-000008",
+      "filed": "2026-11-17",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1570465": "Kim Jae"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001573338-26-000022",
+      "filed": "2026-11-17",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1573338": "HURLSTON MICHAEL E."
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000265",
+      "filed": "2026-11-17",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1224994": "CHEW LEWIS"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1835632,
+      "accession": "0001628280-26-074462",
+      "filed": "2026-11-17",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1540963": "Scarpulla Justin"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1674101,
+      "accession": "0001628280-26-074512",
+      "filed": "2026-11-17",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2091386": "Chamberlin Craig"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1835632,
+      "accession": "0001628280-26-074618",
+      "filed": "2026-11-17",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1381430": "MURPHY MATTHEW J"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0001046179-26-000803",
+      "filed": "2026-11-18",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1190699": "BURNS URSULA M"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-17",
+          "security": "American Depositary Shares (TSM)",
+          "shares": "1375",
+          "price": "363.665",
+          "ownership": "D"
+        }
+      ]
     }
   ]
 }
