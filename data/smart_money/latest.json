@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-18T13:23:25.302051+00:00",
-  "as_of": "2026-11-18",
-  "cutoff": "2026-08-21",
+  "generated_at": "2026-11-19T13:50:07.877711+00:00",
+  "as_of": "2026-11-19",
+  "cutoff": "2026-08-22",
   "universe": {
     "1736297": "ALAB",
     "6951": "AMAT",
@@ -25,78 +25,6 @@
   },
   "unmapped": [],
   "filings": [
-    {
-      "cik": 1633978,
-      "accession": "0001489550-26-000004",
-      "filed": "2026-08-21",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1489550": "Wupen Yuen"
-      },
-      "plan_10b5_1": true,
-      "rows": []
-    },
-    {
-      "cik": 1633978,
-      "accession": "0001561100-26-000005",
-      "filed": "2026-08-21",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1561100": "Ali Wajid"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1633978,
-      "accession": "0001570465-26-000005",
-      "filed": "2026-08-21",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1570465": "Kim Jae"
-      },
-      "plan_10b5_1": true,
-      "rows": []
-    },
-    {
-      "cik": 1633978,
-      "accession": "0001573338-26-000015",
-      "filed": "2026-08-21",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1573338": "HURLSTON MICHAEL E."
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1807794,
-      "accession": "0001628280-26-058382",
-      "filed": "2026-08-21",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1622943": "Laufman James"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1633978,
-      "accession": "0001648256-26-000006",
-      "filed": "2026-08-21",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1648256": "Retort Vincent"
-      },
-      "plan_10b5_1": true,
-      "rows": []
-    },
     {
       "cik": 1408710,
       "accession": "0001494794-26-000004",
@@ -5805,6 +5733,78 @@
           "ownership": "D"
         }
       ]
+    },
+    {
+      "cik": 855658,
+      "accession": "0001437749-26-037530",
+      "filed": "2026-11-18",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1891117": "Feanny Tracy Ann"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 855658,
+      "accession": "0001437749-26-037532",
+      "filed": "2026-11-18",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1756011": "Elashmawi Esam"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1736297,
+      "accession": "0001830532-26-000011",
+      "filed": "2026-11-18",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1830532": "Cota Germaine"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1736297,
+      "accession": "0001998053-26-000026",
+      "filed": "2026-11-18",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1998053": "Mohan Jitendra"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1736297,
+      "accession": "0001998163-26-000024",
+      "filed": "2026-11-18",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1998163": "Mazzara Philip"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1736297,
+      "accession": "0001998179-26-000026",
+      "filed": "2026-11-18",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1998179": "Gajendra Sanjay"
+      },
+      "plan_10b5_1": false,
+      "rows": []
     }
   ]
 }
