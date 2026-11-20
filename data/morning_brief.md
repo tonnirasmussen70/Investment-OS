@@ -1,98 +1,101 @@
-# Investment OS – Morgenbrief
-**Torsdag 19. november 2026 · 07.01 CET**  
-**Kilde:** [Autoritativt snapshot](https://github.com/tonnirasmussen70/Investment-OS/blob/main/data/portfolio_snapshot.json), genereret 19/11 kl. 04.40 CET. **Friskt (under 24 timer).** Ingen handler udført.
+# Investment OS – Morgenbrief | Fredag 20. november 2026
 
 ## A. Executive view
-Markedsregime: **forsigtig/risk-off**. S&P 500 faldt ca. 0,23 % onsdag, Dow 1,11 %, mens Nasdaq steg 0,42 %. Nvidia faldt ca. 2,9 % trods stærkt regnskab; AI-temaet er selektivt og følsomt for værdiansættelser. [AP, 18/11](https://apnews.com/article/dad5715bc91b4aba23a567a40e22b1fc).
-**IOS Portfolio Health 58,38; AI Confidence 52,78; Macro/Rate Risk 66,96 (høj).** **Vigtigste handling: ingen nye køb; gennemgå stopbrud og koncentration.** IOS foreslår nu **0 handler**.
+**Markedsregime: tydeligt risk-off.** Amerikanske aktier faldt 19/11: S&P 500 **-2,02 %**, Nasdaq **-2,25 %**, Dow **-2,19 %**. AI-aktier er under pres trods stærke Nvidia-tal; asiatiske aktier falder yderligere fredag. Kilder: Reuters, 19–20/11 (https://www.reuters.com/business/nasdaq-futures-jump-anthropics-record-ipo-pricing-fuels-hopes-strong-debut-2026-11-19/ ; https://www.reuters.com/world/china/global-markets-global-markets-2026-11-20/).
+**Investment OS:** Portfolio Health **54,59**, AI Confidence **51,40**, Macro/Rate Risk **64,22 (høj)**. Modellen foreslår **0 handler**. Egen vurdering: bevar kapitaldisciplin, gennemgå 13 stopbrud og 6 alarmer; udfør ingen handler.
 
 ## B. Portfolio status
-| Parameter | Snapshot |
+Snapshot fra GitHub main er **friskt**: genereret **2026-11-20T04:30:13.510672+01:00**. Kilde: https://github.com/tonnirasmussen70/Investment-OS/blob/main/data/portfolio_snapshot.json
+
+| Målepunkt | Investment OS |
 |---|---:|
-| Samlet porteføljeværdi | **1.193.740 kr.** |
-| Aktiv markedsværdi | **761.620 kr.** |
-| Modelafkast | **-3,79 %** |
-| Portfolio Health | **58,38** |
-| AI Confidence | **52,78 (moderat)** |
+| Samlet porteføljeværdi | **1.193.387 kr.** |
+| Aktiv markedsværdi | **761.267 kr.** |
+| Modelafkast | **-3,81 %** |
+| Portfolio Health | **54,59** |
+| AI Confidence | **51,40 (moderat)** |
 | Datakvalitet | **100/100** |
 | Positioner / analyserede | **28 / 27** |
 | Positionsloft | **16 %** |
 
-**Snapshotkontrol:** `generated_at=2026-11-19T04:40:07.086450+01:00`; `source.commit_sha=90b6e71faed04fad8d92b03734cfed82537b98f5`; `source.portfolio_file_sha256=018fb9f90478b920db31ae4c44ef1d8cafbe93bf9a570256fc9455d927ab08e2`; `data_quality.score=100`.
+**Kontrol:** source.commit_sha = `a93cfad1d5d488650d22da32725e5f3bb4b98a7d`; source.portfolio_file_sha256 = `018fb9f90478b920db31ae4c44ef1d8cafbe93bf9a570256fc9455d927ab08e2`.
 
-**Største positioner (andel af aktiv markedsværdi):** Novo Nordisk 15,49 %, NKT 7,53 %, AL Sydbank 7,37 %, Microsoft 6,23 %, VWCE 6,16 %, Celestica 6,10 %, ASML 4,85 %, Danske Bank 4,71 %, VGWD 4,39 %, Pandora 4,22 %. Direkte bankeksponering **12,07 %**. Novo nærmer sig 16 %-loftet. AI-eksponering overlapper på tværs af Microsoft, Celestica, ASML, TSMC og ETF'er. Forskellen på **432.120 kr.** mellem samlet og aktiv værdi er **ikke verificeret fri likviditet**.
+Største vægte: Novo **15,50 %**, NKT **7,53 %**, AL Sydbank **7,37 %**, Microsoft **6,31 %**, VWCE **6,17 %**, Celestica **6,02 %**, ASML **4,95 %**, Danske Bank **4,71 %**, VGWD **4,36 %**, Pandora **4,23 %**. Direkte bankeksponering **12,08 %**. Novo nærmer sig 16 %-loftet. Teknologi- og AI-risiko overlapper mellem enkeltaktier og ETF'er. Forskellen på **432.120 kr.** mellem samlet og aktiv værdi er **ikke** verificeret fri likviditet.
 
 ## C. Markedsstatus og makro
-| Indikator | Seneste verificerede |
-|---|---:|
-| S&P 500, 18/11 | **7.323,63 (-0,23 %)** |
-| Nasdaq Composite, 18/11 | **24.429,88 (+0,42 %)** |
-| Dow, 18/11 | **50.198,17 (-1,11 %)** |
-| USA 10-årig, IOS pr. 18/11 | **5,066 %** |
-| USA 2-årig | **N/A** |
+| Indikator | Seneste verificerede observation |
+|---|---|
+| S&P 500, 19/11 | **7.175,83 (-2,02 %)** |
+| Nasdaq Composite, 19/11 | **23.879,20 (-2,25 %)** |
+| Dow, 19/11 | **49.097,06 (-2,19 %)** |
+| USA 10-årig, IOS 19/11 | **5,052 %** |
+| USA 2-årig | **N/A** i IOS |
 | EUR/USD, EUR/DKK | **N/A** |
-| Brent / WTI | **N/A** |
-| Guld / kobber | **N/A** |
+| Brent/WTI | **N/A** for samtidig verificeret pris |
+| Guld | **-2,5 %** i Reuters' fredagsrapport, eksakt pris N/A |
+| Kobber | **N/A** |
 
-Amerikanske indekslukninger: [AP 18/11](https://apnews.com/article/dad5715bc91b4aba23a567a40e22b1fc). Fed-referatet peger ifølge [Reuters 18/11](https://www.reuters.com/business/nasdaq-futures-jump-nvidia-forecast-lifts-ai-trade-ahead-anthropic-pricing-2026-11-18/) på fortsat inflationsbekymring. **Egen analyse:** US10Y over 5 % er fortsat en belastning for højt prissatte vækstaktier. IOS-makrodatakvalitet **45/100**.
+Reuters beskriver et fortsat asiatisk aktiesalg fredag, en stærkere dollar, faldende obligationsrenter og omtrent uændret olie i tidlig handel (https://www.reuters.com/world/china/global-markets-global-markets-2026-11-20/). **Egen analyse:** En 10-årig amerikansk rente over 5 % sammen med faldende AI-aktier er et ugunstigt miljø for koncentrerede vækstpositioner. IOS-makrodatakvalitet er **45/100**; mangler bl.a. US2Y, rentekurve, inflation og kreditspænd.
 
 ## D. Sektor- og kapitalstrømsrotation
-**IOS-momentum, ikke verificerede nettoflows:**
-| Tema / ETF | 1M | 3M | IOS |
-|---|---:|---:|---|
-| Semiconductors SEC0 | -17,54 % | -15,66 % | Reducer |
-| Defense DFEN | -6,18 % | -13,11 % | Reducer |
-| Uranium URNU | -15,01 % | -30,60 % | Reducer |
-| Clean energy IQQH | -6,63 % | -10,00 % | Reducer |
-| Mining WMIN | -9,35 % | -16,26 % | Reducer |
-| Rare earths VVMX | -12,96 % | -35,93 % | Reducer |
-| Copper miners 4COP | -16,38 % | -22,01 % | Reducer |
-| Infrastructure 94VE | -0,63 % | -2,98 % | Reducer |
+**Direkte IOS-momentum (ikke nettoflows):**
 
-**Egen analyse:** Samtlige otte temaer er negative over 1M og 3M. Infrastruktur holder relativt bedst stand, men er ikke et bekræftet købsregime. Netto-ETF-kapitalstrømme **N/A**.
+| Tema | ETF | 1M | 3M | IOS |
+|---|---|---:|---:|---|
+| Semiconductors | SEC0 | -14,00 % | -14,44 % | Reducer |
+| Defense | DFEN | -5,51 % | -13,05 % | Reducer |
+| Uranium | URNU | -14,63 % | -33,41 % | Reducer |
+| Clean energy | IQQH | -7,54 % | -11,29 % | Reducer |
+| Mining | WMIN | -14,28 % | -24,27 % | Reducer |
+| Rare earths | VVMX | -14,65 % | -39,24 % | Reducer |
+| Copper miners | 4COP | -21,64 % | -30,88 % | Reducer |
+| Infrastructure | 94VE | +1,36 % | -1,69 % | Hold |
+
+**Egen analyse:** Infrastruktur er relativt stærkest, men tremånedersmomentum er stadig negativt. Der er ikke dokumenteret positiv kapitalrotation; faktiske ETF-nettoflows **N/A**.
 
 ## E. Porteføljepåvirkning
 **Direkte IOS-output:**
-| Aktiv | Vægt | Decision Score | IOS |
-|---|---:|---:|---|
-| ASML | 4,85 % | 26,66 | Reducer |
-| Microsoft | 6,23 % | 69,90 | Hold |
-| TSMC | 3,57 % | 30,53 | Reducer |
-| Novo Nordisk | 15,49 % | 51,96 | Hold |
-| Vestas | 4,22 % | 47,58 | Hold |
-| NKT | 7,53 % | 48,15 | Hold |
-| AL Sydbank | 7,37 % | 90,89 | Hold |
-| Danske Bank | 4,71 % | 81,67 | Hold |
-| Celestica | 6,10 % | 22,82 | Reducer |
 
-**Egen analyse:** ASML, TSMC og Celestica er de vigtigste svage tekniske eksponeringer. Microsoft er Hold, men score falder kraftigt. Banker har stærke scores, men ingen godkendt modelhandel. Nvidia rapporterede stærk vækst, men kursen faldt efter regnskabet: stærke fundamentale tal er ikke det samme som et købsignal. [Reuters 18/11](https://www.reuters.com/business/ai-stocks-rally-nvidia-outlook-calms-demand-fears-2026-11-18/).
+| Aktiv | Vægt | Decision Score | Signal |
+|---|---:|---:|---|
+| ASML | 4,95 % | 35,23 | Reducer |
+| Microsoft | 6,31 % | 69,90 | Hold |
+| TSMC | 3,46 % | 29,97 | Reducer |
+| Novo Nordisk | 15,50 % | 45,82 | Hold |
+| Vestas | 4,22 % | 44,09 | Reducer |
+| NKT | 7,53 % | 48,71 | Hold |
+| AL Sydbank | 7,37 % | 90,89 | Hold |
+| Danske Bank | 4,71 % | 80,13 | Hold |
+| Celestica | 6,02 % | 20,30 | Reducer |
+
+**Egen analyse:** Celestica, TSMC og ASML er de vigtigste tekniske risici. For Celestica skal AI-capex hos hyperscalere, kundeafhængighed, konkurrence, prispres og marginudvikling overvåges; et teknisk rebound alene er utilstrækkeligt. NKT offentliggjorde 19/11 Q1–Q3-regnskab med fortsat solid eksekvering og forventet tidligere ramp-up i Karlskrona i Q2 2027 (https://investors.nkt.com/company-announcements/2026/nkt-as-interim-report-q1-q3-2026-continued-solid-financial-and-operational-execution/). Det ændrer ikke automatisk IOS Hold.
 
 ## F. Ændringer siden seneste brief
-| KPI | 18/11 | 19/11 | Ændring |
+| KPI | 19/11 | 20/11 | Ændring |
 |---|---:|---:|---:|
-| Samlet værdi | 1.203.677 kr. | 1.193.740 kr. | **-9.937 kr.** |
-| Modelafkast | -2,50 % | -3,79 % | **-1,29 pp** |
-| Portfolio Health | 63,47 | 58,38 | **-5,10** |
-| AI Confidence | 58,78 | 52,78 | **-6,00** |
-| Macro/Rate Risk | 69,90 | 66,96 | **-2,93** |
-| Stop_Broken | 13 | 14 | **+1** |
-| Alarm | 1 | 5 | **+4** |
-| Tighten | 1 | 0 | **-1** |
+| Porteføljeværdi | 1.193.740 kr. | 1.193.387 kr. | -353 kr. |
+| Modelafkast | -3,79 % | -3,81 % | -0,02 procentpoint |
+| Portfolio Health | 58,38 | 54,59 | -3,79 |
+| AI Confidence | 52,78 | 51,40 | -1,38 |
+| Macro/Rate Risk | 66,96 | 64,22 | -2,74 |
+| Stop_Broken | 14 | 13 | -1 |
+| Alarm | 5 | 6 | +1 |
+| Tighten | 0 | 0 | Uændret |
 
-Ændringen i værdi er **ikke depotafstemt dagsafkast**. Masterfilens SHA er uændret. **IOS-ændringer:** Danske Bank **Øg → Hold**; ASML score -9,19; Microsoft -15,36; Novo -10,15; ABB **Hold → Reducer**. Opportunity-top: **AL Sydbank, VGWD, 2B70, Pandora, Danske Bank**. Ingen nye eller udgåede opportunities, kun ændret rang. Alle tre gårsdagens modelkøb er bortfaldet. Stopkurser på positionsniveau: **N/A**.
+Ændringer i modelscore: ASML **+8,57**, Novo **-6,14**, Celestica **-2,52**, Siemens Energy **-4,55**. Opportunities-toppen: **AL Sydbank, 2B70, VGWD, Pandora, Danske Bank**. NKT går ind som nr. 10, Novo udgår af top 10; 94VE stiger fra nr. 9 til nr. 6. **Ingen nye modelhandler**. Masterfilens SHA er uændret. Værdiforskellen er ikke depotafstemt dagsafkast. Individuelle stopkursændringer **N/A**.
 
-## G. Dagens vigtigste begivenheder
-**19/11:** Følg markedsreaktionen på Nvidias regnskab og Fed-referatets rentebudskab. Nvidia rapporterede ifølge Reuters omsætning på ca. **115,84 mia. USD** i seneste kvartal, men aktien faldt 2,9 % onsdag. [Reuters](https://www.reuters.com/business/ai-stocks-rally-nvidia-outlook-calms-demand-fears-2026-11-18/). NKT's næste regnskab og øvrige selskabskalendere er **N/A**, da primærkildedatoer ikke er verificeret i denne kørsel.
+## G. Dagens begivenheder og kommende regnskaber
+**20/11:** Følg fortsat AI-salg, obligationsrenter og likviditet. Reuters beskriver kraftigt asiatisk aktiefald efter torsdagens amerikanske nedtur (https://www.reuters.com/world/china/global-markets-global-markets-2026-11-20/). **NKT:** Q3-regnskab offentliggjort 19/11; ledelsen fremhæver ordrebeholdning, investeringer og fremrykket kapacitetsramp-up (officiel kilde ovenfor). **Nvidia:** Markedet fordøjer regnskab og guidance; stærke tal har ikke forhindret kursfald (Reuters 19/11). Øvrige kommende præcise regnskabsdatoer: **N/A** uden primærkildebekræftelse.
 
 ## H. Køb / hold / reducer
-**Investment OS-output:** `execution_summary.trade_count=0`, `cash_required_dkk=0`, `gross_trade_dkk=0`, `constrained_count=18`. **Ingen modelkøb eller modelsalg.** AL Sydbank, VGWD, Danske Bank, Novo, Microsoft, NKT og Vestas er **Hold**. ASML, TSMC, Celestica, SEC0 og flere tematiske ETF'er er **Reducer-signaler**, men **ingen modelhandel**, primært på grund af konfidensgate. Modellen har dermed ikke godkendt en reduktion til udførelse.
+**Investment OS-modeloutput:** `execution_summary` og `rebalance` viser **0 køb, 0 salg, 0 kr. kontantbehov og 18 constraints**. AL Sydbank, Danske Bank, Novo, Microsoft og NKT: **Hold**. ASML, TSMC, Celestica, Vestas, SEC0 og flere tema-ETF'er: **Reducer-signal**, men **ingen modelhandel**, bl.a. på grund af konfidensgate og sektorloftnoter.
 
-**Egen vurdering:** **Ingen handler.** Undgå at omsætte reducer-signaler til automatiske salg uden at kontrollere individuelle stopniveauer, handelsstørrelse, sektorlofter og skatte-/omkostningsvirkning. Bankeksponering på 12,07 % og Novo på 15,49 % begrænser pladsen til ny kapital. Minimumshandel og disponible kontanter **N/A**.
+**Egen vurdering:** **Ingen handler.** Reducer-signaler er observationssignaler, ikke salgsordrer. Kontroller stopniveauer og likviditet før eventuelle senere dispositioner. Overhold positionsloft **16 %**, sektoroverlap, minimumshandel og omkostninger. Novo på 15,50 % giver begrænset plads til tilkøb.
 
 ## I. Usikkerheder og datakvalitet
-Snapshotet er friskt med intern datakvalitet **100/100**, men **21 udenlandske positioner** anvender valutaneutralt DKK-afkast og **21** Yahoo-kurs × FX som markedsværdifallback. Makrodatakvalitet **45/100**; US2Y, rentekurve, inflation og kreditspænd mangler. Verificerede samtidige FX-, olie-, guld- og kobberkurser, ETF-nettoflows, individuelle stopniveauer, fri likviditet og fuldt ETF-look-through **N/A**.
+Snapshot er friskt, intern datakvalitet **100/100**, men **21 udenlandske positioner** bruger valutaneutralt DKK-afkast og **21** Yahoo-kurs × FX som markedsværdifallback. Makrodatakvalitet **45/100**. Fri likviditet, fuldt ETF-look-through, individuelle stopkurser, dokumenterede ETF-nettoflows og samtidige valuta-/råvarekurser: **N/A**. Porteføljeværdierne er IOS-modeldata, ikke depotafstemning.
 
 ## Dagens tre beslutningspunkter
-1. **Ingen handler:** IOS har **0 godkendte modelhandler** og 18 constraints.
-2. **Gennemgå 14 Stop_Broken og 5 Alarm**, især ASML, TSMC og Celestica; verificér stopkurser før eventuelle dispositioner.
-3. **Bevar kapitaldisciplin:** afvent bedre momentum og datavalidering; kontrollér Novo-loft, bankkoncentration og ETF-overlap.
+1. **Ingen handler:** modellen foreslår nul, og markedsregimet er risk-off.
+2. **Gennemgå 13 Stop_Broken og 6 Alarm**, især Celestica, ASML, TSMC og Vestas.
+3. **Afstem NKT-regnskabet og Novo-koncentrationen** før nye kapitalallokeringer.
