@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-19T13:50:07.877711+00:00",
-  "as_of": "2026-11-19",
-  "cutoff": "2026-08-22",
+  "generated_at": "2026-11-20T13:32:00.306158+00:00",
+  "as_of": "2026-11-20",
+  "cutoff": "2026-08-23",
   "universe": {
     "1736297": "ALAB",
     "6951": "AMAT",
@@ -5805,6 +5805,59 @@
       },
       "plan_10b5_1": false,
       "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000267",
+      "filed": "2026-11-19",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1605809": "Ullal Jayshree"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 936395,
+      "accession": "0002080157-26-000020",
+      "filed": "2026-11-19",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2080157": "Graff Marc D."
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1046179,
+      "accession": "0002114032-26-000002",
+      "filed": "2026-11-20",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2114032": "Lu Lee-Chung"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-20",
+          "security": "Common Shares (2330.TW)",
+          "shares": "2000",
+          "price": "60.57",
+          "ownership": "I"
+        },
+        {
+          "line": 1,
+          "date": "2026-11-20",
+          "security": "Common Shares (2330.TW)",
+          "shares": "3000",
+          "price": "60.57",
+          "ownership": "I"
+        }
+      ]
     }
   ]
 }
