@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-20T13:32:00.306158+00:00",
-  "as_of": "2026-11-20",
-  "cutoff": "2026-08-23",
+  "generated_at": "2026-11-23T15:16:34.272117+00:00",
+  "as_of": "2026-11-23",
+  "cutoff": "2026-08-26",
   "universe": {
     "1736297": "ALAB",
     "6951": "AMAT",
@@ -25,258 +25,6 @@
   },
   "unmapped": [],
   "filings": [
-    {
-      "cik": 1408710,
-      "accession": "0001494794-26-000004",
-      "filed": "2026-08-24",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1494794": "Gill Harpal"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1596532,
-      "accession": "0001596532-26-000202",
-      "filed": "2026-08-24",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1817763": "Battles Kelly Bodnar"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1596532,
-      "accession": "0001596532-26-000203",
-      "filed": "2026-08-24",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1224994": "CHEW LEWIS"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1596532,
-      "accession": "0001596532-26-000204",
-      "filed": "2026-08-24",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1299634": "Giancarlo Charles H"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1596532,
-      "accession": "0001596532-26-000205",
-      "filed": "2026-08-24",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "2058736": "Lavender Robert G"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1596532,
-      "accession": "0001596532-26-000206",
-      "filed": "2026-08-24",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1605698": "Scheinman Daniel"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1596532,
-      "accession": "0001596532-26-000207",
-      "filed": "2026-08-24",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1201938": "TEMPLETON MARK B"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1596532,
-      "accession": "0001596532-26-000208",
-      "filed": "2026-08-24",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1707744": "Wassenaar Yvonne"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1596532,
-      "accession": "0001596532-26-000209",
-      "filed": "2026-08-24",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1850596": "Breithaupt Chantelle Yvette"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1596532,
-      "accession": "0001596532-26-000210",
-      "filed": "2026-08-24",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1605808": "Duda Kenneth"
-      },
-      "plan_10b5_1": true,
-      "rows": []
-    },
-    {
-      "cik": 1596532,
-      "accession": "0001596532-26-000211",
-      "filed": "2026-08-24",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1944844": "Nightingale Todd"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1596532,
-      "accession": "0001596532-26-000212",
-      "filed": "2026-08-24",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1605809": "Ullal Jayshree"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1408710,
-      "accession": "0001717718-26-000004",
-      "filed": "2026-08-24",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1717718": "Grady Seamus"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1408710,
-      "accession": "0001785907-26-000004",
-      "filed": "2026-08-24",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1785907": "Archer Edward T."
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1408710,
-      "accession": "0001802482-26-000004",
-      "filed": "2026-08-24",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1802482": "Sverha Csaba"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1408710,
-      "accession": "0001494794-26-000006",
-      "filed": "2026-08-25",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1494794": "Gill Harpal"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1596532,
-      "accession": "0001596532-26-000214",
-      "filed": "2026-08-25",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1817763": "Battles Kelly Bodnar"
-      },
-      "plan_10b5_1": true,
-      "rows": []
-    },
-    {
-      "cik": 1408710,
-      "accession": "0001717718-26-000006",
-      "filed": "2026-08-25",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1717718": "Grady Seamus"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 704532,
-      "accession": "0001784973-26-000007",
-      "filed": "2026-08-25",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1784973": "Lynch Susan D"
-      },
-      "plan_10b5_1": true,
-      "rows": []
-    },
-    {
-      "cik": 1408710,
-      "accession": "0001785907-26-000006",
-      "filed": "2026-08-25",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1785907": "Archer Edward T."
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1408710,
-      "accession": "0001802482-26-000006",
-      "filed": "2026-08-25",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1802482": "Sverha Csaba"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
     {
       "cik": 1633978,
       "accession": "0001489550-26-000005",
@@ -5828,6 +5576,138 @@
         "2080157": "Graff Marc D."
       },
       "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001232019-26-000006",
+      "filed": "2026-11-20",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1232019": "HERSCHER PENNY"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001402348-26-000021",
+      "filed": "2026-11-20",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1402348": "Slootman Frank"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001489550-26-000017",
+      "filed": "2026-11-20",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1489550": "Wupen Yuen"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000269",
+      "filed": "2026-11-20",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1133206": "BECHTOLSHEIM ANDREAS"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001607990-26-000002",
+      "filed": "2026-11-20",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1607990": "Thad Trent"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001648231-26-000005",
+      "filed": "2026-11-20",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1648231": "Lillie Brian"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001688179-26-000001",
+      "filed": "2026-11-20",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1688179": "Lundstrom Paul"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001711035-26-000003",
+      "filed": "2026-11-20",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1711035": "Fletcher Pamela"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001714910-26-000004",
+      "filed": "2026-11-20",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1714910": "Small Ian"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1640147,
+      "accession": "0001821737-26-000019",
+      "filed": "2026-11-20",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1821737": "Dageville Benoit"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001866503-26-000007",
+      "filed": "2026-11-20",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1866503": "Harris Isaac Hosojiro"
+      },
+      "plan_10b5_1": false,
       "rows": []
     },
     {
