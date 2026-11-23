@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-16T08:46:35+01:00",
+  "generated_at": "2026-11-23T08:22:56+01:00",
   "methodology_version": "7.1",
   "candidates": [
     {
@@ -17,12 +17,13 @@
       "prior_score": 98,
       "score_change": 0,
       "is_new": false,
-      "thesis": "Q3 2026 revenue $584.9m (+154% YoY, +49% QoQ), GAAP operating margin 30.6%; Scorpio switches now largest product family. Q4 guidance $730-750m strengthens rack-scale connectivity platform thesis.",
+      "thesis": "Q3 2026 revenue $584.9m (+154% YoY, +49% QoQ), GAAP operating margin 30.6%; Scorpio switches now largest product family. Q4 guidance $730-750m strengthens rack-scale connectivity platform thesis. NVIDIA FY27 Q3 data-center revenue +110% YoY confirms industry demand, not company-specific new orders.",
       "risk": "Hyperscaler concentration, demanding valuation, and execution risk in Scorpio and multiple new product ramps.",
       "news_classification": "Relevant",
       "sources": [
         "https://www.sec.gov/Archives/edgar/data/1736297/000173629726000044/q326exhibit991.htm",
-        "https://ir.asteralabs.com/news-releases/news-release-details/astera-labs-reports-second-quarter-2026-financial-results"
+        "https://ir.asteralabs.com/news-releases/news-release-details/astera-labs-reports-second-quarter-2026-financial-results",
+        "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx"
       ]
     },
     {
@@ -40,12 +41,13 @@
       "prior_score": 98,
       "score_change": 0,
       "is_new": false,
-      "thesis": "FY27 Q1 revenue $1.263bn (+136.5% YoY), non-GAAP operating margin 42.3%; Q2 guidance $1.575-1.625bn and second major NPO/CPO win backed by >$5bn purchase commitments create major optical growth visibility.",
+      "thesis": "FY27 Q1 revenue $1.263bn (+136.5% YoY), non-GAAP operating margin 42.3%; Q2 guidance $1.575-1.625bn and second major NPO/CPO win backed by >$5bn purchase commitments create major optical growth visibility. NVIDIA FY27 Q3 data-center revenue +110% YoY confirms industry demand, not company-specific new orders.",
       "risk": "Exceptional growth expectations, optical-capacity expansion, customer concentration, and uncertainty around timing/realization of commitments.",
       "news_classification": "Relevant",
       "sources": [
         "https://www.investor.lumentum.com/financial-news-releases/news-details/2026/Lumentum-Announces-First-Quarter-of-Fiscal-Year-2027-Financial-Results/default.aspx",
-        "https://investor.lumentum.com/financial-news-releases/news-details/2026/Lumentum-Announces-Fourth-Quarter-and-Full-Fiscal-Year-2026-Results/default.aspx"
+        "https://investor.lumentum.com/financial-news-releases/news-details/2026/Lumentum-Announces-Fourth-Quarter-and-Full-Fiscal-Year-2026-Results/default.aspx",
+        "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx"
       ]
     },
     {
@@ -65,7 +67,7 @@
       "is_new": false,
       "thesis": "Q3 2026 revenue $5.83bn (+83% YoY), adjusted EPS $3.30 (+109%) and 2027 revenue guidance $40bn (+90% on FY2026 outlook) establish a major AI compute/networking hardware ramp; 2027 adjusted operating margin targeted at 9%.",
       "risk": "$3.45bn equity raise, 2027 capex guidance $1.5-2.0bn, customer concentration and low-margin hardware execution; 2027 projections are management guidance, not realized revenue.",
-      "news_classification": "Relevant",
+      "news_classification": "Støj",
       "sources": [
         "https://celestica.gcs-web.com/node/17881",
         "https://corporate.celestica.com/events/event-details/q3-2026-financial-results-2026-investor-and-analyst-day"
@@ -83,12 +85,12 @@
       "moat_score": 96,
       "guidance_score": 99,
       "news_score": 98,
-      "prior_score": 96,
-      "score_change": 1,
+      "prior_score": 97,
+      "score_change": 0,
       "is_new": false,
       "thesis": "High-growth electrical/optical interconnect platform; November 13 ams OSRAM disclosure confirms participation in Credo-led micro-emitter optics standardization and Active Light Cable demonstration, a technical ecosystem signal not yet monetized.",
       "risk": "Customer concentration, premium valuation, technology adoption risk; demonstration is not commercial revenue.",
-      "news_classification": "Teseændrende",
+      "news_classification": "Støj",
       "sources": [
         "https://investors.credosemi.com/news-events/news/news-details/2026/Credo-Technology-Group-Holding-Ltd-Reports-First-Quarter-of-Fiscal-Year-2027-Financial-Results/default.aspx",
         "https://investors.credosemi.com/news-events/news/news-details/2026/Credo-Expands-ZeroFlap-Portfolio-with-224G-Based-1-6T-Optical-Transceivers-Addressing-the-Growing-Demand-for-AI-Network-Infrastructure/",
@@ -112,7 +114,7 @@
       "is_new": false,
       "thesis": "Q3 revenue $3.66bn (+58.5% YoY), non-GAAP operating margin 49.1%, EPS $1.20; Ethernet AI networking and rack-scale architectures support a strong platform moat.",
       "risk": "High valuation and concentration in large cloud customers; capex normalization may affect growth.",
-      "news_classification": "Relevant",
+      "news_classification": "Støj",
       "sources": [
         "https://www.arista.com/en/company/news/press-release/25025-pr-20261103",
         "https://investors.arista.com/"
@@ -133,13 +135,14 @@
       "prior_score": 96,
       "score_change": 0,
       "is_new": false,
-      "thesis": "Q3 revenue $526m (+33% YoY), gross profit +92%, Q4 guide $600m; management targets $1.1bn annualized silicon-photonics revenue run rate in Q4 and cites customer agreements extended through 2029.",
+      "thesis": "Q3 revenue $526m (+33% YoY), gross profit +92%, Q4 guide $600m; management targets $1.1bn annualized silicon-photonics revenue run rate in Q4 and cites customer agreements extended through 2029. NVIDIA FY27 Q3 data-center revenue +110% YoY confirms industry demand, not company-specific new orders.",
       "risk": "Q3 operating cash flow $185m vs net PP&E spending $191m; foundry expansion is capital intensive, and annualized SiPho run rate is not booked full-year revenue.",
       "news_classification": "Relevant",
       "sources": [
         "https://ir.towersemi.com/news-releases/news-release-details/tower-semiconductor-reports-third-quarter-record-results/",
         "https://ir.towersemi.com/news-releases/news-release-details/tower-semiconductor-announces-record-results-revenue-and",
-        "https://www.globenewswire.com/news-release/2026/09/17/3363790/0/en/newphotonics-and-tower-semiconductor-begin-high-volume-shipments-of-laser-integrated-serviceable-optical-engine-pics-for-scale-out-and-scale-up-ai-interconnect.html"
+        "https://www.globenewswire.com/news-release/2026/09/17/3363790/0/en/newphotonics-and-tower-semiconductor-begin-high-volume-shipments-of-laser-integrated-serviceable-optical-engine-pics-for-scale-out-and-scale-up-ai-interconnect.html",
+        "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx"
       ]
     },
     {
@@ -154,12 +157,12 @@
       "moat_score": 94,
       "guidance_score": 99,
       "news_score": 98,
-      "prior_score": 95,
-      "score_change": 1,
+      "prior_score": 96,
+      "score_change": 0,
       "is_new": false,
       "thesis": "Q3 power/cooling order momentum remains strong; November 12-13 introductions of medium-voltage power system and high-density remote power panel broaden grid-to-rack solution portfolio.",
       "risk": "High valuation and hyperscaler capex sensitivity; product launches are not booked orders.",
-      "news_classification": "Teseændrende",
+      "news_classification": "Støj",
       "sources": [
         "https://investors.vertiv.com/news/news-details/2026/Vertiv-Reports-Strong-Third-Quarter-2026-with-Net-Sales-Growth-of-61-Organic-Orders-Growth-over-100-and-Diluted-EPS-Growth-of-91-Adjusted-Diluted-EPS-Growth-of-78-Raises-Full-Year-2026-Guidance-Across-All-Key-Metrics/default.aspx",
         "https://www.stocktitan.net/stocks/themes/data-center-stocks"
@@ -177,12 +180,12 @@
       "moat_score": 97,
       "guidance_score": 99,
       "news_score": 100,
-      "prior_score": 93,
-      "score_change": 3,
+      "prior_score": 96,
+      "score_change": 0,
       "is_new": false,
       "thesis": "FY27 Q1 revenue $2.37bn (+50% YoY), non-GAAP EPS $2.09, management expects FY27 pro forma revenue growth >60% and first $4bn quarterly revenue in FY28; optical platform earnings acceleration.",
       "risk": "Pro forma versus reported growth comparability, ambitious guidance, optical cycle, capex and valuation.",
-      "news_classification": "Teseændrende",
+      "news_classification": "Støj",
       "sources": [
         "https://ir.coherent.com/news-releases/news-release-details/coherent-corp-reports-first-quarter-fiscal-2027-results"
       ]
@@ -204,7 +207,7 @@
       "is_new": false,
       "thesis": "Investor Day expanded long-term AI custom silicon and connectivity opportunity; very ambitious 2031 targets require reverse-DCF and execution checks.",
       "risk": "Hyperscaler concentration and long-dated custom-silicon expectations create execution and valuation risk.",
-      "news_classification": "Relevant",
+      "news_classification": "Støj",
       "sources": [
         "https://investor.marvell.com/news-events/press-releases/detail/1034/marvell-to-showcase-industry-first-2nm-optical-technology-demos-for-ai-data-center-infrastructure-at-ecoc-2026",
         "https://investor.marvell.com/news-events/press-releases"
@@ -227,7 +230,7 @@
       "is_new": false,
       "thesis": "Hybrid-bonding orders remain strong; Applied Materials announced intention to increase strategic ownership from 9% to about 20%, validating collaboration on advanced chip packaging and AI photonics.",
       "risk": "Planned stake increase is subject to approvals and not itself a purchase of Besi products; Q4 sales guided flat +/-5%, hybrid-bonding adoption and equipment cyclicality.",
-      "news_classification": "Relevant",
+      "news_classification": "Støj",
       "sources": [
         "https://www.besi.com/investor-relations/press-releases/details/be-semiconductor-industries-nv-announces-q3-2026-results/",
         "https://www.besi.com/events/events-shows/details/applied-materials-to-increase-its-strategic-investment-in-be-semiconductor-industries/"
@@ -250,10 +253,32 @@
       "is_new": false,
       "thesis": "The optical-networking inflection remains supported by strong Q3 results, FY2029 targets and reported backlog visibility above $10B; analyst rerating improves capital-flow confirmation but does not alter the fundamental score.",
       "risk": "Customer concentration, supply constraints and demanding multi-year execution; valuation is increasingly sensitive to any AI optical capex normalization.",
-      "news_classification": "Relevant",
+      "news_classification": "Støj",
       "sources": [
         "https://investor.ciena.com/news/news-details/2026/Ciena-Reports-Fiscal-Third-Quarter-2026-Financial-Results/default.aspx",
         "https://investor.ciena.com/news/news-details/2026/Ciena-Announces-Fiscal-Year-2029-Financial-Targets/default.aspx"
+      ]
+    },
+    {
+      "ticker": "SOI.PA",
+      "name": "Soitec",
+      "agent_score": 95,
+      "agent_confidence": 94,
+      "growth_score": 97,
+      "earnings_score": 88,
+      "momentum_score": 96,
+      "capital_flow_score": 95,
+      "moat_score": 99,
+      "guidance_score": 98,
+      "news_score": 100,
+      "prior_score": 90,
+      "score_change": 5,
+      "is_new": false,
+      "thesis": "18 Nov 2026 FY27 H1 revenue €317m (+37% reported), Photonics-SOI ~$125m vs ~$50m prior year; ~$1.2bn capacity reservations backed by deposits; FY27 Photonics-SOI guidance >$300m. Strong AI optical substrate bottleneck evidence.",
+      "risk": "FY27 FCF guidance only ~€25m despite H1 €236m boosted by €86m customer deposits; €130m planned capex, RF-SOI cyclicality and ramp costs.",
+      "news_classification": "Teseændrende",
+      "sources": [
+        "https://www.soitec.com/home/group/corporate/newsroom/press-releases/content/2026/11/18/soitec-reports-second-quarter-revenue-and-half-year-results-of-fiscal-year-2027"
       ]
     },
     {
@@ -273,7 +298,7 @@
       "is_new": false,
       "thesis": "EDA and design IP toll-road with new GPT-Synopsys agentic workflows and application-optimized custom silicon IP; FY2027 guidance indicates roughly 15% growth.",
       "risk": "Premium valuation, Ansys integration and uncertain incremental AI monetization.",
-      "news_classification": "Relevant",
+      "news_classification": "Støj",
       "sources": [
         "https://news.synopsys.com/2026-09-30-OpenAI-and-Synopsys-Announce-GPT-Synopsys-Frontier-Intelligence-to-Revolutionize-Chip-Design",
         "https://investor.synopsys.com/news/news-details/2026/Synopsys-Details-Growth-Strategy-and-Long-term-Financial-Model-at-2026-Investor-Day/"
@@ -291,12 +316,12 @@
       "moat_score": 97,
       "guidance_score": 98,
       "news_score": 99,
-      "prior_score": null,
-      "score_change": null,
-      "is_new": true,
+      "prior_score": 94,
+      "score_change": 0,
+      "is_new": false,
       "thesis": "FY26 Q4 revenue $10.41bn (+53% YoY), non-GAAP EPS $4.16 (+92%), semiconductor systems +64%; FY27 Q1 revenue guide $11.10bn +/- $0.5bn. Broad process-equipment moat provides AI semiconductor picks-and-shovels exposure; mature quality benchmark rather than early-stage hypergrowth.",
       "risk": "Semiconductor equipment cycle, export controls and China exposure, high expectations and wafer-fab capex concentration.",
-      "news_classification": "Teseændrende",
+      "news_classification": "Støj",
       "sources": [
         "https://ir.appliedmaterials.com/news-releases/news-release-details/applied-materials-announces-fourth-quarter-and-fiscal-year-2026",
         "https://www.sec.gov/Archives/edgar/data/6951/000162828026073360/exhibit991q42026earningsre.htm"
@@ -319,7 +344,7 @@
       "is_new": false,
       "thesis": "FY27 Q1 revenue $1.4745bn (+51% YoY), non-GAAP EPS $4.34 vs $2.92; Q2 revenue outlook $1.6-1.65bn confirms acceleration in advanced optical manufacturing.",
       "risk": "GAAP net income rose much slower than sales; outsourced-manufacturing margins and customer concentration limit moat.",
-      "news_classification": "Relevant",
+      "news_classification": "Støj",
       "sources": [
         "https://investor.fabrinet.com/news-releases/news-release-details/fabrinet-announces-first-quarter-fiscal-year-2027-financial",
         "https://investor.fabrinet.com/node/13666"
@@ -342,7 +367,7 @@
       "is_new": false,
       "thesis": "Q3 2026 revenue €1.159bn (+45% reported YoY), 52% gross margin and 33.4% adjusted operating margin; management expects >€5.7bn revenue in 2027, achieving former 2030 target three years early. ALD and advanced-node equipment leverage AI logic and HBM investment.",
       "risk": "Semiconductor equipment cycle, premium valuation, China/export restrictions and advanced-node capex timing; 2027 target is forward guidance.",
-      "news_classification": "Relevant",
+      "news_classification": "Støj",
       "sources": [
         "https://rss.globenewswire.com/news-release/2026/10/27/3389491/0/en/asm-reports-third-quarter-2026-results.html"
       ]
@@ -364,7 +389,7 @@
       "is_new": false,
       "thesis": "Unaudited Q3 revenue NT$244.2bn (+44.8% YoY), parent net profit NT$27.0bn vs NT$10.9bn and advanced packaging/testing ATM margin expansion confirm AI packaging operating leverage.",
       "risk": "Capital intensity (Q3 equipment capex $2.1bn), customer concentration, net debt and potential negative free cash flow as capacity expands.",
-      "news_classification": "Relevant",
+      "news_classification": "Støj",
       "sources": [
         "https://www.nasdaq.com/press-release/ase-technology-holding-co-ltd-reports-its-unaudited-consolidated-financial-results-3",
         "https://www.aseglobal.com/press-room/ase-expands-powersip-platform-for-next-generation-ai-power-delivery"
@@ -387,7 +412,7 @@
       "is_new": false,
       "thesis": "Q3 revenue $291m (+118% YoY) and Q4 outlook ~$335m; FPGA revenue grew ~90%, but consolidated growth also includes acquired AMI, making organic growth reconciliation essential.",
       "risk": "Acquisition-driven comparability, integration, dilution, and low GAAP net margin (3.9%) despite high non-GAAP profitability.",
-      "news_classification": "Relevant",
+      "news_classification": "Støj",
       "sources": [
         "https://latticesemi.gcs-web.com/news-releases/news-release-details/lattice-semiconductor-reports-record-3q26-revenue-118-yoy",
         "https://latticesemi.gcs-web.com/news-releases/news-release-details/lattice-semiconductor-reports-record-2q26-revenue-62-yoy"
@@ -410,31 +435,9 @@
       "is_new": false,
       "thesis": "AI advanced packaging, HBM and silicon photonics continue driving process-control intensity; backlog above $1B supports visibility.",
       "risk": "Semiconductor-equipment cyclicality, customer capex timing and premium expectations.",
-      "news_classification": "Relevant",
+      "news_classification": "Støj",
       "sources": [
         "https://investors.ontoinnovation.com/news/news-details/2026/Onto-Innovation-Reports-2026-Second-Quarter-Results/default.aspx"
-      ]
-    },
-    {
-      "ticker": "SOI.PA",
-      "name": "Soitec",
-      "agent_score": 90,
-      "agent_confidence": 86,
-      "growth_score": 92,
-      "earnings_score": 78,
-      "momentum_score": 96,
-      "capital_flow_score": 93,
-      "moat_score": 99,
-      "guidance_score": 92,
-      "news_score": 84,
-      "prior_score": 90,
-      "score_change": 0,
-      "is_new": false,
-      "thesis": "Silicon-photonics substrates remain an upstream AI-optics bottleneck with multi-year customer commitments supporting visibility.",
-      "risk": "Sharp rerating, cyclical non-photonics end-markets and dependence on sustained optical adoption.",
-      "news_classification": "Relevant",
-      "sources": [
-        "https://www.reuters.com/world/asia-pacific/soitec-locks-customers-into-multi-year-deals-ai-wafer-demand-surges-2026-08-31/"
       ]
     },
     {
@@ -454,7 +457,7 @@
       "is_new": false,
       "thesis": "Product-revenue growth has reaccelerated while AI adoption and operating leverage improve, keeping Snowflake the radar's strongest enterprise-AI software candidate.",
       "risk": "Premium valuation, stock-based compensation and consumption-model variability.",
-      "news_classification": "Relevant",
+      "news_classification": "Støj",
       "sources": [
         "https://www.sec.gov/Archives/edgar/data/1640147/000164014726000033/fy2027q2earnings.htm"
       ]
