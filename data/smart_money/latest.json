@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-23T15:16:34.272117+00:00",
-  "as_of": "2026-11-23",
-  "cutoff": "2026-08-26",
+  "generated_at": "2026-11-24T15:13:06.994402+00:00",
+  "as_of": "2026-11-24",
+  "cutoff": "2026-08-27",
   "universe": {
     "1736297": "ALAB",
     "6951": "AMAT",
@@ -25,66 +25,6 @@
   },
   "unmapped": [],
   "filings": [
-    {
-      "cik": 1633978,
-      "accession": "0001489550-26-000005",
-      "filed": "2026-08-26",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1489550": "Wupen Yuen"
-      },
-      "plan_10b5_1": true,
-      "rows": []
-    },
-    {
-      "cik": 1408710,
-      "accession": "0001494794-26-000008",
-      "filed": "2026-08-26",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1494794": "Gill Harpal"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1408710,
-      "accession": "0001717718-26-000008",
-      "filed": "2026-08-26",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1717718": "Grady Seamus"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1408710,
-      "accession": "0001785907-26-000008",
-      "filed": "2026-08-26",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1785907": "Archer Edward T."
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1408710,
-      "accession": "0001802482-26-000008",
-      "filed": "2026-08-26",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1802482": "Sverha Csaba"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
     {
       "cik": 1633978,
       "accession": "0001489550-26-000006",
@@ -5738,6 +5678,174 @@
           "ownership": "I"
         }
       ]
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001397",
+      "filed": "2026-11-23",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1240386": "PAGLIUCA STEPHEN G"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001398",
+      "filed": "2026-11-23",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1741413": "Digirolomo Enrico"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001399",
+      "filed": "2026-11-23",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1584601": "MOTLEY DAVID L"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001400",
+      "filed": "2026-11-23",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1517296": "Xia Howard H."
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001401",
+      "filed": "2026-11-23",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1222114": "CORASANTI JOSEPH J"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001402",
+      "filed": "2026-11-23",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1896118": "Neal-Graves Lisa"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001403",
+      "filed": "2026-11-23",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1560297": "Dreyer Michael L"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001404",
+      "filed": "2026-11-23",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1639912": "STERLING MICHELLE M"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001405",
+      "filed": "2026-11-23",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1756876": "Hatter Patricia"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001406",
+      "filed": "2026-11-23",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1224172": "SKAGGS STEPHEN A"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001407",
+      "filed": "2026-11-23",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1233432": "SADASIVAM SHAKER"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001408",
+      "filed": "2026-11-23",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1610638": "Patrick Elizabeth"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001409",
+      "filed": "2026-11-23",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1232246": "VIJ SANDEEP"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1807794,
+      "accession": "0001628280-26-075508",
+      "filed": "2026-11-23",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1622943": "Laufman James"
+      },
+      "plan_10b5_1": false,
+      "rows": []
     }
   ]
 }
