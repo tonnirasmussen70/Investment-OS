@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-24T15:13:06.994402+00:00",
-  "as_of": "2026-11-24",
-  "cutoff": "2026-08-27",
+  "generated_at": "2026-11-25T14:52:45.503096+00:00",
+  "as_of": "2026-11-25",
+  "cutoff": "2026-08-28",
   "universe": {
     "1736297": "ALAB",
     "6951": "AMAT",
@@ -25,162 +25,6 @@
   },
   "unmapped": [],
   "filings": [
-    {
-      "cik": 1633978,
-      "accession": "0001489550-26-000006",
-      "filed": "2026-08-27",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1489550": "Wupen Yuen"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1633978,
-      "accession": "0001489550-26-000007",
-      "filed": "2026-08-27",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1489550": "Wupen Yuen"
-      },
-      "plan_10b5_1": true,
-      "rows": []
-    },
-    {
-      "cik": 1633978,
-      "accession": "0001561100-26-000006",
-      "filed": "2026-08-27",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1561100": "Ali Wajid"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1633978,
-      "accession": "0001561100-26-000007",
-      "filed": "2026-08-27",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1561100": "Ali Wajid"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1633978,
-      "accession": "0001570465-26-000006",
-      "filed": "2026-08-27",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1570465": "Kim Jae"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1633978,
-      "accession": "0001570465-26-000007",
-      "filed": "2026-08-27",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1570465": "Kim Jae"
-      },
-      "plan_10b5_1": true,
-      "rows": []
-    },
-    {
-      "cik": 1633978,
-      "accession": "0001573338-26-000016",
-      "filed": "2026-08-27",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1573338": "HURLSTON MICHAEL E."
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1633978,
-      "accession": "0001573338-26-000017",
-      "filed": "2026-08-27",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1573338": "HURLSTON MICHAEL E."
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1596532,
-      "accession": "0001596532-26-000216",
-      "filed": "2026-08-27",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1605809": "Ullal Jayshree"
-      },
-      "plan_10b5_1": true,
-      "rows": []
-    },
-    {
-      "cik": 6951,
-      "accession": "0001628280-26-059277",
-      "filed": "2026-08-27",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1809022": "Hill Brice"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1633978,
-      "accession": "0001648256-26-000007",
-      "filed": "2026-08-27",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1648256": "Retort Vincent"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
-    {
-      "cik": 1633978,
-      "accession": "0001648256-26-000008",
-      "filed": "2026-08-27",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1648256": "Retort Vincent"
-      },
-      "plan_10b5_1": true,
-      "rows": []
-    },
-    {
-      "cik": 1633978,
-      "accession": "0001664898-26-000005",
-      "filed": "2026-08-27",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1664898": "Chang Eric"
-      },
-      "plan_10b5_1": false,
-      "rows": []
-    },
     {
       "cik": 1640147,
       "accession": "0001821737-26-000012",
@@ -5843,6 +5687,263 @@
       "original_filed": null,
       "owners": {
         "1622943": "Laufman James"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001411",
+      "filed": "2026-11-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1240386": "PAGLIUCA STEPHEN G"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-20",
+          "security": "Common Stock",
+          "shares": "12138",
+          "price": "183.6973",
+          "ownership": "I"
+        },
+        {
+          "line": 1,
+          "date": "2026-11-20",
+          "security": "Common Stock",
+          "shares": "14705",
+          "price": "184.4751",
+          "ownership": "I"
+        },
+        {
+          "line": 2,
+          "date": "2026-11-20",
+          "security": "Common Stock",
+          "shares": "28783",
+          "price": "185.5055",
+          "ownership": "I"
+        },
+        {
+          "line": 3,
+          "date": "2026-11-20",
+          "security": "Common Stock",
+          "shares": "10403",
+          "price": "186.4701",
+          "ownership": "I"
+        },
+        {
+          "line": 4,
+          "date": "2026-11-20",
+          "security": "Common Stock",
+          "shares": "12387",
+          "price": "187.2186",
+          "ownership": "I"
+        },
+        {
+          "line": 5,
+          "date": "2026-11-20",
+          "security": "Common Stock",
+          "shares": "2114",
+          "price": "188.5922",
+          "ownership": "I"
+        },
+        {
+          "line": 6,
+          "date": "2026-11-20",
+          "security": "Common Stock",
+          "shares": "320",
+          "price": "189.65",
+          "ownership": "I"
+        },
+        {
+          "line": 7,
+          "date": "2026-11-20",
+          "security": "Common Stock",
+          "shares": "1150",
+          "price": "190.05",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 855658,
+      "accession": "0001437749-26-038151",
+      "filed": "2026-11-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1946684": "Skillern Raejeanne"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 855658,
+      "accession": "0001437749-26-038153",
+      "filed": "2026-11-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1701967": "McCool John F"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000282",
+      "filed": "2026-11-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1817763": "Battles Kelly Bodnar"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000283",
+      "filed": "2026-11-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1224994": "CHEW LEWIS"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000284",
+      "filed": "2026-11-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1299634": "Giancarlo Charles H"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000285",
+      "filed": "2026-11-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "2058736": "Lavender Robert G"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000286",
+      "filed": "2026-11-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1605698": "Scheinman Daniel"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000287",
+      "filed": "2026-11-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1201938": "TEMPLETON MARK B"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000288",
+      "filed": "2026-11-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1707744": "Wassenaar Yvonne"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000289",
+      "filed": "2026-11-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1850596": "Breithaupt Chantelle Yvette"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000290",
+      "filed": "2026-11-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1605808": "Duda Kenneth"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000291",
+      "filed": "2026-11-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1605808": "Duda Kenneth"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000292",
+      "filed": "2026-11-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1944844": "Nightingale Todd"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000293",
+      "filed": "2026-11-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1605809": "Ullal Jayshree"
+      },
+      "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 1835632,
+      "accession": "0001628280-26-075833",
+      "filed": "2026-11-24",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1381430": "MURPHY MATTHEW J"
       },
       "plan_10b5_1": false,
       "rows": []
