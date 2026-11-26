@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-25T14:52:45.503096+00:00",
-  "as_of": "2026-11-25",
-  "cutoff": "2026-08-28",
+  "generated_at": "2026-11-26T14:22:18.483387+00:00",
+  "as_of": "2026-11-26",
+  "cutoff": "2026-08-29",
   "universe": {
     "1736297": "ALAB",
     "6951": "AMAT",
@@ -25,18 +25,6 @@
   },
   "unmapped": [],
   "filings": [
-    {
-      "cik": 1640147,
-      "accession": "0001821737-26-000012",
-      "filed": "2026-08-28",
-      "form": "4",
-      "original_filed": null,
-      "owners": {
-        "1821737": "Dageville Benoit"
-      },
-      "plan_10b5_1": true,
-      "rows": []
-    },
     {
       "cik": 883241,
       "accession": "0001249802-26-000008",
@@ -5946,6 +5934,179 @@
         "1381430": "MURPHY MATTHEW J"
       },
       "plan_10b5_1": false,
+      "rows": []
+    },
+    {
+      "cik": 820318,
+      "accession": "0000899140-26-001413",
+      "filed": "2026-11-25",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1240386": "PAGLIUCA STEPHEN G"
+      },
+      "plan_10b5_1": false,
+      "rows": [
+        {
+          "line": 0,
+          "date": "2026-11-23",
+          "security": "Common Stock",
+          "shares": "3908",
+          "price": "213.5499",
+          "ownership": "I"
+        },
+        {
+          "line": 1,
+          "date": "2026-11-23",
+          "security": "Common Stock",
+          "shares": "8460",
+          "price": "214.4491",
+          "ownership": "I"
+        },
+        {
+          "line": 2,
+          "date": "2026-11-23",
+          "security": "Common Stock",
+          "shares": "13647",
+          "price": "215.5179",
+          "ownership": "I"
+        },
+        {
+          "line": 3,
+          "date": "2026-11-23",
+          "security": "Common Stock",
+          "shares": "13597",
+          "price": "216.5009",
+          "ownership": "I"
+        },
+        {
+          "line": 4,
+          "date": "2026-11-23",
+          "security": "Common Stock",
+          "shares": "6648",
+          "price": "217.5614",
+          "ownership": "I"
+        },
+        {
+          "line": 5,
+          "date": "2026-11-23",
+          "security": "Common Stock",
+          "shares": "11956",
+          "price": "218.4010",
+          "ownership": "I"
+        },
+        {
+          "line": 6,
+          "date": "2026-11-23",
+          "security": "Common Stock",
+          "shares": "5324",
+          "price": "219.3490",
+          "ownership": "I"
+        },
+        {
+          "line": 7,
+          "date": "2026-11-23",
+          "security": "Common Stock",
+          "shares": "2962",
+          "price": "220.2396",
+          "ownership": "I"
+        },
+        {
+          "line": 8,
+          "date": "2026-11-23",
+          "security": "Common Stock",
+          "shares": "1368",
+          "price": "221.5153",
+          "ownership": "I"
+        },
+        {
+          "line": 9,
+          "date": "2026-11-24",
+          "security": "Common Stock",
+          "shares": "1320",
+          "price": "191.3524",
+          "ownership": "I"
+        },
+        {
+          "line": 10,
+          "date": "2026-11-24",
+          "security": "Common Stock",
+          "shares": "6577",
+          "price": "192.3538",
+          "ownership": "I"
+        },
+        {
+          "line": 11,
+          "date": "2026-11-24",
+          "security": "Common Stock",
+          "shares": "16734",
+          "price": "193.5215",
+          "ownership": "I"
+        },
+        {
+          "line": 12,
+          "date": "2026-11-24",
+          "security": "Common Stock",
+          "shares": "13751",
+          "price": "194.5536",
+          "ownership": "I"
+        },
+        {
+          "line": 13,
+          "date": "2026-11-24",
+          "security": "Common Stock",
+          "shares": "22922",
+          "price": "195.5027",
+          "ownership": "I"
+        },
+        {
+          "line": 14,
+          "date": "2026-11-24",
+          "security": "Common Stock",
+          "shares": "19642",
+          "price": "196.4560",
+          "ownership": "I"
+        },
+        {
+          "line": 15,
+          "date": "2026-11-24",
+          "security": "Common Stock",
+          "shares": "17752",
+          "price": "197.4077",
+          "ownership": "I"
+        },
+        {
+          "line": 16,
+          "date": "2026-11-24",
+          "security": "Common Stock",
+          "shares": "3342",
+          "price": "198.2467",
+          "ownership": "I"
+        }
+      ]
+    },
+    {
+      "cik": 1633978,
+      "accession": "0001489550-26-000018",
+      "filed": "2026-11-25",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1489550": "Wupen Yuen"
+      },
+      "plan_10b5_1": true,
+      "rows": []
+    },
+    {
+      "cik": 1596532,
+      "accession": "0001596532-26-000295",
+      "filed": "2026-11-25",
+      "form": "4",
+      "original_filed": null,
+      "owners": {
+        "1299634": "Giancarlo Charles H"
+      },
+      "plan_10b5_1": true,
       "rows": []
     }
   ]
